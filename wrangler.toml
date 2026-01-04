@@ -1,0 +1,32 @@
+name = "sassyconsultingllc"
+main = "src/worker.js"
+compatibility_date = "2024-01-01"
+
+[site]
+bucket = "./public"
+
+# D1 Database
+[[d1_databases]]
+binding = "DB"
+database_name = "sassy-db"
+database_id = "YOUR_DATABASE_ID_HERE"
+
+# R2 Storage for downloads
+[[r2_buckets]]
+binding = "DOWNLOADS"
+bucket_name = "sassy-downloads"
+
+# Environment variables (non-secret)
+[vars]
+SITE_URL = "https://sassyconsultingllc.com"
+MYBESTSITES_URL = "https://mybestsites.online"
+
+# Secrets (add via: wrangler secret put SECRET_NAME)
+# Required secrets:
+# - STRIPE_SECRET_KEY
+# - STRIPE_WEBHOOK_SECRET
+# - STRIPE_PRICE_SASSY_TALK
+# - STRIPE_PRICE_WINFORENSICS
+# - STRIPE_PRICE_WEBSITE_CREATOR
+# - LICENSE_SALT
+# - POSTMARK_API_KEY (optional, for email)
