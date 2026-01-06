@@ -20,7 +20,6 @@ sassyconsultingllc-fullstack/
 │   └── worker.js         # Cloudflare Worker (API routes)
 ├── migrations/
 │   └── 0001_init.sql     # D1 database schema
-├── .env.example          # Environment variable template
 ├── wrangler.toml         # Cloudflare config
 └── package.json
 ```
