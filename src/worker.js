@@ -70,6 +70,10 @@ export default {
                 return await handleAnalyze(request, env, corsHeaders);
             }
             
+            if (path === '/api/contact' && method === 'POST') {
+                return await handleContact(request, env, corsHeaders);
+            }
+            
             if (path === '/api/checkout' && method === 'POST') {
                 return await handleCheckout(request, env, corsHeaders);
             }
@@ -547,4 +551,53 @@ function getTimezone(country, region) {
         return countryTz[region] || countryTz['default'];
     }
     return countryTz;
+}
+
+// Contact form handler (HTML form POST)
+async function handleContact(request, env, corsHeaders) {
+    const contentType = request.headers.get('content-type') || '';
+    let name, email, message;
+
+    if (contentType.includes('application/x-www-form-urlencoded')) {
+        const formData = await request.formData();
+        name = formData.get('name');
+        email = formData.get('email');
+        message = formData.get('message');
+    } else {
+        const body = await request.json();
+        name = body.name;
+        email = body.email;
+        message = body.message;
+    }
+
+    // Validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!name || name.length < 2 || name.length > 100) {
+        return new Response(null, { status: 302, headers: { 'Location': '/#contact?error=name' } });
+    }
+
+    if (!email || !emailRegex.test(email)) {
+        return new Response(null, { status: 302, headers: { 'Location': '/#contact?error=email' } });
+    }
+
+    if (!message || message.length < 10 || message.length > 1000) {
+        return new Response(null, { status: 302, headers: { 'Location': '/#contact?error=message' } });
+    }
+
+    // Store in D1 if available
+    if (env.DB) {
+        try {
+            await env.DB.prepare(`
+                INSERT INTO contact_submissions (name, email, message, created_at)
+                VALUES (?, ?, ?, datetime('now'))
+            `).bind(name, email, message).run();
+        } catch (e) {
+            console.error('DB error:', e);
+        }
+    }
+
+    console.log(`Contact form: ${name} <${email}> - ${message.substring(0, 50)}...`);
+
+    return new Response(null, { status: 302, headers: { 'Location': '/contact-success.html' } });
 }
