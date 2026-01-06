@@ -2,8 +2,8 @@ name = "sassyconsultingllc"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
 
-[site]
-bucket = "./public"
+[assets]
+directory = "./public"
 
 # D1 Database
 [[d1_databases]]
