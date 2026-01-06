@@ -9,7 +9,7 @@ bucket = "./public"
 [[d1_databases]]
 binding = "DB"
 database_name = "sassy-db"
-database_id = "YOUR_DATABASE_ID_HERE"
+database_id = "ed5f3cc4-fa38-4eaa-b9ac-8480eb24e2be"
 
 # R2 Storage for downloads
 [[r2_buckets]]
