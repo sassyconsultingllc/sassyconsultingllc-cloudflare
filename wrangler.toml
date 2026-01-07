@@ -32,5 +32,5 @@ MYBESTSITES_URL = "https://mybestsites.online"
 # - POSTMARK_API_KEY (optional, for email)
 
 send_email = [
-    { name = "CONTACT_EMAIL", destination_address = "shane@sassyconsulting.com" }
+    { name = "CONTACT_EMAIL", destination_address = "shane@sassyconsultingllc.com" }
 ]
