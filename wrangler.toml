@@ -30,3 +30,7 @@ MYBESTSITES_URL = "https://mybestsites.online"
 # - STRIPE_PRICE_WEBSITE_CREATOR
 # - LICENSE_SALT
 # - POSTMARK_API_KEY (optional, for email)
+
+send_email = [
+    { name = "CONTACT_EMAIL", destination_address = "shane@sassyconsulting.com" }
+]
