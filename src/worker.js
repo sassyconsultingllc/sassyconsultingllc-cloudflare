@@ -3,18 +3,6 @@
  * Copyright (c) 2025 Sassy Consulting LLC
  * https://sassyconsultingllc.com | Veteran-Owned
  * 
- * Handles: Network Analysis API, Stripe Payments, License Generation, Downloads
- * 
- * Environment Variables Required (set in wrangler.toml or dashboard):
- * - STRIPE_SECRET_KEY
- * - STRIPE_WEBHOOK_SECRET
- * - STRIPE_PRICE_SASSY_TALK
- * - STRIPE_PRICE_WINFORENSICS
- * - STRIPE_PRICE_WEBSITE_CREATOR
- * - LICENSE_SALT
- */
-
-// Known datacenter/VPN ASNs
 import { EmailMessage } from "cloudflare:email";
 
 const DATACENTER_ASNS = new Set([
@@ -198,7 +186,6 @@ async function handleContact(request, env, corsHeaders) {
     return new Response(null, { status: 302, headers: { "Location": "/#contact?error=message" } });
   }
 
-  // Store in DB
   if (env.DB) {
     try {
       await env.DB.prepare(`
@@ -210,12 +197,11 @@ async function handleContact(request, env, corsHeaders) {
     }
   }
 
-  // Send email notification
   if (env.CONTACT_EMAIL) {
     try {
       const emailBody = [
-        `From: contact@sassyconsultingllc.com`,
-        `To: shane@sassyconsulting.com`,
+        `From: Info@sassyconsultingllc.com`,
+        `To: Info@sassyconsultingllc.com`,
         `Reply-To: ${email}`,
         `Subject: Contact Form: ${name}`,
         `Content-Type: text/plain; charset=utf-8`,
@@ -233,8 +219,8 @@ async function handleContact(request, env, corsHeaders) {
       ].join("\r\n");
 
       const msg = new EmailMessage(
-        "contact@sassyconsultingllc.com",
-        "shane@sassyconsulting.com",
+        "Info@sassyconsultingllc.com",
+        "Info@sassyconsultingllc.com",
         emailBody
       );
       await env.CONTACT_EMAIL.send(msg);
@@ -557,7 +543,7 @@ async function generateLicenseKey(email, product, orderId, salt) {
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("").toUpperCase();
-
+  
   const productCode = product.toUpperCase().replace("-", "").substring(0, 4);
   return `SASSY-${productCode}-${hex.substring(0, 4)}-${hex.substring(4, 8)}-${hex.substring(8, 12)}`;
 }
