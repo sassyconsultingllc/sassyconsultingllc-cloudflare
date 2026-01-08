@@ -1,8 +1,3 @@
-/**
- * Sassy Consulting LLC - Cloudflare Worker
- * Copyright (c) 2025 Sassy Consulting LLC
- * https://sassyconsultingllc.com | Veteran-Owned
- * 
 import { EmailMessage } from "cloudflare:email";
 
 const DATACENTER_ASNS = new Set([
