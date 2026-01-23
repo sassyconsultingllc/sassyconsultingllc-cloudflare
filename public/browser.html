@@ -31,6 +31,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    <script src="glossary.js" defer></script>
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -52,683 +53,124 @@
             --gradient-trust: linear-gradient(90deg, #ef4444, #f97316, #eab308, #22c55e);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; background: var(--bg-primary); color: var(--text-primary); line-height: 1.6; overflow-x: hidden; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+
+        nav { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; padding: 1rem 2rem; background: rgba(10, 10, 10, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--border-subtle); }
+        nav .container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.25rem; color: var(--text-primary); text-decoration: none; display: flex; align-items: center; gap: 0.5rem; }
+        .logo-img { width: 32px; height: 32px; border-radius: 8px; object-fit: cover; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; transition: color 0.2s; }
+        .nav-links a:hover { color: var(--text-primary); }
+
+        .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.625rem 1.25rem; border-radius: 8px; font-size: 0.9rem; font-weight: 500; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; }
+        .btn-primary { background: var(--accent-primary); color: #000; }
+        .btn-primary:hover { background: var(--accent-secondary); transform: translateY(-1px); }
+        .btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border-medium); }
+        .btn-secondary:hover { background: var(--bg-tertiary); border-color: var(--text-tertiary); }
+        .btn-large { padding: 1rem 2rem; font-size: 1rem; }
+
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem 2rem 4rem; position: relative; overflow: hidden; }
+        .hero::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 800px; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none; }
+        .hero-badge { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.5rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 100px; font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .hero-badge .dot { width: 8px; height: 8px; background: var(--accent-primary); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .hero h1 { font-size: clamp(2.5rem, 8vw, 5rem); font-weight: 700; line-height: 1.1; margin-bottom: 1.5rem; max-width: 900px; }
+        .hero h1 .gradient { background: var(--gradient-trust); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .hero-sub { font-size: 1.25rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
+        .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
+        .hero-stats { display: flex; gap: 3rem; margin-top: 4rem; padding-top: 3rem; border-top: 1px solid var(--border-subtle); }
+        .stat { text-align: center; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent-primary); }
+        .stat-label { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.25rem; }
+
+        section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+        .section-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent-primary); margin-bottom: 1rem; }
+        .section-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; max-width: 700px; }
+        .section-desc { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
+
+        .comparison { background: var(--bg-secondary); border-radius: 16px; border: 1px solid var(--border-subtle); overflow: hidden; }
+        .comparison-header { padding: 2rem; border-bottom: 1px solid var(--border-subtle); text-align: center; }
+        .comparison-header h3 { font-size: 1.5rem; margin-bottom: 0.5rem; }
+        .comparison-grid { display: grid; grid-template-columns: 1fr 1fr; }
+        .comparison-col { padding: 2rem; }
+        .comparison-col:first-child { border-right: 1px solid var(--border-subtle); background: rgba(239, 68, 68, 0.03); }
+        .comparison-col:last-child { background: rgba(34, 197, 94, 0.03); }
+        .comparison-col h4 { font-size: 1rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.5rem; }
+        .comparison-col ul { list-style: none; }
+        .comparison-col li { padding: 0.75rem 0; border-bottom: 1px solid var(--border-subtle); font-size: 0.95rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 0.75rem; }
+        .comparison-col li:last-child { border-bottom: none; }
+        .comparison-col li .icon { flex-shrink: 0; margin-top: 2px; }
+
+        .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 1.5rem; }
+        .feature-card { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 2rem; transition: all 0.3s; }
+        .feature-card:hover { border-color: var(--border-medium); transform: translateY(-2px); }
+        .feature-icon { width: 48px; height: 48px; background: var(--bg-tertiary); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 1.25rem; }
+        .feature-card h3 { font-size: 1.125rem; margin-bottom: 0.75rem; }
+        .feature-card p { color: var(--text-secondary); font-size: 0.95rem; }
+
+        .trust-demo { background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 3rem; margin: 3rem 0; }
+        .trust-bar { height: 12px; background: var(--gradient-trust); border-radius: 6px; margin: 2rem 0; }
+        .trust-stages { display: flex; justify-content: space-between; margin-top: 1rem; }
+        .trust-stage { text-align: center; flex: 1; }
+        .trust-stage .label { font-size: 0.8rem; color: var(--text-tertiary); margin-bottom: 0.25rem; }
+        .trust-stage .status { font-size: 0.9rem; font-weight: 500; }
+
+        .code-block { background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
+        .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.7; color: var(--text-secondary); }
+        .code-block .comment { color: var(--text-tertiary); }
+        .code-block .keyword { color: var(--accent-blue); }
+        .code-block .string { color: var(--accent-primary); }
+        .code-block .highlight { color: var(--text-primary); }
+
+        .table-wrapper { overflow-x: auto; border: 1px solid var(--border-subtle); border-radius: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { padding: 1rem 1.25rem; text-align: left; border-bottom: 1px solid var(--border-subtle); }
+        th { background: var(--bg-tertiary); font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-secondary); }
+        td { color: var(--text-secondary); }
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background: var(--bg-secondary); }
+
+        .story { background: var(--bg-secondary); padding: 6rem 2rem; }
+        .story-content { max-width: 800px; margin: 0 auto; }
+        .story-badge { display: inline-flex; align-items: center; gap: 0.75rem; padding: 0.75rem 1.25rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; margin-bottom: 2rem; }
+        .story-badge .flag { font-size: 1.25rem; }
+        .story-badge span { font-size: 0.85rem; color: var(--text-secondary); }
+        .story h2 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 2rem; line-height: 1.2; }
+        .story-text { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 1.5rem; }
+        .story-text.large { font-size: 1.25rem; color: var(--text-primary); }
+        .missions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin: 3rem 0; }
+        .mission { background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; padding: 1.25rem; text-align: center; }
+        .mission-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .mission-desc { font-size: 0.8rem; color: var(--text-tertiary); }
+        .dun-dun { font-size: 3rem; text-align: center; margin: 3rem 0; letter-spacing: 0.5em; color: var(--text-tertiary); }
+
+        .cta { text-align: center; padding: 8rem 2rem; }
+        .cta h2 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
+        .cta p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+        footer { border-top: 1px solid var(--border-subtle); padding: 3rem 2rem; }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
+        .footer-left { color: var(--text-tertiary); font-size: 0.9rem; }
+        .footer-links { display: flex; gap: 2rem; }
+        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--text-primary); }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-
-        .mono {
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            padding: 1rem 2rem;
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        nav .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-weight: 700;
-            font-size: 1.25rem;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .logo-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
-            object-fit: cover;
-        }
-
-        .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--accent-primary);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.2s;
-        }
-
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.625rem 1.25rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
-            cursor: pointer;
-            border: none;
-        }
-
-        .btn-primary {
-            background: var(--accent-primary);
-            color: #000;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-secondary);
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-medium);
-        }
-
-        .btn-secondary:hover {
-            background: var(--bg-tertiary);
-            border-color: var(--text-tertiary);
-        }
-
-        .btn-large {
-            padding: 1rem 2rem;
-            font-size: 1rem;
-        }
-
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
-            pointer-events: none;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 100px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .hero-badge .dot {
-            width: 8px;
-            height: 8px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 700;
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-            max-width: 900px;
-        }
-
-        .hero h1 .gradient {
-            background: var(--gradient-trust);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-sub {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 3rem;
-        }
-
-        .hero-cta {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .hero-stats {
-            display: flex;
-            gap: 3rem;
-            margin-top: 4rem;
-            padding-top: 3rem;
-            border-top: 1px solid var(--border-subtle);
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--accent-primary);
-        }
-
-        .stat-label {
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-            margin-top: 0.25rem;
-        }
-
-        /* Sections */
-        section {
-            padding: 6rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .section-label {
-            font-size: 0.75rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--accent-primary);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
-            margin-bottom: 1rem;
-            max-width: 700px;
-        }
-
-        .section-desc {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin-bottom: 3rem;
-        }
-
-        /* Chrome Comparison */
-        .comparison {
-            background: var(--bg-secondary);
-            border-radius: 16px;
-            border: 1px solid var(--border-subtle);
-            overflow: hidden;
-        }
-
-        .comparison-header {
-            padding: 2rem;
-            border-bottom: 1px solid var(--border-subtle);
-            text-align: center;
-        }
-
-        .comparison-header h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-        }
-
-        .comparison-col {
-            padding: 2rem;
-        }
-
-        .comparison-col:first-child {
-            border-right: 1px solid var(--border-subtle);
-            background: rgba(239, 68, 68, 0.03);
-        }
-
-        .comparison-col:last-child {
-            background: rgba(34, 197, 94, 0.03);
-        }
-
-        .comparison-col h4 {
-            font-size: 1rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .comparison-col ul {
-            list-style: none;
-        }
-
-        .comparison-col li {
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border-subtle);
-            font-size: 0.95rem;
-            color: var(--text-secondary);
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-        }
-
-        .comparison-col li:last-child {
-            border-bottom: none;
-        }
-
-        .comparison-col li .icon {
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-
-        /* Features Grid */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .feature-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 2rem;
-            transition: all 0.3s;
-        }
-
-        .feature-card:hover {
-            border-color: var(--border-medium);
-            transform: translateY(-2px);
-        }
-
-        .feature-icon {
-            width: 48px;
-            height: 48px;
-            background: var(--bg-tertiary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            margin-bottom: 1.25rem;
-        }
-
-        .feature-card h3 {
-            font-size: 1.125rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-card p {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-        }
-
-        /* Trust Gradient Demo */
-        .trust-demo {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
-            padding: 3rem;
-            margin: 3rem 0;
-        }
-
-        .trust-bar {
-            height: 12px;
-            background: var(--gradient-trust);
-            border-radius: 6px;
-            margin: 2rem 0;
-            position: relative;
-        }
-
-        .trust-stages {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 1rem;
-        }
-
-        .trust-stage {
-            text-align: center;
-            flex: 1;
-        }
-
-        .trust-stage .label {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-            margin-bottom: 0.25rem;
-        }
-
-        .trust-stage .status {
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        /* Code Block */
-        .code-block {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 1.5rem;
-            overflow-x: auto;
-        }
-
-        .code-block pre {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
-        }
-
-        .code-block .comment {
-            color: var(--text-tertiary);
-        }
-
-        .code-block .keyword {
-            color: var(--accent-blue);
-        }
-
-        .code-block .string {
-            color: var(--accent-primary);
-        }
-
-        .code-block .highlight {
-            color: var(--text-primary);
-        }
-
-        /* Profile Comparison Table */
-        .table-wrapper {
-            overflow-x: auto;
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        th, td {
-            padding: 1rem 1.25rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-subtle);
-        }
-
-        th {
-            background: var(--bg-tertiary);
-            font-weight: 600;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: var(--text-secondary);
-        }
-
-        td {
-            color: var(--text-secondary);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        tr:hover td {
-            background: var(--bg-secondary);
-        }
-
-        /* Story Section */
-        .story {
-            background: var(--bg-secondary);
-            padding: 6rem 2rem;
-        }
-
-        .story-content {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .story-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 1.25rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            margin-bottom: 2rem;
-        }
-
-        .story-badge .flag {
-            font-size: 1.25rem;
-        }
-
-        .story-badge span {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .story h2 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 2rem;
-            line-height: 1.2;
-        }
-
-        .story-text {
-            font-size: 1.1rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-        }
-
-        .story-text.large {
-            font-size: 1.25rem;
-            color: var(--text-primary);
-        }
-
-        .missions {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin: 3rem 0;
-        }
-
-        .mission {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 8px;
-            padding: 1.25rem;
-            text-align: center;
-        }
-
-        .mission-name {
-            font-weight: 600;
-            font-size: 0.95rem;
-            margin-bottom: 0.25rem;
-        }
-
-        .mission-desc {
-            font-size: 0.8rem;
-            color: var(--text-tertiary);
-        }
-
-        .dun-dun {
-            font-size: 3rem;
-            text-align: center;
-            margin: 3rem 0;
-            letter-spacing: 0.5em;
-            color: var(--text-tertiary);
-        }
-
-        /* CTA Section */
-        .cta {
-            text-align: center;
-            padding: 8rem 2rem;
-        }
-
-        .cta h2 {
-            font-size: clamp(2rem, 5vw, 3rem);
-            margin-bottom: 1rem;
-        }
-
-        .cta p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
-        .cta-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border-subtle);
-            padding: 3rem 2rem;
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-left {
-            color: var(--text-tertiary);
-            font-size: 0.9rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .hero-stats {
-                flex-direction: column;
-                gap: 1.5rem;
-            }
-
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .comparison-col:first-child {
-                border-right: none;
-                border-bottom: 1px solid var(--border-subtle);
-            }
-
-            .missions {
-                grid-template-columns: 1fr;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
+            .nav-links { display: none; }
+            .hero-stats { flex-direction: column; gap: 1.5rem; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .comparison-col:first-child { border-right: none; border-bottom: 1px solid var(--border-subtle); }
+            .missions { grid-template-columns: 1fr; }
+            .features-grid { grid-template-columns: 1fr; }
         }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate {
-            animation: fadeInUp 0.6s ease-out forwards;
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="container">
             <a href="index.html#" class="logo">
@@ -746,165 +188,85 @@
         </div>
     </nav>
 
-    <!-- Hero -->
     <section class="hero">
         <div class="hero-badge">
             <span class="dot"></span>
-            <span>v1.0 — Built Winter 2025 in Wisconsin</span>
+            <span>v2.0 — Built Winter 2025 in Wisconsin</span>
         </div>
         
-        <h1>
-            One browser for<br>
-            <span class="gradient">complete protection</span>
-        </h1>
+        <h1>One browser for<br><span class="gradient">complete protection</span></h1>
         
         <p class="hero-sub">
-            Not Chrome. Not Brave. Not a fork. Built from scratch in Rust—so light 
-            we run four sandboxes without breaking a sweat.
+            Not Chrome. Not Brave. Not a <span class="term" data-term="fork">fork</span>. Built from scratch in <span class="term" data-term="rust">Rust</span>—so light we run four <span class="term" data-term="sandbox">sandboxes</span> without breaking a sweat.
         </p>
         
         <div class="hero-cta">
             <a href="index.html#download" class="btn btn-primary btn-large">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Download for Windows
             </a>
-            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">
-                View Source
-            </a>
+            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">View Source</a>
         </div>
         
         <div class="hero-stats">
-            <div class="stat">
-                <div class="stat-value">17,267</div>
-                <div class="stat-label">Lines of Rust</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">12 MB</div>
-                <div class="stat-label">Install Size</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">4</div>
-                <div class="stat-label">Sandboxes</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Tracking</div>
-            </div>
+            <div class="stat"><div class="stat-value">50,818</div><div class="stat-label">Lines of <span class="term" data-term="rust">Rust</span></div></div>
+            <div class="stat"><div class="stat-value">12 MB</div><div class="stat-label">Install Size</div></div>
+            <div class="stat"><div class="stat-value">4</div><div class="stat-label"><span class="term" data-term="sandbox">Sandboxes</span></div></div>
+            <div class="stat"><div class="stat-value">0</div><div class="stat-label"><span class="term" data-term="telemetry">Telemetry</span></div></div>
         </div>
     </section>
 
-    <!-- Chrome Comparison -->
     <section id="security">
         <span class="section-label">The Problem</span>
         <h2 class="section-title">Chrome is the virus. You just downloaded it voluntarily.</h2>
-        <p class="section-desc">
-            Every "free" browser makes money by selling you. We don't.
-        </p>
+        <p class="section-desc">Every "free" browser makes money by selling you. We don't.</p>
         
         <div class="comparison">
-            <div class="comparison-header">
-                <h3>Let's be honest about what you're running</h3>
-            </div>
+            <div class="comparison-header"><h3>Let's be honest about what you're running</h3></div>
             <div class="comparison-grid">
                 <div class="comparison-col">
-                    <h4>
-                        <span style="color: var(--accent-red);">●</span>
-                        Chrome / Brave / Edge
-                    </h4>
+                    <h4><span style="color: var(--accent-red);">●</span> Chrome / Brave / Edge</h4>
                     <ul>
-                        <li>
-                            <span class="icon">✗</span>
-                            Tracks every website you visit
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            Sends browsing data to corporate servers
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            Lets sites request permissions on first load
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            Built on 25-year-old C++ codebase
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            500MB+ RAM per tab
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            Passwords stored where Google can read them
-                        </li>
-                        <li>
-                            <span class="icon">✗</span>
-                            Extensions required for basic privacy
-                        </li>
+                        <li><span class="icon">✗</span> Tracks every website you visit</li>
+                        <li><span class="icon">✗</span> Sends browsing data to corporate servers</li>
+                        <li><span class="icon">✗</span> Lets sites request permissions on first load</li>
+                        <li><span class="icon">✗</span> Built on 25-year-old <span class="term" data-term="cpp">C++</span> codebase</li>
+                        <li><span class="icon">✗</span> 500MB+ RAM per tab</li>
+                        <li><span class="icon">✗</span> Passwords stored where Google can read them</li>
+                        <li><span class="icon">✗</span> Extensions required for basic privacy</li>
                     </ul>
                 </div>
                 <div class="comparison-col">
-                    <h4>
-                        <span style="color: var(--accent-primary);">●</span>
-                        Sassy Browser
-                    </h4>
+                    <h4><span style="color: var(--accent-primary);">●</span> Sassy Browser</h4>
                     <ul>
-                        <li>
-                            <span class="icon">✓</span>
-                            No tracking. No telemetry. No analytics.
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            All data stays on your device
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            Sites must earn trust through interaction
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            Written from scratch in memory-safe Rust
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            12MB install, minimal memory footprint
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            Passwords encrypted with YOUR key
-                        </li>
-                        <li>
-                            <span class="icon">✓</span>
-                            Privacy built in, not bolted on
-                        </li>
+                        <li><span class="icon">✓</span> No tracking. No <span class="term" data-term="telemetry">telemetry</span>. No analytics.</li>
+                        <li><span class="icon">✓</span> All data stays on your device</li>
+                        <li><span class="icon">✓</span> Sites must earn trust through interaction</li>
+                        <li><span class="icon">✓</span> Written from scratch in memory-safe <span class="term" data-term="rust">Rust</span></li>
+                        <li><span class="icon">✓</span> 12MB install, minimal memory footprint</li>
+                        <li><span class="icon">✓</span> Passwords encrypted with YOUR key</li>
+                        <li><span class="icon">✓</span> Privacy built in, not bolted on</li>
                     </ul>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Key Generation -->
     <section>
         <span class="section-label">Your Key</span>
         <h2 class="section-title">Encrypted data needs a key. You create that key.</h2>
-        <p class="section-desc">
-            When you first launch Sassy Browser, you generate your own cryptographic 
-            identity through a simple game. Your actions become your security.
-        </p>
+        <p class="section-desc">When you first launch Sassy Browser, you generate your own cryptographic identity through a simple game. Your actions become your security.</p>
         
         <div class="code-block">
             <pre><span class="comment">// What happens when you set up Sassy Browser:</span>
 
 <span class="keyword">1.</span> <span class="highlight">Your mouse movements + clicks + timing</span>
-   <span class="comment">↓ feeds entropy pool</span>
+   <span class="comment">↓ feeds <span class="term" data-term="entropy">entropy</span> pool</span>
    
 <span class="keyword">2.</span> <span class="highlight">32-byte Master Secret generated</span>
-   <span class="comment">↓ ChaCha20-Poly1305 (same as WireGuard)</span>
+   <span class="comment">↓ <span class="term" data-term="chacha20">ChaCha20-Poly1305</span> (same as WireGuard)</span>
    
-<span class="keyword">3.</span> <span class="highlight">Ed25519 Key Pair derived</span>
+<span class="keyword">3.</span> <span class="highlight"><span class="term" data-term="ed25519">Ed25519 Key Pair</span> derived</span>
    <span class="comment">↓ same algorithm as Signal, SSH, Tor</span>
    
 <span class="keyword">4.</span> <span class="highlight">Recovery Key displayed</span>
@@ -916,296 +278,133 @@
         </div>
     </section>
 
-    <!-- Trust Gradient -->
     <section id="features">
         <span class="section-label">Trust System</span>
-        <h2 class="section-title">Every page starts sandboxed. Trust is earned.</h2>
-        <p class="section-desc">
-            No popups. No notifications. Just a color that tells you everything.
-        </p>
+        <h2 class="section-title">Every page starts <span class="term" data-term="sandbox">sandboxed</span>. Trust is earned.</h2>
+        <p class="section-desc">No popups. No notifications. Just a color that tells you everything.</p>
         
         <div class="trust-demo">
-            <p style="color: var(--text-secondary); margin-bottom: 1rem;">
-                Watch the tab background shift as you interact with a page:
-            </p>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">Watch the tab background shift as you interact with a page:</p>
             <div class="trust-bar"></div>
             <div class="trust-stages">
-                <div class="trust-stage">
-                    <div class="label">Page loads</div>
-                    <div class="status" style="color: var(--accent-red);">Sandboxed</div>
-                </div>
-                <div class="trust-stage">
-                    <div class="label">You scroll</div>
-                    <div class="status" style="color: var(--accent-orange);">Cautious</div>
-                </div>
-                <div class="trust-stage">
-                    <div class="label">You click</div>
-                    <div class="status" style="color: var(--accent-yellow);">Warming</div>
-                </div>
-                <div class="trust-stage">
-                    <div class="label">You engage</div>
-                    <div class="status" style="color: var(--accent-primary);">Trusted</div>
-                </div>
+                <div class="trust-stage"><div class="label">Page loads</div><div class="status" style="color: var(--accent-red);"><span class="term" data-term="sandbox">Sandboxed</span></div></div>
+                <div class="trust-stage"><div class="label">You scroll</div><div class="status" style="color: var(--accent-orange);">Cautious</div></div>
+                <div class="trust-stage"><div class="label">You click</div><div class="status" style="color: var(--accent-yellow);">Warming</div></div>
+                <div class="trust-stage"><div class="label">You engage</div><div class="status" style="color: var(--accent-primary);">Trusted</div></div>
             </div>
-            <p style="color: var(--text-tertiary); margin-top: 2rem; font-size: 0.9rem;">
-                Until trusted: No clipboard access. No downloads. No popups. No notifications. 
-                No camera. No microphone. No location. Most malicious sites never get that far.
-            </p>
+            <p style="color: var(--text-tertiary); margin-top: 2rem; font-size: 0.9rem;">Until trusted: No clipboard access. No downloads. No popups. No notifications. No camera. No microphone. No location. Most malicious sites never get that far.</p>
         </div>
     </section>
 
-    <!-- Features Grid -->
     <section>
-        <span class="section-label">Four Sandboxes</span>
+        <span class="section-label">Four <span class="term" data-term="sandbox">Sandboxes</span></span>
         <h2 class="section-title">Uncompromising security that never gets in your way.</h2>
         
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">🔒</div>
-                <h3>Page Sandbox</h3>
-                <p>
-                    Every page isolated until you prove you're actually using it. 
-                    3 meaningful interactions unlock permissions. Anti-clickjacking 
-                    (20x20px minimum), anti-bot (1 second spacing), ad container 
-                    detection built in.
-                </p>
+                <h3>Page <span class="term" data-term="sandbox">Sandbox</span></h3>
+                <p>Every page isolated until you prove you're actually using it. 3 meaningful interactions unlock permissions. Anti-<span class="term" data-term="clickjacking">clickjacking</span> (20x20px minimum), anti-bot (1 second spacing), ad container detection built in.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🚫</div>
                 <h3>Smart Popup Blocker</h3>
-                <p>
-                    Blocks garbage. Allows Google OAuth, CAPTCHAs, and payment 
-                    processors automatically. Rate limiting (5 per 30 seconds), 
-                    size validation, page-load blocking. Smart enough to know 
-                    the difference.
-                </p>
+                <p>Blocks garbage. Allows Google <span class="term" data-term="oauth">OAuth</span>, <span class="term" data-term="captcha">CAPTCHAs</span>, and payment processors automatically. Rate limiting (5 per 30 seconds), size validation, page-load blocking. Smart enough to know the difference.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📦</div>
-                <h3>Download Quarantine</h3>
-                <p>
-                    Downloads don't touch your filesystem until you approve them. 
-                    Multiple confirmations + 5-second delay. Heuristic scanning for 
-                    suspicious patterns. Your kid can't accidentally run malware.
-                </p>
+                <h3>Download <span class="term" data-term="quarantine">Quarantine</span></h3>
+                <p>Downloads don't touch your filesystem until you approve them. Multiple confirmations + 5-second delay. Heuristic scanning for suspicious patterns. Your kid can't accidentally run <span class="term" data-term="malware">malware</span>.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📡</div>
                 <h3>Network Monitor</h3>
-                <p>
-                    Always-visible activity indicator. Hover to see every active 
-                    connection: what's connecting, what's downloading, bytes per 
-                    second. No mystery traffic. No hidden requests.
-                </p>
+                <p>Always-visible activity indicator. Hover to see every active connection: what's connecting, what's downloading, bytes per second. No mystery traffic. No hidden requests.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔐</div>
                 <h3>Password Vault</h3>
-                <p>
-                    Built-in password manager encrypted with your key. ChaCha20-Poly1305 
-                    encryption, Argon2id for PIN protection. Syncs to phone via 
-                    Tailscale. Replaces LastPass, 1Password, Chrome passwords.
-                </p>
+                <p>Built-in password manager encrypted with your key. <span class="term" data-term="chacha20">ChaCha20-Poly1305</span> encryption, <span class="term" data-term="argon2">Argon2id</span> for PIN protection. Syncs to phone via <span class="term" data-term="tailscale">Tailscale</span>. Replaces LastPass, 1Password, Chrome passwords.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📱</div>
                 <h3>Phone Sync</h3>
-                <p>
-                    Your desktop and phone talk directly via Tailscale mesh. No 
-                    cloud servers. No accounts on our systems. End-to-end encrypted. 
-                    Works on home WiFi or across the planet.
-                </p>
+                <p>Your desktop and phone talk directly via <span class="term" data-term="tailscale">Tailscale</span> mesh. No cloud servers. No accounts on our systems. <span class="term" data-term="e2e">End-to-end encrypted</span>. Works on home WiFi or across the planet.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">⏱️</div>
                 <h3>Smart History</h3>
-                <p>
-                    History doesn't save for 14.7 seconds. Click a bad link? Hit back. 
-                    Gone. Stay on a page? It's saved. Your history becomes intentional. 
-                    NSFW auto-detected and excluded from history and sync.
-                </p>
+                <p>History doesn't save for 14.7 seconds. Click a bad link? Hit back. Gone. Stay on a page? It's saved. Your history becomes intentional. <span class="term" data-term="nsfw">NSFW auto-detected</span> and excluded from history and sync.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">👨‍👩‍👧‍👦</div>
                 <h3>Family Profiles</h3>
-                <p>
-                    Adult, Teen, and Kid profiles with different permission levels. 
-                    Kids need parent approval for downloads. Time limits. Site 
-                    allowlists. Weekly reports. Finally, parental controls that work.
-                </p>
+                <p>Adult, Teen, and Kid profiles with different permission levels. Kids need parent approval for downloads. Time limits. Site allowlists. Weekly reports. Finally, parental controls that work.</p>
             </div>
         </div>
     </section>
 
-    <!-- Family Profiles -->
     <section id="families">
         <span class="section-label">For Everyone</span>
         <h2 class="section-title">Internet safety for people who aren't tech experts.</h2>
-        <p class="section-desc">
-            Grandma. Your farming buddy. Your kids. People who just want to check 
-            the weather without accidentally installing a crypto miner.
-        </p>
+        <p class="section-desc">Grandma. Your farming buddy. Your kids. People who just want to check the weather without accidentally installing a crypto miner.</p>
         
         <div class="table-wrapper">
             <table>
-                <thead>
-                    <tr>
-                        <th>Feature</th>
-                        <th>Adult</th>
-                        <th>Teen (13-17)</th>
-                        <th>Kid (&lt;13)</th>
-                    </tr>
-                </thead>
+                <thead><tr><th>Feature</th><th>Adult</th><th>Teen (13-17)</th><th>Kid (&lt;13)</th></tr></thead>
                 <tbody>
-                    <tr>
-                        <td>History delay</td>
-                        <td>14.7 seconds</td>
-                        <td>5 seconds</td>
-                        <td>Immediate</td>
-                    </tr>
-                    <tr>
-                        <td>NSFW handling</td>
-                        <td>Hide from history</td>
-                        <td>Block + log</td>
-                        <td>Block hard</td>
-                    </tr>
-                    <tr>
-                        <td>Downloads</td>
-                        <td>After trust</td>
-                        <td>After trust + log</td>
-                        <td>Parent approval</td>
-                    </tr>
-                    <tr>
-                        <td>Sandbox interactions</td>
-                        <td>3 to trust</td>
-                        <td>4 to trust</td>
-                        <td>5 + parent</td>
-                    </tr>
-                    <tr>
-                        <td>Safe search</td>
-                        <td>Optional</td>
-                        <td>Forced</td>
-                        <td>Forced</td>
-                    </tr>
-                    <tr>
-                        <td>Social media</td>
-                        <td>Allowed</td>
-                        <td>Parent approval</td>
-                        <td>Per-site approval</td>
-                    </tr>
-                    <tr>
-                        <td>Weekly report</td>
-                        <td>No</td>
-                        <td>To parent</td>
-                        <td>To parent</td>
-                    </tr>
-                    <tr>
-                        <td>Incognito mode</td>
-                        <td>Available</td>
-                        <td>Logged</td>
-                        <td>Hidden</td>
-                    </tr>
+                    <tr><td>History delay</td><td>14.7 seconds</td><td>5 seconds</td><td>Immediate</td></tr>
+                    <tr><td><span class="term" data-term="nsfw">NSFW</span> handling</td><td>Hide from history</td><td>Block + log</td><td>Block hard</td></tr>
+                    <tr><td>Downloads</td><td>After trust</td><td>After trust + log</td><td>Parent approval</td></tr>
+                    <tr><td><span class="term" data-term="sandbox">Sandbox</span> interactions</td><td>3 to trust</td><td>4 to trust</td><td>5 + parent</td></tr>
+                    <tr><td>Safe search</td><td>Optional</td><td>Forced</td><td>Forced</td></tr>
+                    <tr><td>Social media</td><td>Allowed</td><td>Parent approval</td><td>Per-site approval</td></tr>
+                    <tr><td>Weekly report</td><td>No</td><td>To parent</td><td>To parent</td></tr>
+                    <tr><td>Incognito mode</td><td>Available</td><td>Logged</td><td>Hidden</td></tr>
                 </tbody>
             </table>
         </div>
     </section>
 
-    <!-- Story Section -->
     <section class="story" id="story">
         <div class="story-content">
-            <div class="story-badge">
-                <span class="flag">🇺🇸</span>
-                <span>U.S. Army Veteran • 11 Years • Chemical Warfare Officer</span>
-            </div>
+            <div class="story-badge"><span class="flag">🇺🇸</span><span>U.S. Army Veteran • 11 Years • Chemical Warfare Officer</span></div>
             
             <h2>The mission didn't end when the uniform came off.</h2>
             
-            <p class="story-text large">
-                He didn't deploy overseas. Some people think that means he didn't serve.
-            </p>
-            
-            <p class="story-text">
-                Those people have never been called up at 0300 to respond to a domestic 
-                crisis with nothing but training, gear, and the quiet understanding that 
-                whatever happens next is your responsibility.
-            </p>
+            <p class="story-text large">He didn't deploy overseas. Some people think that means he didn't serve.</p>
+            <p class="story-text">Those people have never been called up at 0300 to respond to a domestic crisis with nothing but training, gear, and the quiet understanding that whatever happens next is your responsibility.</p>
             
             <div class="missions">
-                <div class="mission">
-                    <div class="mission-name">Milwaukee Riots</div>
-                    <div class="mission-desc">When the city burned</div>
-                </div>
-                <div class="mission">
-                    <div class="mission-name">Burlington Flooding</div>
-                    <div class="mission-desc">When the water rose</div>
-                </div>
-                <div class="mission">
-                    <div class="mission-name">Hurricane Irma</div>
-                    <div class="mission-desc">When the storm hit</div>
-                </div>
+                <div class="mission"><div class="mission-name">Milwaukee Riots</div><div class="mission-desc">When the city burned</div></div>
+                <div class="mission"><div class="mission-name">Burlington Flooding</div><div class="mission-desc">When the water rose</div></div>
+                <div class="mission"><div class="mission-name">Hurricane Irma</div><div class="mission-desc">When the storm hit</div></div>
             </div>
             
-            <p class="story-text">
-                Chemical Warfare isn't about using weapons. It's about understanding 
-                threats invisible to the naked eye. Protecting people from dangers 
-                they can't see coming. Building systems that keep everyone safe—even 
-                when they don't know they're in danger.
-            </p>
-            
-            <p class="story-text large">
-                Sound familiar?
-            </p>
-            
-            <p class="story-text">
-                The internet is a warzone. Nation-states deploy malware like artillery. 
-                Corporations harvest data like it's a natural resource. And the people 
-                caught in the crossfire? Grandma. Your farming buddy. Your kids. 
-                People who didn't sign up for this war.
-            </p>
+            <p class="story-text">Chemical Warfare isn't about using weapons. It's about understanding threats invisible to the naked eye. Protecting people from dangers they can't see coming. Building systems that keep everyone safe—even when they don't know they're in danger.</p>
+            <p class="story-text large">Sound familiar?</p>
+            <p class="story-text">The internet is a warzone. Nation-states deploy <span class="term" data-term="malware">malware</span> like artillery. Corporations harvest data like it's a natural resource. And the people caught in the crossfire? Grandma. Your farming buddy. Your kids. People who didn't sign up for this war.</p>
             
             <div class="dun-dun">* * *</div>
             
-            <p class="story-text large" style="text-align: center;">
-                Eleven years of asking "what am I here for?"<br>
-                Turns out the answer was in Wisconsin the whole time.
-            </p>
-            
-            <p class="story-text" style="text-align: center; margin-top: 2rem;">
-                Built in the winter of 2025, probably while it was -20°F outside.<br>
-                17,267 lines of protection. For everyone who doesn't know they need it.
-            </p>
+            <p class="story-text large" style="text-align: center;">Eleven years of asking "what am I here for?"<br>Turns out the answer was in Wisconsin the whole time.</p>
+            <p class="story-text" style="text-align: center; margin-top: 2rem;">Built in the winter of 2025, probably while it was -20°F outside.<br>50,818 lines of protection. For everyone who doesn't know they need it.</p>
         </div>
     </section>
 
-    <!-- CTA Section -->
     <section class="cta" id="download">
         <h2>Your data. Your key. Your browser.</h2>
         <p>Take back your internet.</p>
         <div class="cta-buttons">
-            <a href="index.html#" class="btn btn-primary btn-large">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                Download for Windows
-            </a>
-            <a href="index.html#" class="btn btn-secondary btn-large">
-                Download for Linux
-            </a>
-            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">
-                View Source Code
-            </a>
+            <a href="index.html#" class="btn btn-primary btn-large"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download for Windows</a>
+            <a href="index.html#" class="btn btn-secondary btn-large">Download for Linux</a>
+            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">View Source Code</a>
         </div>
     </section>
 
-    <!-- Footer -->
     <footer>
         <div class="footer-content">
-            <div class="footer-left">
-                <strong>Sassy Browser</strong> — Built in Wisconsin, Winter 2025<br>
-                <span style="font-size: 0.8rem;">Still serving.</span>
-            </div>
+            <div class="footer-left"><strong>Sassy Browser</strong> — Built in Wisconsin, Winter 2025<br><span style="font-size: 0.8rem;">Still serving.</span></div>
             <div class="footer-links">
                 <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER">GitHub</a>
                 <a href="index.html#">Documentation</a>
