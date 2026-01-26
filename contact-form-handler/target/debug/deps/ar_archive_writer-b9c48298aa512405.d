@@ -1,0 +1,10 @@
+V:\Projects\sassyconsultingllc-cloudflare\contact-form-handler\target\debug\deps\ar_archive_writer-b9c48298aa512405.d: C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\lib.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\alignment.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive_writer.rs
+
+V:\Projects\sassyconsultingllc-cloudflare\contact-form-handler\target\debug\deps\libar_archive_writer-b9c48298aa512405.rlib: C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\lib.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\alignment.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive_writer.rs
+
+V:\Projects\sassyconsultingllc-cloudflare\contact-form-handler\target\debug\deps\libar_archive_writer-b9c48298aa512405.rmeta: C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\lib.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\alignment.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive.rs C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive_writer.rs
+
+C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\lib.rs:
+C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\alignment.rs:
+C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive.rs:
+C:\Users\Admin\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ar_archive_writer-0.2.0\src\archive_writer.rs:
