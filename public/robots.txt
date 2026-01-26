@@ -1,0 +1,9 @@
+# Sassy Consulting LLC - robots.txt
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://sassyconsultingllc.com/sitemap.xml
+
+# Crawl-delay for polite bots
+Crawl-delay: 1
