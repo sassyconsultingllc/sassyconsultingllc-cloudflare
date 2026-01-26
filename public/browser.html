@@ -1,37 +1,101 @@
 <!DOCTYPE html>
-<!-- saved from url=(0095)index.html#features -->
-<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sassy Browser | Internet Safety. Finally... | IN DEVELOPMENT </title>
     
-    <section class="cta">
-        <h2>Know someone who hates using the internet?</h2>
-        <p>Send them here and donate to the cause, many thanks</p>
-        <div class="cta-buttons">
-            <a href="https://donate.stripe.com/8x2bJ36N25lket2bX57AI01" class="btn btn-primary btn-large">Donate with Stripe</a>
-        </div>
-    </section>
-
-        <script>
-            // Auto-scroll past the donate section to the hero section after 2 seconds
-            window.addEventListener('DOMContentLoaded', function() {
-                setTimeout(function() {
-                    var heroSection = document.querySelector('.hero');
-                    if (heroSection) {
-                        heroSection.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }, 2000);
-            });
-        </script>
-
-    <meta name="description" content="A browser built from scratch in Rust. No tracking. No legacy code. Just protection.">
+    <!-- SEO Optimized Title -->
+    <title>Sassy Browser - Secure Private Browser Built in Rust | No Tracking, No Telemetry</title>
+    
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sassyconsultingllc.com/browser">
+    
+    <!-- Meta Description - Keyword Optimized -->
+    <meta name="description" content="Sassy Browser is a secure, private web browser built from scratch in Rust. No tracking, no telemetry, no data collection. The best Chrome alternative for privacy-focused browsing with built-in parental controls and password manager.">
+    
+    <!-- Keywords -->
+    <meta name="keywords" content="secure browser, private browser, privacy browser, Chrome alternative, Brave alternative, no tracking browser, Rust browser, browser without telemetry, safe browser for kids, parental control browser, encrypted browser, private web browser 2025">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sassyconsultingllc.com/browser">
+    <meta property="og:title" content="Sassy Browser - Secure Private Browser Built in Rust">
+    <meta property="og:description" content="A privacy-first browser built from scratch. No tracking, no telemetry, no data collection. Finally, internet safety for everyone.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/browser-og-image.png">
+    <meta property="og:site_name" content="Sassy Browser">
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://sassyconsultingllc.com/browser">
+    <meta name="twitter:title" content="Sassy Browser - Secure Private Browser Built in Rust">
+    <meta name="twitter:description" content="A privacy-first browser built from scratch. No tracking, no telemetry, no data collection. Finally, internet safety for everyone.">
+    <meta name="twitter:image" content="https://sassyconsultingllc.com/browser-og-image.png">
+    
+    <!-- Additional SEO Meta -->
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="Sassy Consulting LLC">
+    <meta name="theme-color" content="#22c55e">
+    
+    <!-- Structured Data - JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "Sassy Browser",
+        "applicationCategory": "BrowserApplication",
+        "operatingSystem": "Windows, Linux",
+        "description": "A secure, private web browser built from scratch in Rust with no tracking, no telemetry, and built-in parental controls.",
+        "url": "https://sassyconsultingllc.com/browser",
+        "downloadUrl": "https://sassyconsultingllc.com/browser#download",
+        "softwareVersion": "2.0",
+        "author": {
+            "@type": "Organization",
+            "name": "Sassy Consulting LLC",
+            "url": "https://sassyconsultingllc.com"
+        },
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "featureList": [
+            "No tracking or telemetry",
+            "Built in Rust for memory safety",
+            "4 sandbox layers",
+            "Built-in password manager",
+            "Parental controls",
+            "End-to-end encrypted sync"
+        ],
+        "screenshot": "https://sassyconsultingllc.com/browser-screenshot.png"
+    }
+    </script>
+    
+    <!-- Organization Schema -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Sassy Consulting LLC",
+        "url": "https://sassyconsultingllc.com",
+        "logo": "https://sassyconsultingllc.com/logo.png",
+        "sameAs": [
+            "https://github.com/sassyconsultingllc"
+        ]
+    }
+    </script>
+    
+    <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="favicon.ico">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com/">
     <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+    
     <script src="glossary.js" defer></script>
+    
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -171,19 +235,40 @@
     </style>
 </head>
 <body>
+    <!-- Donate Banner (auto-scrolls past) -->
+    <section class="cta" style="padding: 2rem; background: var(--bg-tertiary);">
+        <h2 style="font-size: 1.5rem;">Know someone who hates using the internet?</h2>
+        <p style="font-size: 1rem;">Send them here and donate to the cause, many thanks</p>
+        <div class="cta-buttons">
+            <a href="https://donate.stripe.com/8x2bJ36N25lket2bX57AI01" class="btn btn-primary btn-large">Donate with Stripe</a>
+        </div>
+    </section>
+
+    <script>
+        // Auto-scroll past the donate section to the hero section after 2 seconds
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(function() {
+                var heroSection = document.querySelector('.hero');
+                if (heroSection) {
+                    heroSection.scrollIntoView({ behavior: 'smooth' });
+                }
+            }, 2000);
+        });
+    </script>
+
     <nav>
         <div class="container">
-            <a href="index.html#" class="logo">
-                <img src="" alt="Sassy" class="logo-img">
+            <a href="/browser" class="logo">
+                <img src="" alt="Sassy Browser - Secure Private Browser" class="logo-img">
                 Sassy Browser
             </a>
             <div class="nav-links">
-                <a href="index.html#features">Features</a>
-                <a href="index.html#security">Security</a>
-                <a href="index.html#families">Families</a>
-                <a href="index.html#story">Story</a>
-                <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" target="_blank">GitHub</a>
-                <a href="index.html#download" class="btn btn-primary">Download</a>
+                <a href="#features">Features</a>
+                <a href="#security">Security</a>
+                <a href="#families">Families</a>
+                <a href="#story">Story</a>
+                <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" target="_blank" rel="noopener">GitHub</a>
+                <a href="#download" class="btn btn-primary">Download</a>
             </div>
         </div>
     </nav>
@@ -194,18 +279,19 @@
             <span>v2.0 — Built Winter 2025 in Wisconsin</span>
         </div>
         
-        <h1>One browser for<br><span class="gradient">complete protection</span></h1>
+        <!-- SEO Optimized H1 -->
+        <h1>The Secure Private Browser<br><span class="gradient">Built for Complete Protection</span></h1>
         
         <p class="hero-sub">
             Not Chrome. Not Brave. Not a <span class="term" data-term="fork">fork</span>. Built from scratch in <span class="term" data-term="rust">Rust</span>—so light we run four <span class="term" data-term="sandbox">sandboxes</span> without breaking a sweat.
         </p>
         
         <div class="hero-cta">
-            <a href="index.html#download" class="btn btn-primary btn-large">
+            <a href="#download" class="btn btn-primary btn-large">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Download for Windows
             </a>
-            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">View Source</a>
+            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large" rel="noopener">View Source</a>
         </div>
         
         <div class="hero-stats">
@@ -396,9 +482,9 @@
         <h2>Your data. Your key. Your browser.</h2>
         <p>Take back your internet.</p>
         <div class="cta-buttons">
-            <a href="index.html#" class="btn btn-primary btn-large"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download for Windows</a>
-            <a href="index.html#" class="btn btn-secondary btn-large">Download for Linux</a>
-            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large">View Source Code</a>
+            <a href="#" class="btn btn-primary btn-large"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Download for Windows</a>
+            <a href="#" class="btn btn-secondary btn-large">Download for Linux</a>
+            <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" class="btn btn-secondary btn-large" rel="noopener">View Source Code</a>
         </div>
     </section>
 
@@ -406,9 +492,9 @@
         <div class="footer-content">
             <div class="footer-left"><strong>Sassy Browser</strong> — Built in Wisconsin, Winter 2025<br><span style="font-size: 0.8rem;">Still serving.</span></div>
             <div class="footer-links">
-                <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER">GitHub</a>
-                <a href="index.html#">Documentation</a>
-                <a href="index.html#">Privacy</a>
+                <a href="https://github.com/sassyconsultingllc/oneSASSYBROWSER" rel="noopener">GitHub</a>
+                <a href="#">Documentation</a>
+                <a href="#">Privacy</a>
                 <a href="mailto:contact@sassyconsultingllc.com">Contact</a>
             </div>
         </div>
