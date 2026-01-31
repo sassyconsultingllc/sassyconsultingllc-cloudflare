@@ -318,3 +318,11 @@ A: No. Zero telemetry. Zero analytics. We literally cannot see what you're doing
 **Ready to escape the subscription trap?**
 
 [Download Sassy Browser] - Free forever. No tracking. No bullshit.
+
+---
+
+## Deployment (2026-01-30)
+
+- Created `public/browser-v2.html` implementing the v2 messaging, updated stats, format grid, and software replacement table.
+- Updated `public/browser.html` to redirect to `public/browser-v2.html`.
+- Next: commit, push to GitHub, and run `wrangler publish` to deploy to Cloudflare Pages.

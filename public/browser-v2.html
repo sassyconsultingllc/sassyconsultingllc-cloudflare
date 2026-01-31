@@ -219,9 +219,9 @@
             .replacement-table { font-size: 0.85rem; }
             .replacement-table th, .replacement-table td { padding: 0.75rem; }
         }
-    </style>
-</head>
-<body>
+        </style>
+    </head>
+    <body>
     <nav>
         <div class="container">
             <a href="/browser" class="logo">
@@ -268,6 +268,17 @@
             <div class="stat"><div class="stat-value">$0</div><div class="stat-label">Subscriptions</div></div>
         </div>
     </section>
+        <div style="margin-top:.75rem;">
+            <button class="collapse-toggle" aria-expanded="false" aria-controls="replacements-content" id="replacements-toggle">Read more</button>
+        </div>
+        <div id="replacements-content" class="collapse-content" hidden>
+        
+        
+    
+    </section>
+    
+    <!-- replacements content (collapsed by default) -->
+    <div hidden aria-hidden="true"></div>
 
     <!-- WHO IS THIS FOR -->
     <section id="everyday">
@@ -717,5 +728,41 @@
             </div>
         </div>
     </footer>
+</footer>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const selectors = ['.replacement-table', '.format-grid', '.features-grid', '.comparison-table', '.tech-stack'];
+        let idx = 0;
+        selectors.forEach(sel => {
+            document.querySelectorAll(sel).forEach(el => {
+                if (el.closest('.collapse-content')) return;
+                idx += 1;
+                const id = `collapse-${idx}`;
+                const btn = document.createElement('button');
+                btn.className = 'collapse-toggle';
+                btn.setAttribute('aria-expanded', 'false');
+                btn.setAttribute('aria-controls', id);
+                btn.textContent = 'Read more';
+
+                el.parentNode.insertBefore(btn, el);
+
+                const wrapper = document.createElement('div');
+                wrapper.id = id;
+                wrapper.className = 'collapse-content';
+                wrapper.hidden = true;
+
+                el.parentNode.insertBefore(wrapper, el.nextSibling);
+                wrapper.appendChild(el);
+
+                btn.addEventListener('click', function() {
+                    const expanded = btn.getAttribute('aria-expanded') === 'true';
+                    btn.setAttribute('aria-expanded', String(!expanded));
+                    wrapper.hidden = expanded;
+                    btn.textContent = expanded ? 'Read more' : 'Hide';
+                });
+            });
+        });
+    });
+    </script>
 </body>
 </html>
