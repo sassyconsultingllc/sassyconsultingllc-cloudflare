@@ -1,6 +1,7 @@
 name = "sassyconsultingllc"
 main = "src/worker.js"
 compatibility_date = "2024-01-01"
+account_id = "d5ccd0d80780f2d0ab72ab12b15244e2"
 
 [assets]
 directory = "./public"
@@ -8,8 +9,8 @@ directory = "./public"
 # D1 Database
 [[d1_databases]]
 binding = "DB"
-database_name = "sassy-db"
-database_id = "ed5f3cc4-fa38-4eaa-b9ac-8480eb24e2be"
+database_name = "contact-submissions"
+database_id = "9c823516-4dbd-4a90-bc89-7e5139e281f4"
 
 # R2 Storage for downloads
 [[r2_buckets]]
