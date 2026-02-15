@@ -10,7 +10,7 @@ directory = "./public"
 [[d1_databases]]
 binding = "DB"
 database_name = "contact-submissions"
-database_id = "9c823516-4dbd-4a90-bc89-7e5139e281f4"
+database_id = "4d917d6a-8d9a-40cd-86a2-c69989cdf454"
 
 # R2 Storage for downloads
 [[r2_buckets]]
