@@ -1,0 +1,33 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "sassyconsultingllc",
+  "main": "src/worker.js",
+  "compatibility_date": "2024-01-01",
+  "account_id": "d5ccd0d80780f2d0ab72ab12b15244e2",
+  "assets": {
+    "directory": "./public"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "contact-submissions",
+      "database_id": "4d917d6a-8d9a-40cd-86a2-c69989cdf454"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "DOWNLOADS",
+      "bucket_name": "sassy-downloads"
+    }
+  ],
+  "vars": {
+    "SITE_URL": "https://sassyconsultingllc.com",
+    "MYBESTSITES_URL": "https://mybestsites.online"
+  },
+  "send_email": [
+    {
+      "name": "CONTACT_EMAIL",
+      "destination_address": "info@sassyconsultingllc.com"
+    }
+  ]
+}
