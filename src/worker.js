@@ -1,4 +1,4 @@
-import { EmailMessage } from "cloudflare:email";
+import { DurableObject } from "cloudflare:workers";
 
 const DATACENTER_ASNS = new Set([
   13335, 14618, 15169, 8075, 16509, 14061, 20473, 46606, 63949, 54825,
@@ -82,10 +82,21 @@ export default {
       if (path === "/api/nda/download" && method === "POST") {
         return await handleNdaDownload(request, env, corsHeaders);
       }
+      // ── PTT WebSocket relay ──
+      if (path === "/api/ptt/ws") {
+        return await handlePttWebSocket(request, url, env);
+      }
+      if (path === "/api/ptt/room-info" && method === "GET") {
+        return await handlePttRoomInfo(url, env, corsHeaders);
+      }
+
       if (path.startsWith("/download/")) {
         return await handleDownload(path, env, corsHeaders);
       }
-      return env.ASSETS.fetch(request);
+
+      // Static assets are served automatically by Cloudflare [assets] config
+      // If we reach here, no API route matched and no static asset exists
+      return new Response("Not found", { status: 404 });
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
@@ -97,35 +108,109 @@ export default {
 
 async function handleAnalyze(request, env, corsHeaders) {
   const body = await request.json();
-  const zipCode = body.zip_code || "";
+  const zipCode = (body.zip_code || "").trim();
+
+  // ── Pull data from Cloudflare's request.cf object (available on ALL plans) ──
+  const cf = request.cf || {};
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
-  const country = request.headers.get("CF-IPCountry") || "XX";
-  const city = request.headers.get("CF-IPCity") || "Unknown";
-  const region = request.headers.get("CF-Region") || "";
-  const lat = request.headers.get("CF-IPLatitude") || "0";
-  const lon = request.headers.get("CF-IPLongitude") || "0";
-  const asn = request.headers.get("CF-IPAsn") || "";
-  const asnOrg = request.headers.get("CF-IPAsnOrg") || "Unknown ISP";
+  const country = cf.country || request.headers.get("CF-IPCountry") || "XX";
+  const city = cf.city || "Unknown";
+  const region = cf.region || cf.regionCode || "";
+  const lat = cf.latitude || "0";
+  const lon = cf.longitude || "0";
+  const postalCode = cf.postalCode || "";
+  const asn = String(cf.asn || "");
+  const asnOrg = cf.asOrganization || "Unknown ISP";
+  const colo = cf.colo || "";            // Cloudflare datacenter (e.g. "ORD")
+  const tlsVersion = cf.tlsVersion || "";
+  const httpProtocol = cf.httpProtocol || "";
+  const timezone = cf.timezone || getTimezone(country, region);
+
+  // ── ZIP Code Verification — compare client-given ZIP to Cloudflare-detected postal code ──
+  let zipMatch = "unknown";
+  let zipVerified = false;
+  if (zipCode && postalCode) {
+    if (zipCode === postalCode) {
+      zipMatch = "exact";
+      zipVerified = true;
+    } else if (zipCode.substring(0, 3) === postalCode.substring(0, 3)) {
+      zipMatch = "region";   // Same sectional center (first 3 digits match)
+      zipVerified = true;
+    } else {
+      zipMatch = "mismatch"; // User ZIP doesn't match IP geolocation — possible VPN/proxy
+    }
+  } else if (zipCode && !postalCode) {
+    zipMatch = "no_cf_data"; // Cloudflare didn't return a postal code for this IP
+  }
+
   const vpnDetection = detectVPN(asn, asnOrg, request.headers);
+
+  // If ZIP mismatches and we didn't already flag VPN, mark as suspicious
+  if (zipMatch === "mismatch" && !vpnDetection.isVPN) {
+    vpnDetection.zipMismatch = true;
+  }
+
   const maskedIP = maskIP(ip);
+
+  // Measure latency to an external endpoint
   const pingStart = Date.now();
-  try { await fetch("https://bitdefender.com", { method: "HEAD", signal: AbortSignal.timeout(3000) }); } catch (e) {}
+  try { await fetch("https://1.1.1.1/cdn-cgi/trace", { method: "GET", signal: AbortSignal.timeout(3000) }); } catch (e) {}
   const pingMs = Date.now() - pingStart;
+
+  // Log to D1 if available
   if (env.DB) {
     const hashedIP = await hashIP(ip, env.LICENSE_SALT || "default-salt");
     try {
-      await env.DB.prepare("INSERT INTO connection_logs (ip_hash, zip_code, country, region, asn, is_vpn, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))").bind(hashedIP, zipCode, country, region, asn, vpnDetection.isVPN ? 1 : 0).run();
+      await env.DB.prepare(
+        "INSERT INTO connection_logs (ip_hash, zip_code, country, region, asn, is_vpn, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
+      ).bind(hashedIP, zipCode, country, region, asn, vpnDetection.isVPN ? 1 : 0).run();
     } catch (e) {}
   }
+
+  // ── Determine overall connection status ──
   let connectionStatus = "safe";
   let statusMessage = "Connection appears secure";
-  if (vpnDetection.isVPN) { connectionStatus = "protected"; statusMessage = "VPN or proxy detected - your traffic is being routed"; }
-  else if (country !== "US") { connectionStatus = "warning"; statusMessage = "International connection detected"; }
+
+  if (vpnDetection.isVPN) {
+    connectionStatus = "protected";
+    statusMessage = "VPN or proxy detected — your traffic is being routed through a third party";
+  } else if (zipMatch === "mismatch") {
+    connectionStatus = "warning";
+    statusMessage = `ZIP code ${zipCode} doesn't match your detected location (${postalCode || city || country}) — possible VPN or proxy`;
+  } else if (country !== "US") {
+    connectionStatus = "warning";
+    statusMessage = "International connection detected";
+  } else if (zipVerified) {
+    statusMessage = "Connection secure — ZIP code verified against Cloudflare geolocation";
+  }
+
   return jsonResponse({
-    connection_status: connectionStatus, status_message: statusMessage, ip: maskedIP, ip_full_masked: maskedIP,
-    location: { city, region, country, postal: zipCode, latitude: parseFloat(lat), longitude: parseFloat(lon), timezone: getTimezone(country, region) },
+    connection_status: connectionStatus,
+    status_message: statusMessage,
+    ip: maskedIP,
+    ip_full_masked: maskedIP,
+    location: {
+      city,
+      region,
+      country,
+      postal: postalCode || "N/A",
+      latitude: parseFloat(lat),
+      longitude: parseFloat(lon),
+      timezone
+    },
     isp: { name: asnOrg, asn: asn ? `AS${asn}` : "Unknown" },
-    vpn: vpnDetection, ping_ms: pingMs, input_zip: zipCode
+    vpn: vpnDetection,
+    ping_ms: pingMs,
+    input_zip: zipCode,
+    // Verification: client ZIP vs Cloudflare-detected postal code
+    verification: {
+      zip_match: zipMatch,
+      zip_verified: zipVerified,
+      cf_postal: postalCode || null,
+      cf_colo: colo,
+      tls: tlsVersion,
+      http: httpProtocol
+    }
   }, 200, corsHeaders);
 }
 
@@ -146,11 +231,22 @@ async function handleContact(request, env, corsHeaders) {
   if (env.DB) {
     try { await env.DB.prepare("INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))").bind(name, email, message).run(); } catch (e) { console.error("DB error:", e); }
   }
-  if (env.CONTACT_EMAIL) {
+  if (env.RESEND_API_KEY) {
     try {
-      const emailBody = [`From: Info@sassyconsultingllc.com`,`To: Info@sassyconsultingllc.com`,`Reply-To: ${email}`,`Subject: Contact Form: ${name}`,`Content-Type: text/plain; charset=utf-8`,``,`New contact form submission:`,``,`Name: ${name}`,`Email: ${email}`,``,`Message:`,`${message}`,``,`---`,`Sent from sassyconsultingllc.com contact form`].join("\r\n");
-      const msg = new EmailMessage("Info@sassyconsultingllc.com", "Info@sassyconsultingllc.com", emailBody);
-      await env.CONTACT_EMAIL.send(msg);
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          from: "Sassy Consulting <contact@sassyconsultingllc.com>",
+          to: ["info@sassyconsultingllc.com"],
+          reply_to: email,
+          subject: `Contact Form: ${name}`,
+          text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`
+        })
+      });
     } catch (e) { console.error("Email error:", e); }
   }
   return new Response(null, { status: 302, headers: { "Location": "/contact-success.html" } });
@@ -194,6 +290,11 @@ async function handleVerify(request, env, corsHeaders) {
   if (env.DB) {
     try { await env.DB.prepare("INSERT INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))").bind(licenseKey, email, product, session_id).run(); } catch (e) {}
   }
+  // Notify: new license purchased
+  await sendNotification(env,
+    `New License: ${PRODUCTS[product]?.name || product}`,
+    `New license purchased!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nStripe Session: ${session_id}`
+  );
   return jsonResponse({ success: true, license_key: licenseKey, product, product_name: PRODUCTS[product]?.name || product, email }, 200, corsHeaders);
 }
 
@@ -208,6 +309,11 @@ async function handleWebhook(request, env, corsHeaders) {
     if (env.DB) {
       try { await env.DB.prepare("INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))").bind(licenseKey, email, product, session.id).run(); } catch (e) {}
     }
+    // Notify: Stripe webhook payment confirmed
+    await sendNotification(env,
+      `Payment Confirmed: ${PRODUCTS[product]?.name || product}`,
+      `Stripe payment completed (webhook)!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nStripe Session: ${session.id}\nAmount: $${(session.amount_total / 100).toFixed(2)}`
+    );
   }
   return jsonResponse({ received: true }, 200, corsHeaders);
 }
@@ -301,6 +407,11 @@ async function handleNdaSign(request, env, corsHeaders) {
     } catch(e) { console.error("NDA DB error:", e); return jsonResponse({ success: false, error: "Failed to record signature. Please try again." }, 500, corsHeaders); }
   }
   if (env.DB) { try { await env.DB.prepare("INSERT INTO nda_access_log (ip, action, success, metadata, created_at) VALUES (?, 'sign', 1, ?, datetime('now'))").bind(ip, agreementNo).run(); } catch(e) {} }
+  // Notify: NDA signed
+  await sendNotification(env,
+    `NDA Signed: ${agreementNo}`,
+    `New NDA signature!\n\nAgreement: ${agreementNo}\nName: ${body.name.trim()}\nEmail: ${body.email.trim()}\nTitle: ${body.title.trim()}\nOrg: ${(body.organization || "N/A").trim()}\nJurisdiction: ${body.jurisdiction.trim()}\nCountry: ${country}\nSigned: ${signedAt}`
+  );
   return jsonResponse({ success: true, agreement_no: agreementNo, signed_at: signedAt, doc_hash: docHash, token: downloadToken }, 200, corsHeaders);
 }
 
@@ -327,8 +438,66 @@ async function handleNdaDownload(request, env, corsHeaders) {
 }
 
 // ═══════════════════════════════════════════════════
+// PTT: WEBSOCKET UPGRADE → DURABLE OBJECT
+// ═══════════════════════════════════════════════════
+async function handlePttWebSocket(request, url, env) {
+  const roomId = url.searchParams.get("room");
+  if (!roomId || roomId.length < 8 || roomId.length > 64) {
+    return new Response("Missing or invalid room ID", { status: 400 });
+  }
+
+  // Derive a stable Durable Object ID from the room name (session_id)
+  const doId = env.PTT_ROOMS.idFromName(roomId);
+  const room = env.PTT_ROOMS.get(doId);
+
+  // Forward the WebSocket upgrade request to the Durable Object
+  return room.fetch(request);
+}
+
+async function handlePttRoomInfo(url, env, corsHeaders) {
+  const roomId = url.searchParams.get("room");
+  if (!roomId) return jsonResponse({ error: "room parameter required" }, 400, corsHeaders);
+
+  // We can't peek inside a DO without calling it, so return basic info
+  // The client already knows room size from the "welcome" WebSocket message
+  return jsonResponse({
+    room: roomId,
+    relay: "cloudflare-durable-objects",
+    max_clients: 8,
+    server_region: "auto"
+  }, 200, corsHeaders);
+}
+
+// ═══════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════
+
+/**
+ * Send an email notification for important DB events.
+ * Uses Cloudflare Email Workers (send_email binding).
+ * Non-blocking: failures are logged but never propagated.
+ */
+async function sendNotification(env, subject, bodyText) {
+  if (!env.RESEND_API_KEY) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        from: "Sassy Consulting <notifications@sassyconsultingllc.com>",
+        to: ["info@sassyconsultingllc.com"],
+        subject: subject,
+        text: bodyText + "\n\n---\nAutomated notification from sassyconsultingllc.com"
+      })
+    });
+  } catch (e) {
+    console.error("Notification email failed:", e);
+  }
+}
+
 function jsonResponse(data, status, corsHeaders) {
   return new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
 }
@@ -373,4 +542,211 @@ function getTimezone(country, region) {
   const timezones = { "US": { "CA": "America/Los_Angeles", "NY": "America/New_York", "TX": "America/Chicago", "WI": "America/Chicago", "default": "America/New_York" }, "default": "UTC" };
   const countryTz = timezones[country] || timezones["default"];
   return typeof countryTz === "object" ? (countryTz[region] || countryTz["default"]) : countryTz;
+}
+
+// ═══════════════════════════════════════════════════
+// PTT ROOM — Durable Object for real-time voice relay
+// ═══════════════════════════════════════════════════
+//
+// Architecture:
+//   Client connects via WebSocket to /api/ptt/ws?room=<SESSION_ID>
+//   The room ID maps to the QR-exchanged session_id, so only devices
+//   that share the same AES-256-GCM key end up in the same room.
+//
+//   The relay is a BLIND FORWARDER — it never decrypts audio.
+//   Each incoming binary WebSocket message is broadcast to every
+//   other connected client in the same room. The relay also handles
+//   lightweight JSON control messages (join/leave/heartbeat).
+//
+//   Max clients per room: 8 (walkie-talkie style, small group)
+//   Idle timeout: 5 minutes with no messages → room hibernates
+//   Heartbeat: clients send ping every 30s, server responds pong
+
+export class PttRoom extends DurableObject {
+  constructor(ctx, env) {
+    super(ctx, env);
+    // Map of WebSocket → client metadata
+    this.clients = new Map();
+    this.roomCreatedAt = Date.now();
+  }
+
+  async fetch(request) {
+    const url = new URL(request.url);
+
+    // Only accept WebSocket upgrades
+    if (request.headers.get("Upgrade") !== "websocket") {
+      return new Response("Expected WebSocket", { status: 426 });
+    }
+
+    // Extract client info from query params
+    const deviceName = url.searchParams.get("device") || "Unknown";
+    const clientId = url.searchParams.get("client_id") || crypto.randomUUID();
+
+    // Enforce max clients per room
+    if (this.clients.size >= 8) {
+      return new Response("Room full (max 8 clients)", { status: 503 });
+    }
+
+    // Create WebSocket pair
+    const pair = new WebSocketPair();
+    const [client, server] = Object.values(pair);
+
+    // Accept the server side
+    this.ctx.acceptWebSocket(server);
+
+    // Store client metadata, keyed by the server-side WebSocket
+    const meta = {
+      clientId,
+      deviceName,
+      joinedAt: Date.now(),
+      lastActivity: Date.now(),
+      messageCount: 0
+    };
+    this.clients.set(server, meta);
+
+    // Notify other clients about the new peer
+    this.broadcast(server, JSON.stringify({
+      type: "peer_joined",
+      client_id: clientId,
+      device: deviceName,
+      room_size: this.clients.size
+    }));
+
+    // Send the joiner a welcome with current room state
+    server.send(JSON.stringify({
+      type: "welcome",
+      client_id: clientId,
+      room_size: this.clients.size,
+      peers: Array.from(this.clients.values())
+        .filter(m => m.clientId !== clientId)
+        .map(m => ({ client_id: m.clientId, device: m.deviceName }))
+    }));
+
+    return new Response(null, { status: 101, webSocket: client });
+  }
+
+  // ── Hibernation-aware WebSocket handlers ──
+
+  async webSocketMessage(ws, message) {
+    const meta = this.clients.get(ws);
+    if (!meta) {
+      ws.close(4000, "Unknown client");
+      return;
+    }
+
+    meta.lastActivity = Date.now();
+    meta.messageCount++;
+
+    // Binary message = encrypted audio frame → broadcast to all others
+    if (message instanceof ArrayBuffer) {
+      this.broadcastBinary(ws, message);
+      return;
+    }
+
+    // Text message = JSON control message
+    try {
+      const msg = JSON.parse(message);
+
+      switch (msg.type) {
+        case "ping":
+          // Heartbeat — respond immediately
+          ws.send(JSON.stringify({ type: "pong", ts: Date.now() }));
+          break;
+
+        case "ptt_start":
+          // Client started transmitting — notify others
+          this.broadcast(ws, JSON.stringify({
+            type: "ptt_start",
+            client_id: meta.clientId,
+            device: meta.deviceName
+          }));
+          break;
+
+        case "ptt_stop":
+          // Client stopped transmitting
+          this.broadcast(ws, JSON.stringify({
+            type: "ptt_stop",
+            client_id: meta.clientId,
+            device: meta.deviceName
+          }));
+          break;
+
+        case "channel":
+          // Client switched channel — update metadata
+          meta.channel = msg.channel || 0;
+          this.broadcast(ws, JSON.stringify({
+            type: "channel",
+            client_id: meta.clientId,
+            channel: meta.channel
+          }));
+          break;
+
+        default:
+          // Unknown control message — ignore
+          break;
+      }
+    } catch (e) {
+      // Not valid JSON and not binary — ignore
+    }
+  }
+
+  async webSocketClose(ws, code, reason) {
+    this.removeClient(ws, code, reason);
+  }
+
+  async webSocketError(ws, error) {
+    this.removeClient(ws, 4001, "WebSocket error");
+  }
+
+  // ── Internal helpers ──
+
+  removeClient(ws, code, reason) {
+    const meta = this.clients.get(ws);
+    if (meta) {
+      // Notify remaining clients
+      this.broadcast(ws, JSON.stringify({
+        type: "peer_left",
+        client_id: meta.clientId,
+        device: meta.deviceName,
+        room_size: this.clients.size - 1,
+        reason: reason || "disconnected"
+      }));
+    }
+    this.clients.delete(ws);
+
+    // Try to close gracefully
+    try { ws.close(code || 1000, reason || "removed"); } catch (e) { /* already closed */ }
+  }
+
+  /**
+   * Broadcast a text message to all clients except the sender.
+   */
+  broadcast(sender, message) {
+    for (const [ws, _meta] of this.clients) {
+      if (ws === sender) continue;
+      try {
+        ws.send(message);
+      } catch (e) {
+        // Dead socket — remove it
+        this.clients.delete(ws);
+        try { ws.close(4002, "Send failed"); } catch (_) {}
+      }
+    }
+  }
+
+  /**
+   * Broadcast a binary message (encrypted audio frame) to all clients
+   * except the sender. This is the hot path — keep it lean.
+   */
+  broadcastBinary(sender, data) {
+    for (const [ws, _meta] of this.clients) {
+      if (ws === sender) continue;
+      try {
+        ws.send(data);
+      } catch (e) {
+        this.clients.delete(ws);
+        try { ws.close(4002, "Send failed"); } catch (_) {}
+      }
+    }
+  }
 }
