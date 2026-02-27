@@ -694,7 +694,7 @@
             <div class="nav-links">
                 <a href="#products">Products</a>
                 <a href="#tools">Tools</a>
-                <a href="#about">About</a>
+                <a href="/aboutme">About</a>
                 <a href="https://github.com/sassyconsultingllc" target="_blank">GitHub</a>
                 <a href="#products" class="btn btn-primary">Get Started</a>
             </div>
@@ -854,7 +854,7 @@
                         <p id="status-message" style="color: var(--text-secondary); margin: 0;"></p>
                     </div>
                 </div>
-                
+
                 <div class="results-grid">
                     <div class="result-card">
                         <div class="label">IP Address</div>
@@ -872,17 +872,40 @@
                         <div class="sub" id="asn">--</div>
                     </div>
                     <div class="result-card">
-                        <div class="label">Ping</div>
+                        <div class="label">Latency</div>
                         <div class="value" id="ping">--</div>
-                        <div class="sub">ms to bitdefender.com</div>
+                        <div class="sub">ms to Cloudflare edge</div>
                     </div>
                 </div>
-                
-                <div id="vpn-status" class="status-banner">
+
+                <div id="verify-banner" class="status-banner" style="margin-top: 1rem;">
+                    <span style="font-size: 1.5rem;" id="verify-icon"></span>
+                    <div>
+                        <strong id="verify-title">ZIP Verification</strong>
+                        <p id="verify-message" style="color: var(--text-secondary); margin: 0;"></p>
+                    </div>
+                </div>
+
+                <div id="vpn-status" class="status-banner" style="margin-top: 0.5rem;">
                     <span style="font-size: 1.5rem;" id="vpn-icon"></span>
                     <div>
                         <strong id="vpn-title">VPN Detection</strong>
                         <p id="vpn-message" style="color: var(--text-secondary); margin: 0;"></p>
+                    </div>
+                </div>
+
+                <div id="cf-details" style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
+                    <div class="result-card" style="padding: 0.75rem;">
+                        <div class="label" style="font-size: 0.7rem;">CF Edge</div>
+                        <div class="value" style="font-size: 0.9rem;" id="cf-colo">--</div>
+                    </div>
+                    <div class="result-card" style="padding: 0.75rem;">
+                        <div class="label" style="font-size: 0.7rem;">TLS</div>
+                        <div class="value" style="font-size: 0.9rem;" id="cf-tls">--</div>
+                    </div>
+                    <div class="result-card" style="padding: 0.75rem;">
+                        <div class="label" style="font-size: 0.7rem;">Protocol</div>
+                        <div class="value" style="font-size: 0.9rem;" id="cf-http">--</div>
                     </div>
                 </div>
             </div>
@@ -1009,78 +1032,111 @@
         document.getElementById('zip-input').addEventListener('keypress', (e) => {
             if (e.key === 'Enter') analyze();
         });
-        
+
         async function analyze() {
-            const zip = document.getElementById('zip-input').value;
-            if (!zip || zip.length !== 5) {
+            const zip = document.getElementById('zip-input').value.trim();
+            if (!zip || !/^\d{5}$/.test(zip)) {
                 alert('Please enter a valid 5-digit ZIP code');
                 return;
             }
-            
+
             document.getElementById('loading-state').style.display = 'block';
             document.getElementById('results-container').style.display = 'none';
-            
+
             try {
                 const response = await fetch('/api/analyze', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ zip_code: zip })
                 });
-                
+
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
-                
+
+                // ── Status Banner ──
                 const banner = document.getElementById('status-banner');
                 const statusIcon = document.getElementById('status-icon');
-                const statusTitle = document.getElementById('status-title');
-                
                 banner.className = 'status-banner';
+
                 if (data.connection_status === 'safe') {
                     banner.classList.add('safe');
-                    statusIcon.textContent = '[OK]';
-                    statusIcon.style.color = 'var(--accent-primary)';
+                    statusIcon.textContent = '\u2705';
                 } else if (data.connection_status === 'protected') {
                     banner.classList.add('protected');
-                    statusIcon.textContent = '[VPN]';
-                    statusIcon.style.color = 'var(--accent-blue)';
+                    statusIcon.textContent = '\uD83D\uDEE1\uFE0F';
                 } else {
                     banner.classList.add('warning');
-                    statusIcon.textContent = '[!]';
-                    statusIcon.style.color = 'var(--accent-orange)';
+                    statusIcon.textContent = '\u26A0\uFE0F';
                 }
-                
-                statusTitle.textContent = data.status_message;
-                
-                document.getElementById('ip-address').textContent = data.ip;
-                document.getElementById('location').textContent = data.location.city + ', ' + data.location.region;
-                document.getElementById('location-sub').textContent = data.location.country;
-                document.getElementById('isp').textContent = data.isp.name.substring(0, 20);
-                document.getElementById('asn').textContent = data.isp.asn;
-                document.getElementById('ping').textContent = data.ping_ms;
-                
-                const vpnIcon = document.getElementById('vpn-icon');
-                const vpnTitle = document.getElementById('vpn-title');
-                const vpnMessage = document.getElementById('vpn-message');
+                document.getElementById('status-title').textContent = data.status_message;
+
+                // ── Connection Details ──
+                document.getElementById('ip-address').textContent = data.ip || '--';
+                const loc = data.location || {};
+                document.getElementById('location').textContent =
+                    (loc.city && loc.city !== 'Unknown' ? loc.city + ', ' : '') + (loc.region || loc.country || '--');
+                document.getElementById('location-sub').textContent =
+                    loc.country + (loc.postal && loc.postal !== 'N/A' ? ' \u2022 CF postal: ' + loc.postal : '');
+                document.getElementById('isp').textContent = (data.isp?.name || '--').substring(0, 25);
+                document.getElementById('asn').textContent = data.isp?.asn || '--';
+                document.getElementById('ping').textContent = data.ping_ms || '--';
+
+                // ── ZIP Verification Banner ──
+                const v = data.verification || {};
+                const verifyBanner = document.getElementById('verify-banner');
+                const verifyIcon = document.getElementById('verify-icon');
+                const verifyTitle = document.getElementById('verify-title');
+                const verifyMsg = document.getElementById('verify-message');
+                verifyBanner.className = 'status-banner';
+
+                if (v.zip_match === 'exact') {
+                    verifyBanner.classList.add('safe');
+                    verifyIcon.textContent = '\u2705';
+                    verifyTitle.textContent = 'ZIP Verified \u2014 Exact Match';
+                    verifyMsg.textContent = `Your ZIP (${zip}) matches Cloudflare geolocation (${v.cf_postal}).`;
+                } else if (v.zip_match === 'region') {
+                    verifyBanner.classList.add('safe');
+                    verifyIcon.textContent = '\u2705';
+                    verifyTitle.textContent = 'ZIP Verified \u2014 Same Region';
+                    verifyMsg.textContent = `Your ZIP (${zip}) is in the same region as Cloudflare detected (${v.cf_postal}).`;
+                } else if (v.zip_match === 'mismatch') {
+                    verifyBanner.classList.add('warning');
+                    verifyIcon.textContent = '\u26A0\uFE0F';
+                    verifyTitle.textContent = 'ZIP Mismatch';
+                    verifyMsg.textContent = `Your ZIP (${zip}) doesn\u2019t match Cloudflare detected postal (${v.cf_postal}). Possible VPN or proxy.`;
+                } else {
+                    verifyBanner.classList.add('protected');
+                    verifyIcon.textContent = '\uD83D\uDD0D';
+                    verifyTitle.textContent = 'ZIP Unverifiable';
+                    verifyMsg.textContent = 'Cloudflare did not return a postal code for your IP \u2014 cannot verify ZIP.';
+                }
+
+                // ── VPN Detection Banner ──
                 const vpnStatus = document.getElementById('vpn-status');
-                
                 vpnStatus.className = 'status-banner';
-                if (data.vpn.isVPN) {
+                if (data.vpn?.isVPN) {
                     vpnStatus.classList.add('protected');
-                    vpnIcon.textContent = '[VPN]';
-                    vpnTitle.textContent = 'VPN Detected';
-                    vpnMessage.textContent = data.vpn.reason;
+                    document.getElementById('vpn-icon').textContent = '\uD83D\uDEE1\uFE0F';
+                    document.getElementById('vpn-title').textContent = 'VPN / Proxy Detected';
+                    document.getElementById('vpn-message').textContent = data.vpn.reason;
                 } else {
                     vpnStatus.classList.add('warning');
-                    vpnIcon.textContent = '[!]';
-                    vpnTitle.textContent = 'No VPN Detected';
-                    vpnMessage.textContent = 'Consider using a VPN for better privacy.';
+                    document.getElementById('vpn-icon').textContent = '\u26A0\uFE0F';
+                    document.getElementById('vpn-title').textContent = 'No VPN Detected';
+                    document.getElementById('vpn-message').textContent = 'Consider using a VPN for better privacy.';
                 }
-                
+
+                // ── Cloudflare Edge Details ──
+                document.getElementById('cf-colo').textContent = v.cf_colo || '--';
+                document.getElementById('cf-tls').textContent = v.tls || '--';
+                document.getElementById('cf-http').textContent = v.http || '--';
+
                 document.getElementById('loading-state').style.display = 'none';
                 document.getElementById('results-container').style.display = 'block';
-                
+
             } catch (err) {
                 document.getElementById('loading-state').style.display = 'none';
-                alert('Analysis failed. Please try again.');
+                alert('Analysis failed: ' + err.message);
             }
         }
     </script>

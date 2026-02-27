@@ -1,0 +1,89 @@
+# Common OS files
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+dist/
+build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.venv/
+venv/
+ENV/
+env/
+pip-wheel-metadata/
+*.egg-info/
+
+# Rust
+/target/
+**/target/
+Cargo.lock
+
+# Cargo incremental / build artifacts
+**/target/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# JetBrains
+.idea/
+*.iml
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Secrets and keys
+.env
+.env.*
+*.pem
+*.key
+*.crt
+credentials.json
+
+# Cloudflare / Wrangler
+/.wrangler/
+
+# Static site build outputs
+/public/build/
+/public/.cache/
+
+# Image and binary assets that shouldn't be committed (optional)
+# Uncomment to ignore large screenshots or developer artifacts
+# /public/browser-screenshot-*.png
+# /public/*.zip
+
+# GitHub Copilot history
+.copilot/
+
+# macOS files
+.AppleDouble
+.LSOverride
+
+# Thumbnails
+._*
+
+# Temporary files
+*.swp
+*~
+*.tmp
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+
+# Python test coverage
+.coverage
+htmlcov/
+
+# Misc
+.idea/
+.vagrant/
