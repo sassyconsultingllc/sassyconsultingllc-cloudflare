@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls \"V:\\\\Projects\\\\sassyconsultingllc-cloudflare\\\\docs\\\\plans\"\" 2>/dev/null || echo \"no plans dir \")",
+      "Bash(git pull)",
+      "Bash(git add public/aboutme.html docs/plans/2026-02-27-aboutme-page-design.md public/index.html)",
+      "Bash(git add -f public/aboutme.html docs/plans/2026-02-27-aboutme-page-design.md public/index.html)",
+      "Bash(git add -f .gitignore)",
+      "Bash(git commit:*)",
+      "Bash(git push)",
+      "WebFetch(domain:sassyconsultingllc.com)",
+      "Bash(npx wrangler deploy)",
+      "Bash(git add -f public/aboutme.html)",
+      "Bash(git add -f src/worker.js wrangler.toml)"
+    ]
+  }
+}

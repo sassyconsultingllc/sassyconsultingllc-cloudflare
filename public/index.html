@@ -756,7 +756,7 @@
         <p class="section-desc">Every product is $2 one-time purchase. No subscriptions. No hidden fees. Own it forever.</p>
         
         <div class="products-grid">
-            <a href="/sassy-talk.html" class="product-card">
+            <a href="/sassy-talk" class="product-card">
                 <span class="product-badge">Popular</span>
                 <div class="product-icon">ST</div>
                 <h3>Sassy-Talk</h3>
@@ -782,7 +782,7 @@
                 </div>
             </a>
             
-            <a href="/winforensics.html" class="product-card">
+            <a href="/winforensics" class="product-card">
                 <div class="product-icon" style="color: var(--accent-orange);">WF</div>
                 <h3>WinForensics</h3>
                 <p>Digital forensics toolkit. Registry analysis, file recovery, timeline generation, evidence preservation.</p>
@@ -794,7 +794,7 @@
                 </div>
             </a>
             
-            <a href="/website-creator.html" class="product-card">
+            <a href="/website-creator" class="product-card">
                 <div class="product-icon" style="color: var(--accent-blue);">WC</div>
                 <h3>Website Creator</h3>
                 <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in.</p>
@@ -806,7 +806,7 @@
                 </div>
             </a>
             
-            <a href="/browser-info.html" class="product-card" aria-labelledby="sassy-browser-title" role="article">
+            <a href="/browser-v2" class="product-card" aria-labelledby="sassy-browser-title" role="article">
                 <span class="product-badge featured">Featured</span>
                 <div class="product-icon">SB</div>
                 <h3 id="sassy-browser-title">Sassy Browser (v2 Tease)</h3>
@@ -1019,8 +1019,8 @@
                 <span style="font-size: 0.8rem;">Still serving. Different uniform.</span>
             </div>
             <div class="footer-links">
-                <a href="/browser.html">Browser</a>
-                <a href="/sassy-talk.html">Sassy-Talk</a>
+                <a href="/browser">Browser</a>
+                <a href="/sassy-talk">Sassy-Talk</a>
                 <a href="https://mybestsites.online">My Best Sites</a>
                 <a href="https://github.com/sassyconsultingllc">GitHub</a>
             </div>
@@ -1051,6 +1051,10 @@
                 });
 
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const ct = (response.headers.get('content-type') || '');
+                if (!ct.includes('application/json')) {
+                    throw new Error('Cloudflare challenge intercepted the request. Try refreshing the page.');
+                }
                 const data = await response.json();
 
                 // ── Status Banner ──

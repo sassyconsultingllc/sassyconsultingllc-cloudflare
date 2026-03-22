@@ -9,10 +9,15 @@
     "db:migrate": "wrangler d1 execute sassy-db --file=./migrations/0001_init.sql",
     "db:migrate:local": "wrangler d1 execute sassy-db --local --file=./migrations/0001_init.sql"
   },
-  "keywords": ["cloudflare", "workers", "d1", "r2"],
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "d1",
+    "r2"
+  ],
   "author": "Sassy Consulting LLC",
   "license": "UNLICENSED",
   "devDependencies": {
-    "wrangler": "^3.0.0"
+    "wrangler": "^4.72.0"
   }
 }

@@ -2,11 +2,16 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "sassyconsultingllc",
   "main": "src/worker.js",
-  "compatibility_date": "2024-01-01",
+  "compatibility_date": "2024-09-23",
   "account_id": "d5ccd0d80780f2d0ab72ab12b15244e2",
+
   "assets": {
-    "directory": "./public"
+    "directory": "./public",
+    "binding": "ASSETS",
+    "run_worker_first": true
   },
+
+  // D1 Database
   "d1_databases": [
     {
       "binding": "DB",
@@ -14,20 +19,47 @@
       "database_id": "4d917d6a-8d9a-40cd-86a2-c69989cdf454"
     }
   ],
+
+  // R2 Storage for downloads
   "r2_buckets": [
     {
       "binding": "DOWNLOADS",
       "bucket_name": "sassy-downloads"
+    },
+    {
+      "binding": "PRIVACY",
+      "bucket_name": "sassy-privacy"
     }
   ],
-  "vars": {
-    "SITE_URL": "https://sassyconsultingllc.com",
-    "MYBESTSITES_URL": "https://mybestsites.online"
+
+  // Durable Objects for real-time PTT relay
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "PTT_RELAY",
+        "class_name": "PttRoom"
+      }
+    ]
   },
+
+  "migrations": [
+    {
+      "tag": "v1_pttroom",
+      "new_sqlite_classes": ["PttRoom"]
+    }
+  ],
+
+  // Email routing for contact form
   "send_email": [
     {
       "name": "CONTACT_EMAIL",
       "destination_address": "info@sassyconsultingllc.com"
     }
-  ]
+  ],
+
+  // Environment variables (non-secret)
+  "vars": {
+    "SITE_URL": "https://sassyconsultingllc.com",
+    "MYBESTSITES_URL": "https://mybestsites.online"
+  }
 }
