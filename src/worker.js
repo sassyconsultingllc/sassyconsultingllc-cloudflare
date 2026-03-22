@@ -96,7 +96,7 @@ export default {
 
       // Static assets are served automatically by Cloudflare [assets] config
       // If we reach here, no API route matched and no static asset exists
-      return new Response("Not found", { status: 404 });
+      return env.ASSETS.fetch(request);
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
