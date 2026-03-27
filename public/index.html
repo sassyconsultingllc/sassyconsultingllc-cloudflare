@@ -137,6 +137,12 @@
             transform: translateY(-1px);
         }
 
+        .btn-primary:disabled {
+            background: var(--text-tertiary);
+            cursor: not-allowed;
+            transform: none;
+        }
+
         .btn-secondary {
             background: transparent;
             color: var(--text-primary);
@@ -1033,31 +1039,45 @@
             if (e.key === 'Enter') analyze();
         });
 
+        async function fetchAnalyze(zip, attempt) {
+            const response = await fetch('/api/analyze', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ zip_code: zip })
+            });
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            const ct = (response.headers.get('content-type') || '');
+            if (!ct.includes('application/json')) {
+                if (attempt < 2) {
+                    await new Promise(r => setTimeout(r, 1500));
+                    return fetchAnalyze(zip, attempt + 1);
+                }
+                throw new Error('Request was intercepted by Cloudflare security. Please refresh the page and try again.');
+            }
+            return response.json();
+        }
+
         async function analyze() {
             const zip = document.getElementById('zip-input').value.trim();
+            const btn = document.getElementById('analyze-btn');
+            const errEl = document.getElementById('analyze-error');
+            if (errEl) errEl.style.display = 'none';
+
             if (!zip || !/^\d{5}$/.test(zip)) {
-                alert('Please enter a valid 5-digit ZIP code');
+                showError('Please enter a valid 5-digit ZIP code.');
                 return;
             }
 
+            btn.disabled = true;
+            btn.textContent = 'Analyzing...';
             document.getElementById('loading-state').style.display = 'block';
             document.getElementById('results-container').style.display = 'none';
 
             try {
-                const response = await fetch('/api/analyze', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ zip_code: zip })
-                });
+                const data = await fetchAnalyze(zip, 0);
 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const ct = (response.headers.get('content-type') || '');
-                if (!ct.includes('application/json')) {
-                    throw new Error('Cloudflare challenge intercepted the request. Try refreshing the page.');
-                }
-                const data = await response.json();
-
-                // ── Status Banner ──
+                // -- Status Banner --
                 const banner = document.getElementById('status-banner');
                 const statusIcon = document.getElementById('status-icon');
                 banner.className = 'status-banner';
@@ -1074,7 +1094,7 @@
                 }
                 document.getElementById('status-title').textContent = data.status_message;
 
-                // ── Connection Details ──
+                // -- Connection Details --
                 document.getElementById('ip-address').textContent = data.ip || '--';
                 const loc = data.location || {};
                 document.getElementById('location').textContent =
@@ -1085,7 +1105,7 @@
                 document.getElementById('asn').textContent = data.isp?.asn || '--';
                 document.getElementById('ping').textContent = data.ping_ms || '--';
 
-                // ── ZIP Verification Banner ──
+                // -- ZIP Verification Banner --
                 const v = data.verification || {};
                 const verifyBanner = document.getElementById('verify-banner');
                 const verifyIcon = document.getElementById('verify-icon');
@@ -1097,17 +1117,17 @@
                     verifyBanner.classList.add('safe');
                     verifyIcon.textContent = '\u2705';
                     verifyTitle.textContent = 'ZIP Verified \u2014 Exact Match';
-                    verifyMsg.textContent = `Your ZIP (${zip}) matches Cloudflare geolocation (${v.cf_postal}).`;
+                    verifyMsg.textContent = 'Your ZIP (' + zip + ') matches Cloudflare geolocation (' + v.cf_postal + ').';
                 } else if (v.zip_match === 'region') {
                     verifyBanner.classList.add('safe');
                     verifyIcon.textContent = '\u2705';
                     verifyTitle.textContent = 'ZIP Verified \u2014 Same Region';
-                    verifyMsg.textContent = `Your ZIP (${zip}) is in the same region as Cloudflare detected (${v.cf_postal}).`;
+                    verifyMsg.textContent = 'Your ZIP (' + zip + ') is in the same region as Cloudflare detected (' + v.cf_postal + ').';
                 } else if (v.zip_match === 'mismatch') {
                     verifyBanner.classList.add('warning');
                     verifyIcon.textContent = '\u26A0\uFE0F';
                     verifyTitle.textContent = 'ZIP Mismatch';
-                    verifyMsg.textContent = `Your ZIP (${zip}) doesn\u2019t match Cloudflare detected postal (${v.cf_postal}). Possible VPN or proxy.`;
+                    verifyMsg.textContent = 'Your ZIP (' + zip + ') doesn\u2019t match Cloudflare detected postal (' + v.cf_postal + '). Possible VPN or proxy.';
                 } else {
                     verifyBanner.classList.add('protected');
                     verifyIcon.textContent = '\uD83D\uDD0D';
@@ -1115,7 +1135,7 @@
                     verifyMsg.textContent = 'Cloudflare did not return a postal code for your IP \u2014 cannot verify ZIP.';
                 }
 
-                // ── VPN Detection Banner ──
+                // -- VPN Detection Banner --
                 const vpnStatus = document.getElementById('vpn-status');
                 vpnStatus.className = 'status-banner';
                 if (data.vpn?.isVPN) {
@@ -1130,7 +1150,7 @@
                     document.getElementById('vpn-message').textContent = 'Consider using a VPN for better privacy.';
                 }
 
-                // ── Cloudflare Edge Details ──
+                // -- Cloudflare Edge Details --
                 document.getElementById('cf-colo').textContent = v.cf_colo || '--';
                 document.getElementById('cf-tls').textContent = v.tls || '--';
                 document.getElementById('cf-http').textContent = v.http || '--';
@@ -1140,8 +1160,23 @@
 
             } catch (err) {
                 document.getElementById('loading-state').style.display = 'none';
-                alert('Analysis failed: ' + err.message);
+                showError(err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Analyze';
             }
+        }
+
+        function showError(msg) {
+            let errEl = document.getElementById('analyze-error');
+            if (!errEl) {
+                errEl = document.createElement('div');
+                errEl.id = 'analyze-error';
+                errEl.style.cssText = 'max-width:500px;margin:1rem auto;padding:1rem 1.5rem;background:rgba(239,68,68,0.1);border:1px solid var(--accent-red);border-radius:8px;color:var(--accent-red);font-size:0.9rem;text-align:center;';
+                document.querySelector('.search-form').after(errEl);
+            }
+            errEl.textContent = msg;
+            errEl.style.display = 'block';
         }
     </script>
 </body>
