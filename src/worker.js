@@ -55,6 +55,9 @@ export default {
       if (path === "/api/contact" && method === "POST") {
         return await handleContact(request, env, corsHeaders);
       }
+      if (path === "/api/app-tester" && method === "POST") {
+        return await handleAppTester(request, env, corsHeaders);
+      }
       if (path === "/api/checkout" && method === "POST") {
         return await handleCheckout(request, env, corsHeaders);
       }
@@ -245,6 +248,54 @@ async function handleContact(request, env, corsHeaders) {
           reply_to: email,
           subject: `Contact Form: ${name}`,
           text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`
+        })
+      });
+    } catch (e) { console.error("Email error:", e); }
+  }
+  return new Response(null, { status: 302, headers: { "Location": "/contact-success.html" } });
+}
+
+async function handleAppTester(request, env, corsHeaders) {
+  const contentType = request.headers.get("content-type") || "";
+  let name, email, device, experience, notes, apps;
+  if (contentType.includes("application/x-www-form-urlencoded")) {
+    const formData = await request.formData();
+    name = formData.get("name");
+    email = formData.get("email");
+    device = formData.get("device");
+    experience = formData.get("experience") || "";
+    notes = formData.get("notes") || "";
+    apps = formData.getAll("apps");
+  } else {
+    const body = await request.json();
+    name = body.name; email = body.email; device = body.device;
+    experience = body.experience || ""; notes = body.notes || "";
+    apps = Array.isArray(body.apps) ? body.apps : (body.apps ? [body.apps] : []);
+  }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!name || name.length < 2 || name.length > 100) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=name" } });
+  if (!email || !emailRegex.test(email)) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=email" } });
+  if (!device) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=device" } });
+  if (!apps || apps.length === 0) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=apps" } });
+  const appsStr = apps.join(", ");
+  if (env.DB) {
+    try {
+      await env.DB.prepare(
+        "INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))"
+      ).bind(name, email, `[APP TESTER] Apps: ${appsStr} | Device: ${device} | Experience: ${experience} | Notes: ${notes}`).run();
+    } catch (e) { console.error("DB error:", e); }
+  }
+  if (env.RESEND_API_KEY) {
+    try {
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+        body: JSON.stringify({
+          from: "Sassy Consulting <contact@sassyconsultingllc.com>",
+          to: ["info@sassyconsultingllc.com"],
+          reply_to: email,
+          subject: `App Tester Signup: ${name}`,
+          text: `New app tester signup:\n\nName: ${name}\nEmail: ${email}\nDevice: ${device}\nApps: ${appsStr}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
         })
       });
     } catch (e) { console.error("Email error:", e); }
