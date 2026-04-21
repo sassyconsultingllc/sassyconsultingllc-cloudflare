@@ -182,14 +182,13 @@ a:hover{text-decoration:underline}
   <a href="/" class="nav-brand">Sassy <span>Consulting</span></a>
   <div class="nav-links">
     <a href="/">Home</a>
-    <a href="/browser-v2">Browser</a>
+    <a href="/browser">Browser</a>
     <a href="/contact">Contact</a>
   </div>
 </nav>
 
 <!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">Confidential Access</div>
   <h1>Sassy Browser — <span>NDA &amp; Download</span></h1>
   <p>Review and electronically sign the Mutual Non-Disclosure Agreement to access the latest Sassy Browser build.</p>
 </div>
@@ -197,46 +196,22 @@ a:hover{text-decoration:underline}
 <!-- STEPS -->
 <div class="container">
   <div class="steps">
-    <div class="step active" data-step="1">
+    <div class="step active" data-step="2">
       <div class="step-num">1</div>
-      <div class="step-label">Enter Code</div>
-    </div>
-    <div class="step" data-step="2">
-      <div class="step-num">2</div>
       <div class="step-label">Review NDA</div>
     </div>
     <div class="step" data-step="3">
-      <div class="step-num">3</div>
+      <div class="step-num">2</div>
       <div class="step-label">Sign</div>
     </div>
     <div class="step" data-step="4">
-      <div class="step-num">4</div>
-      <div class="step-label">Download</div>
+      <div class="step-num">3</div>
+      <div class="step-label">Get Access</div>
     </div>
   </div>
 
-  <!-- STEP 1: PASSWORD GATE -->
-  <section class="section visible" id="sec-gate">
-    <div class="gate">
-      <svg class="gate-icon" viewBox="0 0 24 24"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zM12 17c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
-      <h2>Access Code Required</h2>
-      <p>Enter the access code provided by Sassy Consulting LLC to view the Non-Disclosure Agreement.</p>
-      <div class="gate-form">
-        <div class="gate-input-wrap">
-          <svg viewBox="0 0 24 24"><path d="M12.65 10A5.99 5.99 0 007 6c-3.31 0-6 2.69-6 6s2.69 6 6 6a5.99 5.99 0 005.65-4H17v4h4v-4h2v-4H12.65zM7 14c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-          <input type="password" id="gateCode" placeholder="Enter access code" autocomplete="off" spellcheck="false">
-        </div>
-        <button class="btn btn-primary btn-block" id="gateBtn" onclick="verifyGate()">
-          <span class="btn-text">Unlock Document</span>
-          <div class="btn-spinner"></div>
-        </button>
-        <div class="gate-error" id="gateError">Invalid access code. Please try again.</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- STEP 2: DOCUMENT VIEWER -->
-  <section class="section" id="sec-review">
+  <!-- STEP 1: DOCUMENT VIEWER -->
+  <section class="section visible" id="sec-review">
     <div class="doc-viewer">
       <div class="doc-toolbar">
         <div class="doc-toolbar-left">
@@ -357,25 +332,12 @@ a:hover{text-decoration:underline}
     <div class="download-card">
       <svg class="check-icon" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
       <h2>NDA Executed Successfully</h2>
-      <p>Your signed Agreement has been recorded. An executed copy will be sent to <strong id="dlEmail"></strong>. Choose your platform to download Sassy Browser.</p>
+      <p>Your signed Agreement has been recorded. An executed copy will be sent to <strong id="dlEmail"></strong>. Call to get source code.</p>
 
-      <div class="platform-chooser">
-        <div class="platform-btn" onclick="selectPlatform('windows')" data-platform="windows">
-          <svg viewBox="0 0 24 24"><path d="M3 12V6.75l8-1.25V12H3zm0 .5h8v6.5L3 17.75V12.5zM11.5 5.34l9.5-1.34v8h-9.5V5.34zM11.5 12.5h9.5v8l-9.5-1.34V12.5z"/></svg>
-          <span class="p-name">Windows</span>
-          <span class="p-file">sassybrowser.exe</span>
-        </div>
-        <div class="platform-btn" onclick="selectPlatform('macos')" data-platform="macos">
-          <svg viewBox="0 0 24 24"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-          <span class="p-name">macOS</span>
-          <span class="p-file">sassybrowser.dmg</span>
-        </div>
-      </div>
-
-      <button class="btn btn-primary btn-lg" id="downloadBtn" disabled onclick="startDownload()">
-        <span class="btn-text">Download Sassy Browser</span>
-        <div class="btn-spinner"></div>
-      </button>
+      <a href="tel:+12623706421" class="btn btn-primary btn-lg" style="display:inline-flex;align-items:center;gap:.75rem;margin-top:1.5rem;text-decoration:none;font-size:1.1rem">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+        Call (262) 370-6421
+      </a>
 
       <div class="download-meta">
         <p>Agreement No: <code id="dlAgreementNo">—</code> &nbsp;|&nbsp; Signed: <code id="dlTimestamp">—</code></p>
@@ -418,47 +380,13 @@ function goToStep(n) {
     if (sn === n) s.classList.add('active');
   });
   document.querySelectorAll('.section').forEach(s => s.classList.remove('visible'));
-  const secs = ['sec-gate','sec-review','sec-sign','sec-download'];
-  document.getElementById(secs[n-1]).classList.add('visible');
+  const secs = ['sec-review','sec-sign','sec-download'];
+  document.getElementById(secs[n-2]).classList.add('visible');
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// ═══════════════════════════════════════════
-// STEP 1: PASSWORD GATE
-// ═══════════════════════════════════════════
-document.getElementById('gateCode').addEventListener('keydown', e => {
-  if (e.key === 'Enter') verifyGate();
-});
-
-async function verifyGate() {
-  const code = document.getElementById('gateCode').value.trim();
-  if (!code) return;
-  const btn = document.getElementById('gateBtn');
-  btn.classList.add('loading');
-  btn.disabled = true;
-  document.getElementById('gateError').style.display = 'none';
-
-  try {
-    const res = await fetch('/api/nda/verify-code', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({code})
-    });
-    const data = await res.json();
-    if (data.valid) {
-      goToStep(2);
-      initDocScroll();
-    } else {
-      document.getElementById('gateError').style.display = 'block';
-      document.getElementById('gateError').textContent = data.error || 'Invalid access code.';
-    }
-  } catch(e) {
-    document.getElementById('gateError').style.display = 'block';
-    document.getElementById('gateError').textContent = 'Connection error. Please try again.';
-  }
-  btn.classList.remove('loading');
-  btn.disabled = false;
-}
+// Auto-init document scroll watcher on load
+initDocScroll();
 
 // ═══════════════════════════════════════════
 // STEP 2: DOCUMENT SCROLL TRACKING

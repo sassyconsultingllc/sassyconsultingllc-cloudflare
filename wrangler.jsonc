@@ -27,6 +27,10 @@
       "bucket_name": "sassy-downloads"
     },
     {
+      "binding": "GATED",
+      "bucket_name": "sassy-gated"
+    },
+    {
       "binding": "PRIVACY",
       "bucket_name": "sassy-privacy"
     }

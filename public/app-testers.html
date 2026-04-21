@@ -8,7 +8,7 @@
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -27,11 +27,12 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.65;
             min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
         }
         nav {
             position: fixed;
@@ -91,7 +92,7 @@
         .btn-primary:hover { background: var(--accent-secondary); }
 
         main {
-            max-width: 640px;
+            max-width: 760px;
             margin: 0 auto;
             padding: 8rem 2rem 4rem;
         }
@@ -142,6 +143,63 @@
             border: 1px solid var(--border-subtle);
             border-radius: 16px;
             padding: 2rem;
+        }
+        .tab-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+        .tab-btn {
+            border: 1px solid transparent;
+            border-radius: 8px;
+            padding: 0.7rem 0.9rem;
+            background: transparent;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover {
+            color: var(--text-primary);
+            border-color: var(--border-medium);
+        }
+        .tab-btn.active {
+            color: var(--text-primary);
+            background: var(--accent-glow);
+            border-color: rgba(34, 197, 94, 0.35);
+        }
+        .tab-panel {
+            display: none;
+            animation: panel-fade 0.2s ease;
+        }
+        .tab-panel.active {
+            display: block;
+        }
+        @keyframes panel-fade {
+            from {
+                opacity: 0;
+                transform: translateY(4px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .form-intro {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+        }
+        .rating-help {
+            margin-top: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
         }
         .field {
             margin-bottom: 1.5rem;
@@ -213,10 +271,30 @@
             cursor: pointer;
         }
         .checkbox-item input[type="checkbox"] {
-            width: 18px; height: 18px;
+            width: 20px; height: 20px;
             accent-color: var(--accent-primary);
             flex-shrink: 0;
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border-medium);
+            border-radius: 4px;
+            position: relative;
+            transition: all 0.15s;
+        }
+        .checkbox-item input[type="checkbox"]:checked {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+        }
+        .checkbox-item input[type="checkbox"]:checked::after {
+            content: '✓';
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            color: #000;
+            font-size: 14px;
+            font-weight: 700;
         }
         .checkbox-item span {
             font-size: 0.95rem;
@@ -308,6 +386,9 @@
             h1 { font-size: 1.9rem; }
             .perks { grid-template-columns: 1fr; }
             .nav-links { display: none; }
+            .tab-switcher {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -315,14 +396,12 @@
     <nav>
         <div class="container">
             <a href="/" class="logo">
-                <span class="logo-icon">SC</span>
-                Sassy Consulting
+                                Sassy Consulting
             </a>
             <div class="nav-links">
                 <a href="/#products">Products</a>
                 <a href="/#tools">Tools</a>
                 <a href="/aboutme">About</a>
-                <a href="https://github.com/sassyconsultingllc" target="_blank">GitHub</a>
                 <a href="/app-testers" class="btn-primary">Beta Testers</a>
             </div>
         </div>
@@ -334,28 +413,37 @@
             Beta Program
         </div>
 
-        <h1>Become an<br><span class="gradient">App Tester</span></h1>
-        <p class="subtitle">Get early access to our apps before public release. Your feedback directly shapes what we build.</p>
+        <h1><span class="gradient">App Tester</span> Hub</h1>
+        <p class="subtitle">Use the tab that matches your status: join the tester program or send feedback as an active tester.</p>
 
         <div class="form-card">
             <div id="error-banner" class="error-banner"></div>
 
-            <form action="/api/app-tester" method="POST" id="tester-form">
+            <div class="tab-switcher" role="tablist" aria-label="App tester form tabs">
+                <button type="button" id="tab-btn-become" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-become" data-tab-target="become-tester">Become an App Tester</button>
+                <button type="button" id="tab-btn-already" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-already" data-tab-target="already-testing">Already testing</button>
+            </div>
+
+            <form action="/api/app-tester" method="POST" id="panel-become" class="tab-panel active" data-tab-panel="become-tester" data-app-tester-form>
+                <input type="hidden" name="submission_type" value="become-tester">
+
+                <p class="form-intro">Tell us what you want to test and we will reach out with access details.</p>
+
                 <p class="section-heading">Your Info</p>
 
                 <div class="field">
-                    <label for="name">Name <span class="required">*</span></label>
-                    <input type="text" id="name" name="name" required minlength="2" maxlength="100" placeholder="Your name" autocomplete="name">
+                    <label for="become-name">Name <span class="required">*</span></label>
+                    <input type="text" id="become-name" name="name" required minlength="2" maxlength="100" placeholder="Your name" autocomplete="name">
                 </div>
 
                 <div class="field">
-                    <label for="email">Email <span class="required">*</span></label>
-                    <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email">
+                    <label for="become-email">Email <span class="required">*</span></label>
+                    <input type="email" id="become-email" name="email" required placeholder="you@example.com" autocomplete="email">
                 </div>
 
                 <div class="field">
-                    <label for="device">Primary Device <span class="required">*</span></label>
-                    <select id="device" name="device" required>
+                    <label for="become-device">Primary Device <span class="required">*</span></label>
+                    <select id="become-device" name="device" required>
                         <option value="" disabled selected>Select your device</option>
                         <option value="android">Android Phone/Tablet</option>
                         <option value="iphone">iPhone / iPad</option>
@@ -370,6 +458,10 @@
                 <div class="field">
                     <div class="checkbox-group">
                         <label class="checkbox-item">
+                            <input type="checkbox" name="apps" value="sassytalk">
+                            <span>SassyTalk <span class="app-badge">Android</span></span>
+                        </label>
+                        <label class="checkbox-item">
                             <input type="checkbox" name="apps" value="foodie-finder">
                             <span>Foodie Finder <span class="app-badge">Android · iOS</span></span>
                         </label>
@@ -380,8 +472,8 @@
                 <p class="section-heading">Tell Us More</p>
 
                 <div class="field">
-                    <label for="experience">Testing Experience</label>
-                    <select id="experience" name="experience">
+                    <label for="become-experience">Testing Experience</label>
+                    <select id="become-experience" name="experience">
                         <option value="" disabled selected>How familiar are you with beta testing?</option>
                         <option value="first-time">First time — never done it before</option>
                         <option value="casual">Casual — tested a few apps</option>
@@ -391,38 +483,103 @@
                 </div>
 
                 <div class="field">
-                    <label for="notes">Anything else? <span style="color: var(--text-secondary);">(optional)</span></label>
-                    <textarea id="notes" name="notes" maxlength="500" placeholder="Specific features you want to test, your use case, questions..."></textarea>
+                    <label for="become-notes">Anything else? <span style="color: var(--text-secondary);">(optional)</span></label>
+                    <textarea id="become-notes" name="notes" maxlength="500" placeholder="Specific features you want to test, your use case, questions..."></textarea>
                 </div>
 
                 <button type="submit" class="submit-btn">Apply to Test →</button>
+            </form>
+
+            <form action="/api/app-tester" method="POST" id="panel-already" class="tab-panel" data-tab-panel="already-testing" data-app-tester-form>
+                <input type="hidden" name="submission_type" value="already-testing">
+
+                <p class="form-intro">Already using one of the apps? Send your quick quality score and feedback here.</p>
+
+                <p class="section-heading">Your Info</p>
+
+                <div class="field">
+                    <label for="already-name">Name <span class="required">*</span></label>
+                    <input type="text" id="already-name" name="name" required minlength="2" maxlength="100" placeholder="Your name" autocomplete="name">
+                </div>
+
+                <div class="field">
+                    <label for="already-email">Email <span class="required">*</span></label>
+                    <input type="email" id="already-email" name="email" required placeholder="you@example.com" autocomplete="email">
+                </div>
+
+                <div class="field">
+                    <label for="already-device">Primary Device <span class="required">*</span></label>
+                    <select id="already-device" name="device" required>
+                        <option value="" disabled selected>Select your device</option>
+                        <option value="android">Android Phone/Tablet</option>
+                        <option value="iphone">iPhone / iPad</option>
+                        <option value="both">Both Android & iOS</option>
+                        <option value="windows">Windows PC</option>
+                    </select>
+                </div>
+
+                <hr class="section-divider">
+                <p class="section-heading">Current Testing</p>
+
+                <div class="field">
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="apps" value="sassytalk">
+                            <span>SassyTalk <span class="app-badge">Android</span></span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="apps" value="foodie-finder">
+                            <span>Foodie Finder <span class="app-badge">Android · iOS</span></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="already-rating">How was the app? <span class="required">*</span></label>
+                    <select id="already-rating" name="app_rating" required>
+                        <option value="" disabled selected>Select 1–5</option>
+                        <option value="1">1 — terrible</option>
+                        <option value="2">2 — moderately okay</option>
+                        <option value="3">3 — half alright</option>
+                        <option value="4">4 — I might replace my current workflow with this app</option>
+                        <option value="5">5 — Holy fuck I&apos;m going to use this app regularly</option>
+                    </select>
+                    <p class="rating-help">This rating is your general overall score right now.</p>
+                </div>
+
+                <div class="field">
+                    <label for="already-notes">Anything else? <span style="color: var(--text-secondary);">(optional)</span></label>
+                    <textarea id="already-notes" name="notes" maxlength="500" placeholder="What worked best, what felt rough, and what would make you switch workflows?"></textarea>
+                </div>
+
+                <button type="submit" class="submit-btn">Send Feedback →</button>
             </form>
         </div>
 
         <div class="perks">
             <div class="perk">
-                <div class="perk-icon">🚀</div>
+                
                 <div class="perk-text">
                     <strong>Early Access</strong>
                     <span>Use features before anyone else</span>
                 </div>
             </div>
             <div class="perk">
-                <div class="perk-icon">🎯</div>
+                
                 <div class="perk-text">
                     <strong>Direct Input</strong>
                     <span>Your feedback shapes the product</span>
                 </div>
             </div>
             <div class="perk">
-                <div class="perk-icon">🔒</div>
+                
                 <div class="perk-text">
                     <strong>No Spam</strong>
                     <span>Email used for updates only</span>
                 </div>
             </div>
             <div class="perk">
-                <div class="perk-icon">⚡</div>
+                
                 <div class="perk-text">
                     <strong>Fast Response</strong>
                     <span>We'll reach out within a few days</span>
@@ -434,28 +591,71 @@
     </main>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        if (params.get('error')) {
-            const banner = document.getElementById('error-banner');
-            const msgs = {
-                name: 'Please enter your name (2–100 characters).',
-                email: 'Please enter a valid email address.',
-                apps: 'Please select at least one app to test.',
-                device: 'Please select your primary device.',
-            };
-            banner.textContent = msgs[params.get('error')] || 'Something went wrong. Please try again.';
-            banner.style.display = 'block';
+        const errorBanner = document.getElementById('error-banner');
+        const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
+        const tabPanels = Array.from(document.querySelectorAll('[data-tab-panel]'));
+
+        function setActiveTab(tabName) {
+            tabButtons.forEach((button) => {
+                const isActive = button.dataset.tabTarget === tabName;
+                button.classList.toggle('active', isActive);
+                button.setAttribute('aria-selected', isActive ? 'true' : 'false');
+            });
+
+            tabPanels.forEach((panel) => {
+                const isActive = panel.dataset.tabPanel === tabName;
+                panel.classList.toggle('active', isActive);
+            });
         }
 
-        document.getElementById('tester-form').addEventListener('submit', function(e) {
-            const checked = document.querySelectorAll('input[name="apps"]:checked');
-            if (checked.length === 0) {
-                e.preventDefault();
-                const banner = document.getElementById('error-banner');
-                banner.textContent = 'Please select at least one app to test.';
-                banner.style.display = 'block';
-                banner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            }
+        function showError(message) {
+            errorBanner.textContent = message;
+            errorBanner.style.display = 'block';
+            errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        tabButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                setActiveTab(button.dataset.tabTarget);
+                errorBanner.style.display = 'none';
+            });
+        });
+
+        const params = new URLSearchParams(window.location.search);
+        const selectedForm = params.get('form') === 'already-testing' ? 'already-testing' : 'become-tester';
+        setActiveTab(selectedForm);
+
+        const messages = {
+            name: 'Please enter your name (2–100 characters).',
+            email: 'Please enter a valid email address.',
+            apps: 'Please select at least one app to test.',
+            device: 'Please select your primary device.',
+            rating: 'Please rate the app from 1 to 5.',
+        };
+        const error = params.get('error');
+        if (error) {
+            showError(messages[error] || 'Something went wrong. Please try again.');
+        }
+
+        document.querySelectorAll('[data-app-tester-form]').forEach((form) => {
+            form.addEventListener('submit', (event) => {
+                const checkedApps = form.querySelectorAll('input[name="apps"]:checked');
+                if (checkedApps.length === 0) {
+                    event.preventDefault();
+                    showError('Please select at least one app to test.');
+                    setActiveTab(form.dataset.tabPanel);
+                    return;
+                }
+
+                if (form.dataset.tabPanel === 'already-testing') {
+                    const ratingSelect = form.querySelector('select[name="app_rating"]');
+                    if (!ratingSelect.value) {
+                        event.preventDefault();
+                        showError('Please rate the app from 1 to 5.');
+                        setActiveTab('already-testing');
+                    }
+                }
+            });
         });
     </script>
 </body>

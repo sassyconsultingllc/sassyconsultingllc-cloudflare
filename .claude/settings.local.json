@@ -11,7 +11,15 @@
       "WebFetch(domain:sassyconsultingllc.com)",
       "Bash(npx wrangler deploy)",
       "Bash(git add -f public/aboutme.html)",
-      "Bash(git add -f src/worker.js wrangler.toml)"
+      "Bash(git add -f src/worker.js wrangler.toml)",
+      "Bash(ls -1 \"V:\\\\Projects\\\\SassyMCP/sassymcp/modules/\"*.py)",
+      "Bash(ls /v/Projects/SassyMCP/sassymcp/modules/*.py)",
+      "Bash(cat:*)",
+      "Bash(ls \"V:\\\\Projects\\\\sassyconsultingllc-cloudflare\\\\public\"/browser*.html)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://github.com/sassyconsultingllc)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://github.com/sassyconsultingllc/oneSASSYBROWSER)",
+      "Bash(npx wrangler:*)",
+      "mcp__7d180cb0-ccb3-49ea-bd2e-fb25aae40cfd__create_product"
     ]
   }
 }

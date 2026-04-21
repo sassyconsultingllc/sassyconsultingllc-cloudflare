@@ -6,7 +6,7 @@
     <title>Purchase Complete | Sassy Consulting LLC</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -20,9 +20,11 @@
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'DM Sans', sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
+            line-height: 1.65;
+            -webkit-font-smoothing: antialiased;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -91,6 +93,13 @@
         
         <p style="font-size: 0.9rem;">A copy has also been sent to your email.</p>
         
+        <div id="download-links" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px;">
+            <div class="license-label" style="margin-bottom: 1rem;">Download Your Software</div>
+            <a id="apk-download" href="#" class="btn btn-primary" style="margin-bottom: 0.5rem; display: inline-block;">Download Android APK</a>
+            <br>
+            <a id="msi-download" href="#" class="btn btn-secondary" style="margin-top: 0.5rem; display: inline-block;">Download Windows MSI</a>
+        </div>
+
         <div style="margin-top: 2rem;">
             <a href="/" class="btn btn-secondary">Back to Home</a>
         </div>
@@ -110,6 +119,13 @@
             .then(data => {
                 if (data.license_key) {
                     document.getElementById('license-key').textContent = data.license_key;
+                    // Show download links with license key embedded
+                    if (data.product === 'sassy-talk') {
+                        const key = encodeURIComponent(data.license_key);
+                        document.getElementById('apk-download').href = '/download/sassytalk/android/SassyTalk-latest.apk?key=' + key;
+                        document.getElementById('msi-download').href = '/download/sassytalk/windows/SassyTalk-1.0.0-x64.msi?key=' + key;
+                        document.getElementById('download-links').style.display = 'block';
+                    }
                 }
             });
         }

@@ -309,8 +309,8 @@
             <li class="flex items-center gap-2 text-gray-500"><span>✗</span> "Powered by" badge shown</li>
             <li class="flex items-center gap-2 text-gray-500"><span>✗</span> No AI content</li>
           </ul>
-          <a href="/download/mybestsites-free" class="block text-center py-3 px-6 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition-colors">
-            Download Free
+          <a href="https://mybestsites.online" target="_blank" rel="noopener" class="block text-center py-3 px-6 bg-gray-700 hover:bg-gray-600 rounded-xl font-semibold transition-colors">
+            Launch Free Builder
           </a>
         </div>
         
@@ -335,9 +335,9 @@
             <li class="flex items-center gap-2"><span class="text-white">✓</span> Future template updates</li>
             <li class="flex items-center gap-2"><span class="text-white">✓</span> Commercial license</li>
           </ul>
-          <button onclick="checkout('mybestsites-pro')" class="w-full py-3 px-6 bg-white text-brand-700 hover:bg-brand-50 rounded-xl font-bold transition-colors">
+          <a href="https://mybestsites.online/#pricing" target="_blank" rel="noopener" class="block text-center w-full py-3 px-6 bg-white text-brand-700 hover:bg-brand-50 rounded-xl font-bold transition-colors">
             Get Pro — $2 →
-          </button>
+          </a>
         </div>
         
         <!-- Agency Tier -->
@@ -358,15 +358,15 @@
             <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Client management tools</li>
             <li class="flex items-center gap-2"><span class="text-purple-400">✓</span> Slack support channel</li>
           </ul>
-          <button onclick="checkout('mybestsites-agency')" class="w-full py-3 px-6 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-colors">
+          <a href="https://mybestsites.online/#pricing" target="_blank" rel="noopener" class="block text-center w-full py-3 px-6 bg-purple-600 hover:bg-purple-500 rounded-xl font-semibold transition-colors">
             Get Agency — $2 →
-          </button>
+          </a>
         </div>
       </div>
       
       <div class="text-center mt-12">
         <p class="text-gray-400">
-          🔒 Secure checkout with Stripe • 30-day money-back guarantee • Instant download
+          🔒 Secure checkout and delivery happen on mybestsites.online • 30-day money-back guarantee
         </p>
       </div>
     </div>
@@ -446,79 +446,10 @@
           <a href="/privacy" class="hover:text-white">Privacy</a>
           <a href="/" class="hover:text-white">Sassy Consulting</a>
         </div>
-        <p class="text-sm">© 2025 <a href="/" class="hover:text-white">Sassy Consulting LLC</a>. Veteran-Owned.</p>
+        <p class="text-sm">© 2026 <a href="/" class="hover:text-white">Sassy Consulting LLC</a>. Veteran-Owned.</p>
       </div>
     </div>
   </footer>
 
-  <!-- Checkout Modal -->
-  <div id="checkout-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm hidden z-50 flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl p-8 max-w-md w-full">
-      <h3 class="text-2xl font-bold mb-4">Complete Your Purchase</h3>
-      <p class="text-gray-600 mb-6">Enter your email to receive your license key.</p>
-      <form id="checkout-form" onsubmit="submitCheckout(event)">
-        <input type="hidden" id="checkout-product" name="product">
-        <div class="mb-4">
-          <label class="block text-sm font-medium mb-2">Email Address</label>
-          <input type="email" id="checkout-email" required 
-            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500"
-            placeholder="you@example.com">
-        </div>
-        <button type="submit" class="w-full py-3 px-6 bg-brand-600 hover:bg-brand-700 text-white font-bold rounded-xl transition-colors">
-          Continue to Payment →
-        </button>
-        <button type="button" onclick="closeCheckout()" class="w-full py-3 px-6 mt-2 text-gray-600 hover:text-gray-900">
-          Cancel
-        </button>
-      </form>
-    </div>
-  </div>
-
-  <script>
-    const API_BASE = ''; // Same origin
-
-    function checkout(product) {
-      document.getElementById('checkout-product').value = product;
-      document.getElementById('checkout-modal').classList.remove('hidden');
-    }
-
-    function closeCheckout() {
-      document.getElementById('checkout-modal').classList.add('hidden');
-    }
-
-    async function submitCheckout(e) {
-      e.preventDefault();
-      const product = document.getElementById('checkout-product').value;
-      const email = document.getElementById('checkout-email').value;
-
-      try {
-        const response = await fetch(`${API_BASE}/api/checkout`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            product: product,
-            email: email,
-            success_url: window.location.origin + '/success.html',
-            cancel_url: window.location.href
-          })
-        });
-
-        const data = await response.json();
-        
-        if (data.checkout_url) {
-          window.location.href = data.checkout_url;
-        } else {
-          alert(data.error || 'Checkout failed. Please try again.');
-        }
-      } catch (err) {
-        alert('Connection error. Please try again.');
-      }
-    }
-
-    // Close modal on escape
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') closeCheckout();
-    });
-  </script>
 </body>
 </html>

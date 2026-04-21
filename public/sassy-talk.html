@@ -7,7 +7,7 @@
     <meta name="description" content="AES-256-GCM encrypted voice chat over local WiFi. No servers, no accounts, no data collection.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -22,18 +22,21 @@
             --accent-green: #22c55e;
             --border-subtle: #222222;
             --border-medium: #333333;
-            --gradient-brand: linear-gradient(90deg, #06b6d4, #22c55e);
+            --gradient-brand: linear-gradient(90deg, #a855f7, #3b82f6);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.65;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
+        @keyframes loopBorder { 0% { border-color: rgba(168,85,247,0.3); } 33% { border-color: rgba(59,130,246,0.3); } 66% { border-color: rgba(6,182,212,0.3); } 100% { border-color: rgba(168,85,247,0.3); } }
+        .feature-card:hover, .product-card:hover, .table-wrapper:hover { animation: loopBorder 3s linear infinite; box-shadow: 0 0 20px rgba(168,85,247,0.1); }
 
         nav {
             position: fixed;
@@ -56,8 +59,10 @@
         }
 
         .logo {
-            font-weight: 700;
-            font-size: 1.25rem;
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: 1.15rem;
+            letter-spacing: -0.02em;
             color: var(--text-primary);
             text-decoration: none;
             display: flex;
@@ -182,9 +187,10 @@
         }
 
         .hero h1 {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: clamp(2.5rem, 8vw, 5rem);
-            font-weight: 700;
-            line-height: 1.1;
+            font-weight: 400;
+            line-height: 1.15;
             margin-bottom: 1.5rem;
         }
 
@@ -264,8 +270,9 @@
         }
 
         .section-title {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: clamp(1.75rem, 4vw, 2.5rem);
-            font-weight: 700;
+            font-weight: 400;
             margin-bottom: 1rem;
         }
 
@@ -426,7 +433,9 @@
         }
 
         .cta h2 {
+            font-family: 'DM Serif Display', Georgia, serif;
             font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 400;
             margin-bottom: 1rem;
         }
 
@@ -488,25 +497,18 @@
     <nav>
         <div class="container">
             <a href="/" class="logo">
-                <span class="logo-icon">ST</span>
-                Sassy-Talk
+                                Sassy-Talk
             </a>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="#features">Features</a>
                 <a href="#specs">Specs</a>
                 <a href="#download">Download</a>
-                <a href="https://github.com/sassyconsultingllc" class="btn btn-primary">GitHub</a>
             </div>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-badge">
-            <span class="dot"></span>
-            <span>Communication Tool</span>
-        </div>
-        
         <h1>
             Encrypted voice chat.<br>
             <span class="gradient">No strings attached.</span>
@@ -526,7 +528,6 @@
                 </svg>
                 Download Now - $2
             </a>
-            <a href="https://github.com/sassyconsultingllc" class="btn btn-secondary btn-large">View Source</a>
         </div>
         
         <div class="price-hero">
@@ -556,7 +557,7 @@
 
     <section id="features">
         <span class="section-label">Features</span>
-        <h2 class="section-title">Everything you need. Nothing you don't.</h2>
+        <h2 class="section-title">Everything you need, nothing you don't</h2>
         <p class="section-desc">Built for teams that need secure, local communication without the complexity.</p>
         
         <div class="features-grid">
@@ -596,7 +597,7 @@
     <section class="specs-section" id="specs">
         <div class="specs-container">
             <span class="section-label">Technical Specifications</span>
-            <h2 class="section-title">Built with security-first engineering.</h2>
+            <h2 class="section-title">Built with security-first engineering</h2>
             
             <div class="table-wrapper" style="margin-top: 2rem;">
                 <table>
@@ -616,35 +617,46 @@
 
     <section id="download">
         <span class="section-label">Download</span>
-        <h2 class="section-title" style="text-align: center;">Get Sassy-Talk for your platform.</h2>
+        <h2 class="section-title" style="text-align: center;">Get Sassy-Talk for your platform</h2>
         <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Purchase a license, then download for Android or Windows.</p>
         
         <div style="text-align: center; margin-bottom: 2rem;">
             <button onclick="buyProduct('sassy-talk')" class="btn btn-primary btn-large">Buy License - $2</button>
         </div>
         
-        <div class="download-grid">
-            <div class="download-card">
-                <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-2.12-1.1-3.98-2.77-5.04h.3zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg></div>
-                <h3>Android</h3>
-                <p>APK for Android 8.0+</p>
-                <a href="/download/sassy-talk/android/sassytalkie.apk" class="btn btn-primary">Download APK</a>
+        <div id="license-gate" style="text-align: center; margin-top: 1.5rem;">
+            <p class="section-desc" style="margin-bottom: 1rem;">Already have a license key? Enter it below to download.</p>
+            <div style="display: flex; gap: 0.5rem; justify-content: center; max-width: 500px; margin: 0 auto;">
+                <input type="text" id="license-input" placeholder="SASSY-XXXX-XXXX-XXXX"
+                    style="flex: 1; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid #333; background: #111; color: #fff; font-family: 'JetBrains Mono', monospace; font-size: 0.9rem;">
+                <button onclick="unlockDownloads()" class="btn btn-primary">Unlock</button>
             </div>
-            <div class="download-card">
-                <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="1" width="10" height="10" rx="1.5"/><rect x="13" y="1" width="10" height="10" rx="1.5"/><rect x="1" y="13" width="10" height="10" rx="1.5"/><rect x="13" y="13" width="10" height="10" rx="1.5"/></svg></div>
-                <h3>Windows</h3>
-                <p>MSI for Windows 10/11</p>
-                <a href="/download/sassy-talk/windows/sassy-talk-setup.msi" class="btn btn-primary">Download MSI</a>
+            <p id="license-error" style="color: #ff6b6b; font-size: 0.85rem; margin-top: 0.5rem; display: none;"></p>
+        </div>
+
+        <div id="download-links" style="display: none;">
+            <div class="download-grid">
+                <div class="download-card">
+                    <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-2.12-1.1-3.98-2.77-5.04h.3zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg></div>
+                    <h3 id="android">Android</h3>
+                    <p>APK for Android 7.0+</p>
+                    <a id="apk-download" href="#" class="btn btn-primary">Download APK</a>
+                </div>
+                <div class="download-card">
+                    <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="1" width="10" height="10" rx="1.5"/><rect x="13" y="1" width="10" height="10" rx="1.5"/><rect x="1" y="13" width="10" height="10" rx="1.5"/><rect x="13" y="13" width="10" height="10" rx="1.5"/></svg></div>
+                    <h3>Windows</h3>
+                    <p>MSI for Windows 10/11</p>
+                    <a id="msi-download" href="#" class="btn btn-primary">Download MSI</a>
+                </div>
             </div>
         </div>
     </section>
 
     <section class="cta">
-        <h2>Secure communication. $2. Forever.</h2>
-        <p>No subscriptions. No hidden fees. Just privacy.</p>
+        <h2>Secure communication &mdash; $2 forever</h2>
+        <p>No subscriptions and no hidden fees, just privacy you can count on.</p>
         <div class="cta-buttons">
             <button onclick="buyProduct('sassy-talk')" class="btn btn-primary btn-large">Buy Now - $2</button>
-            <a href="https://github.com/sassyconsultingllc" class="btn btn-secondary btn-large">View Source Code</a>
         </div>
     </section>
 
@@ -657,11 +669,54 @@
             <div class="footer-links">
                 <a href="/">Home</a>
                 <a href="/#products">Products</a>
-                <a href="https://github.com/sassyconsultingllc">GitHub</a>
             </div>
         </div>
     </footer>
 
     <script src="checkout.js"></script>
+    <script>
+        async function unlockDownloads() {
+            const key = document.getElementById('license-input').value.trim();
+            const errorEl = document.getElementById('license-error');
+            errorEl.style.display = 'none';
+
+            if (!key || !key.startsWith('SASSY-')) {
+                errorEl.textContent = 'Enter a valid license key (starts with SASSY-)';
+                errorEl.style.display = 'block';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/validate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ license_key: key })
+                });
+                const data = await res.json();
+                if (data.valid) {
+                    document.getElementById('license-gate').style.display = 'none';
+                    document.getElementById('download-links').style.display = 'block';
+                    document.getElementById('apk-download').href = '/download/sassytalk/android/SassyTalk-latest.apk?key=' + encodeURIComponent(key);
+                    document.getElementById('msi-download').href = '/download/sassytalk/windows/SassyTalk-1.0.0-x64.msi?key=' + encodeURIComponent(key);
+                } else {
+                    errorEl.textContent = data.error || 'Invalid license key';
+                    errorEl.style.display = 'block';
+                }
+            } catch (e) {
+                errorEl.textContent = 'Validation failed. Try again.';
+                errorEl.style.display = 'block';
+            }
+        }
+
+        // Auto-fill license from URL param (redirect from success page)
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const key = params.get('key');
+            if (key) {
+                document.getElementById('license-input').value = key;
+                unlockDownloads();
+            }
+        })();
+    </script>
 </body>
 </html>

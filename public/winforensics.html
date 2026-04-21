@@ -7,7 +7,7 @@
     <meta name="description" content="Registry analysis, file recovery, timeline generation, evidence preservation. Built in Rust for Windows.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-primary: #0a0a0a;
@@ -28,12 +28,15 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-primary);
             color: var(--text-primary);
-            line-height: 1.6;
+            line-height: 1.65;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
+        @keyframes loopBorder { 0% { border-color: rgba(249,115,22,0.3); } 33% { border-color: rgba(234,179,8,0.3); } 66% { border-color: rgba(34,197,94,0.3); } 100% { border-color: rgba(249,115,22,0.3); } }
+        .feature-card:hover, .product-card:hover, .code-demo:hover { animation: loopBorder 3s linear infinite; box-shadow: 0 0 20px rgba(249,115,22,0.1); }
 
         .mono { font-family: 'JetBrains Mono', monospace; }
 
@@ -156,7 +159,7 @@
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .hero h1 {
+        .hero h1 { font-family: 'DM Serif Display', Georgia, serif;
             font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 700;
             line-height: 1.1;
@@ -214,7 +217,7 @@
             margin-bottom: 1rem;
         }
 
-        .section-title { font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 700; margin-bottom: 1rem; }
+        .section-title { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 400; margin-bottom: 1rem; }
         .section-desc { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
 
         .features-grid {
@@ -299,7 +302,7 @@
             pointer-events: none;
         }
 
-        .cta h2 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
+        .cta h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 1rem; }
         .cta p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem; }
         .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
@@ -334,25 +337,18 @@
     <nav>
         <div class="container">
             <a href="/" class="logo">
-                <span class="logo-icon">WF</span>
-                WinForensics
+                                WinForensics
             </a>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="#features">Features</a>
                 <a href="#usage">Usage</a>
                 <a href="#download">Download</a>
-                <a href="https://github.com/sassyconsultingllc" class="btn btn-primary">GitHub</a>
             </div>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-badge">
-            <span class="dot"></span>
-            <span>Security Tool</span>
-        </div>
-        
         <h1>
             Digital forensics.<br>
             <span class="gradient">Memory-safe precision.</span>
@@ -372,7 +368,6 @@
                 </svg>
                 Download Now - $2
             </a>
-            <a href="https://github.com/sassyconsultingllc" class="btn btn-secondary btn-large">View Source</a>
         </div>
         
         <div class="price-hero">
@@ -402,7 +397,7 @@
 
     <section id="features">
         <span class="section-label">Features</span>
-        <h2 class="section-title">Professional forensics tools. No bloat.</h2>
+        <h2 class="section-title">Professional forensics tools, no bloat</h2>
         <p class="section-desc">Everything you need for Windows incident response in a single binary.</p>
         
         <div class="features-grid">
@@ -442,7 +437,7 @@
     <section id="usage" style="background: var(--bg-secondary); padding: 6rem 2rem;">
         <div style="max-width: 1000px; margin: 0 auto;">
             <span class="section-label">Usage</span>
-            <h2 class="section-title">Simple CLI. Powerful results.</h2>
+            <h2 class="section-title">Simple CLI, powerful results</h2>
             
             <div class="code-demo">
                 <div class="code-header">
@@ -470,7 +465,7 @@
 
     <section id="download">
         <span class="section-label">Download</span>
-        <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows.</h2>
+        <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows</h2>
         <p class="section-desc" style="text-align: center; margin: 0 auto 2rem;">Purchase a license, then download the CLI tool.</p>
         
         <div style="text-align: center;">
@@ -481,11 +476,10 @@
     </section>
 
     <section class="cta">
-        <h2>Professional forensics. $2. Forever.</h2>
-        <p>No subscriptions. No cloud dependencies. Just tools.</p>
+        <h2>Professional forensics &mdash; $2 forever</h2>
+        <p>No subscriptions and no cloud dependencies, just the tools you need.</p>
         <div class="cta-buttons">
             <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Buy Now - $2</button>
-            <a href="https://github.com/sassyconsultingllc" class="btn btn-secondary btn-large">View Source Code</a>
         </div>
     </section>
 
@@ -498,7 +492,6 @@
             <div class="footer-links">
                 <a href="/">Home</a>
                 <a href="/#products">Products</a>
-                <a href="https://github.com/sassyconsultingllc">GitHub</a>
             </div>
         </div>
     </footer>

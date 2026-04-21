@@ -5,6 +5,9 @@
   "main": "src/worker.js",
   "scripts": {
     "dev": "wrangler dev",
+    "audit:links": "node scripts/audit-links.mjs",
+    "sitemap": "node scripts/build-sitemap.mjs",
+    "predeploy": "node scripts/build-sitemap.mjs",
     "deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 execute sassy-db --file=./migrations/0001_init.sql",
     "db:migrate:local": "wrangler d1 execute sassy-db --local --file=./migrations/0001_init.sql"

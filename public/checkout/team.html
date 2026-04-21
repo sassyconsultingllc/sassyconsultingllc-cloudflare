@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Subscribe to SassyMCP Team | Sassy Consulting LLC</title>
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;--surface:#111318;--surface2:#181b22;
+  --border:#2a2e3a;--border-active:#3d4258;
+  --text:#e8eaf0;--text-dim:#8b90a0;--text-muted:#5c6070;
+  --accent:#10b981;--accent-glow:#10b98133;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:8px;--radius-lg:14px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+.checkout-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:3rem;max-width:480px;width:100%;position:relative}
+.back-link{display:inline-flex;align-items:center;gap:0.5rem;color:var(--text-dim);font-size:0.85rem;margin-bottom:2rem;text-decoration:none}
+.back-link:hover{color:var(--text)}
+h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5rem}
+.plan-label{color:var(--accent);font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem}
+.price-display{font-size:2.5rem;font-weight:700;margin:1rem 0 0.25rem}
+.price-display .period{font-size:1rem;font-weight:400;color:var(--text-dim)}
+.price-display .original{text-decoration:line-through;color:var(--text-muted);font-size:1.2rem;margin-left:0.5rem}
+.intro-note{color:var(--accent);font-size:0.85rem;margin-bottom:1.5rem}
+
+.toggle-wrap{display:flex;background:var(--surface2);border-radius:var(--radius);padding:3px;margin-bottom:2rem;border:1px solid var(--border)}
+.toggle-btn{flex:1;padding:0.6rem;text-align:center;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--text-dim);border:none;background:none;font-family:var(--sans)}
+.toggle-btn.active{background:var(--accent);color:#000}
+
+.features{margin-bottom:2rem}
+.features li{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;color:var(--text-dim);font-size:0.9rem;list-style:none}
+.features li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:0.85rem}
+
+.field{margin-bottom:1.5rem}
+.field label{display:block;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-dim);margin-bottom:0.5rem}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0.85rem 1rem;color:var(--text);font-size:0.95rem;font-family:var(--sans);outline:none;transition:border-color 0.2s}
+.field input:focus{border-color:var(--accent)}
+
+.btn-subscribe{width:100%;padding:1rem;background:var(--accent);color:#000;font-size:1rem;font-weight:700;border:none;border-radius:var(--radius);cursor:pointer;font-family:var(--sans);transition:all 0.2s}
+.btn-subscribe:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-subscribe:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+
+.error-msg{color:#ff5c5c;font-size:0.85rem;margin-top:0.75rem;display:none}
+.secure-note{text-align:center;color:var(--text-muted);font-size:0.75rem;margin-top:1.5rem}
+</style>
+</head>
+<body>
+
+<div class="checkout-card">
+    <a href="/pricing.html" class="back-link">&larr; Back to pricing</a>
+    <div class="plan-label">SassyMCP Team</div>
+    <h1>Multi-user production access</h1>
+    <div class="price-display">
+        <span id="price-amount">$99</span>
+        <span class="period" id="price-period">/month</span>
+        <span class="original" id="price-original">$396</span>
+    </div>
+    <div class="intro-note">75% introductory discount applied — valid until June 1, 2026</div>
+
+    <div class="toggle-wrap">
+        <button class="toggle-btn active" id="btn-monthly" onclick="setBilling('monthly')">Monthly</button>
+        <button class="toggle-btn" id="btn-annual" onclick="setBilling('annual')">Annual (save 17%)</button>
+    </div>
+
+    <ul class="features">
+        <li>Everything in Pro included</li>
+        <li>Up to 5 users on one subscription</li>
+        <li>Shared tool access between team members</li>
+        <li>10 million calls per month</li>
+    </ul>
+
+    <form id="checkout-form" onsubmit="handleCheckout(event)">
+        <div class="field">
+            <label for="email">Email address</label>
+            <input type="email" id="email" name="email" required placeholder="you@company.com" autocomplete="email">
+        </div>
+        <button type="submit" class="btn-subscribe" id="submit-btn">Subscribe — $99/mo</button>
+        <div class="error-msg" id="error-msg"></div>
+    </form>
+
+    <div class="secure-note">Payments are processed securely through Stripe. You can cancel anytime from your account.</div>
+</div>
+
+<script>
+let billing = 'monthly';
+
+function setBilling(mode) {
+    billing = mode;
+    document.getElementById('btn-monthly').classList.toggle('active', mode === 'monthly');
+    document.getElementById('btn-annual').classList.toggle('active', mode === 'annual');
+    if (mode === 'monthly') {
+        document.getElementById('price-amount').textContent = '$99';
+        document.getElementById('price-period').textContent = '/month';
+        document.getElementById('price-original').textContent = '$396';
+        document.getElementById('submit-btn').textContent = 'Subscribe — $99/mo';
+    } else {
+        document.getElementById('price-amount').textContent = '$248';
+        document.getElementById('price-period').textContent = '/year';
+        document.getElementById('price-original').textContent = '$990';
+        document.getElementById('submit-btn').textContent = 'Subscribe — $248/year';
+    }
+}
+
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('billing') === 'annual') setBilling('annual');
+})();
+
+async function handleCheckout(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    const errorEl = document.getElementById('error-msg');
+    const email = document.getElementById('email').value.trim();
+    errorEl.style.display = 'none';
+    btn.disabled = true;
+    btn.textContent = 'Redirecting to Stripe...';
+
+    try {
+        const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product: 'mcp-team', billing, email })
+        });
+        const data = await res.json();
+        if (data.checkout_url) {
+            window.location.href = data.checkout_url;
+        } else {
+            throw new Error(data.error || 'Checkout failed');
+        }
+    } catch (err) {
+        errorEl.textContent = err.message || 'Something went wrong, please try again';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = billing === 'monthly' ? 'Subscribe — $99/mo' : 'Subscribe — $248/year';
+    }
+}
+</script>
+</body>
+</html>

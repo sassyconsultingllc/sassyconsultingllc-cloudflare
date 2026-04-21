@@ -15,17 +15,30 @@ const PRODUCTS = {
   "sassy-talk": {
     name: "Sassy-Talk",
     amount: 200,
+    mode: "payment",
     description: "Encrypted walkie-talkie app for Android and Windows"
   },
   "winforensics": {
     name: "WinForensics",
     amount: 200,
+    mode: "payment",
     description: "Digital forensics toolkit for Windows"
   },
   "website-creator": {
     name: "Website Creator",
     amount: 200,
+    mode: "payment",
     description: "AI-powered WordPress builder with security hardening"
+  },
+  "mcp-pro": {
+    name: "SassyMCP Pro",
+    mode: "subscription",
+    description: "Production-grade MCP server with full access"
+  },
+  "mcp-team": {
+    name: "SassyMCP Team",
+    mode: "subscription",
+    description: "Multi-user MCP server with shared Crosslink"
   }
 };
 
@@ -85,16 +98,18 @@ export default {
       if (path === "/api/nda/download" && method === "POST") {
         return await handleNdaDownload(request, env, corsHeaders);
       }
-      // ── PTT WebSocket relay ──
-      if (path === "/api/ptt/ws") {
-        return await handlePttWebSocket(request, url, env);
-      }
-      if (path === "/api/ptt/room-info" && method === "GET") {
-        return await handlePttRoomInfo(url, env, corsHeaders);
+      // PTT relay moved to relay.sassy-consults.com (sassytalk-relay worker)
+      if (path === "/api/ptt/ws" || path === "/api/ptt/room-info") {
+        return Response.redirect("https://relay.sassy-consults.com/ws" + url.search, 301);
       }
 
       if (path.startsWith("/download/")) {
-        return await handleDownload(path, env, corsHeaders);
+        return await handleDownload(path, url, env, corsHeaders);
+      }
+
+      if (path.startsWith("/privacy/")) {
+        const r2Response = await handlePrivacy(path, env);
+        if (r2Response) return r2Response;
       }
 
       // Static assets are served automatically by Cloudflare [assets] config
@@ -257,7 +272,7 @@ async function handleContact(request, env, corsHeaders) {
 
 async function handleAppTester(request, env, corsHeaders) {
   const contentType = request.headers.get("content-type") || "";
-  let name, email, device, experience, notes, apps;
+  let name, email, device, experience, notes, apps, submissionType, appRating;
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const formData = await request.formData();
     name = formData.get("name");
@@ -266,23 +281,47 @@ async function handleAppTester(request, env, corsHeaders) {
     experience = formData.get("experience") || "";
     notes = formData.get("notes") || "";
     apps = formData.getAll("apps");
+    submissionType = formData.get("submission_type") || "become-tester";
+    appRating = formData.get("app_rating") || "";
   } else {
     const body = await request.json();
     name = body.name; email = body.email; device = body.device;
     experience = body.experience || ""; notes = body.notes || "";
     apps = Array.isArray(body.apps) ? body.apps : (body.apps ? [body.apps] : []);
+    submissionType = body.submission_type || body.submissionType || "become-tester";
+    appRating = body.app_rating || body.appRating || "";
   }
+
+  const normalizedType = submissionType === "already-testing" ? "already-testing" : "become-tester";
+  const redirectWithError = (error) => new Response(null, {
+    status: 302,
+    headers: { "Location": `/app-testers?error=${error}&form=${normalizedType}` }
+  });
+
+  const ratingLabels = {
+    "1": "1 - terrible",
+    "2": "2 - moderately okay",
+    "3": "3 - half alright",
+    "4": "4 - I might replace my current workflow with this app",
+    "5": "5 - Holy fuck I'm going to use this app regularly"
+  };
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!name || name.length < 2 || name.length > 100) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=name" } });
-  if (!email || !emailRegex.test(email)) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=email" } });
-  if (!device) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=device" } });
-  if (!apps || apps.length === 0) return new Response(null, { status: 302, headers: { "Location": "/app-testers?error=apps" } });
+  if (!name || name.length < 2 || name.length > 100) return redirectWithError("name");
+  if (!email || !emailRegex.test(email)) return redirectWithError("email");
+  if (!device) return redirectWithError("device");
+  if (!apps || apps.length === 0) return redirectWithError("apps");
+  if (normalizedType === "already-testing" && !ratingLabels[appRating]) return redirectWithError("rating");
+
+  const submissionLabel = normalizedType === "already-testing" ? "Already testing" : "Become an App Tester";
+  const ratingText = ratingLabels[appRating] || "not provided";
   const appsStr = apps.join(", ");
+
   if (env.DB) {
     try {
       await env.DB.prepare(
         "INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))"
-      ).bind(name, email, `[APP TESTER] Apps: ${appsStr} | Device: ${device} | Experience: ${experience} | Notes: ${notes}`).run();
+      ).bind(name, email, `[APP TESTER] Type: ${submissionLabel} | Apps: ${appsStr} | Device: ${device} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}`).run();
     } catch (e) { console.error("DB error:", e); }
   }
   if (env.RESEND_API_KEY) {
@@ -294,8 +333,8 @@ async function handleAppTester(request, env, corsHeaders) {
           from: "Sassy Consulting <contact@sassyconsultingllc.com>",
           to: ["info@sassyconsultingllc.com"],
           reply_to: email,
-          subject: `App Tester Signup: ${name}`,
-          text: `New app tester signup:\n\nName: ${name}\nEmail: ${email}\nDevice: ${device}\nApps: ${appsStr}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
+          subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${name}`,
+          text: `New app tester submission:\n\nType: ${submissionLabel}\nName: ${name}\nEmail: ${email}\nDevice: ${device}\nApps: ${appsStr}\nApp Rating: ${ratingText}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
         })
       });
     } catch (e) { console.error("Email error:", e); }
@@ -305,20 +344,45 @@ async function handleAppTester(request, env, corsHeaders) {
 
 async function handleCheckout(request, env, corsHeaders) {
   const body = await request.json();
-  const { product, email, success_url, cancel_url } = body;
+  const { product, email, billing, success_url, cancel_url } = body;
   if (!product || !PRODUCTS[product]) return jsonResponse({ error: "Invalid product" }, 400, corsHeaders);
   if (!email) return jsonResponse({ error: "Email required" }, 400, corsHeaders);
   const productInfo = PRODUCTS[product];
-  const priceId = env[`STRIPE_PRICE_${product.toUpperCase().replace("-", "_")}`];
+  const isSubscription = productInfo.mode === "subscription";
+
+  // Resolve the correct Stripe Price ID
+  let priceKey = product.toUpperCase().replace(/-/g, "_");
+  if (isSubscription && billing === "annual") {
+    priceKey += "_ANNUAL";
+  } else if (isSubscription) {
+    priceKey += "_MONTHLY";
+  }
+  const priceId = env[`STRIPE_PRICE_${priceKey}`];
+  if (!priceId) return jsonResponse({ error: "Price not configured" }, 500, corsHeaders);
+
+  const cancelUrl = cancel_url || (isSubscription
+    ? `${env.SITE_URL}/checkout/${product.replace("mcp-", "")}.html`
+    : `${env.SITE_URL}/${product}.html`);
+
+  const params = new URLSearchParams({
+    "payment_method_types[]": "card",
+    "line_items[0][price]": priceId,
+    "line_items[0][quantity]": "1",
+    "mode": isSubscription ? "subscription" : "payment",
+    "success_url": success_url || `${env.SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
+    "cancel_url": cancelUrl,
+    "customer_email": email,
+    "metadata[product]": product,
+    "metadata[product_name]": productInfo.name
+  });
+  if (isSubscription && billing) {
+    params.set("metadata[billing]", billing);
+  }
+
   const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
     method: "POST",
     headers: { "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`, "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      "payment_method_types[]": "card", "line_items[0][price]": priceId, "line_items[0][quantity]": "1",
-      "mode": "payment", "success_url": success_url || `${env.SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-      "cancel_url": cancel_url || `${env.SITE_URL}/${product}.html`, "customer_email": email,
-      "metadata[product]": product, "metadata[product_name]": productInfo.name
-    })
+    body: params
   });
   const session = await stripeResponse.json();
   if (session.error) return jsonResponse({ error: session.error.message }, 400, corsHeaders);
@@ -397,16 +461,84 @@ async function handleDownloadsList(env, corsHeaders) {
   ], 200, corsHeaders);
 }
 
-async function handleDownload(path, env, corsHeaders) {
+async function handlePrivacy(path, env) {
+  // Map /privacy/<product>[/<file>] to R2 key in the PRIVACY bucket.
+  // Missing file defaults to index.html. Return null if not found so the
+  // caller can fall back to the static ASSETS bundle (existing in-tree policies).
+  if (!env.PRIVACY) return null;
+  const rest = path.replace(/^\/privacy\//, "").replace(/^\/+|\/+$/g, "");
+  if (!rest) return null;
+  const hasExt = /\.[a-z0-9]+$/i.test(rest);
+  const key = hasExt ? rest : `${rest}/index.html`;
+  const object = await env.PRIVACY.get(key);
+  if (!object) return null;
+  const ext = key.split(".").pop().toLowerCase();
+  const mime = {
+    html: "text/html; charset=utf-8",
+    css: "text/css; charset=utf-8",
+    js: "application/javascript; charset=utf-8",
+    json: "application/json; charset=utf-8",
+    png: "image/png",
+    jpg: "image/jpeg",
+    jpeg: "image/jpeg",
+    svg: "image/svg+xml",
+    pdf: "application/pdf",
+    txt: "text/plain; charset=utf-8"
+  }[ext] || object.httpMetadata?.contentType || "application/octet-stream";
+  return new Response(object.body, {
+    headers: {
+      "Content-Type": mime,
+      "Cache-Control": "public, max-age=300",
+      "X-Content-Type-Options": "nosniff"
+    }
+  });
+}
+
+async function handleDownload(path, url, env, corsHeaders) {
   const parts = path.replace("/download/", "").split("/");
   if (parts.length < 3) return new Response("Not found", { status: 404 });
   const [product, platform, filename] = parts;
+
+  // Gated products require a valid SASSY- license key (except /demo/ which is public).
+  // Same schema as sassytalk: key must start with "SASSY-" and exist in the licenses table.
+  // Gated objects live in env.GATED (the sassy-gated R2 bucket, which has NO public custom
+  // domain or dev URL) so the only way to reach them is through this worker. Public objects
+  // continue to live in env.DOWNLOADS (sassy-downloads), which is exposed as
+  // sassycreates.sassyconsultingllc.com -- DO NOT put gated content there.
+  const GATED_PRODUCTS = {
+    sassytalk: "/sassy-talk.html",
+    sassymcp:  "/pricing.html",
+  };
+  const isGated = GATED_PRODUCTS[product] && platform !== "demo";
+  if (isGated) {
+    const licenseKey = url.searchParams.get("key");
+    if (!licenseKey || !licenseKey.startsWith("SASSY-")) {
+      return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
+    }
+    if (env.DB) {
+      const result = await env.DB.prepare("SELECT product FROM licenses WHERE license_key = ?").bind(licenseKey).first();
+      if (!result) {
+        return jsonResponse({ error: "Invalid license key" }, 403, corsHeaders);
+      }
+    }
+  }
+
   const r2Key = `${product}/${platform}/${filename}`;
-  const object = await env.DOWNLOADS.get(r2Key);
+  const bucket = isGated ? env.GATED : env.DOWNLOADS;
+  const object = await bucket.get(r2Key);
   if (!object) return new Response("File not found", { status: 404 });
   if (env.DB) { try { await env.DB.prepare("UPDATE downloads SET download_count = download_count + 1 WHERE r2_key = ?").bind(r2Key).run(); } catch (e) {} }
   const headers = new Headers(corsHeaders);
-  headers.set("Content-Type", object.httpMetadata?.contentType || "application/octet-stream");
+  // Derive content-type from extension (R2 metadata often missing)
+  const ext = filename.split('.').pop()?.toLowerCase();
+  const mimeTypes = {
+    apk: "application/vnd.android.package-archive",
+    msi: "application/x-msi",
+    exe: "application/x-msdownload",
+    zip: "application/zip",
+    pdf: "application/pdf",
+  };
+  headers.set("Content-Type", mimeTypes[ext] || object.httpMetadata?.contentType || "application/octet-stream");
   headers.set("Content-Disposition", `attachment; filename="${filename}"`);
   return new Response(object.body, { headers });
 }
@@ -498,8 +630,8 @@ async function handlePttWebSocket(request, url, env) {
   }
 
   // Derive a stable Durable Object ID from the room name (session_id)
-  const doId = env.PTT_ROOMS.idFromName(roomId);
-  const room = env.PTT_ROOMS.get(doId);
+  const doId = env.PTT_RELAY.idFromName(roomId);
+  const room = env.PTT_RELAY.get(doId);
 
   // Forward the WebSocket upgrade request to the Durable Object
   return room.fetch(request);
@@ -609,7 +741,7 @@ function getTimezone(country, region) {
 //   other connected client in the same room. The relay also handles
 //   lightweight JSON control messages (join/leave/heartbeat).
 //
-//   Max clients per room: 8 (walkie-talkie style, small group)
+//   Max clients per room: 16 (walkie-talkie style, small-medium group)
 //   Idle timeout: 5 minutes with no messages → room hibernates
 //   Heartbeat: clients send ping every 30s, server responds pong
 
@@ -634,8 +766,8 @@ export class PttRoom extends DurableObject {
     const clientId = url.searchParams.get("client_id") || crypto.randomUUID();
 
     // Enforce max clients per room
-    if (this.clients.size >= 8) {
-      return new Response("Room full (max 8 clients)", { status: 503 });
+    if (this.clients.size >= 16) {
+      return new Response("Room full (max 16 clients)", { status: 503 });
     }
 
     // Create WebSocket pair
@@ -679,10 +811,20 @@ export class PttRoom extends DurableObject {
   // ── Hibernation-aware WebSocket handlers ──
 
   async webSocketMessage(ws, message) {
-    const meta = this.clients.get(ws);
+    let meta = this.clients.get(ws);
     if (!meta) {
-      ws.close(4000, "Unknown client");
-      return;
+      // Restore from hibernation attachment before rejecting
+      try {
+        const attachment = ws.deserializeAttachment();
+        if (attachment) {
+          meta = attachment;
+          this.clients.set(ws, meta);
+        }
+      } catch (_) {}
+      if (!meta) {
+        ws.close(4000, "Unknown client");
+        return;
+      }
     }
 
     meta.lastActivity = Date.now();

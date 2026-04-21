@@ -7,7 +7,7 @@
     <meta name="description" content="The story behind Sassy Consulting LLC — from building custom homes and cleaning alongside mom, to 11 years of military service, to building privacy-focused software in Wisconsin.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-deep: #0a1628;
@@ -30,12 +30,14 @@
         html { scroll-behavior: smooth; }
 
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             background: var(--bg-deep);
             color: var(--text-primary);
-            line-height: 1.7;
+            line-height: 1.65;
             overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
         }
+        @keyframes loopBorder { 0% { border-color: rgba(59,130,246,0.3); } 33% { border-color: rgba(96,165,250,0.3); } 66% { border-color: rgba(34,197,94,0.3); } 100% { border-color: rgba(59,130,246,0.3); } }
 
         /* NAV */
         nav {
@@ -337,21 +339,18 @@
     <nav>
         <div class="container">
             <a href="/" class="logo">
-                <span class="logo-icon">SC</span>
-                Sassy Consulting
+                                Sassy Consulting
             </a>
             <div class="nav-links">
                 <a href="/">Home</a>
                 <a href="/#products">Products</a>
-                <a href="https://github.com/sassyconsultingllc" target="_blank" rel="noopener">GitHub</a>
             </div>
         </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-badge fade-in">Veteran-Owned &bull; Wisconsin</div>
         <h1 class="fade-in d1">About Shane</h1>
-        <p class="tagline fade-in d2">Built by hand. Forged in service. Driven by purpose.</p>
+        <p class="tagline fade-in d2">Built by hand, forged in service, driven by purpose</p>
     </section>
 
     <div class="timeline">
@@ -361,7 +360,7 @@
             <div class="card-inner">
                 <span class="card-era">Since Childhood</span>
                 <h2>Roots &mdash; Growing Up Building</h2>
-                <p>I grew up in a family that built custom homes. Zach Builders was the family business, and the job site was my classroom. Before I understood blueprints, I understood work &mdash; showing up early, doing the job right, taking pride in something you built with your own hands.</p>
+                <p>I grew up in a family that builds custom homes. Zach Builders was the family business, and the job site was my classroom. Before I understood blueprints, I understood work &mdash; showing up early, doing the job right, taking pride in something you built with your own hands.</p>
                 <p>Framing walls, pouring foundations, finishing trim &mdash; I learned that everything worth having starts from the ground up. That stuck with me.</p>
                 <a href="https://zachbuilders.com" class="card-link" target="_blank" rel="noopener">
                     Zach Builders
@@ -404,7 +403,7 @@
             <div class="card-inner">
                 <span class="card-era">Recent</span>
                 <h2>Helping Others Build &mdash; Riverview Adventure Company</h2>
-                <p>Built the website for Cory's Riverview Adventure Company. Same principle as always &mdash; someone needs something built right, you show up and build it. Whether it's a house, a clean space, or a website, the craft is the same.</p>
+                <p>Built the website for <a href="https://riverviewadventurecompany.com" target="_blank" rel="noopener">Cory's Riverview Adventure Company</a>. Same principle as always &mdash; someone needs something built right, you show up and build it. Whether it's a house, a clean space, or a website, the craft is the same.</p>
                 <a href="https://riverviewadventurecompany.com" class="card-link" target="_blank" rel="noopener">
                     Riverview Adventure Company
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
@@ -432,7 +431,6 @@
             <div class="footer-links">
                 <a href="/">Home</a>
                 <a href="/#products">Products</a>
-                <a href="https://github.com/sassyconsultingllc" target="_blank" rel="noopener">GitHub</a>
             </div>
         </div>
     </footer>

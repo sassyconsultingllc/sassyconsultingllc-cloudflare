@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SassyMCP — Pricing | Production-Ready MCP Server</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+        body { font-family: 'DM Sans', sans-serif; line-height: 1.65; -webkit-font-smoothing: antialiased; }
+        .card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        @keyframes loopBorder { 0% { border-color: rgba(16,185,129,0.3); } 33% { border-color: rgba(13,148,136,0.3); } 66% { border-color: rgba(59,130,246,0.3); } 100% { border-color: rgba(16,185,129,0.3); } }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 25px 50px -12px rgba(16,185,129,0.2); animation: loopBorder 3s linear infinite; }
+        .popular { border: 3px solid #10b981; }
+        .toggle-active { background-color: #10b981; color: #111827; }
+        .intro-banner { }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100">
+    <div class="max-w-7xl mx-auto px-6 py-16">
+
+        <!-- INTRODUCTORY SPECIAL BANNER -->
+        <div class="intro-banner bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-8 px-10 rounded-3xl mb-10 flex items-center justify-center gap-4 font-semibold text-xl shadow-2xl">
+            INTRODUCTORY SPECIAL — 75% OFF ALL PAID PLANS
+            <span class="bg-white text-emerald-600 text-base px-5 py-1 rounded-2xl font-bold">UNTIL JUNE 1ST, 2026</span>
+        </div>
+
+        <!-- Header -->
+        <div class="flex justify-between items-center mb-12">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-bolt text-emerald-400 text-3xl"></i>
+                <h1 class="text-4xl font-bold tracking-tighter">SassyMCP</h1>
+            </div>
+            <a href="https://sassyconsultingllc.com" class="text-zinc-400 hover:text-white flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Back to Sassy Consulting LLC
+            </a>
+        </div>
+
+        <!-- Toggle -->
+        <div class="flex justify-center mb-8">
+            <div class="inline-flex bg-zinc-900 rounded-3xl p-1 text-sm font-medium">
+                <button onclick="setBilling('monthly')" id="btn-monthly"
+                        class="toggle-active px-6 py-3 rounded-3xl transition">Monthly</button>
+                <button onclick="setBilling('annual')" id="btn-annual"
+                        class="px-6 py-3 rounded-3xl transition">Annual <span class="text-emerald-400 text-xs ml-1">(save 17%)</span></button>
+            </div>
+        </div>
+
+        <div class="text-center mb-16">
+            <h2 class="text-6xl font-bold tracking-tighter mb-4">Powerful Productivity</h2>
+            <p class="text-2xl text-zinc-400 max-w-2xl mx-auto">Production-grade MCP server with live reload, persistent state, and full defensive hardening.</p>
+        </div>
+
+        <!-- Pricing Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+
+            <!-- Free -->
+            <div class="card bg-zinc-900 rounded-3xl p-8">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Free</h3>
+                        <p class="text-emerald-400 text-sm font-medium">Personal use</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-5xl font-bold">$0</span>
+                        <p class="text-zinc-400 text-sm">forever</p>
+                    </div>
+                </div>
+                <ul class="space-y-4 text-zinc-300 mb-12">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Works with Claude, Cursor, and Windsurf</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Core tools and GitHub Quick tools</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 100,000 calls per month</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Loads only the tools you need</li>
+                </ul>
+                <a href="/contact" class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Get Started Free</a>
+            </div>
+
+            <!-- Pro (MOST POPULAR) -->
+            <div class="card popular bg-zinc-900 rounded-3xl p-8 relative">
+                <div class="absolute -top-3 right-8 bg-emerald-400 text-zinc-950 text-xs font-bold px-6 py-1 rounded-full">MOST POPULAR</div>
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Pro</h3>
+                        <p class="text-emerald-400 text-sm font-medium">Full production</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="price-pro" class="text-5xl font-bold">$29</span>
+                        <p id="period-pro" class="text-zinc-400 text-sm">per month</p>
+                        <span id="save-pro" class="hidden text-emerald-400 text-xs font-medium">Save $58/year</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 text-zinc-300 mb-12">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> HTTPS + Cloudflare Tunnel</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> All 224 tools included</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Live reload and persistent state</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Built-in monitoring and health checks</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 2 million calls/month</li>
+                </ul>
+                <a href="/checkout/pro.html" id="cta-pro"
+                   class="block w-full text-center py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-semibold">Subscribe — $29/mo</a>
+            </div>
+
+            <!-- Team -->
+            <div class="card bg-zinc-900 rounded-3xl p-8">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Team</h3>
+                        <p class="text-emerald-400 text-sm font-medium">Multi-user</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="price-team" class="text-5xl font-bold">$99</span>
+                        <p id="period-team" class="text-zinc-400 text-sm">per month</p>
+                        <span id="save-team" class="hidden text-emerald-400 text-xs font-medium">Save $198/year</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 text-zinc-300 mb-12">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Pro</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 5 users</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Shared tool access between team members</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 10 million calls/month</li>
+                </ul>
+                <a href="/checkout/team.html" id="cta-team"
+                   class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Subscribe — $99/mo</a>
+            </div>
+
+            <!-- Enterprise -->
+            <div class="card bg-zinc-900 rounded-3xl p-8">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Enterprise</h3>
+                        <p class="text-emerald-400 text-sm font-medium">Dedicated support</p>
+                    </div>
+                    <div class="text-right">
+                        <span id="price-enterprise" class="text-5xl font-bold">$499</span>
+                        <p id="period-enterprise" class="text-zinc-400 text-sm">per month</p>
+                        <span id="save-enterprise" class="hidden text-emerald-400 text-xs font-medium">Save $998/year</span>
+                    </div>
+                </div>
+                <ul class="space-y-4 text-zinc-300 mb-12">
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Team</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Unlimited calls with dedicated infrastructure</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Runs fully offline with no internet required</li>
+                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Custom integrations built for your workflow</li>
+                </ul>
+                <a href="/contact" id="cta-enterprise"
+                   class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Talk to Sales</a>
+            </div>
+        </div>
+
+        <!-- FAQ -->
+        <div class="mt-20 max-w-2xl mx-auto">
+            <h3 class="text-2xl font-semibold text-center mb-8">Frequently Asked Questions</h3>
+            <div class="space-y-6">
+                <details class="bg-zinc-900 rounded-2xl p-6">
+                    <summary class="font-medium cursor-pointer">Can I switch between monthly and annual?</summary>
+                    <p class="text-zinc-400 mt-3">Yes — you can change billing anytime from your account.</p>
+                </details>
+                <details class="bg-zinc-900 rounded-2xl p-6">
+                    <summary class="font-medium cursor-pointer">What happens if I exceed my call limit?</summary>
+                    <p class="text-zinc-400 mt-3">Overages are $0.0005 per 1k additional calls. Never throttled.</p>
+                </details>
+                <details class="bg-zinc-900 rounded-2xl p-6">
+                    <summary class="font-medium cursor-pointer">Is Enterprise air-gapped?</summary>
+                    <p class="text-zinc-400 mt-3">Yes. Full offline .exe with no internet required.</p>
+                </details>
+            </div>
+        </div>
+
+        <div class="text-center text-zinc-500 text-sm mt-20">
+            © 2026 Sassy Consulting LLC • Madison, Wisconsin • Production build v1.0
+        </div>
+    </div>
+
+    <script>
+        let billingMode = 'monthly';
+
+        function setBilling(mode) {
+            billingMode = mode;
+            const monthlyBtn = document.getElementById('btn-monthly');
+            const annualBtn = document.getElementById('btn-annual');
+
+            if (mode === 'monthly') {
+                monthlyBtn.classList.add('toggle-active');
+                annualBtn.classList.remove('toggle-active');
+            } else {
+                annualBtn.classList.add('toggle-active');
+                monthlyBtn.classList.remove('toggle-active');
+            }
+            updatePrices();
+        }
+
+        function updatePrices() {
+            const suffix = billingMode === 'annual' ? '?billing=annual' : '';
+            if (billingMode === 'monthly') {
+                document.getElementById('price-pro').innerHTML = '$29 <span class="line-through text-zinc-400 text-2xl ml-2">$116</span>';
+                document.getElementById('period-pro').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
+                document.getElementById('cta-pro').textContent = 'Subscribe — $29/mo';
+                document.getElementById('cta-pro').href = '/checkout/pro.html';
+                document.getElementById('price-team').innerHTML = '$99 <span class="line-through text-zinc-400 text-2xl ml-2">$396</span>';
+                document.getElementById('period-team').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
+                document.getElementById('cta-team').textContent = 'Subscribe — $99/mo';
+                document.getElementById('cta-team').href = '/checkout/team.html';
+                document.getElementById('price-enterprise').innerHTML = '$499 <span class="line-through text-zinc-400 text-2xl ml-2">$1,996</span>';
+                document.getElementById('period-enterprise').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
+                document.getElementById('cta-enterprise').textContent = 'Talk to Sales';
+            } else {
+                document.getElementById('price-pro').innerHTML = '$73 <span class="line-through text-zinc-400 text-2xl ml-2">$290</span>';
+                document.getElementById('period-pro').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
+                document.getElementById('cta-pro').textContent = 'Subscribe — $73/year';
+                document.getElementById('cta-pro').href = '/checkout/pro.html?billing=annual';
+                document.getElementById('price-team').innerHTML = '$248 <span class="line-through text-zinc-400 text-2xl ml-2">$990</span>';
+                document.getElementById('period-team').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
+                document.getElementById('cta-team').textContent = 'Subscribe — $248/year';
+                document.getElementById('cta-team').href = '/checkout/team.html?billing=annual';
+                document.getElementById('price-enterprise').innerHTML = '$1,248 <span class="line-through text-zinc-400 text-2xl ml-2">$4,990</span>';
+                document.getElementById('period-enterprise').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
+                document.getElementById('cta-enterprise').textContent = 'Talk to Sales';
+            }
+        }
+
+        // Initialize
+        updatePrices();
+    </script>
+</body>
+</html>
