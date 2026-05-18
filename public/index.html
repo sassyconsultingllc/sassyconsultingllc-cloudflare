@@ -767,6 +767,135 @@
             .results-grid { grid-template-columns: repeat(2, 1fr); }
             .about-grid { grid-template-columns: 1fr; }
         }
+
+        /* ─────────────────────────────────────────────────────────────
+           Post-verification hamster banner — a tiny SVG hamster scurries
+           in from the right, drags a wooden sign past the viewer with the
+           14-day Play Store install reminder, then exits stage left.
+           Triggered once per session by onAppsCaptchaSuccess.
+        ───────────────────────────────────────────────────────────── */
+        .hamster-stage {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 24px;
+            height: 110px;
+            pointer-events: none;
+            z-index: 9000;
+            overflow: hidden;
+        }
+        .hamster-stage[hidden] { display: none; }
+        .hamster-caravan {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transform: translateX(110vw);
+            filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.45));
+        }
+        .hamster-stage.run .hamster-caravan {
+            animation: hamster-traverse 13s cubic-bezier(.55, 0, .55, 1) forwards;
+        }
+        @keyframes hamster-traverse {
+            0%   { transform: translateX(110vw); }
+            22%  { transform: translateX(calc(100vw - 580px)); } /* arrive center-ish */
+            68%  { transform: translateX(calc(100vw - 580px)); } /* pause to read */
+            100% { transform: translateX(-640px); }              /* exit left */
+        }
+        @media (max-width: 720px) {
+            @keyframes hamster-traverse {
+                0%   { transform: translateX(110vw); }
+                25%  { transform: translateX(8vw);   }
+                70%  { transform: translateX(8vw);   }
+                100% { transform: translateX(-110vw); }
+            }
+            .hamster-sign { font-size: 0.78rem !important; max-width: 220px !important; }
+        }
+
+        .hamster {
+            width: 72px;
+            height: 56px;
+            flex-shrink: 0;
+            animation: hamster-bob 0.46s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+        @keyframes hamster-bob {
+            0%, 100% { transform: translateY(0)   rotate(-0.5deg); }
+            50%      { transform: translateY(-2px) rotate(0.5deg); }
+        }
+        .hamster .leg-back-1 { animation: leg-step 0.32s ease-in-out infinite;        transform-origin: center top; }
+        .hamster .leg-back-2 { animation: leg-step 0.32s ease-in-out 0.16s infinite;  transform-origin: center top; }
+        @keyframes leg-step {
+            0%, 100% { transform: translateY(0)   scaleY(1);   }
+            50%      { transform: translateY(-3px) scaleY(0.85); }
+        }
+
+        .hamster-rope {
+            width: 38px;
+            height: 2px;
+            background: linear-gradient(90deg, #8b6a4a, #6b4f3a 50%, #8b6a4a);
+            transform: rotate(-8deg);
+            transform-origin: left center;
+            margin-left: -4px;
+            margin-bottom: 18px;
+            border-radius: 2px;
+        }
+        .hamster-sign {
+            position: relative;
+            background:
+                linear-gradient(180deg, #d4a574 0%, #b8895c 100%);
+            border: 2px solid #5a3d24;
+            border-radius: 8px;
+            padding: 0.65rem 1rem;
+            color: #2a1d10;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            max-width: 360px;
+            transform: rotate(-2deg);
+            box-shadow:
+                0 4px 10px rgba(0, 0, 0, 0.4),
+                inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                inset 0 -8px 12px rgba(90, 61, 36, 0.25);
+            margin-bottom: 8px;
+        }
+        .hamster-sign::before,
+        .hamster-sign::after {
+            /* Wood grain knots */
+            content: '';
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: rgba(90, 61, 36, 0.45);
+            box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.15);
+        }
+        .hamster-sign::before { top: 6px;  left: 8px;  }
+        .hamster-sign::after  { bottom: 7px; right: 14px; width: 4px; height: 4px; }
+        .hamster-sign strong {
+            color: #4a2810;
+            font-weight: 700;
+        }
+        .hamster-sign-tagline {
+            display: block;
+            font-size: 0.74rem;
+            color: rgba(42, 29, 16, 0.75);
+            margin-top: 0.15rem;
+            font-style: italic;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hamster-stage.run .hamster-caravan {
+                /* No animation — just settle the banner center-bottom briefly */
+                animation: none;
+                transform: translate(calc(50vw - 50%), 0);
+            }
+            .hamster, .hamster .leg-back-1, .hamster .leg-back-2 {
+                animation: none !important;
+            }
+        }
     </style>
 </head>
 <body>
@@ -843,8 +972,73 @@ Sassy Consulting LLC
         </div>
     </section>
 
+    <!-- Post-verification hamster banner: SVG hamster pulls a wooden sign with the 14-day install ask -->
+    <div class="hamster-stage" id="hamster-stage" hidden aria-hidden="true">
+        <div class="hamster-caravan">
+            <svg class="hamster" viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Tail -->
+                <ellipse cx="86" cy="44" rx="3" ry="5" fill="#c08a55" transform="rotate(20 86 44)"/>
+                <!-- Back legs -->
+                <ellipse class="leg-back-1" cx="58" cy="62" rx="5" ry="7" fill="#c08a55"/>
+                <ellipse class="leg-back-2" cx="72" cy="62" rx="5" ry="7" fill="#c08a55"/>
+                <!-- Body -->
+                <ellipse cx="55" cy="44" rx="32" ry="22" fill="#e8b478"/>
+                <!-- Belly highlight -->
+                <ellipse cx="55" cy="52" rx="22" ry="13" fill="#f5d4a8"/>
+                <!-- Head -->
+                <ellipse cx="22" cy="36" rx="17" ry="15" fill="#e8b478"/>
+                <!-- Ears -->
+                <circle cx="14" cy="22" r="5.5" fill="#e8b478"/>
+                <circle cx="14" cy="22" r="2.8" fill="#f7c8d0"/>
+                <circle cx="27" cy="21" r="5.5" fill="#e8b478"/>
+                <circle cx="27" cy="21" r="2.8" fill="#f7c8d0"/>
+                <!-- Cheek puff -->
+                <circle cx="24" cy="42" r="5" fill="#f7c8d0" opacity="0.55"/>
+                <!-- Eye -->
+                <circle cx="15" cy="34" r="2.2" fill="#1a1a1a"/>
+                <circle cx="14.3" cy="33.3" r="0.7" fill="#ffffff"/>
+                <!-- Eyebrow whisker -->
+                <path d="M 8 36 Q 4 36 2 35" stroke="#1a1a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+                <path d="M 8 38 Q 4 39 2 40" stroke="#1a1a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+                <!-- Nose -->
+                <ellipse cx="7" cy="36" rx="1.6" ry="1.2" fill="#1a1a1a"/>
+                <!-- Mouth line -->
+                <path d="M 7 38 Q 8 40 10 39" stroke="#1a1a1a" stroke-width="0.5" fill="none" stroke-linecap="round"/>
+                <!-- Front paw (holding rope) -->
+                <ellipse cx="18" cy="54" rx="3.2" ry="5" fill="#d49a5f"/>
+            </svg>
+            <div class="hamster-rope" aria-hidden="true"></div>
+            <div class="hamster-sign">
+                Keep me installed for <strong>14 days</strong> — that's the Google Play Store production-rollout requirement.
+                <span class="hamster-sign-tagline">Every day you keep it on your phone counts.</span>
+            </div>
+        </div>
+    </div>
+
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <script>
+        // Roll the hamster banner across the screen exactly once per session
+        // after the Turnstile verification clears. `force=true` (from a fresh
+        // verification this load) overrides the once-per-session guard for the
+        // VERY first verification, so the user sees the sign as a reward; if
+        // they're already verified from a prior cache, we skip silently.
+        function playHamsterBanner(force) {
+            try {
+                if (!force && sessionStorage.getItem('hamster_shown') === '1') return;
+            } catch (e) {}
+            const stage = document.getElementById('hamster-stage');
+            if (!stage) return;
+            stage.hidden = false;
+            // requestAnimationFrame so the hidden -> shown reflow registers
+            // before the animation class lands.
+            requestAnimationFrame(() => stage.classList.add('run'));
+            try { sessionStorage.setItem('hamster_shown', '1'); } catch (e) {}
+            setTimeout(() => {
+                stage.classList.remove('run');
+                stage.hidden = true;
+            }, 13400);
+        }
+
         function onAppsCaptchaSuccess(token) {
             const grid = document.getElementById('apps-grid');
             const gate = document.getElementById('apps-captcha-gate');
@@ -852,7 +1046,11 @@ Sassy Consulting LLC
             if (grid) grid.dataset.locked = 'false';
             if (gate) gate.classList.add('verified');
             if (hint) hint.textContent = 'Verified — install links unlocked';
+            const alreadyVerified = (() => { try { return sessionStorage.getItem('apps_captcha_verified') === '1'; } catch (e) { return false; } })();
             try { sessionStorage.setItem('apps_captcha_verified', '1'); } catch (e) {}
+            // Only roll the banner on a real verification this load — not on
+            // the cached replay during page hydration.
+            if (token !== 'cached' && !alreadyVerified) playHamsterBanner(true);
         }
         (function () {
             try {
