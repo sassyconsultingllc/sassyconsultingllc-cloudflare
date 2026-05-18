@@ -91,7 +91,7 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
         <div class="error-msg" id="error-msg"></div>
     </form>
 
-    <div class="secure-note">Payments are processed securely through Stripe. You can cancel anytime from your account.</div>
+    <div class="secure-note">Payments are processed securely through Lemon Squeezy. You can cancel anytime from your account.</div>
 </div>
 
 <script>
@@ -126,7 +126,7 @@ async function handleCheckout(e) {
     const email = document.getElementById('email').value.trim();
     errorEl.style.display = 'none';
     btn.disabled = true;
-    btn.textContent = 'Redirecting to Stripe...';
+    btn.textContent = 'Redirecting to Lemon Squeezy...';
 
     try {
         const res = await fetch('/api/checkout', {

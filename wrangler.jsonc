@@ -36,20 +36,19 @@
     }
   ],
 
-  // Durable Objects for real-time PTT relay
-  "durable_objects": {
-    "bindings": [
-      {
-        "name": "PTT_RELAY",
-        "class_name": "PttRoom"
-      }
-    ]
-  },
-
+  // PTT relay moved to the standalone `sassytalk-relay` worker at
+  // relay.sassy-consults.com. The PttRoom Durable Object is being torn
+  // down here via deleted_classes; the binding has been removed from the
+  // bindings block, and v1 stays in the migration history so v2 can
+  // reference it for the deletion.
   "migrations": [
     {
       "tag": "v1_pttroom",
       "new_sqlite_classes": ["PttRoom"]
+    },
+    {
+      "tag": "v2_remove_pttroom",
+      "deleted_classes": ["PttRoom"]
     }
   ],
 
@@ -63,7 +62,6 @@
 
   // Environment variables (non-secret)
   "vars": {
-    "SITE_URL": "https://sassyconsultingllc.com",
-    "MYBESTSITES_URL": "https://mybestsites.online"
+    "SITE_URL": "https://sassyconsultingllc.com"
   }
 }

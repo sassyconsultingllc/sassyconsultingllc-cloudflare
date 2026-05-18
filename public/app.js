@@ -278,12 +278,26 @@ async function loadVPNRecommendations() {
 
 function renderVPNOptions(recommendations) {
     const vpnOptions = document.getElementById('vpn-options');
-    vpnOptions.innerHTML = recommendations.map(vpn => `
-        <a href="${vpn.website}" target="_blank" rel="noopener" class="vpn-option">
-            <strong>${vpn.name}<span class="free-badge">FREE</span></strong>
-            <span>Click to learn more</span>
-        </a>
-    `).join('');
+    if (!vpnOptions) return;
+    // Only allow http(s) URLs for the link target; reject javascript:, data:, etc.
+    const isSafeUrl = (u) => typeof u === 'string' && /^https?:\/\//i.test(u);
+    vpnOptions.replaceChildren(...recommendations.map(vpn => {
+        const a = document.createElement('a');
+        a.className = 'vpn-option';
+        a.href = isSafeUrl(vpn.website) ? vpn.website : '#';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        const strong = document.createElement('strong');
+        strong.textContent = String(vpn.name || '');
+        const badge = document.createElement('span');
+        badge.className = 'free-badge';
+        badge.textContent = 'FREE';
+        strong.appendChild(badge);
+        const sub = document.createElement('span');
+        sub.textContent = 'Click to learn more';
+        a.append(strong, sub);
+        return a;
+    }));
 }
 
 function renderDefaultVPNOptions() {

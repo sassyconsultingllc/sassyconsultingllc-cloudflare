@@ -35,7 +35,6 @@ const RULES = [
   { match: "sassy-talk",          priority: "0.8", changefreq: "monthly" },
   { match: "winforensics",        priority: "0.8", changefreq: "monthly" },
   { match: "website-creator",     priority: "0.8", changefreq: "monthly" },
-  { match: "my-best-sites",       priority: "0.7", changefreq: "monthly" },
   { match: "aboutme",             priority: "0.7", changefreq: "monthly" },
   { match: "app-testers",         priority: "0.6", changefreq: "monthly" },
   { match: "guides/",             priority: "0.5", changefreq: "monthly" },

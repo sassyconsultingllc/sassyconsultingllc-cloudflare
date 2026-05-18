@@ -51,6 +51,9 @@ credentials.json
 # Cloudflare / Wrangler
 /.wrangler/
 
+# Mercury-2 audit bundles + reports
+/audits/
+
 # Static site build outputs
 /public/build/
 /public/.cache/
@@ -74,6 +77,10 @@ credentials.json
 *.swp
 *~
 *.tmp
+*.bak
+*.old
+*.orig
+nul
 
 # Terraform
 *.tfstate

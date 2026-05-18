@@ -1,5 +1,3 @@
-import { DurableObject } from "cloudflare:workers";
-
 const DATACENTER_ASNS = new Set([
   13335, 14618, 15169, 8075, 16509, 14061, 20473, 46606, 63949, 54825,
   398101, 13213, 32934, 19551, 36351, 30633, 21859
@@ -623,7 +621,7 @@ async function handleCheckout(request, env, corsHeaders) {
   if (env.DB) {
     try {
       await env.DB.prepare(
-        "INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+        "INSERT OR IGNORE INTO licenses (license_key, email, product, payment_ref, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
       ).bind(`PENDING-${ref}`, email, product, ref).run();
     } catch (e) { /* table may not exist on first deploy */ }
   }
@@ -646,7 +644,7 @@ async function handleVerify(request, env, corsHeaders) {
   // a short window before reporting "not paid yet". Each retry waits 500ms.
   for (let attempt = 0; attempt < 6; attempt++) {
     const row = await env.DB.prepare(
-      "SELECT license_key, email, product FROM licenses WHERE stripe_session_id = ?"
+      "SELECT license_key, email, product FROM licenses WHERE payment_ref = ?"
     ).bind(session_id).first();
 
     if (row && row.license_key && !row.license_key.startsWith("PENDING-")) {
@@ -720,11 +718,11 @@ async function handleWebhook(request, env, corsHeaders) {
     try {
       // Replace any PENDING-* placeholder row written by /api/checkout.
       await env.DB.prepare(
-        "UPDATE licenses SET license_key = ?, email = ?, product = ? WHERE stripe_session_id = ?"
+        "UPDATE licenses SET license_key = ?, email = ?, product = ? WHERE payment_ref = ?"
       ).bind(licenseKey, email, product, ref).run();
       // If no row existed (rare: webhook before checkout response persisted), insert.
       await env.DB.prepare(
-        "INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+        "INSERT OR IGNORE INTO licenses (license_key, email, product, payment_ref, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
       ).bind(licenseKey, email, product, ref).run();
     } catch (e) { console.error("License DB write failed:", e); }
   }
@@ -957,37 +955,6 @@ async function handleNdaDownload(request, env, corsHeaders) {
 }
 
 // ═══════════════════════════════════════════════════
-// PTT: WEBSOCKET UPGRADE → DURABLE OBJECT
-// ═══════════════════════════════════════════════════
-async function handlePttWebSocket(request, url, env) {
-  const roomId = url.searchParams.get("room");
-  if (!roomId || roomId.length < 8 || roomId.length > 64) {
-    return new Response("Missing or invalid room ID", { status: 400 });
-  }
-
-  // Derive a stable Durable Object ID from the room name (session_id)
-  const doId = env.PTT_RELAY.idFromName(roomId);
-  const room = env.PTT_RELAY.get(doId);
-
-  // Forward the WebSocket upgrade request to the Durable Object
-  return room.fetch(request);
-}
-
-async function handlePttRoomInfo(url, env, corsHeaders) {
-  const roomId = url.searchParams.get("room");
-  if (!roomId) return jsonResponse({ error: "room parameter required" }, 400, corsHeaders);
-
-  // We can't peek inside a DO without calling it, so return basic info
-  // The client already knows room size from the "welcome" WebSocket message
-  return jsonResponse({
-    room: roomId,
-    relay: "cloudflare-durable-objects",
-    max_clients: 8,
-    server_region: "auto"
-  }, 200, corsHeaders);
-}
-
-// ═══════════════════════════════════════════════════
 // UTILITIES
 // ═══════════════════════════════════════════════════
 
@@ -1085,219 +1052,3 @@ function getTimezone(country, region) {
   return typeof countryTz === "object" ? (countryTz[region] || countryTz["default"]) : countryTz;
 }
 
-// ═══════════════════════════════════════════════════
-// PTT ROOM — Durable Object for real-time voice relay
-// ═══════════════════════════════════════════════════
-//
-// Architecture:
-//   Client connects via WebSocket to /api/ptt/ws?room=<SESSION_ID>
-//   The room ID maps to the QR-exchanged session_id, so only devices
-//   that share the same AES-256-GCM key end up in the same room.
-//
-//   The relay is a BLIND FORWARDER — it never decrypts audio.
-//   Each incoming binary WebSocket message is broadcast to every
-//   other connected client in the same room. The relay also handles
-//   lightweight JSON control messages (join/leave/heartbeat).
-//
-//   Max clients per room: 16 (walkie-talkie style, small-medium group)
-//   Idle timeout: 5 minutes with no messages → room hibernates
-//   Heartbeat: clients send ping every 30s, server responds pong
-
-export class PttRoom extends DurableObject {
-  constructor(ctx, env) {
-    super(ctx, env);
-    // Map of WebSocket → client metadata
-    this.clients = new Map();
-    this.roomCreatedAt = Date.now();
-  }
-
-  async fetch(request) {
-    const url = new URL(request.url);
-
-    // Only accept WebSocket upgrades
-    if (request.headers.get("Upgrade") !== "websocket") {
-      return new Response("Expected WebSocket", { status: 426 });
-    }
-
-    // Extract client info from query params
-    const deviceName = url.searchParams.get("device") || "Unknown";
-    const clientId = url.searchParams.get("client_id") || crypto.randomUUID();
-
-    // Enforce max clients per room
-    if (this.clients.size >= 16) {
-      return new Response("Room full (max 16 clients)", { status: 503 });
-    }
-
-    // Create WebSocket pair
-    const pair = new WebSocketPair();
-    const [client, server] = Object.values(pair);
-
-    // Accept the server side
-    this.ctx.acceptWebSocket(server);
-
-    // Store client metadata, keyed by the server-side WebSocket
-    const meta = {
-      clientId,
-      deviceName,
-      joinedAt: Date.now(),
-      lastActivity: Date.now(),
-      messageCount: 0
-    };
-    this.clients.set(server, meta);
-
-    // Notify other clients about the new peer
-    this.broadcast(server, JSON.stringify({
-      type: "peer_joined",
-      client_id: clientId,
-      device: deviceName,
-      room_size: this.clients.size
-    }));
-
-    // Send the joiner a welcome with current room state
-    server.send(JSON.stringify({
-      type: "welcome",
-      client_id: clientId,
-      room_size: this.clients.size,
-      peers: Array.from(this.clients.values())
-        .filter(m => m.clientId !== clientId)
-        .map(m => ({ client_id: m.clientId, device: m.deviceName }))
-    }));
-
-    return new Response(null, { status: 101, webSocket: client });
-  }
-
-  // ── Hibernation-aware WebSocket handlers ──
-
-  async webSocketMessage(ws, message) {
-    let meta = this.clients.get(ws);
-    if (!meta) {
-      // Restore from hibernation attachment before rejecting
-      try {
-        const attachment = ws.deserializeAttachment();
-        if (attachment) {
-          meta = attachment;
-          this.clients.set(ws, meta);
-        }
-      } catch (_) {}
-      if (!meta) {
-        ws.close(4000, "Unknown client");
-        return;
-      }
-    }
-
-    meta.lastActivity = Date.now();
-    meta.messageCount++;
-
-    // Binary message = encrypted audio frame → broadcast to all others
-    if (message instanceof ArrayBuffer) {
-      this.broadcastBinary(ws, message);
-      return;
-    }
-
-    // Text message = JSON control message
-    try {
-      const msg = JSON.parse(message);
-
-      switch (msg.type) {
-        case "ping":
-          // Heartbeat — respond immediately
-          ws.send(JSON.stringify({ type: "pong", ts: Date.now() }));
-          break;
-
-        case "ptt_start":
-          // Client started transmitting — notify others
-          this.broadcast(ws, JSON.stringify({
-            type: "ptt_start",
-            client_id: meta.clientId,
-            device: meta.deviceName
-          }));
-          break;
-
-        case "ptt_stop":
-          // Client stopped transmitting
-          this.broadcast(ws, JSON.stringify({
-            type: "ptt_stop",
-            client_id: meta.clientId,
-            device: meta.deviceName
-          }));
-          break;
-
-        case "channel":
-          // Client switched channel — update metadata
-          meta.channel = msg.channel || 0;
-          this.broadcast(ws, JSON.stringify({
-            type: "channel",
-            client_id: meta.clientId,
-            channel: meta.channel
-          }));
-          break;
-
-        default:
-          // Unknown control message — ignore
-          break;
-      }
-    } catch (e) {
-      // Not valid JSON and not binary — ignore
-    }
-  }
-
-  async webSocketClose(ws, code, reason) {
-    this.removeClient(ws, code, reason);
-  }
-
-  async webSocketError(ws, error) {
-    this.removeClient(ws, 4001, "WebSocket error");
-  }
-
-  // ── Internal helpers ──
-
-  removeClient(ws, code, reason) {
-    const meta = this.clients.get(ws);
-    if (meta) {
-      // Notify remaining clients
-      this.broadcast(ws, JSON.stringify({
-        type: "peer_left",
-        client_id: meta.clientId,
-        device: meta.deviceName,
-        room_size: this.clients.size - 1,
-        reason: reason || "disconnected"
-      }));
-    }
-    this.clients.delete(ws);
-
-    // Try to close gracefully
-    try { ws.close(code || 1000, reason || "removed"); } catch (e) { /* already closed */ }
-  }
-
-  /**
-   * Broadcast a text message to all clients except the sender.
-   */
-  broadcast(sender, message) {
-    for (const [ws, _meta] of this.clients) {
-      if (ws === sender) continue;
-      try {
-        ws.send(message);
-      } catch (e) {
-        // Dead socket — remove it
-        this.clients.delete(ws);
-        try { ws.close(4002, "Send failed"); } catch (_) {}
-      }
-    }
-  }
-
-  /**
-   * Broadcast a binary message (encrypted audio frame) to all clients
-   * except the sender. This is the hot path — keep it lean.
-   */
-  broadcastBinary(sender, data) {
-    for (const [ws, _meta] of this.clients) {
-      if (ws === sender) continue;
-      try {
-        ws.send(data);
-      } catch (e) {
-        this.clients.delete(ws);
-        try { ws.close(4002, "Send failed"); } catch (_) {}
-      }
-    }
-  }
-}
