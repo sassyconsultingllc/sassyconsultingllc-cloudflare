@@ -105,6 +105,51 @@
                     "priceCurrency": "USD"
                 },
                 "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
+            },
+            {
+                "@type": "SoftwareApplication",
+                "name": "Sassy Brain",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Windows",
+                "description": "Multi-AI consensus engine. Five providers (Claude, Grok, Gemini, Mistral, HuggingFace) debate and refine in parallel, then synthesize a single unified answer. Async message steering, encrypted local API keys, no telemetry.",
+                "url": "https://sassyconsultingllc.com/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe",
+                "softwareVersion": "0.2.1",
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD"
+                },
+                "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
+            },
+            {
+                "@type": "MobileApplication",
+                "name": "Foodie Finder",
+                "applicationCategory": "FoodAndDrinkApplication",
+                "operatingSystem": "Android",
+                "description": "Find restaurants worth driving to. Community-powered tips, local hidden gems, honest reviews. No ads, no tracking.",
+                "url": "https://play.google.com/apps/testing/com.sassyconsultingllc.foodiefinder",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
+            },
+            {
+                "@type": "MobileApplication",
+                "name": "Sassy Talkie",
+                "applicationCategory": "CommunicationApplication",
+                "operatingSystem": "Android",
+                "description": "Encrypted push-to-talk over local WiFi. AES-256-GCM, no servers, no accounts, no data collection.",
+                "url": "https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
+            },
+            {
+                "@type": "MobileApplication",
+                "name": "Rebel Tuner",
+                "applicationCategory": "MusicApplication",
+                "operatingSystem": "Android",
+                "description": "Chromatic instrument tuner with real-time pitch detection and calibration controls. Currently in open testing on Google Play.",
+                "url": "https://play.google.com/apps/testing/com.sassyconsultingllc.tuner",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
             }
         ]
     }
@@ -253,13 +298,12 @@
         }
 
         .hero {
-            min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 8rem 2rem 4rem;
+            padding: 3rem 2rem 5rem;
             position: relative;
             overflow: hidden;
         }
@@ -485,6 +529,238 @@
             font-size: 1rem;
         }
 
+        /* Android Apps Top Band */
+        .apps-band {
+            padding: 7rem 2rem 3rem;
+            max-width: 1400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .apps-band-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .apps-band-header .section-label { margin-bottom: 0.75rem; }
+
+        .apps-band-title {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-size: clamp(1.75rem, 4vw, 2.5rem);
+            font-weight: 400;
+            margin-bottom: 0.75rem;
+        }
+
+        .apps-band-desc {
+            font-size: 1.05rem;
+            color: var(--text-secondary);
+            max-width: 640px;
+            margin: 0 auto;
+        }
+
+        .apps-grid {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: clamp(1rem, 2vw, 2rem);
+            width: 100%;
+        }
+
+        .app-tile {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: clamp(1.25rem, 2.5vw, 2rem);
+            transition: all 0.3s;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            color: inherit;
+            overflow: hidden;
+        }
+
+        .app-tile:hover {
+            border-color: var(--accent-primary);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgba(34, 197, 94, 0.15);
+            animation: rainbowBorder 3s linear infinite;
+        }
+
+        .app-icon-img {
+            width: clamp(96px, 18vw, 168px);
+            height: clamp(96px, 18vw, 168px);
+            border-radius: 28px;
+            object-fit: cover;
+            margin-bottom: 1.25rem;
+            box-shadow: 0 12px 32px -10px rgba(0,0,0,0.5);
+            background: var(--bg-tertiary);
+        }
+
+        .app-tile h3 {
+            font-family: 'DM Serif Display', Georgia, serif;
+            font-weight: 400;
+            font-size: clamp(1.2rem, 2vw, 1.5rem);
+            margin-bottom: 0.5rem;
+        }
+
+        .app-tile p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            margin-bottom: 1.25rem;
+            line-height: 1.55;
+            flex-grow: 1;
+        }
+
+        /* Turnstile captcha gate */
+        .captcha-gate {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.75rem;
+            margin: 0 auto 2.5rem;
+            padding: 1.5rem 1.75rem;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            max-width: 380px;
+            transition: border-color 0.3s, background 0.3s;
+        }
+
+        .captcha-gate.verified {
+            border-color: var(--accent-primary);
+            background: rgba(34, 197, 94, 0.08);
+        }
+
+        .captcha-gate.shake {
+            animation: gateShake 0.5s ease;
+            border-color: var(--accent-orange);
+        }
+
+        @keyframes gateShake {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-8px); }
+            40% { transform: translateX(8px); }
+            60% { transform: translateX(-6px); }
+            80% { transform: translateX(4px); }
+        }
+
+        .captcha-hint {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-align: center;
+        }
+
+        .captcha-gate.verified .captcha-hint {
+            color: var(--accent-primary);
+        }
+
+        .apps-grid[data-locked="true"] .app-tile {
+            filter: blur(3px) grayscale(0.4);
+            opacity: 0.55;
+            cursor: not-allowed;
+            transition: filter 0.4s, opacity 0.4s;
+        }
+
+        .apps-grid[data-locked="true"] .app-tile:hover {
+            transform: none;
+            border-color: var(--border-subtle);
+            box-shadow: none;
+            animation: none;
+        }
+
+        .apps-grid[data-locked="false"] .app-tile {
+            filter: none;
+            opacity: 1;
+            transition: filter 0.4s, opacity 0.4s;
+        }
+
+        .open-testing-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.3rem 0.85rem;
+            background: rgba(34, 197, 94, 0.12);
+            border: 1px solid rgba(34, 197, 94, 0.4);
+            color: var(--accent-primary);
+            font-size: 0.72rem;
+            font-weight: 600;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            margin-bottom: 1rem;
+        }
+
+        .open-testing-pill .dot {
+            width: 7px; height: 7px;
+            background: var(--accent-primary);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        .play-badge {
+            display: inline-block;
+            margin-top: auto;
+            transition: transform 0.2s, filter 0.2s;
+            line-height: 0;
+        }
+
+        .play-badge:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 6px 16px rgba(34, 197, 94, 0.25));
+        }
+
+        .play-badge img {
+            height: clamp(48px, 6vw, 60px);
+            width: auto;
+            display: block;
+        }
+
+        /* Tester feedback CTA under the apps grid */
+        .tester-cta {
+            display: flex;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+        .tester-cta a {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.85rem 1.5rem;
+            background: rgba(34, 197, 94, 0.08);
+            border: 1px solid rgba(34, 197, 94, 0.35);
+            color: var(--accent-primary);
+            text-decoration: none;
+            border-radius: 100px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+            transition: all 0.2s;
+        }
+        .tester-cta a:hover {
+            background: rgba(34, 197, 94, 0.14);
+            border-color: var(--accent-primary);
+            transform: translateY(-1px);
+            box-shadow: 0 8px 22px -10px rgba(34, 197, 94, 0.45);
+        }
+        .tester-cta a svg {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 720px) {
+            .apps-band { padding: 6rem 1rem 2rem; }
+            .apps-grid { gap: 0.75rem; }
+            .app-tile p { display: none; }
+            .tester-cta a { font-size: 0.88rem; padding: 0.75rem 1.25rem; }
+        }
+
+        @media (max-width: 480px) {
+            .app-tile { padding: 1rem; }
+            .app-tile h3 { font-size: 0.95rem; }
+        }
+
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .products-grid { grid-template-columns: 1fr; }
@@ -503,6 +779,7 @@ Sassy Consulting LLC
             </a>
             <div class="nav-links">
                 <a href="#products">Products</a>
+                <a href="#apps">Android Apps</a>
                 <a href="#tools">Free Tools</a>
                 <a href="#about">About</a>
                 <a href="https://github.com/sassyconsultingllc/sassyconsultingllc-cloudflare">Audit My Code</a>
@@ -510,6 +787,95 @@ Sassy Consulting LLC
             </div>
         </div>
     </nav>
+
+    <!-- ANDROID APPS TOP BAND -->
+    <section id="apps" class="apps-band">
+        <div class="apps-band-header">
+            <span class="section-label">Open Testing on Google Play</span>
+            <h2 class="apps-band-title">Help shape our Android apps</h2>
+            <p class="apps-band-desc">Three apps in open testing. Verify below, then tap any tile to opt in on Google Play.</p>
+        </div>
+
+        <div class="captcha-gate" id="apps-captcha-gate" aria-live="polite">
+            <div class="cf-turnstile" data-sitekey="0x4AAAAAADRS1rrJ99t-vA8Z" data-callback="onAppsCaptchaSuccess" data-theme="dark" data-size="normal"></div>
+            <p class="captcha-hint" id="apps-captcha-hint">Verify you&rsquo;re human to unlock install links</p>
+        </div>
+
+        <div class="apps-grid" id="apps-grid" data-locked="true">
+
+            <a class="app-tile" href="https://play.google.com/apps/testing/com.sassyconsultingllc.foodiefinder" target="_blank" rel="noopener" data-play-link aria-label="Join Foodie Finder open testing on Google Play">
+                <img class="app-icon-img" src="/images/apps/foodie-finder.png" alt="Foodie Finder app icon" width="512" height="512" loading="lazy">
+                <h3>Foodie Finder</h3>
+                <p>Local restaurant discovery with community tips. No ads, no algorithm push.</p>
+                <span class="open-testing-pill"><span class="dot"></span>Open Testing</span>
+                <span class="play-badge" aria-hidden="true">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
+                </span>
+            </a>
+
+            <a class="app-tile" href="https://play.google.com/apps/testing/com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" data-play-link aria-label="Join Sassy Talkie open testing on Google Play">
+                <img class="app-icon-img" src="/images/apps/sassy-talkie.png" alt="Sassy Talkie app icon" width="512" height="512" loading="lazy">
+                <h3>Sassy Talkie</h3>
+                <p>Encrypted push-to-talk over local WiFi. AES-256-GCM, no servers, no accounts.</p>
+                <span class="open-testing-pill"><span class="dot"></span>Open Testing</span>
+                <span class="play-badge" aria-hidden="true">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
+                </span>
+            </a>
+
+            <a class="app-tile" href="https://play.google.com/apps/testing/com.sassyconsultingllc.tuner" target="_blank" rel="noopener" data-play-link aria-label="Join Rebel Tuner open testing on Google Play">
+                <img class="app-icon-img" src="/images/apps/rebel-tuner.png" alt="Rebel Tuner app icon" width="512" height="512" loading="lazy">
+                <h3>Rebel Tuner</h3>
+                <p>Chromatic instrument tuner with attitude. Real-time pitch detection.</p>
+                <span class="open-testing-pill"><span class="dot"></span>Open Testing</span>
+                <span class="play-badge" aria-hidden="true">
+                    <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
+                </span>
+            </a>
+
+        </div>
+
+        <div class="tester-cta">
+            <a href="/app-testers">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                Tell me how the app functions in your use case
+            </a>
+        </div>
+    </section>
+
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script>
+        function onAppsCaptchaSuccess(token) {
+            const grid = document.getElementById('apps-grid');
+            const gate = document.getElementById('apps-captcha-gate');
+            const hint = document.getElementById('apps-captcha-hint');
+            if (grid) grid.dataset.locked = 'false';
+            if (gate) gate.classList.add('verified');
+            if (hint) hint.textContent = 'Verified — install links unlocked';
+            try { sessionStorage.setItem('apps_captcha_verified', '1'); } catch (e) {}
+        }
+        (function () {
+            try {
+                if (sessionStorage.getItem('apps_captcha_verified') === '1') {
+                    onAppsCaptchaSuccess('cached');
+                }
+            } catch (e) {}
+            document.addEventListener('click', function (e) {
+                const link = e.target.closest('[data-play-link]');
+                if (!link) return;
+                const grid = document.getElementById('apps-grid');
+                if (grid && grid.dataset.locked === 'true') {
+                    e.preventDefault();
+                    const gate = document.getElementById('apps-captcha-gate');
+                    if (gate) {
+                        gate.classList.add('shake');
+                        gate.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        setTimeout(() => gate.classList.remove('shake'), 600);
+                    }
+                }
+            });
+        })();
+    </script>
 
     <!-- HERO -->
     <section class="hero">
@@ -556,6 +922,19 @@ Sassy Consulting LLC
                 </div>
             </a>
 
+            <!-- Sassy Brain -->
+            <a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe" class="product-card">
+                <span class="product-badge new">New</span>
+                <h3>Sassy Brain</h3>
+                <p>Multi-AI consensus engine. 5 providers (Claude, Grok, Gemini, Mistral, HuggingFace) debate and refine, then synthesize one answer. Async steering, encrypted local keys, no telemetry.</p>
+                <div class="price" style="color: var(--accent-yellow);">Free</div>
+                <div class="product-tags">
+                    <span class="product-tag">AI</span>
+                    <span class="product-tag">Electron</span>
+                    <span class="product-tag">Windows</span>
+                </div>
+            </a>
+
             <a href="/browser" class="product-card" aria-labelledby="sassy-browser-title" role="article">
                 <span class="product-badge featured">Featured</span>
                 <h3 id="sassy-browser-title">Sassy Browser (v2 Tease)</h3>
@@ -568,41 +947,18 @@ Sassy Consulting LLC
                 </div>
             </a>
             
-            <a href="/sassy-talk" class="product-card">
-                <span class="product-badge">Popular</span>
-                <h3>Sassy-Talk</h3>
-                <p>Encrypted walkie-talkie app. AES-256-GCM over local WiFi. No servers, no accounts, no data collection.</p>
-                <div class="price">$2</div>
-                <div class="product-tags">
-                    <span class="product-tag">Communication</span>
-                    <span class="product-tag">Android</span>
-                    <span class="product-tag">Windows</span>
-                </div>
-            </a>
-
-            <a href="https://mybestsites.online" class="product-card" target="_blank">
+            <a href="https://mybestsites.online" class="product-card" target="_blank" rel="noopener">
                 <span class="product-badge new">New</span>
                 <h3>My Best Sites</h3>
                 <p>Create professional websites in 5 minutes. AI-powered content, free hosting, own everything forever.</p>
-                <div class="price" style="color: var(--accent-cyan);">Free / $79 / $279</div>
+                <div class="price" style="color: var(--accent-cyan);">Free / $10 / $29</div>
                 <div class="product-tags">
                     <span class="product-tag">AI</span>
                     <span class="product-tag">Cloudflare</span>
                     <span class="product-tag">Templates</span>
                 </div>
             </a>
-            
-            <a href="/winforensics" class="product-card">
-                <h3>WinForensics</h3>
-                <p>Digital forensics toolkit. Registry analysis, file recovery, timeline generation, evidence preservation.</p>
-                <div class="price">$2</div>
-                <div class="product-tags">
-                    <span class="product-tag">Rust</span>
-                    <span class="product-tag">Windows</span>
-                    <span class="product-tag">CLI</span>
-                </div>
-            </a>
-            
+
             <a href="/website-creator" class="product-card">
                 <h3>Website Creator</h3>
                 <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in.</p>
@@ -753,7 +1109,7 @@ Sassy Consulting LLC
                 <a href="/pricing.html">SassyMCP</a>
                 <a href="/winforensics.html">WinForensics-Pro</a>
                 <a href="/browser">Browser</a>
-                <a href="/sassy-talk">Sassy-Talk</a>
+                <a href="#apps">Android Apps</a>
                 <a href="https://mybestsites.online">My Best Sites</a>
                 <a href="https://github.com/sassyconsultingllc/sassyconsultingllc-cloudflare">GitHub</a>
             </div>

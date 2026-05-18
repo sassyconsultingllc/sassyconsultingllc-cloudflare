@@ -11,22 +11,24 @@ const VPN_KEYWORDS = [
   "azure", "digitalocean", "linode", "vultr", "ovh", "hetzner", "cloudflare", "akamai"
 ];
 
+// Product catalog. Pricing lives in the Lemon Squeezy dashboard; the worker only
+// resolves a (product, billing) pair to a variant ID via env vars of the form
+//   LS_VARIANT_<PRODUCT>            for one-time / monthly default
+//   LS_VARIANT_<PRODUCT>_MONTHLY    for explicit monthly subscription
+//   LS_VARIANT_<PRODUCT>_ANNUAL     for annual subscription
 const PRODUCTS = {
   "sassy-talk": {
     name: "Sassy-Talk",
-    amount: 200,
     mode: "payment",
     description: "Encrypted walkie-talkie app for Android and Windows"
   },
   "winforensics": {
     name: "WinForensics",
-    amount: 200,
     mode: "payment",
     description: "Digital forensics toolkit for Windows"
   },
   "website-creator": {
     name: "Website Creator",
-    amount: 200,
     mode: "payment",
     description: "AI-powered WordPress builder with security hardening"
   },
@@ -45,16 +47,73 @@ const PRODUCTS = {
 // SHA-256 hash of the NDA PDF — update when PDF changes
 const NDA_DOC_HASH = "TO_BE_COMPUTED_ON_DEPLOY";
 
+// Allowed origins for browser POST requests (lightweight CSRF defense).
+const ALLOWED_ORIGINS = new Set([
+  "https://sassyconsultingllc.com",
+  "https://www.sassyconsultingllc.com",
+]);
+
+// Strip control characters from a string used in an email header/subject or
+// any other context where CR/LF could enable injection.
+function sanitizeHeaderValue(s, max = 200) {
+  if (typeof s !== "string") return "";
+  return s
+    .replace(/[\x00-\x1F\x7F]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, max);
+}
+
+// Reject path segments that could escape the intended R2 prefix.
+const SAFE_SEGMENT = /^[A-Za-z0-9._-]+$/;
+function isSafeSegment(s) {
+  return typeof s === "string" && s.length > 0 && s.length <= 100 && SAFE_SEGMENT.test(s) && s !== "." && s !== "..";
+}
+
+// Origin-based CSRF defense: requires browser POSTs to come from a known origin.
+// Allows no-Origin requests (server-to-server, curl) since they can't carry a victim's cookies anyway.
+function isAllowedOrigin(request) {
+  const origin = request.headers.get("Origin");
+  if (!origin) return true;
+  return ALLOWED_ORIGINS.has(origin);
+}
+
+// Headers applied to every dynamic response (JSON + redirect) for defense in depth.
+const SECURITY_HEADERS = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  "X-Frame-Options": "DENY",
+};
+
+// CSP applied to HTML asset responses. Inline scripts/styles are pervasive in
+// public/*.html, so 'unsafe-inline' stays for now; the rest is locked down.
+// Payment processor: Lemon Squeezy (Stripe was suspended -- do not re-add Stripe origins).
+const HTML_CSP = "default-src 'self'; " +
+  "script-src 'self' 'unsafe-inline' https://app.lemonsqueezy.com https://assets.lemonsqueezy.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://challenges.cloudflare.com; " +
+  "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
+  "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; " +
+  "img-src 'self' data: https:; " +
+  "connect-src 'self' https://api.lemonsqueezy.com https://app.lemonsqueezy.com https://challenges.cloudflare.com https://api.github.com; " +
+  "frame-src https://app.lemonsqueezy.com https://challenges.cloudflare.com; " +
+  "object-src 'none'; " +
+  "base-uri 'self'; " +
+  "form-action 'self' https://app.lemonsqueezy.com";
+
 export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
     const path = url.pathname;
     const method = request.method;
 
+    const origin = request.headers.get("Origin") || "";
+    const corsOrigin = ALLOWED_ORIGINS.has(origin) ? origin : "https://sassyconsultingllc.com";
     const corsHeaders = {
-      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Origin": corsOrigin,
       "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, stripe-signature"
+      "Access-Control-Allow-Headers": "Content-Type, X-Signature",
+      "Vary": "Origin",
+      ...SECURITY_HEADERS,
     };
 
     if (method === "OPTIONS") {
@@ -86,6 +145,12 @@ export default {
       if (path === "/api/vpn-recommendations") {
         return await handleVPNRecommendations(corsHeaders);
       }
+      // Donate redirect -- single env var holds the Lemon Squeezy donate variant URL
+      // so we never need to ship the storefront URL in HTML.
+      if (path === "/donate") {
+        const target = env.LEMONSQUEEZY_DONATE_URL || "https://sassyconsultingllc.lemonsqueezy.com";
+        return Response.redirect(target, 302);
+      }
       if (path === "/api/downloads") {
         return await handleDownloadsList(env, corsHeaders);
       }
@@ -114,7 +179,8 @@ export default {
 
       // Static assets are served automatically by Cloudflare [assets] config
       // If we reach here, no API route matched and no static asset exists
-      return env.ASSETS.fetch(request);
+      const assetResponse = await env.ASSETS.fetch(request);
+      return withSecurityHeaders(assetResponse);
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
@@ -233,6 +299,9 @@ async function handleAnalyze(request, env, corsHeaders) {
 }
 
 async function handleContact(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const contentType = request.headers.get("content-type") || "";
   let name, email, message;
   if (contentType.includes("application/x-www-form-urlencoded")) {
@@ -242,12 +311,20 @@ async function handleContact(request, env, corsHeaders) {
     const body = await request.json();
     name = body.name; email = body.email; message = body.message;
   }
+  const redirectError = (err) => new Response(null, {
+    status: 302,
+    headers: { ...SECURITY_HEADERS, "Location": `/#contact?error=${encodeURIComponent(err)}` },
+  });
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!name || name.length < 2 || name.length > 100) return new Response(null, { status: 302, headers: { "Location": "/#contact?error=name" } });
-  if (!email || !emailRegex.test(email)) return new Response(null, { status: 302, headers: { "Location": "/#contact?error=email" } });
-  if (!message || message.length < 10 || message.length > 1000) return new Response(null, { status: 302, headers: { "Location": "/#contact?error=message" } });
+  if (!name || name.length < 2 || name.length > 100) return redirectError("name");
+  if (!email || !emailRegex.test(email)) return redirectError("email");
+  if (!message || message.length < 10 || message.length > 1000) return redirectError("message");
+  // Strip CR/LF from anything we'll put in an email header/subject.
+  const safeName = sanitizeHeaderValue(name, 100);
+  const safeEmail = sanitizeHeaderValue(email, 254);
+  if (!safeName || !safeEmail) return redirectError("name");
   if (env.DB) {
-    try { await env.DB.prepare("INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))").bind(name, email, message).run(); } catch (e) { console.error("DB error:", e); }
+    try { await env.DB.prepare("INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))").bind(safeName, safeEmail, message).run(); } catch (e) { console.error("DB error:", e); }
   }
   if (env.RESEND_API_KEY) {
     try {
@@ -260,42 +337,49 @@ async function handleContact(request, env, corsHeaders) {
         body: JSON.stringify({
           from: "Sassy Consulting <contact@sassyconsultingllc.com>",
           to: ["info@sassyconsultingllc.com"],
-          reply_to: email,
-          subject: `Contact Form: ${name}`,
-          text: `New contact form submission:\n\nName: ${name}\nEmail: ${email}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`
+          reply_to: safeEmail,
+          subject: `Contact Form: ${safeName}`,
+          text: `New contact form submission:\n\nName: ${safeName}\nEmail: ${safeEmail}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`
         })
       });
     } catch (e) { console.error("Email error:", e); }
   }
-  return new Response(null, { status: 302, headers: { "Location": "/contact-success.html" } });
+  return new Response(null, { status: 302, headers: { ...SECURITY_HEADERS, "Location": "/contact-success.html" } });
 }
 
 async function handleAppTester(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const contentType = request.headers.get("content-type") || "";
-  let name, email, device, experience, notes, apps, submissionType, appRating;
+  let name, email, device, deviceSecond, experience, notes, apps, submissionType, appRating, wantsReply;
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const formData = await request.formData();
     name = formData.get("name");
-    email = formData.get("email");
+    email = formData.get("email") || "";
     device = formData.get("device");
+    deviceSecond = formData.get("device_2") || "";
     experience = formData.get("experience") || "";
     notes = formData.get("notes") || "";
     apps = formData.getAll("apps");
     submissionType = formData.get("submission_type") || "become-tester";
     appRating = formData.get("app_rating") || "";
+    wantsReply = (formData.get("wants_reply") || "") === "yes";
   } else {
     const body = await request.json();
-    name = body.name; email = body.email; device = body.device;
+    name = body.name; email = body.email || ""; device = body.device;
+    deviceSecond = body.device_2 || body.deviceSecond || "";
     experience = body.experience || ""; notes = body.notes || "";
     apps = Array.isArray(body.apps) ? body.apps : (body.apps ? [body.apps] : []);
     submissionType = body.submission_type || body.submissionType || "become-tester";
     appRating = body.app_rating || body.appRating || "";
+    wantsReply = body.wants_reply === "yes" || body.wantsReply === true;
   }
 
   const normalizedType = submissionType === "already-testing" ? "already-testing" : "become-tester";
   const redirectWithError = (error) => new Response(null, {
     status: 302,
-    headers: { "Location": `/app-testers?error=${error}&form=${normalizedType}` }
+    headers: { ...SECURITY_HEADERS, "Location": `/app-testers?error=${encodeURIComponent(error)}&form=${encodeURIComponent(normalizedType)}` },
   });
 
   const ratingLabels = {
@@ -303,137 +387,291 @@ async function handleAppTester(request, env, corsHeaders) {
     "2": "2 - moderately okay",
     "3": "3 - half alright",
     "4": "4 - I might replace my current workflow with this app",
-    "5": "5 - Holy fuck I'm going to use this app regularly"
+    "5": "5 - I'm going to use this app regularly"
   };
 
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!name || name.length < 2 || name.length > 100) return redirectWithError("name");
-  if (!email || !emailRegex.test(email)) return redirectWithError("email");
+  // Email is now optional. Required only if the user opted in to a reply.
+  // If a value is provided regardless of the toggle, it must be a valid format.
+  if (wantsReply && !email) return redirectWithError("email");
+  if (email && !emailRegex.test(email)) return redirectWithError("email");
   if (!device) return redirectWithError("device");
   if (!apps || apps.length === 0) return redirectWithError("apps");
   if (normalizedType === "already-testing" && !ratingLabels[appRating]) return redirectWithError("rating");
 
+  const safeName = sanitizeHeaderValue(name, 100);
+  // safeEmail may be "" — that's the no-reply case. We only fail on name being empty.
+  const safeEmail = email ? sanitizeHeaderValue(email, 254) : "";
+  if (!safeName) return redirectWithError("name");
+  if (email && !safeEmail) return redirectWithError("email");
+
   const submissionLabel = normalizedType === "already-testing" ? "Already testing" : "Become an App Tester";
   const ratingText = ratingLabels[appRating] || "not provided";
   const appsStr = apps.join(", ");
+  const replyStatus = wantsReply ? "reply requested" : "no reply requested";
+  const deviceStr = deviceSecond ? `${device} | Device 2: ${deviceSecond}` : device;
 
   if (env.DB) {
     try {
+      // contact_submissions.email is NOT NULL — store "" when no reply requested.
       await env.DB.prepare(
         "INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))"
-      ).bind(name, email, `[APP TESTER] Type: ${submissionLabel} | Apps: ${appsStr} | Device: ${device} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}`).run();
+      ).bind(safeName, safeEmail, `[APP TESTER] Type: ${submissionLabel} | Reply: ${replyStatus} | Apps: ${appsStr} | Device: ${deviceStr} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}`).run();
     } catch (e) { console.error("DB error:", e); }
   }
   if (env.RESEND_API_KEY) {
     try {
+      const emailPayload = {
+        from: "Sassy Consulting <contact@sassyconsultingllc.com>",
+        to: ["info@sassyconsultingllc.com"],
+        subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${safeName}${wantsReply ? "" : " [no reply requested]"}`,
+        text: `New app tester submission:\n\nType: ${submissionLabel}\nName: ${safeName}\nReply requested: ${wantsReply ? "yes" : "no"}\nEmail: ${safeEmail || "(not provided)"}\nDevice: ${device}${deviceSecond ? `\nSecond Device: ${deviceSecond}` : ""}\nApps: ${appsStr}\nApp Rating: ${ratingText}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
+      };
+      // Only set reply_to when a real email was supplied; Resend rejects empty strings.
+      if (safeEmail) emailPayload.reply_to = safeEmail;
       await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify({
-          from: "Sassy Consulting <contact@sassyconsultingllc.com>",
-          to: ["info@sassyconsultingllc.com"],
-          reply_to: email,
-          subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${name}`,
-          text: `New app tester submission:\n\nType: ${submissionLabel}\nName: ${name}\nEmail: ${email}\nDevice: ${device}\nApps: ${appsStr}\nApp Rating: ${ratingText}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
-        })
+        body: JSON.stringify(emailPayload)
       });
     } catch (e) { console.error("Email error:", e); }
   }
-  return new Response(null, { status: 302, headers: { "Location": "/contact-success.html" } });
+  return new Response(null, { status: 302, headers: { ...SECURITY_HEADERS, "Location": "/contact-success.html" } });
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Lemon Squeezy checkout / verify / webhook
+//
+// Flow:
+//   1. /api/checkout  -- generates a one-time `ref` (UUID), creates a Lemon
+//      Squeezy checkout via the API with that ref embedded as custom data, and
+//      returns the hosted checkout URL. The success URL is
+//      `${SITE_URL}/success?session_id=<ref>` so the existing success.html JS
+//      keeps working without changes.
+//   2. /api/webhook   -- Lemon Squeezy posts `order_created` /
+//      `subscription_created` here, signed via HMAC-SHA256 in the `X-Signature`
+//      header. We verify, generate the license, and persist by `ref`.
+//   3. /api/verify    -- success.html polls this with the `ref`. We look up the
+//      license row; if the webhook hasn't landed yet, we retry briefly.
+// ─────────────────────────────────────────────────────────────────────────────
+
+const LS_API = "https://api.lemonsqueezy.com/v1";
+
+function lsHeaders(env) {
+  return {
+    "Authorization": `Bearer ${env.LEMONSQUEEZY_API_KEY}`,
+    "Accept": "application/vnd.api+json",
+    "Content-Type": "application/vnd.api+json",
+  };
+}
+
+// Resolve a (product, billing) pair to a Lemon Squeezy variant ID via env vars.
+function resolveVariantId(env, product, isSubscription, billing) {
+  const base = `LS_VARIANT_${product.toUpperCase().replace(/-/g, "_")}`;
+  if (isSubscription) {
+    const suffix = billing === "annual" ? "_ANNUAL" : "_MONTHLY";
+    return env[base + suffix] || env[base];
+  }
+  return env[base];
 }
 
 async function handleCheckout(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const { product, email, billing, success_url, cancel_url } = body;
   if (!product || !PRODUCTS[product]) return jsonResponse({ error: "Invalid product" }, 400, corsHeaders);
   if (!email) return jsonResponse({ error: "Email required" }, 400, corsHeaders);
+  if (!env.LEMONSQUEEZY_API_KEY || !env.LEMONSQUEEZY_STORE_ID) {
+    return jsonResponse({ error: "Payment processor not configured" }, 500, corsHeaders);
+  }
+
   const productInfo = PRODUCTS[product];
   const isSubscription = productInfo.mode === "subscription";
 
-  // Resolve the correct Stripe Price ID
-  let priceKey = product.toUpperCase().replace(/-/g, "_");
-  if (isSubscription && billing === "annual") {
-    priceKey += "_ANNUAL";
-  } else if (isSubscription) {
-    priceKey += "_MONTHLY";
-  }
-  const priceId = env[`STRIPE_PRICE_${priceKey}`];
-  if (!priceId) return jsonResponse({ error: "Price not configured" }, 500, corsHeaders);
+  const variantId = resolveVariantId(env, product, isSubscription, billing);
+  if (!variantId) return jsonResponse({ error: "Product variant not configured" }, 500, corsHeaders);
 
+  // Our own short-lived correlation ID -- echoed back in the webhook so we can
+  // match the order to the success page without trusting a client-supplied key.
+  const ref = crypto.randomUUID();
   const cancelUrl = cancel_url || (isSubscription
     ? `${env.SITE_URL}/checkout/${product.replace("mcp-", "")}.html`
     : `${env.SITE_URL}/${product}.html`);
+  const successUrl = success_url || `${env.SITE_URL}/success?session_id=${ref}`;
 
-  const params = new URLSearchParams({
-    "payment_method_types[]": "card",
-    "line_items[0][price]": priceId,
-    "line_items[0][quantity]": "1",
-    "mode": isSubscription ? "subscription" : "payment",
-    "success_url": success_url || `${env.SITE_URL}/success?session_id={CHECKOUT_SESSION_ID}`,
-    "cancel_url": cancelUrl,
-    "customer_email": email,
-    "metadata[product]": product,
-    "metadata[product_name]": productInfo.name
+  // JSON:API payload. `checkout_data.custom` is echoed back inside
+  // meta.custom_data on every webhook for the resulting order/subscription.
+  const payload = {
+    data: {
+      type: "checkouts",
+      attributes: {
+        checkout_data: {
+          email,
+          custom: {
+            ref,
+            product,
+            product_name: productInfo.name,
+            billing: billing || "",
+          },
+        },
+        checkout_options: {
+          embed: false,
+          media: false,
+          logo: true,
+        },
+        product_options: {
+          redirect_url: successUrl,
+          receipt_button_text: "Get my license",
+          receipt_link_url: successUrl,
+        },
+      },
+      relationships: {
+        store:   { data: { type: "stores",   id: String(env.LEMONSQUEEZY_STORE_ID) } },
+        variant: { data: { type: "variants", id: String(variantId) } },
+      },
+    },
+  };
+
+  const lsResponse = await fetch(`${LS_API}/checkouts`, {
+    method: "POST",
+    headers: lsHeaders(env),
+    body: JSON.stringify(payload),
   });
-  if (isSubscription && billing) {
-    params.set("metadata[billing]", billing);
+  const session = await lsResponse.json();
+  if (!lsResponse.ok) {
+    const msg = session?.errors?.[0]?.detail || session?.errors?.[0]?.title || "Lemon Squeezy error";
+    return jsonResponse({ error: msg }, 400, corsHeaders);
+  }
+  const checkoutUrl = session?.data?.attributes?.url;
+  if (!checkoutUrl) return jsonResponse({ error: "Checkout URL missing in response" }, 500, corsHeaders);
+
+  // Stash the pending intent so /api/verify has something to look up even if
+  // the webhook is delayed; the license_key column stays NULL until then.
+  if (env.DB) {
+    try {
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+      ).bind(`PENDING-${ref}`, email, product, ref).run();
+    } catch (e) { /* table may not exist on first deploy */ }
   }
 
-  const stripeResponse = await fetch("https://api.stripe.com/v1/checkout/sessions", {
-    method: "POST",
-    headers: { "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}`, "Content-Type": "application/x-www-form-urlencoded" },
-    body: params
-  });
-  const session = await stripeResponse.json();
-  if (session.error) return jsonResponse({ error: session.error.message }, 400, corsHeaders);
-  return jsonResponse({ checkout_url: session.url, session_id: session.id }, 200, corsHeaders);
+  // Response shape is preserved for backwards compatibility with success.html
+  // and the checkout pages: `checkout_url` is what they redirect to.
+  return jsonResponse({ checkout_url: checkoutUrl, session_id: ref }, 200, corsHeaders);
 }
 
 async function handleVerify(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const { session_id } = body;
   if (!session_id) return jsonResponse({ error: "Session ID required" }, 400, corsHeaders);
-  const stripeResponse = await fetch(`https://api.stripe.com/v1/checkout/sessions/${session_id}`, {
-    headers: { "Authorization": `Bearer ${env.STRIPE_SECRET_KEY}` }
-  });
-  const session = await stripeResponse.json();
-  if (session.error) return jsonResponse({ error: session.error.message }, 400, corsHeaders);
-  if (session.payment_status !== "paid") return jsonResponse({ error: "Payment not completed" }, 400, corsHeaders);
-  const product = session.metadata.product;
-  const email = session.customer_email;
-  const licenseKey = await generateLicenseKey(email, product, session_id, env.LICENSE_SALT);
-  if (env.DB) {
-    try { await env.DB.prepare("INSERT INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))").bind(licenseKey, email, product, session_id).run(); } catch (e) {}
+  if (!env.DB) return jsonResponse({ error: "Database unavailable" }, 500, corsHeaders);
+
+  // The webhook may land a beat after the user hits the success page; give it
+  // a short window before reporting "not paid yet". Each retry waits 500ms.
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const row = await env.DB.prepare(
+      "SELECT license_key, email, product FROM licenses WHERE stripe_session_id = ?"
+    ).bind(session_id).first();
+
+    if (row && row.license_key && !row.license_key.startsWith("PENDING-")) {
+      return jsonResponse({
+        success: true,
+        license_key: row.license_key,
+        product: row.product,
+        product_name: PRODUCTS[row.product]?.name || row.product,
+        email: row.email,
+      }, 200, corsHeaders);
+    }
+    await new Promise(r => setTimeout(r, 500));
   }
-  // Notify: new license purchased
-  await sendNotification(env,
-    `New License: ${PRODUCTS[product]?.name || product}`,
-    `New license purchased!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nStripe Session: ${session_id}`
-  );
-  return jsonResponse({ success: true, license_key: licenseKey, product, product_name: PRODUCTS[product]?.name || product, email }, 200, corsHeaders);
+
+  return jsonResponse({
+    error: "License not ready yet. Check your email -- a confirmation is on its way.",
+    pending: true,
+  }, 202, corsHeaders);
+}
+
+// Verify Lemon Squeezy webhook signature (HMAC-SHA256 hex of the raw body).
+async function verifyLsSignature(rawBody, signatureHex, secret) {
+  if (!signatureHex || !secret) return false;
+  const keyData = new TextEncoder().encode(secret);
+  const msgData = new TextEncoder().encode(rawBody);
+  const key = await crypto.subtle.importKey("raw", keyData, { name: "HMAC", hash: "SHA-256" }, false, ["sign"]);
+  const sigBuf = await crypto.subtle.sign("HMAC", key, msgData);
+  const expected = Array.from(new Uint8Array(sigBuf)).map(b => b.toString(16).padStart(2, "0")).join("");
+  // Constant-time compare.
+  if (expected.length !== signatureHex.length) return false;
+  let diff = 0;
+  for (let i = 0; i < expected.length; i++) diff |= expected.charCodeAt(i) ^ signatureHex.charCodeAt(i);
+  return diff === 0;
 }
 
 async function handleWebhook(request, env, corsHeaders) {
-  const payload = await request.text();
-  const event = JSON.parse(payload);
-  if (event.type === "checkout.session.completed") {
-    const session = event.data.object;
-    const product = session.metadata.product;
-    const email = session.customer_email;
-    const licenseKey = await generateLicenseKey(email, product, session.id, env.LICENSE_SALT);
-    if (env.DB) {
-      try { await env.DB.prepare("INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))").bind(licenseKey, email, product, session.id).run(); } catch (e) {}
-    }
-    // Notify: Stripe webhook payment confirmed
-    await sendNotification(env,
-      `Payment Confirmed: ${PRODUCTS[product]?.name || product}`,
-      `Stripe payment completed (webhook)!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nStripe Session: ${session.id}\nAmount: $${(session.amount_total / 100).toFixed(2)}`
-    );
+  const rawBody = await request.text();
+  const signature = request.headers.get("X-Signature") || "";
+
+  const ok = await verifyLsSignature(rawBody, signature, env.LEMONSQUEEZY_WEBHOOK_SECRET);
+  if (!ok) return jsonResponse({ error: "Invalid signature" }, 401, corsHeaders);
+
+  let event;
+  try { event = JSON.parse(rawBody); } catch (_) {
+    return jsonResponse({ error: "Invalid JSON" }, 400, corsHeaders);
   }
+
+  const eventName = event?.meta?.event_name || "";
+  const custom    = event?.meta?.custom_data || {};
+  const attrs     = event?.data?.attributes || {};
+  const orderId   = event?.data?.id || "";
+
+  // Only act on creation events. Updates/refunds/cancellations are intentionally
+  // ignored at this layer; license revocation happens manually for now.
+  const isCreate = eventName === "order_created" || eventName === "subscription_created";
+  if (!isCreate) return jsonResponse({ received: true, ignored: eventName }, 200, corsHeaders);
+
+  const ref     = custom.ref || orderId;
+  const product = custom.product || "";
+  const email   = attrs.user_email || attrs.customer_email || "";
+
+  if (!product || !email || !PRODUCTS[product]) {
+    // Bad metadata -- log but don't 500 (Lemon Squeezy would retry forever).
+    console.error("Webhook missing product/email:", { eventName, ref, product, email });
+    return jsonResponse({ received: true, error: "Missing metadata" }, 200, corsHeaders);
+  }
+
+  const licenseKey = await generateLicenseKey(email, product, ref, env.LICENSE_SALT);
+
+  if (env.DB) {
+    try {
+      // Replace any PENDING-* placeholder row written by /api/checkout.
+      await env.DB.prepare(
+        "UPDATE licenses SET license_key = ?, email = ?, product = ? WHERE stripe_session_id = ?"
+      ).bind(licenseKey, email, product, ref).run();
+      // If no row existed (rare: webhook before checkout response persisted), insert.
+      await env.DB.prepare(
+        "INSERT OR IGNORE INTO licenses (license_key, email, product, stripe_session_id, created_at) VALUES (?, ?, ?, ?, datetime('now'))"
+      ).bind(licenseKey, email, product, ref).run();
+    } catch (e) { console.error("License DB write failed:", e); }
+  }
+
+  const total = attrs.total_formatted || (attrs.total != null ? `$${(attrs.total / 100).toFixed(2)}` : "n/a");
+  await sendNotification(env,
+    `Payment Confirmed: ${PRODUCTS[product]?.name || product}`,
+    `Lemon Squeezy ${eventName}!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nOrder ID: ${orderId}\nRef: ${ref}\nAmount: ${total}`
+  );
+
   return jsonResponse({ received: true }, 200, corsHeaders);
 }
 
 async function handleValidateLicense(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const { license_key } = body;
   if (!license_key) return jsonResponse({ valid: false, error: "License key required" }, 400, corsHeaders);
@@ -457,7 +695,7 @@ async function handleVPNRecommendations(corsHeaders) {
 async function handleDownloadsList(env, corsHeaders) {
   return jsonResponse([
     { product: "sassy-talk", name: "Sassy-Talk", platforms: [{ platform: "android", filename: "sassytalkie.apk", size: "15MB" }, { platform: "windows", filename: "sassy-talk-setup.msi", size: "25MB" }] },
-    { product: "winforensics", name: "WinForensics", platforms: [{ platform: "windows", filename: "winforensics-setup.msi", size: "18MB" }] }
+    { product: "sassy-brain", name: "Sassy Brain", platforms: [{ platform: "windows", filename: "SassyBrain_Installer-v0.2.1.exe", size: "92MB" }, { platform: "windows", filename: "SassyBrain_Portable-v0.2.1.exe", size: "92MB" }] }
   ], 200, corsHeaders);
 }
 
@@ -468,6 +706,11 @@ async function handlePrivacy(path, env) {
   if (!env.PRIVACY) return null;
   const rest = path.replace(/^\/privacy\//, "").replace(/^\/+|\/+$/g, "");
   if (!rest) return null;
+  // Reject any segment that could escape the prefix (e.g. "..", absolute paths, backslashes).
+  const segments = rest.split("/");
+  for (const seg of segments) {
+    if (!isSafeSegment(seg)) return null;
+  }
   const hasExt = /\.[a-z0-9]+$/i.test(rest);
   const key = hasExt ? rest : `${rest}/index.html`;
   const object = await env.PRIVACY.get(key);
@@ -499,11 +742,15 @@ async function handleDownload(path, url, env, corsHeaders) {
   if (parts.length < 3) return new Response("Not found", { status: 404 });
   const [product, platform, filename] = parts;
 
+  // Reject anything that could escape the intended R2 prefix.
+  if (!isSafeSegment(product) || !isSafeSegment(platform) || !isSafeSegment(filename)) {
+    return new Response("Not found", { status: 404 });
+  }
+
   // Gated products require a valid SASSY- license key (except /demo/ which is public).
-  // Same schema as sassytalk: key must start with "SASSY-" and exist in the licenses table.
-  // Gated objects live in env.GATED (the sassy-gated R2 bucket, which has NO public custom
-  // domain or dev URL) so the only way to reach them is through this worker. Public objects
-  // continue to live in env.DOWNLOADS (sassy-downloads), which is exposed as
+  // The license must match the requested product and not be revoked. Gated objects live
+  // in env.GATED (no public custom domain) so the only way to reach them is through this
+  // worker. Public objects live in env.DOWNLOADS (sassy-downloads), which is exposed as
   // sassycreates.sassyconsultingllc.com -- DO NOT put gated content there.
   const GATED_PRODUCTS = {
     sassytalk: "/sassy-talk.html",
@@ -516,9 +763,19 @@ async function handleDownload(path, url, env, corsHeaders) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
     }
     if (env.DB) {
-      const result = await env.DB.prepare("SELECT product FROM licenses WHERE license_key = ?").bind(licenseKey).first();
+      const result = await env.DB.prepare("SELECT product, revoked FROM licenses WHERE license_key = ?").bind(licenseKey).first();
       if (!result) {
         return jsonResponse({ error: "Invalid license key" }, 403, corsHeaders);
+      }
+      if (result.revoked) {
+        return jsonResponse({ error: "License has been revoked. Contact support." }, 403, corsHeaders);
+      }
+      // Require the license's product to match the gated bucket prefix. Legacy keys may
+      // store product slugs that differ from the R2 prefix (e.g. "sassy-talk" vs "sassytalk"),
+      // so compare with dashes/spaces stripped.
+      const norm = (s) => String(s || "").toLowerCase().replace(/[-_\s]/g, "");
+      if (norm(result.product) !== norm(product)) {
+        return jsonResponse({ error: "License does not match this product." }, 403, corsHeaders);
       }
     }
   }
@@ -547,6 +804,9 @@ async function handleDownload(path, url, env, corsHeaders) {
 // NDA: VERIFY ACCESS CODE
 // ═══════════════════════════════════════════════════
 async function handleNdaVerifyCode(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const { code } = body;
   if (!code) return jsonResponse({ valid: false, error: "Access code required." }, 400, corsHeaders);
@@ -562,6 +822,9 @@ async function handleNdaVerifyCode(request, env, corsHeaders) {
 // NDA: SIGN AGREEMENT
 // ═══════════════════════════════════════════════════
 async function handleNdaSign(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const required = ["name", "address", "jurisdiction", "email", "title", "initials", "signature_data"];
   for (const field of required) {
@@ -602,6 +865,9 @@ async function handleNdaSign(request, env, corsHeaders) {
 // NDA: DOWNLOAD (token-gated)
 // ═══════════════════════════════════════════════════
 async function handleNdaDownload(request, env, corsHeaders) {
+  if (!isAllowedOrigin(request)) {
+    return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
+  }
   const body = await request.json();
   const { token, platform } = body;
   if (!token || !platform) return jsonResponse({ error: "Token and platform are required." }, 400, corsHeaders);
@@ -682,7 +948,29 @@ async function sendNotification(env, subject, bodyText) {
 }
 
 function jsonResponse(data, status, corsHeaders) {
-  return new Response(JSON.stringify(data), { status, headers: { ...corsHeaders, "Content-Type": "application/json" } });
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: {
+      ...corsHeaders,
+      ...SECURITY_HEADERS,
+      "Content-Type": "application/json",
+      "Cache-Control": "private, no-store",
+    },
+  });
+}
+
+// Wrap a static-asset response with security headers. Adds CSP to HTML pages
+// and no-sniff/HSTS/Referrer-Policy/X-Frame-Options to everything.
+function withSecurityHeaders(response) {
+  const headers = new Headers(response.headers);
+  for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
+    if (!headers.has(k)) headers.set(k, v);
+  }
+  const contentType = headers.get("Content-Type") || "";
+  if (contentType.includes("text/html") && !headers.has("Content-Security-Policy")) {
+    headers.set("Content-Security-Policy", HTML_CSP);
+  }
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
 }
 
 function detectVPN(asn, asnOrg, headers) {

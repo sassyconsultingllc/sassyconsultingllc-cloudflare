@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>App Testers | Sassy Consulting LLC</title>
-    <meta name="description" content="Sign up to beta test our apps. Get early access and help shape the product.">
+    <meta name="description" content="Tell us how the apps work in your real use case. Reply optional.">
     <meta name="robots" content="noindex, nofollow">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,17 +59,6 @@
             align-items: center;
             gap: 0.5rem;
         }
-        .logo-icon {
-            width: 32px; height: 32px;
-            background: var(--accent-primary);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 700;
-            color: #000;
-        }
         .nav-links {
             display: flex;
             gap: 2rem;
@@ -95,30 +84,6 @@
             max-width: 760px;
             margin: 0 auto;
             padding: 8rem 2rem 4rem;
-        }
-        .page-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--accent-glow);
-            border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 100px;
-            padding: 0.35rem 1rem;
-            font-size: 0.8rem;
-            font-weight: 500;
-            color: var(--accent-primary);
-            margin-bottom: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        .dot {
-            width: 6px; height: 6px;
-            background: var(--accent-primary);
-            border-radius: 50%;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.4; }
         }
         h1 {
             font-size: 2.5rem;
@@ -178,18 +143,10 @@
             display: none;
             animation: panel-fade 0.2s ease;
         }
-        .tab-panel.active {
-            display: block;
-        }
+        .tab-panel.active { display: block; }
         @keyframes panel-fade {
-            from {
-                opacity: 0;
-                transform: translateY(4px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .form-intro {
             color: var(--text-secondary);
@@ -201,9 +158,7 @@
             font-size: 0.8rem;
             color: var(--text-secondary);
         }
-        .field {
-            margin-bottom: 1.5rem;
-        }
+        .field { margin-bottom: 1.5rem; }
         label {
             display: block;
             margin-bottom: 0.5rem;
@@ -238,13 +193,8 @@
             padding-right: 2.5rem;
             cursor: pointer;
         }
-        select option {
-            background: var(--bg-tertiary);
-        }
-        textarea {
-            resize: vertical;
-            min-height: 110px;
-        }
+        select option { background: var(--bg-tertiary); }
+        textarea { resize: vertical; min-height: 110px; }
         .section-divider {
             border: none;
             border-top: 1px solid var(--border-subtle);
@@ -288,7 +238,7 @@
             border-color: var(--accent-primary);
         }
         .checkbox-item input[type="checkbox"]:checked::after {
-            content: '✓';
+            content: '\2713';
             position: absolute;
             top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -312,6 +262,95 @@
             margin-left: 0.5rem;
             vertical-align: middle;
         }
+
+        /* Cascading device picker — same footprint cycles brand → make → model */
+        .device-picker {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 0.9rem 1rem;
+        }
+        .device-crumbs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-items: center;
+            margin-bottom: 0.75rem;
+            min-height: 24px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+        }
+        .device-crumb {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            background: var(--accent-glow);
+            border: 1px solid rgba(34, 197, 94, 0.25);
+            color: var(--accent-primary);
+            padding: 0.18rem 0.55rem;
+            border-radius: 6px;
+        }
+        .device-crumbs .arrow {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .device-crumbs .placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+        .device-step-label {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.45rem;
+        }
+        .device-step-label strong {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .device-picker .device-control {
+            display: flex;
+            gap: 0.6rem;
+            align-items: center;
+        }
+        .device-picker .device-control select,
+        .device-picker .device-control input[type="text"] {
+            flex: 1;
+            margin: 0;
+        }
+        .device-picker .btn-reset {
+            background: transparent;
+            border: 1px solid var(--border-medium);
+            color: var(--text-secondary);
+            padding: 0.55rem 0.85rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .device-picker .btn-reset:hover {
+            color: var(--text-primary);
+            border-color: var(--text-secondary);
+        }
+        .device-picker.complete .device-step-label {
+            color: var(--accent-primary);
+        }
+        .second-device-toggle { margin-top: 0.85rem; }
+        .second-device-wrap {
+            display: none;
+            margin-top: 1.1rem;
+        }
+        .second-device-wrap.show { display: block; }
+
+        /* Reply-email reveal */
+        .reply-toggle { margin-bottom: 0.5rem; }
+        .reply-email-wrap {
+            display: none;
+            animation: panel-fade 0.2s ease;
+        }
+        .reply-email-wrap.show { display: block; }
+
         .submit-btn {
             width: 100%;
             padding: 1rem 2rem;
@@ -343,11 +382,6 @@
             display: flex;
             align-items: flex-start;
             gap: 0.75rem;
-        }
-        .perk-icon {
-            font-size: 1.25rem;
-            line-height: 1;
-            flex-shrink: 0;
         }
         .perk-text strong {
             display: block;
@@ -386,35 +420,28 @@
             h1 { font-size: 1.9rem; }
             .perks { grid-template-columns: 1fr; }
             .nav-links { display: none; }
-            .tab-switcher {
-                grid-template-columns: 1fr;
-            }
+            .tab-switcher { grid-template-columns: 1fr; }
+            .device-picker .device-control { flex-direction: column; align-items: stretch; }
+            .device-picker .btn-reset { width: 100%; }
         }
     </style>
 </head>
 <body>
     <nav>
         <div class="container">
-            <a href="/" class="logo">
-                                Sassy Consulting
-            </a>
+            <a href="/" class="logo">Sassy Consulting</a>
             <div class="nav-links">
                 <a href="/#products">Products</a>
                 <a href="/#tools">Tools</a>
                 <a href="/aboutme">About</a>
-                <a href="/app-testers" class="btn-primary">Beta Testers</a>
+                <a href="/app-testers" class="btn-primary">App Testers</a>
             </div>
         </div>
     </nav>
 
     <main>
-        <div class="page-badge">
-            <span class="dot"></span>
-            Beta Program
-        </div>
-
         <h1><span class="gradient">App Tester</span> Hub</h1>
-        <p class="subtitle">Use the tab that matches your status: join the tester program or send feedback as an active tester.</p>
+        <p class="subtitle">Tell me how the app functions in your real use case. Email is only needed if you want a reply.</p>
 
         <div class="form-card">
             <div id="error-banner" class="error-banner"></div>
@@ -424,32 +451,55 @@
                 <button type="button" id="tab-btn-already" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-already" data-tab-target="already-testing">Already testing</button>
             </div>
 
+            <!-- BECOME-TESTER FORM -->
             <form action="/api/app-tester" method="POST" id="panel-become" class="tab-panel active" data-tab-panel="become-tester" data-app-tester-form>
                 <input type="hidden" name="submission_type" value="become-tester">
 
-                <p class="form-intro">Tell us what you want to test and we will reach out with access details.</p>
+                <p class="form-intro">Tell us what you want to test and how you'd use it.</p>
 
                 <p class="section-heading">Your Info</p>
 
                 <div class="field">
-                    <label for="become-name">Name <span class="required">*</span></label>
-                    <input type="text" id="become-name" name="name" required minlength="2" maxlength="100" placeholder="Your name" autocomplete="name">
+                    <label for="become-name">Name, username, or pseudonym <span class="required">*</span></label>
+                    <input type="text" id="become-name" name="name" required minlength="2" maxlength="100" placeholder="A real name, username, or pseudonym is fine" autocomplete="name">
                 </div>
 
-                <div class="field">
-                    <label for="become-email">Email <span class="required">*</span></label>
-                    <input type="email" id="become-email" name="email" required placeholder="you@example.com" autocomplete="email">
+                <div class="field reply-toggle">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="wants_reply" value="yes" data-reply-toggle>
+                        <span>Do you want to receive a reply?</span>
+                    </label>
                 </div>
 
+                <div class="field reply-email-wrap" data-reply-email>
+                    <label for="become-email">Email</label>
+                    <input type="email" id="become-email" name="email" placeholder="you@example.com" autocomplete="email">
+                </div>
+
+                <hr class="section-divider">
+                <p class="section-heading">What device was tested? <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">(brand → make → model)</span></p>
+
                 <div class="field">
-                    <label for="become-device">Primary Device <span class="required">*</span></label>
-                    <select id="become-device" name="device" required>
-                        <option value="" disabled selected>Select your device</option>
-                        <option value="android">Android Phone/Tablet</option>
-                        <option value="iphone">iPhone / iPad</option>
-                        <option value="both">Both Android & iOS</option>
-                        <option value="windows">Windows PC</option>
-                    </select>
+                    <div class="device-picker" data-device-picker data-device-target="device">
+                        <div class="device-crumbs" data-crumbs></div>
+                        <div class="device-step-label" data-step-label></div>
+                        <div class="device-control" data-control></div>
+                        <input type="hidden" name="device" data-device-value required>
+                    </div>
+
+                    <label class="checkbox-item second-device-toggle">
+                        <input type="checkbox" data-second-device-toggle>
+                        <span>Second device?</span>
+                    </label>
+
+                    <div class="second-device-wrap" data-second-device-wrap>
+                        <div class="device-picker" data-device-picker data-device-target="device_2" style="margin-top: 0.5rem;">
+                            <div class="device-crumbs" data-crumbs></div>
+                            <div class="device-step-label" data-step-label></div>
+                            <div class="device-control" data-control></div>
+                            <input type="hidden" name="device_2" data-device-value>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="section-divider">
@@ -463,7 +513,11 @@
                         </label>
                         <label class="checkbox-item">
                             <input type="checkbox" name="apps" value="foodie-finder">
-                            <span>Foodie Finder <span class="app-badge">Android · iOS</span></span>
+                            <span>Foodie Finder <span class="app-badge">Android</span></span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="apps" value="rebel-tuner">
+                            <span>Rebel Tuner <span class="app-badge">Android</span></span>
                         </label>
                     </div>
                 </div>
@@ -487,9 +541,10 @@
                     <textarea id="become-notes" name="notes" maxlength="500" placeholder="Specific features you want to test, your use case, questions..."></textarea>
                 </div>
 
-                <button type="submit" class="submit-btn">Apply to Test →</button>
+                <button type="submit" class="submit-btn">Submit →</button>
             </form>
 
+            <!-- ALREADY-TESTING FORM -->
             <form action="/api/app-tester" method="POST" id="panel-already" class="tab-panel" data-tab-panel="already-testing" data-app-tester-form>
                 <input type="hidden" name="submission_type" value="already-testing">
 
@@ -498,24 +553,46 @@
                 <p class="section-heading">Your Info</p>
 
                 <div class="field">
-                    <label for="already-name">Name <span class="required">*</span></label>
-                    <input type="text" id="already-name" name="name" required minlength="2" maxlength="100" placeholder="Your name" autocomplete="name">
+                    <label for="already-name">Name, username, or pseudonym <span class="required">*</span></label>
+                    <input type="text" id="already-name" name="name" required minlength="2" maxlength="100" placeholder="A real name, username, or pseudonym is fine" autocomplete="name">
                 </div>
 
-                <div class="field">
-                    <label for="already-email">Email <span class="required">*</span></label>
-                    <input type="email" id="already-email" name="email" required placeholder="you@example.com" autocomplete="email">
+                <div class="field reply-toggle">
+                    <label class="checkbox-item">
+                        <input type="checkbox" name="wants_reply" value="yes" data-reply-toggle>
+                        <span>Do you want to receive a reply?</span>
+                    </label>
                 </div>
 
+                <div class="field reply-email-wrap" data-reply-email>
+                    <label for="already-email">Email</label>
+                    <input type="email" id="already-email" name="email" placeholder="you@example.com" autocomplete="email">
+                </div>
+
+                <hr class="section-divider">
+                <p class="section-heading">What device was tested? <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">(brand → make → model)</span></p>
+
                 <div class="field">
-                    <label for="already-device">Primary Device <span class="required">*</span></label>
-                    <select id="already-device" name="device" required>
-                        <option value="" disabled selected>Select your device</option>
-                        <option value="android">Android Phone/Tablet</option>
-                        <option value="iphone">iPhone / iPad</option>
-                        <option value="both">Both Android & iOS</option>
-                        <option value="windows">Windows PC</option>
-                    </select>
+                    <div class="device-picker" data-device-picker data-device-target="device">
+                        <div class="device-crumbs" data-crumbs></div>
+                        <div class="device-step-label" data-step-label></div>
+                        <div class="device-control" data-control></div>
+                        <input type="hidden" name="device" data-device-value required>
+                    </div>
+
+                    <label class="checkbox-item second-device-toggle">
+                        <input type="checkbox" data-second-device-toggle>
+                        <span>Second device?</span>
+                    </label>
+
+                    <div class="second-device-wrap" data-second-device-wrap>
+                        <div class="device-picker" data-device-picker data-device-target="device_2" style="margin-top: 0.5rem;">
+                            <div class="device-crumbs" data-crumbs></div>
+                            <div class="device-step-label" data-step-label></div>
+                            <div class="device-control" data-control></div>
+                            <input type="hidden" name="device_2" data-device-value>
+                        </div>
+                    </div>
                 </div>
 
                 <hr class="section-divider">
@@ -529,7 +606,11 @@
                         </label>
                         <label class="checkbox-item">
                             <input type="checkbox" name="apps" value="foodie-finder">
-                            <span>Foodie Finder <span class="app-badge">Android · iOS</span></span>
+                            <span>Foodie Finder <span class="app-badge">Android</span></span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="apps" value="rebel-tuner">
+                            <span>Rebel Tuner <span class="app-badge">Android</span></span>
                         </label>
                     </div>
                 </div>
@@ -542,7 +623,7 @@
                         <option value="2">2 — moderately okay</option>
                         <option value="3">3 — half alright</option>
                         <option value="4">4 — I might replace my current workflow with this app</option>
-                        <option value="5">5 — Holy fuck I&apos;m going to use this app regularly</option>
+                        <option value="5">5 — I&apos;m going to use this app regularly</option>
                     </select>
                     <p class="rating-help">This rating is your general overall score right now.</p>
                 </div>
@@ -558,31 +639,27 @@
 
         <div class="perks">
             <div class="perk">
-                
                 <div class="perk-text">
                     <strong>Early Access</strong>
                     <span>Use features before anyone else</span>
                 </div>
             </div>
             <div class="perk">
-                
                 <div class="perk-text">
                     <strong>Direct Input</strong>
                     <span>Your feedback shapes the product</span>
                 </div>
             </div>
             <div class="perk">
-                
                 <div class="perk-text">
                     <strong>No Spam</strong>
-                    <span>Email used for updates only</span>
+                    <span>Email only used if you ask for a reply</span>
                 </div>
             </div>
             <div class="perk">
-                
                 <div class="perk-text">
                     <strong>Fast Response</strong>
-                    <span>We'll reach out within a few days</span>
+                    <span>If you ask for a reply, expect one within a few days</span>
                 </div>
             </div>
         </div>
@@ -591,72 +668,348 @@
     </main>
 
     <script>
-        const errorBanner = document.getElementById('error-banner');
-        const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
-        const tabPanels = Array.from(document.querySelectorAll('[data-tab-panel]'));
-
-        function setActiveTab(tabName) {
-            tabButtons.forEach((button) => {
-                const isActive = button.dataset.tabTarget === tabName;
-                button.classList.toggle('active', isActive);
-                button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-            });
-
-            tabPanels.forEach((panel) => {
-                const isActive = panel.dataset.tabPanel === tabName;
-                panel.classList.toggle('active', isActive);
-            });
+    // Device catalog — Brand → Make/Series → Model. "Other" at each level
+    // drops to a free-form text input.
+    const DEVICES = {
+        "Samsung": {
+            "Galaxy S": ["S24 Ultra", "S24+", "S24", "S23 Ultra", "S23+", "S23", "S23 FE", "S22 Ultra", "S22+", "S22", "S21 Ultra", "S21+", "S21", "S21 FE", "S20 Ultra", "S20+", "S20"],
+            "Galaxy A": ["A55", "A54", "A35", "A34", "A25", "A15", "A14"],
+            "Galaxy Z Fold": ["Z Fold 6", "Z Fold 5", "Z Fold 4", "Z Fold 3"],
+            "Galaxy Z Flip": ["Z Flip 6", "Z Flip 5", "Z Flip 4", "Z Flip 3"],
+            "Galaxy Note": ["Note 20 Ultra", "Note 20", "Note 10+", "Note 10"],
+            "Galaxy Tab": ["Tab S10 Ultra", "Tab S10+", "Tab S9 Ultra", "Tab S9+", "Tab S9", "Tab S8 Ultra", "Tab S8+", "Tab A9+"]
+        },
+        "Google": {
+            "Pixel Phone": ["Pixel 9 Pro XL", "Pixel 9 Pro", "Pixel 9", "Pixel 8 Pro", "Pixel 8", "Pixel 8a", "Pixel 7 Pro", "Pixel 7", "Pixel 7a", "Pixel 6 Pro", "Pixel 6", "Pixel 6a", "Pixel Fold"],
+            "Pixel Tablet": ["Pixel Tablet"]
+        },
+        "OnePlus": {
+            "OnePlus Flagship": ["12", "11", "10 Pro", "10T", "9 Pro", "9"],
+            "Nord": ["Nord 4", "Nord 3", "Nord N30", "Nord CE 3"]
+        },
+        "Motorola": {
+            "Edge": ["Edge 50 Ultra", "Edge 50 Pro", "Edge 40 Pro", "Edge 40", "Edge+ 2023"],
+            "Moto G": ["G Power 5G", "G Stylus 5G", "G 5G", "G84", "G54", "G34"],
+            "Razr": ["Razr 50 Ultra", "Razr 40 Ultra", "Razr+"]
+        },
+        "Xiaomi": {
+            "Xiaomi": ["14 Ultra", "14", "13 Pro", "13", "12 Pro", "12"],
+            "Redmi": ["Note 13 Pro+", "Note 13 Pro", "Note 13", "Note 12 Pro"],
+            "POCO": ["F6 Pro", "F6", "X6 Pro", "X6", "M6 Pro"]
+        },
+        "Sony": {
+            "Xperia": ["1 VI", "1 V", "5 V", "10 VI", "10 V"]
+        },
+        "Nothing": {
+            "Phone": ["Phone (2a)", "Phone (2)", "Phone (1)"]
+        },
+        "ASUS": {
+            "ROG Phone": ["ROG Phone 8 Pro", "ROG Phone 8", "ROG Phone 7", "ROG Phone 6"],
+            "Zenfone": ["Zenfone 11 Ultra", "Zenfone 10", "Zenfone 9"]
+        },
+        "Apple": {
+            "iPhone": ["15 Pro Max", "15 Pro", "15 Plus", "15", "14 Pro Max", "14 Pro", "14 Plus", "14", "13 Pro Max", "13 Pro", "13", "13 mini", "12 Pro Max", "12 Pro", "12", "12 mini", "SE (3rd gen)"],
+            "iPad": ["iPad Pro M4 13", "iPad Pro M4 11", "iPad Air M2 13", "iPad Air M2 11", "iPad 10th gen", "iPad 9th gen", "iPad mini 6"],
+            "Mac": ["MacBook Pro M3 16", "MacBook Pro M3 14", "MacBook Air M3 15", "MacBook Air M3 13", "MacBook Air M2", "Mac Studio M2", "Mac mini M2", "iMac M3"]
+        },
+        "Microsoft": {
+            "Surface": ["Surface Pro 11", "Surface Pro 10", "Surface Pro 9", "Surface Laptop 7", "Surface Laptop Studio 2", "Surface Go 4"]
+        },
+        "Lenovo": {
+            "ThinkPad": ["X1 Carbon Gen 12", "X1 Carbon Gen 11", "T14s Gen 5", "T16 Gen 3", "P1 Gen 7"],
+            "LOQ": ["LOQ 15", "LOQ 16"],
+            "Legion": ["Legion 9i", "Legion 7i", "Legion 5i", "Legion Slim 7", "Legion Go"],
+            "IdeaPad": ["IdeaPad 5 Pro", "IdeaPad Slim 5", "IdeaPad Flex 5"]
+        },
+        "Dell": {
+            "XPS": ["XPS 13", "XPS 14", "XPS 15", "XPS 16", "XPS 17"],
+            "Latitude": ["Latitude 9450", "Latitude 7450", "Latitude 5450"],
+            "Inspiron": ["Inspiron 14", "Inspiron 15", "Inspiron 16"],
+            "Alienware": ["Alienware m18 R2", "Alienware m16 R2", "Alienware x16 R2"]
+        },
+        "HP": {
+            "Spectre": ["Spectre x360 14", "Spectre x360 16"],
+            "EliteBook": ["EliteBook 1040 G11", "EliteBook 840 G11"],
+            "Omen": ["Omen 16", "Omen 17", "Omen Transcend 14"],
+            "Pavilion": ["Pavilion 14", "Pavilion 15", "Pavilion Plus 14"]
+        },
+        "Framework": {
+            "Framework Laptop": ["Framework 13", "Framework 16"]
+        },
+        "Other / Custom": {
+            "Other": ["Other / Custom (describe in notes)"]
         }
+    };
 
-        function showError(message) {
-            errorBanner.textContent = message;
-            errorBanner.style.display = 'block';
-            errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
+    const errorBanner = document.getElementById('error-banner');
+    const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
+    const tabPanels = Array.from(document.querySelectorAll('[data-tab-panel]'));
 
+    function setActiveTab(tabName) {
         tabButtons.forEach((button) => {
-            button.addEventListener('click', () => {
-                setActiveTab(button.dataset.tabTarget);
-                errorBanner.style.display = 'none';
-            });
+            const isActive = button.dataset.tabTarget === tabName;
+            button.classList.toggle('active', isActive);
+            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
+        tabPanels.forEach((panel) => {
+            const isActive = panel.dataset.tabPanel === tabName;
+            panel.classList.toggle('active', isActive);
+        });
+    }
+    function showError(message) {
+        errorBanner.textContent = message;
+        errorBanner.style.display = 'block';
+        errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+    function clearError() { errorBanner.style.display = 'none'; }
 
-        const params = new URLSearchParams(window.location.search);
-        const selectedForm = params.get('form') === 'already-testing' ? 'already-testing' : 'become-tester';
-        setActiveTab(selectedForm);
+    tabButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+            setActiveTab(button.dataset.tabTarget);
+            clearError();
+        });
+    });
 
-        const messages = {
-            name: 'Please enter your name (2–100 characters).',
-            email: 'Please enter a valid email address.',
-            apps: 'Please select at least one app to test.',
-            device: 'Please select your primary device.',
-            rating: 'Please rate the app from 1 to 5.',
-        };
-        const error = params.get('error');
-        if (error) {
-            showError(messages[error] || 'Something went wrong. Please try again.');
+    // ── Reply-email toggle ──
+    document.querySelectorAll('[data-reply-toggle]').forEach((toggle) => {
+        toggle.addEventListener('change', () => {
+            const wrap = toggle.closest('form').querySelector('[data-reply-email]');
+            if (!wrap) return;
+            wrap.classList.toggle('show', toggle.checked);
+            const input = wrap.querySelector('input[type="email"]');
+            if (input) {
+                if (toggle.checked) {
+                    input.required = true;
+                    setTimeout(() => input.focus(), 80);
+                } else {
+                    input.required = false;
+                    input.value = '';
+                }
+            }
+        });
+    });
+
+    // ── Helpers to build elements without using innerHTML ──
+    function el(tag, opts) {
+        const node = document.createElement(tag);
+        if (!opts) return node;
+        if (opts.className) node.className = opts.className;
+        if (opts.text != null) node.textContent = opts.text;
+        if (opts.type) node.type = opts.type;
+        if (opts.placeholder) node.placeholder = opts.placeholder;
+        if (opts.maxLength) node.maxLength = opts.maxLength;
+        if (opts.value != null) node.value = opts.value;
+        if (opts.disabled) node.disabled = true;
+        if (opts.selected) node.selected = true;
+        if (opts.style) Object.assign(node.style, opts.style);
+        return node;
+    }
+
+    function buildStepLabel(stepLabelEl, stepNum, stepName, suffix) {
+        stepLabelEl.replaceChildren();
+        stepLabelEl.appendChild(document.createTextNode('Step ' + stepNum + ' of 3 — '));
+        stepLabelEl.appendChild(el('strong', { text: stepName }));
+        if (suffix) stepLabelEl.appendChild(document.createTextNode(' ' + suffix));
+    }
+
+    function buildCompleteLabel(stepLabelEl) {
+        stepLabelEl.replaceChildren();
+        stepLabelEl.appendChild(el('strong', { text: 'Device captured.' }));
+        stepLabelEl.appendChild(document.createTextNode(' Reset below to change.'));
+    }
+
+    // ── Cascading device picker ──
+    function renderDevicePicker(picker) {
+        const crumbs = picker.querySelector('[data-crumbs]');
+        const stepLabel = picker.querySelector('[data-step-label]');
+        const control = picker.querySelector('[data-control]');
+        const hidden = picker.querySelector('[data-device-value]');
+
+        if (!picker._state) {
+            picker._state = { brand: '', make: '', model: '', otherBrand: '', otherMake: '', otherModel: '' };
+        }
+        const state = picker._state;
+
+        // Build breadcrumbs
+        crumbs.replaceChildren();
+        const parts = [];
+        if (state.brand) parts.push(state.brand === '__OTHER__' ? (state.otherBrand || 'Other') : state.brand);
+        if (state.make)  parts.push(state.make  === '__OTHER__' ? (state.otherMake  || 'Other') : state.make);
+        if (state.model) parts.push(state.model === '__OTHER__' ? (state.otherModel || 'Other') : state.model);
+        if (parts.length === 0) {
+            crumbs.appendChild(el('span', { className: 'placeholder', text: 'No device selected yet.' }));
+        } else {
+            parts.forEach((label, idx) => {
+                if (idx > 0) crumbs.appendChild(el('span', { className: 'arrow', text: '→' }));
+                crumbs.appendChild(el('span', { className: 'device-crumb', text: label }));
+            });
         }
 
-        document.querySelectorAll('[data-app-tester-form]').forEach((form) => {
-            form.addEventListener('submit', (event) => {
-                const checkedApps = form.querySelectorAll('input[name="apps"]:checked');
-                if (checkedApps.length === 0) {
+        // Determine current step
+        control.replaceChildren();
+        let stepNum, stepName, options, currentKey;
+
+        if (!state.brand) {
+            stepNum = 1; stepName = 'Brand'; options = Object.keys(DEVICES); currentKey = 'brand';
+        } else if (state.brand === '__OTHER__' && !state.otherBrand) {
+            buildStepLabel(stepLabel, 1, 'Brand', '(type custom)');
+            renderOtherInput(control, picker, 'otherBrand', 'Type your brand');
+            updateHidden(picker, hidden);
+            return;
+        } else if (!state.make) {
+            const brandKey = state.brand === '__OTHER__' ? null : state.brand;
+            options = brandKey ? Object.keys(DEVICES[brandKey]) : ['Other'];
+            stepNum = 2; stepName = 'Make / Series'; currentKey = 'make';
+        } else if (state.make === '__OTHER__' && !state.otherMake) {
+            buildStepLabel(stepLabel, 2, 'Make / Series', '(type custom)');
+            renderOtherInput(control, picker, 'otherMake', 'Type your series');
+            updateHidden(picker, hidden);
+            return;
+        } else if (!state.model) {
+            const brandKey = state.brand === '__OTHER__' ? null : state.brand;
+            const makeKey  = state.make  === '__OTHER__' ? null : state.make;
+            options = (brandKey && makeKey && DEVICES[brandKey] && DEVICES[brandKey][makeKey]) ? DEVICES[brandKey][makeKey] : ['Other'];
+            stepNum = 3; stepName = 'Model'; currentKey = 'model';
+        } else if (state.model === '__OTHER__' && !state.otherModel) {
+            buildStepLabel(stepLabel, 3, 'Model', '(type custom)');
+            renderOtherInput(control, picker, 'otherModel', 'Type your model');
+            updateHidden(picker, hidden);
+            return;
+        } else {
+            // Complete
+            picker.classList.add('complete');
+            buildCompleteLabel(stepLabel);
+            const reset = el('button', { type: 'button', className: 'btn-reset', text: 'Reset device' });
+            reset.addEventListener('click', () => resetPicker(picker));
+            control.appendChild(reset);
+            updateHidden(picker, hidden);
+            return;
+        }
+
+        buildStepLabel(stepLabel, stepNum, stepName, '');
+
+        const select = document.createElement('select');
+        select.appendChild(el('option', { value: '', disabled: true, selected: true, text: 'Choose ' + stepName.toLowerCase() + '…' }));
+        options.forEach((opt) => select.appendChild(el('option', { value: opt, text: opt })));
+        select.appendChild(el('option', { value: '__OTHER__', text: 'Other / not listed…' }));
+        select.addEventListener('change', () => {
+            state[currentKey] = select.value;
+            renderDevicePicker(picker);
+        });
+        control.appendChild(select);
+
+        if (state.brand || state.make || state.model) {
+            const reset = el('button', { type: 'button', className: 'btn-reset', text: 'Reset' });
+            reset.addEventListener('click', () => resetPicker(picker));
+            control.appendChild(reset);
+        }
+
+        updateHidden(picker, hidden);
+    }
+
+    function renderOtherInput(control, picker, key, placeholder) {
+        const input = el('input', { type: 'text', placeholder: placeholder, maxLength: 80 });
+        input.addEventListener('change', () => {
+            const v = input.value.trim();
+            if (v) { picker._state[key] = v; renderDevicePicker(picker); }
+        });
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') { e.preventDefault(); input.dispatchEvent(new Event('change')); }
+        });
+        const reset = el('button', { type: 'button', className: 'btn-reset', text: 'Reset' });
+        reset.addEventListener('click', () => resetPicker(picker));
+        control.appendChild(input);
+        control.appendChild(reset);
+        setTimeout(() => input.focus(), 50);
+    }
+
+    function resetPicker(picker) {
+        picker._state = { brand: '', make: '', model: '', otherBrand: '', otherMake: '', otherModel: '' };
+        picker.classList.remove('complete');
+        renderDevicePicker(picker);
+    }
+
+    function updateHidden(picker, hidden) {
+        const s = picker._state;
+        const brand = s.brand === '__OTHER__' ? s.otherBrand : s.brand;
+        const make  = s.make  === '__OTHER__' ? s.otherMake  : s.make;
+        const model = s.model === '__OTHER__' ? s.otherModel : s.model;
+        if (brand && make && model) hidden.value = brand + ' / ' + make + ' / ' + model;
+        else hidden.value = '';
+    }
+
+    document.querySelectorAll('[data-device-picker]').forEach((picker) => {
+        renderDevicePicker(picker);
+    });
+
+    // ── Second-device toggle ──
+    document.querySelectorAll('[data-second-device-toggle]').forEach((toggle) => {
+        toggle.addEventListener('change', () => {
+            const wrap = toggle.closest('form').querySelector('[data-second-device-wrap]');
+            if (!wrap) return;
+            wrap.classList.toggle('show', toggle.checked);
+            if (!toggle.checked) {
+                const picker = wrap.querySelector('[data-device-picker]');
+                if (picker) {
+                    resetPicker(picker);
+                    picker.querySelector('[data-device-value]').value = '';
+                }
+            }
+        });
+    });
+
+    // ── Initial activation + query-string error replay ──
+    const params = new URLSearchParams(window.location.search);
+    const selectedForm = params.get('form') === 'already-testing' ? 'already-testing' : 'become-tester';
+    setActiveTab(selectedForm);
+
+    const messages = {
+        name: 'Please enter a name, username, or pseudonym (2–100 characters).',
+        email: 'Please enter a valid email address (or uncheck "want a reply").',
+        apps: 'Please select at least one app to test.',
+        device: 'Please pick a device — brand, make, and model.',
+        rating: 'Please rate the app from 1 to 5.',
+    };
+    const errorParam = params.get('error');
+    if (errorParam) showError(messages[errorParam] || 'Something went wrong. Please try again.');
+
+    // ── Submit validation ──
+    document.querySelectorAll('[data-app-tester-form]').forEach((form) => {
+        form.addEventListener('submit', (event) => {
+            const checkedApps = form.querySelectorAll('input[name="apps"]:checked');
+            if (checkedApps.length === 0) {
+                event.preventDefault();
+                showError('Please select at least one app to test.');
+                setActiveTab(form.dataset.tabPanel);
+                return;
+            }
+            const primaryDevice = form.querySelector('input[name="device"]');
+            if (!primaryDevice || !primaryDevice.value) {
+                event.preventDefault();
+                showError('Please pick a device — brand, make, and model.');
+                setActiveTab(form.dataset.tabPanel);
+                return;
+            }
+            const replyToggle = form.querySelector('[data-reply-toggle]');
+            if (replyToggle && replyToggle.checked) {
+                const email = form.querySelector('input[type="email"]');
+                if (!email || !email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
                     event.preventDefault();
-                    showError('Please select at least one app to test.');
+                    showError('Please enter a valid email address (or uncheck "want a reply").');
                     setActiveTab(form.dataset.tabPanel);
                     return;
                 }
-
-                if (form.dataset.tabPanel === 'already-testing') {
-                    const ratingSelect = form.querySelector('select[name="app_rating"]');
-                    if (!ratingSelect.value) {
-                        event.preventDefault();
-                        showError('Please rate the app from 1 to 5.');
-                        setActiveTab('already-testing');
-                    }
+            }
+            if (form.dataset.tabPanel === 'already-testing') {
+                const ratingSelect = form.querySelector('select[name="app_rating"]');
+                if (!ratingSelect.value) {
+                    event.preventDefault();
+                    showError('Please rate the app from 1 to 5.');
+                    setActiveTab('already-testing');
                 }
-            });
+            }
         });
+    });
     </script>
 </body>
 </html>
