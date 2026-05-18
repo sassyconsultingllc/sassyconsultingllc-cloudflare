@@ -1,3 +1,5 @@
+import { EmailMessage } from "cloudflare:email";
+
 const DATACENTER_ASNS = new Set([
   13335, 14618, 15169, 8075, 16509, 14061, 20473, 46606, 63949, 54825,
   398101, 13213, 32934, 19551, 36351, 30633, 21859
@@ -324,24 +326,14 @@ async function handleContact(request, env, corsHeaders) {
   if (env.DB) {
     try { await env.DB.prepare("INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))").bind(safeName, safeEmail, message).run(); } catch (e) { console.error("DB error:", e); }
   }
-  if (env.RESEND_API_KEY) {
-    try {
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${env.RESEND_API_KEY}`,
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          from: "Sassy Consulting <contact@sassyconsultingllc.com>",
-          to: ["info@sassyconsultingllc.com"],
-          reply_to: safeEmail,
-          subject: `Contact Form: ${safeName}`,
-          text: `New contact form submission:\n\nName: ${safeName}\nEmail: ${safeEmail}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`
-        })
-      });
-    } catch (e) { console.error("Email error:", e); }
-  }
+  await sendEmailViaCF(env, {
+    from: "contact@sassyconsultingllc.com",
+    senderLabel: "Sassy Consulting",
+    to: "info@sassyconsultingllc.com",
+    replyTo: safeEmail,
+    subject: `Contact Form: ${safeName}`,
+    text: `New contact form submission:\n\nName: ${safeName}\nEmail: ${safeEmail}\n\nMessage:\n${message}\n\n---\nSent from sassyconsultingllc.com contact form`,
+  });
   return new Response(null, { status: 302, headers: { ...SECURITY_HEADERS, "Location": "/contact-success.html" } });
 }
 
@@ -475,36 +467,27 @@ async function handleAppTester(request, env, corsHeaders) {
       ).bind(safeName, safeEmail, `[APP TESTER] Type: ${submissionLabel} | Reply: ${replyStatus} | Apps: ${appsStr} | Device: ${deviceStr}${baseInstall} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}${advancedDb}`).run();
     } catch (e) { console.error("DB error:", e); }
   }
-  if (env.RESEND_API_KEY) {
-    try {
-      const subjectTag = hasAdvanced ? " [ADV-REVIEW]" : "";
-      const emailPayload = {
-        from: "Sassy Consulting <contact@sassyconsultingllc.com>",
-        to: ["info@sassyconsultingllc.com"],
-        subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${safeName}${wantsReply ? "" : " [no reply requested]"}${subjectTag}`,
-        text:
-          `New app tester submission:\n\n` +
-          `Type: ${submissionLabel}\n` +
-          `Reply requested: ${wantsReply ? "yes" : "no"}\n` +
-          `Email: ${safeEmail || "(not provided)"}\n` +
-          `Device: ${device || "(not provided)"}${deviceSecond ? `\nSecond Device: ${deviceSecond}` : ""}\n` +
-          `Apps: ${appsStr}\n` +
-          `App Rating: ${ratingText}\n` +
-          (advanced.install_duration ? `Install duration: ${advanced.install_duration}\n` : "") +
-          `Experience: ${experience || "not specified"}\n` +
-          `Notes: ${notes || "none"}` +
-          advancedEmail +
-          `\n\n---\nSent from sassyconsultingllc.com/app-testers`
-      };
-      // Only set reply_to when a real email was supplied; Resend rejects empty strings.
-      if (safeEmail) emailPayload.reply_to = safeEmail;
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: { "Authorization": `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
-        body: JSON.stringify(emailPayload)
-      });
-    } catch (e) { console.error("Email error:", e); }
-  }
+  const subjectTag = hasAdvanced ? " [ADV-REVIEW]" : "";
+  await sendEmailViaCF(env, {
+    from: "contact@sassyconsultingllc.com",
+    senderLabel: "Sassy Consulting",
+    to: "info@sassyconsultingllc.com",
+    replyTo: safeEmail || undefined,
+    subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${safeName}${wantsReply ? "" : " [no reply requested]"}${subjectTag}`,
+    text:
+      `New app tester submission:\n\n` +
+      `Type: ${submissionLabel}\n` +
+      `Reply requested: ${wantsReply ? "yes" : "no"}\n` +
+      `Email: ${safeEmail || "(not provided)"}\n` +
+      `Device: ${device || "(not provided)"}${deviceSecond ? `\nSecond Device: ${deviceSecond}` : ""}\n` +
+      `Apps: ${appsStr}\n` +
+      `App Rating: ${ratingText}\n` +
+      (advanced.install_duration ? `Install duration: ${advanced.install_duration}\n` : "") +
+      `Experience: ${experience || "not specified"}\n` +
+      `Notes: ${notes || "none"}` +
+      advancedEmail +
+      `\n\n---\nSent from sassyconsultingllc.com/app-testers`,
+  });
   return new Response(null, { status: 302, headers: { ...SECURITY_HEADERS, "Location": "/contact-success.html" } });
 }
 
@@ -959,29 +942,44 @@ async function handleNdaDownload(request, env, corsHeaders) {
 // ═══════════════════════════════════════════════════
 
 /**
- * Send an email notification for important DB events.
- * Uses Cloudflare Email Workers (send_email binding).
+ * Send an email via the Cloudflare Email Workers send_email binding.
+ * Binding name: CONTACT_EMAIL (declared in wrangler.jsonc).
+ * The `to` address must be a verified destination on the account.
  * Non-blocking: failures are logged but never propagated.
  */
-async function sendNotification(env, subject, bodyText) {
-  if (!env.RESEND_API_KEY) return;
+async function sendEmailViaCF(env, { from, to, subject, text, replyTo, senderLabel }) {
+  if (!env.CONTACT_EMAIL) return;
   try {
-    await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Authorization": `Bearer ${env.RESEND_API_KEY}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from: "Sassy Consulting <notifications@sassyconsultingllc.com>",
-        to: ["info@sassyconsultingllc.com"],
-        subject: subject,
-        text: bodyText + "\n\n---\nAutomated notification from sassyconsultingllc.com"
-      })
-    });
+    const headers = [
+      `From: ${senderLabel ? `${senderLabel} <${from}>` : from}`,
+      `To: ${to}`,
+      replyTo ? `Reply-To: ${replyTo}` : null,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Content-Type: text/plain; charset=utf-8`,
+      `Date: ${new Date().toUTCString()}`,
+      ``,
+    ].filter(Boolean);
+    const raw = headers.join("\r\n") + "\r\n" + text;
+    const msg = new EmailMessage(from, to, raw);
+    await env.CONTACT_EMAIL.send(msg);
   } catch (e) {
-    console.error("Notification email failed:", e);
+    console.error("CF email failed:", e);
   }
+}
+
+/**
+ * Backwards-compatible notification helper used by webhook + NDA flows.
+ * Sender is the "notifications@" alias to differentiate from form replies.
+ */
+async function sendNotification(env, subject, bodyText) {
+  await sendEmailViaCF(env, {
+    from: "notifications@sassyconsultingllc.com",
+    senderLabel: "Sassy Consulting",
+    to: "info@sassyconsultingllc.com",
+    subject: subject,
+    text: bodyText + "\n\n---\nAutomated notification from sassyconsultingllc.com",
+  });
 }
 
 function jsonResponse(data, status, corsHeaders) {
