@@ -352,7 +352,12 @@ async function handleAppTester(request, env, corsHeaders) {
     return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
   }
   const contentType = request.headers.get("content-type") || "";
+  // QA-rubric fields are only populated when "Advanced Review" is unlocked
+  // (install duration >= 7 days) and the tester opts in. All optional.
+  const RUBRIC_KEYS = ["rubric_stability","rubric_performance","rubric_functionality","rubric_ux","rubric_visual","rubric_accessibility","rubric_onboarding","rubric_engagement"];
+  const ADVANCED_KEYS = ["install_duration","advanced_review","bug_severity","bug_repro","bug_steps","most_loved","most_broken","ship_readiness", ...RUBRIC_KEYS];
   let name, email, device, deviceSecond, experience, notes, apps, submissionType, appRating, wantsReply;
+  const advanced = {};
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const formData = await request.formData();
     name = formData.get("name");
@@ -365,6 +370,7 @@ async function handleAppTester(request, env, corsHeaders) {
     submissionType = formData.get("submission_type") || "become-tester";
     appRating = formData.get("app_rating") || "";
     wantsReply = (formData.get("wants_reply") || "") === "yes";
+    for (const k of ADVANCED_KEYS) advanced[k] = formData.get(k) || "";
   } else {
     const body = await request.json();
     name = body.name; email = body.email || ""; device = body.device;
@@ -374,6 +380,7 @@ async function handleAppTester(request, env, corsHeaders) {
     submissionType = body.submission_type || body.submissionType || "become-tester";
     appRating = body.app_rating || body.appRating || "";
     wantsReply = body.wants_reply === "yes" || body.wantsReply === true;
+    for (const k of ADVANCED_KEYS) advanced[k] = body[k] || "";
   }
 
   const normalizedType = submissionType === "already-testing" ? "already-testing" : "become-tester";
@@ -396,7 +403,9 @@ async function handleAppTester(request, env, corsHeaders) {
   // If a value is provided regardless of the toggle, it must be a valid format.
   if (wantsReply && !email) return redirectWithError("email");
   if (email && !emailRegex.test(email)) return redirectWithError("email");
-  if (!device) return redirectWithError("device");
+  // Device is only required for "already-testing" submissions. New testers
+  // can't report on a device they haven't tested yet.
+  if (normalizedType === "already-testing" && !device) return redirectWithError("device");
   if (!apps || apps.length === 0) return redirectWithError("apps");
   if (normalizedType === "already-testing" && !ratingLabels[appRating]) return redirectWithError("rating");
 
@@ -410,23 +419,84 @@ async function handleAppTester(request, env, corsHeaders) {
   const ratingText = ratingLabels[appRating] || "not provided";
   const appsStr = apps.join(", ");
   const replyStatus = wantsReply ? "reply requested" : "no reply requested";
-  const deviceStr = deviceSecond ? `${device} | Device 2: ${deviceSecond}` : device;
+  const deviceStr = deviceSecond ? `${device} | Device 2: ${deviceSecond}` : (device || "(none)");
+
+  // Compose the advanced-review (Bethesda-style QA rubric) block when present.
+  // Tester must have advanced_review=yes AND at least one rubric score filled.
+  const hasAdvanced = advanced.advanced_review === "yes" &&
+    RUBRIC_KEYS.some((k) => advanced[k]);
+  let advancedDb = "";
+  let advancedEmail = "";
+  if (hasAdvanced) {
+    const RUBRIC_WEIGHTS = {
+      rubric_stability: 1.4, rubric_performance: 1.2, rubric_functionality: 1.4,
+      rubric_ux: 1.1, rubric_visual: 0.7, rubric_accessibility: 0.9,
+      rubric_onboarding: 0.8, rubric_engagement: 1.1,
+    };
+    let weighted = 0, totalWeight = 0, filled = 0;
+    for (const k of RUBRIC_KEYS) {
+      const raw = advanced[k];
+      const v = raw ? parseFloat(raw) : NaN;
+      if (!isNaN(v)) {
+        weighted += v * RUBRIC_WEIGHTS[k];
+        totalWeight += RUBRIC_WEIGHTS[k];
+        filled++;
+      }
+    }
+    const composite = totalWeight > 0 ? (weighted / totalWeight).toFixed(2) : "n/a";
+    const scoreLine = RUBRIC_KEYS.map((k) => {
+      const label = k.replace("rubric_", "").replace(/^./, (c) => c.toUpperCase());
+      return `${label}: ${advanced[k] || "—"}`;
+    }).join(" | ");
+    advancedDb = ` | ADV[install:${advanced.install_duration}|composite:${composite}/5|${filled}/8 scored|sev:${advanced.bug_severity || "—"}|repro:${advanced.bug_repro || "—"}|ship:${advanced.ship_readiness || "—"}|${scoreLine}|loved:${(advanced.most_loved || "").slice(0, 120)}|broken:${(advanced.most_broken || "").slice(0, 120)}|steps:${(advanced.bug_steps || "").slice(0, 240)}]`;
+    advancedEmail =
+      `\n\n── ADVANCED REVIEW (Bethesda-style QA rubric) ──\n` +
+      `Install duration: ${advanced.install_duration}\n` +
+      `Composite score:  ${composite} / 5   (${filled} of 8 categories scored)\n\n` +
+      RUBRIC_KEYS.map((k) => {
+        const label = k.replace("rubric_", "").replace(/^./, (c) => c.toUpperCase()).padEnd(16);
+        return `  ${label} ${advanced[k] || "—"}`;
+      }).join("\n") +
+      `\n\nWorst bug observed:\n` +
+      `  Severity:         ${advanced.bug_severity || "—"}\n` +
+      `  Reproducibility:  ${advanced.bug_repro || "—"}\n` +
+      `  Steps:\n${(advanced.bug_steps || "(none)").split("\n").map((l) => "    " + l).join("\n")}\n` +
+      `\nTester verdict:\n` +
+      `  Loved feature:    ${advanced.most_loved || "(none)"}\n` +
+      `  Broken feature:   ${advanced.most_broken || "(none)"}\n` +
+      `  Ship readiness:   ${advanced.ship_readiness || "—"}\n`;
+  }
+
+  const baseInstall = advanced.install_duration ? ` | Install: ${advanced.install_duration}` : "";
 
   if (env.DB) {
     try {
       // contact_submissions.email is NOT NULL — store "" when no reply requested.
       await env.DB.prepare(
         "INSERT INTO contact_submissions (name, email, message, created_at) VALUES (?, ?, ?, datetime('now'))"
-      ).bind(safeName, safeEmail, `[APP TESTER] Type: ${submissionLabel} | Reply: ${replyStatus} | Apps: ${appsStr} | Device: ${deviceStr} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}`).run();
+      ).bind(safeName, safeEmail, `[APP TESTER] Type: ${submissionLabel} | Reply: ${replyStatus} | Apps: ${appsStr} | Device: ${deviceStr}${baseInstall} | Rating: ${ratingText} | Experience: ${experience || "not specified"} | Notes: ${notes || "none"}${advancedDb}`).run();
     } catch (e) { console.error("DB error:", e); }
   }
   if (env.RESEND_API_KEY) {
     try {
+      const subjectTag = hasAdvanced ? " [ADV-REVIEW]" : "";
       const emailPayload = {
         from: "Sassy Consulting <contact@sassyconsultingllc.com>",
         to: ["info@sassyconsultingllc.com"],
-        subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${safeName}${wantsReply ? "" : " [no reply requested]"}`,
-        text: `New app tester submission:\n\nType: ${submissionLabel}\nName: ${safeName}\nReply requested: ${wantsReply ? "yes" : "no"}\nEmail: ${safeEmail || "(not provided)"}\nDevice: ${device}${deviceSecond ? `\nSecond Device: ${deviceSecond}` : ""}\nApps: ${appsStr}\nApp Rating: ${ratingText}\nExperience: ${experience || "not specified"}\nNotes: ${notes || "none"}\n\n---\nSent from sassyconsultingllc.com/app-testers`
+        subject: `${normalizedType === "already-testing" ? "App Tester Feedback" : "App Tester Signup"}: ${safeName}${wantsReply ? "" : " [no reply requested]"}${subjectTag}`,
+        text:
+          `New app tester submission:\n\n` +
+          `Type: ${submissionLabel}\n` +
+          `Reply requested: ${wantsReply ? "yes" : "no"}\n` +
+          `Email: ${safeEmail || "(not provided)"}\n` +
+          `Device: ${device || "(not provided)"}${deviceSecond ? `\nSecond Device: ${deviceSecond}` : ""}\n` +
+          `Apps: ${appsStr}\n` +
+          `App Rating: ${ratingText}\n` +
+          (advanced.install_duration ? `Install duration: ${advanced.install_duration}\n` : "") +
+          `Experience: ${experience || "not specified"}\n` +
+          `Notes: ${notes || "none"}` +
+          advancedEmail +
+          `\n\n---\nSent from sassyconsultingllc.com/app-testers`
       };
       // Only set reply_to when a real email was supplied; Resend rejects empty strings.
       if (safeEmail) emailPayload.reply_to = safeEmail;

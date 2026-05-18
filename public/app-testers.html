@@ -393,6 +393,128 @@
             font-size: 0.95rem;
             margin-bottom: 1.5rem;
         }
+
+        /* Advanced Review (QA rubric) gate + section */
+        .advanced-toggle-row { margin-bottom: 1.25rem; }
+        .advanced-toggle-row .checkbox-item input[type="checkbox"]:disabled {
+            cursor: not-allowed;
+            opacity: 0.4;
+        }
+        .advanced-toggle-row .checkbox-item input[type="checkbox"]:disabled + span {
+            color: var(--text-secondary);
+            opacity: 0.65;
+        }
+        [data-advanced-gate] {
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+        }
+        [data-advanced-gate].unlocked {
+            color: var(--accent-cyan-soft);
+        }
+        .advanced-section[hidden] { display: none; }
+        .advanced-section {
+            display: block;
+            margin-top: 1rem;
+            padding: 1.25rem 1.1rem 1.4rem;
+            background: linear-gradient(180deg, rgba(6, 182, 212, 0.04) 0%, rgba(59, 130, 246, 0.03) 100%);
+            border: 1px solid rgba(6, 182, 212, 0.18);
+            border-radius: 12px;
+            box-shadow: inset 0 1px 0 rgba(34, 211, 238, 0.08);
+            animation: advanced-reveal 480ms cubic-bezier(.2, .8, .3, 1);
+        }
+        @keyframes advanced-reveal {
+            0%   { opacity: 0; transform: translateY(-6px); }
+            100% { opacity: 1; transform: translateY(0);    }
+        }
+
+        /* Rubric grid: label + dropdown rows, denser than .field */
+        .rubric-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.55rem;
+            margin-bottom: 1.5rem;
+        }
+        .rubric-row {
+            display: grid;
+            grid-template-columns: 1fr 140px;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.6rem 0.8rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-subtle);
+            border-radius: 8px;
+            transition: border-color 0.15s, background 0.15s;
+        }
+        .rubric-row:focus-within {
+            border-color: rgba(6, 182, 212, 0.5);
+            background: rgba(6, 182, 212, 0.06);
+        }
+        .rubric-meta strong {
+            display: block;
+            font-size: 0.92rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.1rem;
+        }
+        .rubric-meta span {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .rubric-score {
+            padding: 0.55rem 2.25rem 0.55rem 0.75rem;
+            font-size: 0.88rem;
+        }
+
+        /* Composite readout */
+        .rubric-composite {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 10px;
+            padding: 1rem 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+        .composite-readout {
+            display: flex;
+            align-items: baseline;
+            gap: 0.5rem;
+            margin-bottom: 0.7rem;
+        }
+        .composite-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 2.1rem;
+            font-weight: 700;
+            color: var(--accent-cyan-soft);
+            letter-spacing: -0.02em;
+            line-height: 1;
+            text-shadow: 0 0 14px rgba(34, 211, 238, 0.4);
+        }
+        .composite-value.empty { color: var(--text-secondary); text-shadow: none; }
+        .composite-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .composite-meter {
+            height: 6px;
+            background: var(--bg-tertiary);
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+        .composite-bar {
+            display: block;
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-primary) 0%, var(--accent-cyan) 60%, var(--accent-blue) 100%);
+            transition: width 380ms cubic-bezier(.25, .9, .25, 1);
+            box-shadow: 0 0 12px rgba(34, 211, 238, 0.55);
+        }
+
+        @media (max-width: 600px) {
+            .rubric-row { grid-template-columns: 1fr; }
+            .rubric-score { width: 100%; }
+        }
+
         .rating-help {
             margin-top: 0.5rem;
             font-size: 0.8rem;
@@ -733,145 +855,14 @@
     </nav>
 
     <main>
-        <h1><span class="gradient">App Tester</span> Hub</h1>
-        <p class="subtitle">Tell me how the app functions in your real use case. Email is only needed if you want a reply.</p>
+        <h1><span class="gradient">App Tester</span> Feedback</h1>
+        <p class="subtitle">You're testing an app — tell me how it works in your real use case. Anyone can join the open testing on Google Play; this page is just for feedback. Email is only needed if you want a reply.</p>
 
         <div class="form-card">
             <div id="error-banner" class="error-banner"></div>
 
-            <div class="tab-switcher" role="tablist" aria-label="App tester form tabs">
-                <button type="button" id="tab-btn-become" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-become" data-tab-target="become-tester">Become an App Tester</button>
-                <button type="button" id="tab-btn-already" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-already" data-tab-target="already-testing">Already testing</button>
-                <div class="tab-indicator" id="tab-indicator" aria-hidden="true"></div>
-            </div>
-
-            <div class="form-stage" id="form-stage">
-                <div class="splash-layer" aria-hidden="true">
-                    <div class="splash-impact"></div>
-                </div>
-
-                <div class="caustics-layer" aria-hidden="true">
-                    <svg class="caustics-svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
-                        <defs>
-                            <filter id="causticFilter" x="-20%" y="-20%" width="140%" height="140%">
-                                <feTurbulence type="fractalNoise" baseFrequency="0.012 0.022" numOctaves="2" seed="7">
-                                    <animate attributeName="baseFrequency"
-                                             dur="2.4s"
-                                             values="0.012 0.022; 0.020 0.014; 0.012 0.022"
-                                             repeatCount="indefinite"/>
-                                </feTurbulence>
-                                <feColorMatrix type="matrix"
-                                    values="0 0 0 0 0.06
-                                            0 0 0 0 0.50
-                                            0 0 0 0 0.90
-                                            0 0 0 18 -9"/>
-                                <feGaussianBlur stdDeviation="1.5"/>
-                            </filter>
-                            <linearGradient id="causticTint" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%"   stop-color="#22d3ee" stop-opacity="0.6"/>
-                                <stop offset="60%"  stop-color="#3b82f6" stop-opacity="0.35"/>
-                                <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.2"/>
-                            </linearGradient>
-                        </defs>
-                        <rect width="600" height="400" fill="url(#causticTint)" filter="url(#causticFilter)"/>
-                    </svg>
-                </div>
-
-            <!-- BECOME-TESTER FORM -->
-            <form action="/api/app-tester" method="POST" id="panel-become" class="tab-panel active" data-tab-panel="become-tester" data-app-tester-form>
-                <input type="hidden" name="submission_type" value="become-tester">
-
-                <p class="form-intro">Tell us what you want to test and how you'd use it.</p>
-
-                <p class="section-heading">Your Info</p>
-
-                <div class="field">
-                    <label for="become-name">Name, username, or pseudonym <span class="required">*</span></label>
-                    <input type="text" id="become-name" name="name" required minlength="2" maxlength="100" placeholder="A real name, username, or pseudonym is fine" autocomplete="name">
-                </div>
-
-                <div class="field reply-toggle">
-                    <label class="checkbox-item">
-                        <input type="checkbox" name="wants_reply" value="yes" data-reply-toggle>
-                        <span>Do you want to receive a reply?</span>
-                    </label>
-                </div>
-
-                <div class="field reply-email-wrap" data-reply-email>
-                    <label for="become-email">Email</label>
-                    <input type="email" id="become-email" name="email" placeholder="you@example.com" autocomplete="email">
-                </div>
-
-                <hr class="section-divider">
-                <p class="section-heading">What device was tested? <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">(brand → make → model)</span></p>
-
-                <div class="field">
-                    <div class="device-picker" data-device-picker data-device-target="device">
-                        <div class="device-crumbs" data-crumbs></div>
-                        <div class="device-step-label" data-step-label></div>
-                        <div class="device-control" data-control></div>
-                        <input type="hidden" name="device" data-device-value required>
-                    </div>
-
-                    <label class="checkbox-item second-device-toggle">
-                        <input type="checkbox" data-second-device-toggle>
-                        <span>Second device?</span>
-                    </label>
-
-                    <div class="second-device-wrap" data-second-device-wrap>
-                        <div class="device-picker" data-device-picker data-device-target="device_2" style="margin-top: 0.5rem;">
-                            <div class="device-crumbs" data-crumbs></div>
-                            <div class="device-step-label" data-step-label></div>
-                            <div class="device-control" data-control></div>
-                            <input type="hidden" name="device_2" data-device-value>
-                        </div>
-                    </div>
-                </div>
-
-                <hr class="section-divider">
-                <p class="section-heading">Apps to Test <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">(select all that apply)</span></p>
-
-                <div class="field">
-                    <div class="checkbox-group">
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="apps" value="sassytalk">
-                            <span>SassyTalk <span class="app-badge">Android</span></span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="apps" value="foodie-finder">
-                            <span>Foodie Finder <span class="app-badge">Android</span></span>
-                        </label>
-                        <label class="checkbox-item">
-                            <input type="checkbox" name="apps" value="rebel-tuner">
-                            <span>Rebel Tuner <span class="app-badge">Android</span></span>
-                        </label>
-                    </div>
-                </div>
-
-                <hr class="section-divider">
-                <p class="section-heading">Tell Us More</p>
-
-                <div class="field">
-                    <label for="become-experience">Testing Experience</label>
-                    <select id="become-experience" name="experience">
-                        <option value="" disabled selected>How familiar are you with beta testing?</option>
-                        <option value="first-time">First time — never done it before</option>
-                        <option value="casual">Casual — tested a few apps</option>
-                        <option value="regular">Regular — I test apps frequently</option>
-                        <option value="professional">Professional / QA background</option>
-                    </select>
-                </div>
-
-                <div class="field">
-                    <label for="become-notes">Anything else? <span style="color: var(--text-secondary);">(optional)</span></label>
-                    <textarea id="become-notes" name="notes" maxlength="500" placeholder="Specific features you want to test, your use case, questions..."></textarea>
-                </div>
-
-                <button type="submit" class="submit-btn">Submit →</button>
-            </form>
-
-            <!-- ALREADY-TESTING FORM -->
-            <form action="/api/app-tester" method="POST" id="panel-already" class="tab-panel" data-tab-panel="already-testing" data-app-tester-form>
+            <!-- FEEDBACK FORM -->
+            <form action="/api/app-tester" method="POST" id="panel-already" data-app-tester-form>
                 <input type="hidden" name="submission_type" value="already-testing">
 
                 <p class="form-intro">Already using one of the apps? Send your quick quality score and feedback here.</p>
@@ -942,6 +933,19 @@
                 </div>
 
                 <div class="field">
+                    <label for="install-duration">How long have you had the app installed? <span class="required">*</span></label>
+                    <select id="install-duration" name="install_duration" required data-install-duration>
+                        <option value="" disabled selected>Select duration</option>
+                        <option value="<24h">Less than 24 hours</option>
+                        <option value="1-3d">1–3 days</option>
+                        <option value="4-6d">4–6 days</option>
+                        <option value="1-2w">1–2 weeks</option>
+                        <option value="2w+">2 weeks or more</option>
+                    </select>
+                    <p class="rating-help">Google Play counts real usage at <strong>7+ days</strong>. The Advanced Review unlocks at that threshold.</p>
+                </div>
+
+                <div class="field">
                     <label for="already-rating">How was the app? <span class="required">*</span></label>
                     <select id="already-rating" name="app_rating" required>
                         <option value="" disabled selected>Select 1–5</option>
@@ -954,6 +958,143 @@
                     <p class="rating-help">This rating is your general overall score right now.</p>
                 </div>
 
+                <hr class="section-divider">
+
+                <div class="field advanced-toggle-row">
+                    <label class="checkbox-item" data-advanced-label>
+                        <input type="checkbox" name="advanced_review" value="yes" data-advanced-toggle disabled>
+                        <span>Advanced Review <span class="app-badge">QA Rubric</span></span>
+                    </label>
+                    <p class="rating-help" data-advanced-gate>Unlocks after <strong>7+ days</strong> of installed use. Patterned after Bethesda Game Studios' internal QA scorecard.</p>
+                </div>
+
+                <div class="advanced-section" data-advanced-section hidden>
+                    <p class="section-heading">QA Rubric <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">— score 1 (broken) to 5 (excellent)</span></p>
+
+                    <div class="rubric-grid">
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Stability</strong><span>Crashes, ANRs, freezes, frozen UI</span></div>
+                            <select name="rubric_stability" class="rubric-score" aria-label="Stability score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Performance</strong><span>Lag, scroll jank, battery drain, network use</span></div>
+                            <select name="rubric_performance" class="rubric-score" aria-label="Performance score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Core Functionality</strong><span>Does each advertised feature actually work</span></div>
+                            <select name="rubric_functionality" class="rubric-score" aria-label="Functionality score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>UX / Flow</strong><span>Clarity, friction, ease of completing tasks</span></div>
+                            <select name="rubric_ux" class="rubric-score" aria-label="UX score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Visual Polish</strong><span>Alignment, typography, animation, theming</span></div>
+                            <select name="rubric_visual" class="rubric-score" aria-label="Visual polish score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Accessibility</strong><span>TalkBack, dynamic type, contrast, touch targets</span></div>
+                            <select name="rubric_accessibility" class="rubric-score" aria-label="Accessibility score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Onboarding</strong><span>First 60 seconds — clear, scary, or boring?</span></div>
+                            <select name="rubric_onboarding" class="rubric-score" aria-label="Onboarding score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                        <div class="rubric-row">
+                            <div class="rubric-meta"><strong>Engagement</strong><span>Would you open it again tomorrow without a reminder?</span></div>
+                            <select name="rubric_engagement" class="rubric-score" aria-label="Engagement score">
+                                <option value="" disabled selected>—</option>
+                                <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <p class="section-heading">Composite Score</p>
+                    <div class="rubric-composite">
+                        <div class="composite-readout">
+                            <span class="composite-value" data-composite-value>—</span>
+                            <span class="composite-label">out of 5.0</span>
+                        </div>
+                        <div class="composite-meter"><span class="composite-bar" data-composite-bar></span></div>
+                        <p class="rating-help" data-composite-help>Fill in the rubric above to see your weighted score.</p>
+                    </div>
+
+                    <p class="section-heading">Worst Bug Observed</p>
+                    <div class="field">
+                        <label for="bug-severity">Severity</label>
+                        <select id="bug-severity" name="bug_severity">
+                            <option value="" disabled selected>Pick a severity</option>
+                            <option value="P0">P0 — Blocker (crash, data loss, app unusable)</option>
+                            <option value="P1">P1 — Critical (major feature broken)</option>
+                            <option value="P2">P2 — Major (minor feature broken)</option>
+                            <option value="P3">P3 — Minor (rough edge / odd behaviour)</option>
+                            <option value="P4">P4 — Cosmetic (visual nit, copy error)</option>
+                            <option value="none">No bug observed</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="bug-repro">Reproducibility</label>
+                        <select id="bug-repro" name="bug_repro">
+                            <option value="" disabled selected>Pick a reproducibility</option>
+                            <option value="always">Always (100%)</option>
+                            <option value="often">Often (≥50%)</option>
+                            <option value="sometimes">Sometimes (10–50%)</option>
+                            <option value="rarely">Rarely (&lt;10%)</option>
+                            <option value="once">Once / unable to reproduce</option>
+                            <option value="na">N/A — no bug</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="bug-steps">Steps to reproduce</label>
+                        <textarea id="bug-steps" name="bug_steps" maxlength="1000" placeholder="1. Open the app\n2. Tap…\n3. Observe…\n\nExpected: …\nActual: …"></textarea>
+                    </div>
+
+                    <p class="section-heading">Tester Verdict</p>
+                    <div class="field">
+                        <label for="most-loved">Feature you'd defend in a meeting</label>
+                        <textarea id="most-loved" name="most_loved" maxlength="400" placeholder="The one thing that, if removed, would make you stop using the app."></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="most-broken">Feature you'd ship a fix for first</label>
+                        <textarea id="most-broken" name="most_broken" maxlength="400" placeholder="The one thing you'd hand to a developer Monday morning."></textarea>
+                    </div>
+                    <div class="field">
+                        <label for="ship-readiness">Ship readiness call</label>
+                        <select id="ship-readiness" name="ship_readiness">
+                            <option value="" disabled selected>Pick a call</option>
+                            <option value="ship">Ship it now</option>
+                            <option value="ship-with-fixes">Ship after these fixes</option>
+                            <option value="needs-iteration">Needs another iteration</option>
+                            <option value="dont-ship">Do not ship — back to design</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="section-divider">
+
                 <div class="field">
                     <label for="already-notes">Anything else? <span style="color: var(--text-secondary);">(optional)</span></label>
                     <textarea id="already-notes" name="notes" maxlength="500" placeholder="What worked best, what felt rough, and what would make you switch workflows?"></textarea>
@@ -961,7 +1102,6 @@
 
                 <button type="submit" class="submit-btn">Send Feedback →</button>
             </form>
-            </div>
         </div>
 
         <div class="perks">
@@ -1069,51 +1209,7 @@
     };
 
     const errorBanner = document.getElementById('error-banner');
-    const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
-    const tabPanels = Array.from(document.querySelectorAll('[data-tab-panel]'));
-    const formStage = document.getElementById('form-stage');
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    let isSwapping = false;
-
-    const tabIndicator = document.getElementById('tab-indicator');
-
-    function moveTabIndicator(tabName) {
-        if (!tabIndicator) return;
-        const activeBtn = tabButtons.find((b) => b.dataset.tabTarget === tabName);
-        if (!activeBtn) return;
-        const switcher = activeBtn.parentElement;
-        const swRect = switcher.getBoundingClientRect();
-        const btnRect = activeBtn.getBoundingClientRect();
-        // Position the rail along the bottom of the active button, inset 18%.
-        const inset = btnRect.width * 0.18;
-        const left = (btnRect.left - swRect.left) + inset;
-        const width = btnRect.width - (inset * 2);
-        tabIndicator.style.width = width + 'px';
-        tabIndicator.style.transform = 'translateX(' + left + 'px)';
-        tabIndicator.classList.remove('snapping');
-        // restart animation by next frame
-        requestAnimationFrame(() => tabIndicator.classList.add('snapping'));
-        setTimeout(() => tabIndicator.classList.remove('snapping'), 540);
-    }
-
-    function updateTabButtons(tabName) {
-        tabButtons.forEach((button) => {
-            const isActive = button.dataset.tabTarget === tabName;
-            button.classList.toggle('active', isActive);
-            button.setAttribute('aria-selected', isActive ? 'true' : 'false');
-        });
-        moveTabIndicator(tabName);
-    }
-
-    // Initial placement once layout has settled.
-    window.addEventListener('load', () => {
-        const activeTab = (tabButtons.find((b) => b.classList.contains('active')) || tabButtons[0]).dataset.tabTarget;
-        moveTabIndicator(activeTab);
-    });
-    window.addEventListener('resize', () => {
-        const activeTab = (tabButtons.find((b) => b.classList.contains('active')) || tabButtons[0]).dataset.tabTarget;
-        moveTabIndicator(activeTab);
-    });
 
     // ── Cyan spark burst — fires every time a checkbox flips ──
     function spawnSpark(target) {
@@ -1152,97 +1248,11 @@
         }
     });
 
-    function instantSwap(tabName) {
-        tabPanels.forEach((panel) => {
-            const isActive = panel.dataset.tabPanel === tabName;
-            panel.classList.toggle('active', isActive);
-            panel.classList.remove('exiting', 'entering');
-        });
-    }
-
-    function spawnDroplets() {
-        if (!formStage) return;
-        const count = 9;
-        for (let i = 0; i < count; i++) {
-            const drop = document.createElement('span');
-            drop.className = 'splash-droplet';
-            const size = 6 + Math.random() * 14;
-            // Spawn near the left edge where the wave impacts
-            const startX = 2 + Math.random() * 16;            // % from left
-            const startY = 12 + Math.random() * 70;           // % from top
-            // Spray inward (rightward) with some vertical scatter
-            const dx = 60 + Math.random() * 240;              // px rightward
-            const dy = (Math.random() - 0.5) * 180;           // px scatter
-            drop.style.width = size + 'px';
-            drop.style.height = size + 'px';
-            drop.style.left = startX + '%';
-            drop.style.top = startY + '%';
-            drop.style.setProperty('--dx', dx + 'px');
-            drop.style.setProperty('--dy', dy + 'px');
-            drop.style.animationDelay = (300 + i * 22) + 'ms';
-            formStage.appendChild(drop);
-        }
-    }
-
-    function cleanupAfterSwap(outgoing, incoming) {
-        if (!isSwapping) return;
-        isSwapping = false;
-        outgoing.classList.remove('active', 'exiting');
-        incoming.classList.remove('entering');
-        incoming.classList.add('active');
-        formStage.classList.remove('swapping');
-        formStage.style.minHeight = '';
-        formStage.querySelectorAll('.splash-droplet').forEach((d) => d.remove());
-    }
-
-    function setActiveTab(tabName, opts) {
-        const animate = !!(opts && opts.animate);
-        updateTabButtons(tabName);
-
-        const incomingPanel = tabPanels.find((p) => p.dataset.tabPanel === tabName);
-        const currentPanel = tabPanels.find((p) => p.classList.contains('active'));
-        if (!incomingPanel) return;
-        if (incomingPanel === currentPanel) return;
-
-        if (!animate || prefersReducedMotion || !currentPanel || !formStage || isSwapping) {
-            instantSwap(tabName);
-            return;
-        }
-
-        isSwapping = true;
-        // Lock height so the surrounding card doesn't jump while both panels are absolutely positioned.
-        formStage.style.minHeight = currentPanel.offsetHeight + 'px';
-
-        currentPanel.classList.add('exiting');
-        incomingPanel.classList.add('entering');
-        formStage.classList.add('swapping');
-        spawnDroplets();
-
-        // Listen for the entering panel's animation to finish before cleanup.
-        const onEnterEnd = (e) => {
-            if (e.animationName !== 'panel-rod-in') return;
-            incomingPanel.removeEventListener('animationend', onEnterEnd);
-            cleanupAfterSwap(currentPanel, incomingPanel);
-        };
-        incomingPanel.addEventListener('animationend', onEnterEnd);
-
-        // Safety net in case animationend doesn't fire (tab backgrounded, etc.).
-        setTimeout(() => cleanupAfterSwap(currentPanel, incomingPanel), 1100);
-    }
-
     function showError(message) {
         errorBanner.textContent = message;
         errorBanner.style.display = 'block';
         errorBanner.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-    function clearError() { errorBanner.style.display = 'none'; }
-
-    tabButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            setActiveTab(button.dataset.tabTarget, { animate: true });
-            clearError();
-        });
-    });
 
     // ── Reply-email toggle ──
     document.querySelectorAll('[data-reply-toggle]').forEach((toggle) => {
@@ -1459,11 +1469,8 @@
         });
     });
 
-    // ── Initial activation + query-string error replay ──
+    // ── Query-string error replay (worker redirects back here on validation fail) ──
     const params = new URLSearchParams(window.location.search);
-    const selectedForm = params.get('form') === 'already-testing' ? 'already-testing' : 'become-tester';
-    setActiveTab(selectedForm);
-
     const messages = {
         name: 'Please enter a name, username, or pseudonym (2–100 characters).',
         email: 'Please enter a valid email address (or uncheck "want a reply").',
@@ -1474,6 +1481,96 @@
     const errorParam = params.get('error');
     if (errorParam) showError(messages[errorParam] || 'Something went wrong. Please try again.');
 
+    // ── Advanced Review gate: install duration ≥ 7 days unlocks the toggle ──
+    const ADVANCED_UNLOCK_DURATIONS = new Set(['1-2w', '2w+']);
+    const installSelect = document.querySelector('[data-install-duration]');
+    const advancedToggle = document.querySelector('[data-advanced-toggle]');
+    const advancedGate = document.querySelector('[data-advanced-gate]');
+    const advancedSection = document.querySelector('[data-advanced-section]');
+
+    function updateAdvancedGate() {
+        if (!installSelect || !advancedToggle) return;
+        const eligible = ADVANCED_UNLOCK_DURATIONS.has(installSelect.value);
+        advancedToggle.disabled = !eligible;
+        if (advancedGate) {
+            advancedGate.classList.toggle('unlocked', eligible);
+            advancedGate.replaceChildren();
+            if (eligible) {
+                const strong = document.createElement('strong');
+                strong.textContent = 'Unlocked';
+                advancedGate.appendChild(strong);
+                advancedGate.appendChild(document.createTextNode(' — you can leave a Bethesda-style QA review.'));
+            } else {
+                advancedGate.appendChild(document.createTextNode('Unlocks after '));
+                const strong = document.createElement('strong');
+                strong.textContent = '7+ days';
+                advancedGate.appendChild(strong);
+                advancedGate.appendChild(document.createTextNode(" of installed use. Patterned after Bethesda Game Studios' internal QA scorecard."));
+            }
+        }
+        if (!eligible) {
+            advancedToggle.checked = false;
+            if (advancedSection) advancedSection.hidden = true;
+        }
+    }
+    if (installSelect) installSelect.addEventListener('change', updateAdvancedGate);
+    if (advancedToggle) {
+        advancedToggle.addEventListener('change', () => {
+            if (!advancedSection) return;
+            advancedSection.hidden = !advancedToggle.checked;
+        });
+    }
+    updateAdvancedGate();
+
+    // ── Composite rubric score (weighted mean across all 8 categories) ──
+    const RUBRIC_WEIGHTS = {
+        rubric_stability: 1.4,      // crashes outweigh polish
+        rubric_performance: 1.2,
+        rubric_functionality: 1.4,
+        rubric_ux: 1.1,
+        rubric_visual: 0.7,
+        rubric_accessibility: 0.9,
+        rubric_onboarding: 0.8,
+        rubric_engagement: 1.1,
+    };
+    const compositeValue = document.querySelector('[data-composite-value]');
+    const compositeBar   = document.querySelector('[data-composite-bar]');
+    const compositeHelp  = document.querySelector('[data-composite-help]');
+
+    function updateComposite() {
+        if (!compositeValue) return;
+        let weighted = 0, totalWeight = 0, filled = 0;
+        for (const [name, weight] of Object.entries(RUBRIC_WEIGHTS)) {
+            const sel = document.querySelector('select[name="' + name + '"]');
+            if (!sel || !sel.value) continue;
+            const v = parseFloat(sel.value);
+            if (isNaN(v)) continue;
+            weighted += v * weight;
+            totalWeight += weight;
+            filled++;
+        }
+        if (filled === 0) {
+            compositeValue.textContent = '—';
+            compositeValue.classList.add('empty');
+            if (compositeBar) compositeBar.style.width = '0%';
+            if (compositeHelp) compositeHelp.textContent = 'Fill in the rubric above to see your weighted score.';
+            return;
+        }
+        const score = weighted / totalWeight;
+        compositeValue.textContent = score.toFixed(2);
+        compositeValue.classList.remove('empty');
+        if (compositeBar) compositeBar.style.width = ((score / 5) * 100) + '%';
+        if (compositeHelp) {
+            const remaining = 8 - filled;
+            compositeHelp.textContent = remaining > 0
+                ? ('Weighted across ' + filled + ' of 8 categories — ' + remaining + ' to go.')
+                : 'All 8 categories scored. Stability + Functionality weigh heaviest.';
+        }
+    }
+    document.querySelectorAll('.rubric-score').forEach((sel) => {
+        sel.addEventListener('change', updateComposite);
+    });
+
     // ── Submit validation ──
     document.querySelectorAll('[data-app-tester-form]').forEach((form) => {
         form.addEventListener('submit', (event) => {
@@ -1481,14 +1578,12 @@
             if (checkedApps.length === 0) {
                 event.preventDefault();
                 showError('Please select at least one app to test.');
-                setActiveTab(form.dataset.tabPanel);
                 return;
             }
             const primaryDevice = form.querySelector('input[name="device"]');
-            if (!primaryDevice || !primaryDevice.value) {
+            if (primaryDevice && !primaryDevice.value) {
                 event.preventDefault();
                 showError('Please pick a device — brand, make, and model.');
-                setActiveTab(form.dataset.tabPanel);
                 return;
             }
             const replyToggle = form.querySelector('[data-reply-toggle]');
@@ -1497,17 +1592,13 @@
                 if (!email || !email.value || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
                     event.preventDefault();
                     showError('Please enter a valid email address (or uncheck "want a reply").');
-                    setActiveTab(form.dataset.tabPanel);
                     return;
                 }
             }
-            if (form.dataset.tabPanel === 'already-testing') {
-                const ratingSelect = form.querySelector('select[name="app_rating"]');
-                if (!ratingSelect.value) {
-                    event.preventDefault();
-                    showError('Please rate the app from 1 to 5.');
-                    setActiveTab('already-testing');
-                }
+            const ratingSelect = form.querySelector('select[name="app_rating"]');
+            if (ratingSelect && !ratingSelect.value) {
+                event.preventDefault();
+                showError('Please rate the app from 1 to 5.');
             }
         });
     });
