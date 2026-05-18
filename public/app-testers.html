@@ -114,227 +114,6 @@
             border-radius: 16px;
             padding: 2rem;
         }
-        .tab-switcher {
-            position: relative;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0.75rem;
-            margin-bottom: 1.5rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
-            padding: 0.5rem;
-        }
-        /* Plasma indicator: a glowing cyan rail that lives along the bottom
-           of the active tab and slides + stretches when the user swaps. */
-        .tab-indicator {
-            position: absolute;
-            bottom: 4px;
-            left: 0;
-            height: 3px;
-            border-radius: 999px;
-            background: linear-gradient(90deg,
-                rgba(6,182,212,0)   0%,
-                rgba(34,211,238,0.95) 18%,
-                #ffffff             50%,
-                rgba(34,211,238,0.95) 82%,
-                rgba(6,182,212,0)  100%);
-            box-shadow:
-                0 0 12px rgba(6, 182, 212, 0.85),
-                0 0 28px rgba(6, 182, 212, 0.45),
-                0 0 48px rgba(59, 130, 246, 0.25);
-            pointer-events: none;
-            transform-origin: center center;
-            transition:
-                transform 520ms cubic-bezier(.7, -0.05, .2, 1.25),
-                width    520ms cubic-bezier(.7, -0.05, .2, 1.25);
-            opacity: 1;
-        }
-        .tab-indicator.snapping {
-            animation: indicator-stretch 520ms cubic-bezier(.7, -0.05, .2, 1.25);
-        }
-        @keyframes indicator-stretch {
-            0%   { filter: brightness(1)   blur(0px); }
-            45%  { filter: brightness(1.6) blur(1.2px); }
-            100% { filter: brightness(1)   blur(0px); }
-        }
-        .tab-btn {
-            border: 1px solid transparent;
-            border-radius: 8px;
-            padding: 0.7rem 0.9rem;
-            background: transparent;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .tab-btn:hover {
-            color: var(--text-primary);
-            border-color: var(--border-medium);
-        }
-        .tab-btn.active {
-            color: var(--text-primary);
-            background: var(--accent-glow);
-            border-color: rgba(34, 197, 94, 0.35);
-        }
-        .tab-panel {
-            display: none;
-            animation: panel-fade 0.2s ease;
-        }
-        .tab-panel.active { display: block; }
-        @keyframes panel-fade {
-            from { opacity: 0; transform: translateY(4px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* ─────────────────────────────────────────────────────────────
-           Tab-swap choreography: outgoing panel pivots clockwise on a
-           right-edge vertical rod, the rotation flings a sheet of water
-           right→left across the form, it slams the incoming panel's
-           left edge with an impact flash and droplet spray. Everything
-           clears before the incoming panel locks in.
-        ───────────────────────────────────────────────────────────── */
-        .form-stage {
-            position: relative;
-            perspective: 1600px;
-            transform-style: preserve-3d;
-        }
-        .form-stage.swapping .tab-panel { display: block; }
-        .form-stage.swapping .tab-panel.exiting,
-        .form-stage.swapping .tab-panel.entering {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            width: 100%;
-            backface-visibility: hidden;
-            will-change: transform, opacity;
-        }
-        .tab-panel.exiting {
-            transform-origin: right center;
-            animation: panel-rod-out 320ms cubic-bezier(.45, 0, .85, .3) forwards;
-            z-index: 2;
-            pointer-events: none;
-        }
-        .tab-panel.entering {
-            transform-origin: left center;
-            animation: panel-rod-in 460ms cubic-bezier(.2, .9, .25, 1) 260ms forwards;
-            transform: rotateY(95deg);
-            z-index: 1;
-            pointer-events: none;
-        }
-        @keyframes panel-rod-out {
-            0%   { transform: rotateY(0deg) translateZ(0); opacity: 1; filter: brightness(1); }
-            70%  { filter: brightness(1.15); }
-            100% { transform: rotateY(-95deg) translateZ(-30px); opacity: 0; filter: brightness(0.9); }
-        }
-        @keyframes panel-rod-in {
-            0%   { transform: rotateY(95deg) translateZ(-30px); opacity: 0; }
-            55%  { opacity: 1; }
-            100% { transform: rotateY(0deg) translateZ(0); opacity: 1; }
-        }
-
-        /* Splash overlay sits above panels during the swap */
-        .splash-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: visible;
-            z-index: 5;
-            opacity: 0;
-        }
-        .form-stage.swapping .splash-layer { opacity: 1; }
-
-        /* Impact flash at the left edge of the incoming panel */
-        .splash-impact {
-            position: absolute;
-            top: -4%;
-            bottom: -4%;
-            left: -4%;
-            width: 14%;
-            background: linear-gradient(90deg,
-                rgba(255,255,255,0)    0%,
-                rgba(180,225,255,0.40) 25%,
-                rgba(235,250,255,0.85) 50%,
-                rgba(180,225,255,0.35) 75%,
-                rgba(255,255,255,0)    100%);
-            filter: blur(3px);
-            opacity: 0;
-            transform: scaleY(0.4);
-            border-radius: 14px;
-        }
-        .form-stage.swapping .splash-impact {
-            animation: impact-flash 380ms ease-out 320ms forwards;
-        }
-        @keyframes impact-flash {
-            0%   { opacity: 0;    transform: scaleY(0.45) scaleX(0.7); }
-            35%  { opacity: 1;    transform: scaleY(1.08) scaleX(1.0); }
-            100% { opacity: 0;    transform: scaleY(0.95) scaleX(1.1); }
-        }
-
-        /* Droplets — JS spawns them on click and they evaporate cleanly */
-        .splash-droplet {
-            position: absolute;
-            border-radius: 50%;
-            background: radial-gradient(circle at 32% 28%,
-                rgba(255,255,255,0.95) 0%,
-                rgba(170,220,255,0.85) 55%,
-                rgba(80,170,255,0.0) 100%);
-            box-shadow: 0 0 10px rgba(140,210,255,0.55);
-            opacity: 0;
-            pointer-events: none;
-            will-change: transform, opacity;
-        }
-        .form-stage.swapping .splash-droplet {
-            animation: droplet-spray 520ms cubic-bezier(.25,.7,.4,1) forwards;
-        }
-        @keyframes droplet-spray {
-            0%   { transform: translate(0, 0) scale(0.45); opacity: 0;   }
-            18%  { opacity: 1;                                            }
-            100% { transform: translate(var(--dx, 90px), var(--dy, 40px)) scale(0.2); opacity: 0; }
-        }
-
-        /* ─────────────────────────────────────────────────────────────
-           Underwater caustics — when the splash wave clears, the form
-           is briefly submerged in dancing blue light patterns that
-           ripple across it and evaporate before interaction resumes.
-        ───────────────────────────────────────────────────────────── */
-        .caustics-layer {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            opacity: 0;
-            mix-blend-mode: screen;
-            overflow: hidden;
-            border-radius: 12px;
-            z-index: 4;
-        }
-        .form-stage.swapping .caustics-layer {
-            animation: caustics-flood 1100ms ease-out 320ms forwards;
-        }
-        @keyframes caustics-flood {
-            0%   { opacity: 0;    }
-            18%  { opacity: 0.85; }
-            70%  { opacity: 0.55; }
-            100% { opacity: 0;    }
-        }
-        .caustics-svg {
-            position: absolute;
-            inset: -20%;
-            width: 140%;
-            height: 140%;
-            filter: blur(0.4px) saturate(1.25) contrast(1.15);
-        }
-        .form-stage.swapping .caustics-svg {
-            animation: caustics-drift 1100ms ease-out 320ms;
-        }
-        @keyframes caustics-drift {
-            0%   { transform: translate(0,    0)    scale(1.0); }
-            50%  { transform: translate(-3%,  2%)   scale(1.05); }
-            100% { transform: translate(-6%, -1%)   scale(1.08); }
-        }
-
         /* Cyan spark burst — fires from every checkbox tick */
         .spark-burst {
             position: absolute;
@@ -376,15 +155,8 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .tab-panel.exiting,
-            .tab-panel.entering { animation: none !important; transform: none !important; opacity: 1 !important; }
-            .splash-impact,
-            .splash-droplet,
-            .caustics-layer,
-            .caustics-svg,
             .spark-burst,
-            .spark-flicker,
-            .tab-indicator { animation: none !important; opacity: 0 !important; }
+            .spark-flicker { animation: none !important; opacity: 0 !important; }
             .device-picker::before,
             .device-picker::after { transition: none !important; }
         }
@@ -760,10 +532,7 @@
 
         /* Reply-email reveal */
         .reply-toggle { margin-bottom: 0.5rem; }
-        .reply-email-wrap {
-            display: none;
-            animation: panel-fade 0.2s ease;
-        }
+        .reply-email-wrap { display: none; }
         .reply-email-wrap.show { display: block; }
 
         .submit-btn {
@@ -835,7 +604,6 @@
             h1 { font-size: 1.9rem; }
             .perks { grid-template-columns: 1fr; }
             .nav-links { display: none; }
-            .tab-switcher { grid-template-columns: 1fr; }
             .device-picker .device-control { flex-direction: column; align-items: stretch; }
             .device-picker .btn-reset { width: 100%; }
         }
