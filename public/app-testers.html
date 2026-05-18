@@ -148,6 +148,141 @@
             from { opacity: 0; transform: translateY(4px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        /* ─────────────────────────────────────────────────────────────
+           Tab-swap choreography: outgoing panel pivots clockwise on a
+           right-edge vertical rod, the rotation flings a sheet of water
+           right→left across the form, it slams the incoming panel's
+           left edge with an impact flash and droplet spray. Everything
+           clears before the incoming panel locks in.
+        ───────────────────────────────────────────────────────────── */
+        .form-stage {
+            position: relative;
+            perspective: 1600px;
+            transform-style: preserve-3d;
+        }
+        .form-stage.swapping .tab-panel { display: block; }
+        .form-stage.swapping .tab-panel.exiting,
+        .form-stage.swapping .tab-panel.entering {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            backface-visibility: hidden;
+            will-change: transform, opacity;
+        }
+        .tab-panel.exiting {
+            transform-origin: right center;
+            animation: panel-rod-out 320ms cubic-bezier(.45, 0, .85, .3) forwards;
+            z-index: 2;
+            pointer-events: none;
+        }
+        .tab-panel.entering {
+            transform-origin: left center;
+            animation: panel-rod-in 460ms cubic-bezier(.2, .9, .25, 1) 260ms forwards;
+            transform: rotateY(95deg);
+            z-index: 1;
+            pointer-events: none;
+        }
+        @keyframes panel-rod-out {
+            0%   { transform: rotateY(0deg) translateZ(0); opacity: 1; filter: brightness(1); }
+            70%  { filter: brightness(1.15); }
+            100% { transform: rotateY(-95deg) translateZ(-30px); opacity: 0; filter: brightness(0.9); }
+        }
+        @keyframes panel-rod-in {
+            0%   { transform: rotateY(95deg) translateZ(-30px); opacity: 0; }
+            55%  { opacity: 1; }
+            100% { transform: rotateY(0deg) translateZ(0); opacity: 1; }
+        }
+
+        /* Splash overlay sits above panels during the swap */
+        .splash-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: visible;
+            z-index: 5;
+            opacity: 0;
+        }
+        .form-stage.swapping .splash-layer { opacity: 1; }
+
+        .splash-wave {
+            position: absolute;
+            top: -6%;
+            bottom: -6%;
+            right: -10%;
+            width: 75%;
+            opacity: 0;
+            filter: drop-shadow(0 2px 18px rgba(120, 200, 255, 0.35));
+            transform: translateX(0) skewX(-4deg);
+        }
+        .form-stage.swapping .splash-wave {
+            animation: wave-fling 720ms cubic-bezier(.22, 0, .12, 1) 80ms forwards;
+        }
+        @keyframes wave-fling {
+            0%   { transform: translateX(0)      skewX(-4deg) scaleY(0.85); opacity: 0;    }
+            18%  { opacity: 1; }
+            55%  { transform: translateX(-110%)  skewX(-1deg) scaleY(1.05); opacity: 0.95; }
+            100% { transform: translateX(-160%)  skewX( 4deg) scaleY(0.9 ); opacity: 0;    }
+        }
+
+        /* Impact flash at the left edge of the incoming panel */
+        .splash-impact {
+            position: absolute;
+            top: -4%;
+            bottom: -4%;
+            left: -4%;
+            width: 14%;
+            background: linear-gradient(90deg,
+                rgba(255,255,255,0)    0%,
+                rgba(180,225,255,0.40) 25%,
+                rgba(235,250,255,0.85) 50%,
+                rgba(180,225,255,0.35) 75%,
+                rgba(255,255,255,0)    100%);
+            filter: blur(3px);
+            opacity: 0;
+            transform: scaleY(0.4);
+            border-radius: 14px;
+        }
+        .form-stage.swapping .splash-impact {
+            animation: impact-flash 380ms ease-out 320ms forwards;
+        }
+        @keyframes impact-flash {
+            0%   { opacity: 0;    transform: scaleY(0.45) scaleX(0.7); }
+            35%  { opacity: 1;    transform: scaleY(1.08) scaleX(1.0); }
+            100% { opacity: 0;    transform: scaleY(0.95) scaleX(1.1); }
+        }
+
+        /* Droplets — JS spawns them on click and they evaporate cleanly */
+        .splash-droplet {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle at 32% 28%,
+                rgba(255,255,255,0.95) 0%,
+                rgba(170,220,255,0.85) 55%,
+                rgba(80,170,255,0.0) 100%);
+            box-shadow: 0 0 10px rgba(140,210,255,0.55);
+            opacity: 0;
+            pointer-events: none;
+            will-change: transform, opacity;
+        }
+        .form-stage.swapping .splash-droplet {
+            animation: droplet-spray 520ms cubic-bezier(.25,.7,.4,1) forwards;
+        }
+        @keyframes droplet-spray {
+            0%   { transform: translate(0, 0) scale(0.45); opacity: 0;   }
+            18%  { opacity: 1;                                            }
+            100% { transform: translate(var(--dx, 90px), var(--dy, 40px)) scale(0.2); opacity: 0; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .tab-panel.exiting,
+            .tab-panel.entering { animation: none !important; transform: none !important; opacity: 1 !important; }
+            .splash-wave,
+            .splash-impact,
+            .splash-droplet { animation: none !important; opacity: 0 !important; }
+        }
         .form-intro {
             color: var(--text-secondary);
             font-size: 0.95rem;
@@ -451,6 +586,37 @@
                 <button type="button" id="tab-btn-already" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-already" data-tab-target="already-testing">Already testing</button>
             </div>
 
+            <div class="form-stage" id="form-stage">
+                <div class="splash-layer" aria-hidden="true">
+                    <svg class="splash-wave" viewBox="0 0 400 600" preserveAspectRatio="none">
+                        <defs>
+                            <linearGradient id="splashGrad" x1="1" y1="0" x2="0" y2="0">
+                                <stop offset="0%"  stop-color="#ffffff" stop-opacity="0.95"/>
+                                <stop offset="35%" stop-color="#b9e2ff" stop-opacity="0.85"/>
+                                <stop offset="70%" stop-color="#78c4ff" stop-opacity="0.45"/>
+                                <stop offset="100%" stop-color="#78c4ff" stop-opacity="0"/>
+                            </linearGradient>
+                            <linearGradient id="splashFoam" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#ffffff" stop-opacity="0.9"/>
+                                <stop offset="100%" stop-color="#ffffff" stop-opacity="0.2"/>
+                            </linearGradient>
+                        </defs>
+                        <path d="M 380 0
+                                 C 240  60, 300 180, 200 260
+                                 C 100 340, 280 440, 160 540
+                                 C 100 600, 240 600, 400 600
+                                 L 400 0 Z"
+                              fill="url(#splashGrad)" />
+                        <path d="M 380 30
+                                 C 280 90, 320 200, 230 270
+                                 C 150 340, 290 430, 200 520
+                                 C 160 560, 260 580, 400 590
+                                 L 400 0 Z"
+                              fill="url(#splashFoam)" opacity="0.55" />
+                    </svg>
+                    <div class="splash-impact"></div>
+                </div>
+
             <!-- BECOME-TESTER FORM -->
             <form action="/api/app-tester" method="POST" id="panel-become" class="tab-panel active" data-tab-panel="become-tester" data-app-tester-form>
                 <input type="hidden" name="submission_type" value="become-tester">
@@ -635,6 +801,7 @@
 
                 <button type="submit" class="submit-btn">Send Feedback →</button>
             </form>
+            </div>
         </div>
 
         <div class="perks">
@@ -744,18 +911,96 @@
     const errorBanner = document.getElementById('error-banner');
     const tabButtons = Array.from(document.querySelectorAll('[data-tab-target]'));
     const tabPanels = Array.from(document.querySelectorAll('[data-tab-panel]'));
+    const formStage = document.getElementById('form-stage');
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let isSwapping = false;
 
-    function setActiveTab(tabName) {
+    function updateTabButtons(tabName) {
         tabButtons.forEach((button) => {
             const isActive = button.dataset.tabTarget === tabName;
             button.classList.toggle('active', isActive);
             button.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
+    }
+
+    function instantSwap(tabName) {
         tabPanels.forEach((panel) => {
             const isActive = panel.dataset.tabPanel === tabName;
             panel.classList.toggle('active', isActive);
+            panel.classList.remove('exiting', 'entering');
         });
     }
+
+    function spawnDroplets() {
+        if (!formStage) return;
+        const count = 9;
+        for (let i = 0; i < count; i++) {
+            const drop = document.createElement('span');
+            drop.className = 'splash-droplet';
+            const size = 6 + Math.random() * 14;
+            // Spawn near the left edge where the wave impacts
+            const startX = 2 + Math.random() * 16;            // % from left
+            const startY = 12 + Math.random() * 70;           // % from top
+            // Spray inward (rightward) with some vertical scatter
+            const dx = 60 + Math.random() * 240;              // px rightward
+            const dy = (Math.random() - 0.5) * 180;           // px scatter
+            drop.style.width = size + 'px';
+            drop.style.height = size + 'px';
+            drop.style.left = startX + '%';
+            drop.style.top = startY + '%';
+            drop.style.setProperty('--dx', dx + 'px');
+            drop.style.setProperty('--dy', dy + 'px');
+            drop.style.animationDelay = (300 + i * 22) + 'ms';
+            formStage.appendChild(drop);
+        }
+    }
+
+    function cleanupAfterSwap(outgoing, incoming) {
+        if (!isSwapping) return;
+        isSwapping = false;
+        outgoing.classList.remove('active', 'exiting');
+        incoming.classList.remove('entering');
+        incoming.classList.add('active');
+        formStage.classList.remove('swapping');
+        formStage.style.minHeight = '';
+        formStage.querySelectorAll('.splash-droplet').forEach((d) => d.remove());
+    }
+
+    function setActiveTab(tabName, opts) {
+        const animate = !!(opts && opts.animate);
+        updateTabButtons(tabName);
+
+        const incomingPanel = tabPanels.find((p) => p.dataset.tabPanel === tabName);
+        const currentPanel = tabPanels.find((p) => p.classList.contains('active'));
+        if (!incomingPanel) return;
+        if (incomingPanel === currentPanel) return;
+
+        if (!animate || prefersReducedMotion || !currentPanel || !formStage || isSwapping) {
+            instantSwap(tabName);
+            return;
+        }
+
+        isSwapping = true;
+        // Lock height so the surrounding card doesn't jump while both panels are absolutely positioned.
+        formStage.style.minHeight = currentPanel.offsetHeight + 'px';
+
+        currentPanel.classList.add('exiting');
+        incomingPanel.classList.add('entering');
+        formStage.classList.add('swapping');
+        spawnDroplets();
+
+        // Listen for the entering panel's animation to finish before cleanup.
+        const onEnterEnd = (e) => {
+            if (e.animationName !== 'panel-rod-in') return;
+            incomingPanel.removeEventListener('animationend', onEnterEnd);
+            cleanupAfterSwap(currentPanel, incomingPanel);
+        };
+        incomingPanel.addEventListener('animationend', onEnterEnd);
+
+        // Safety net in case animationend doesn't fire (tab backgrounded, etc.).
+        setTimeout(() => cleanupAfterSwap(currentPanel, incomingPanel), 1100);
+    }
+
     function showError(message) {
         errorBanner.textContent = message;
         errorBanner.style.display = 'block';
@@ -765,7 +1010,7 @@
 
     tabButtons.forEach((button) => {
         button.addEventListener('click', () => {
-            setActiveTab(button.dataset.tabTarget);
+            setActiveTab(button.dataset.tabTarget, { animate: true });
             clearError();
         });
     });
