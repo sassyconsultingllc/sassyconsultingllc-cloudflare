@@ -20,6 +20,11 @@
             --accent-primary: #22c55e;
             --accent-secondary: #16a34a;
             --accent-glow: rgba(34, 197, 94, 0.15);
+            --accent-cyan: #06b6d4;
+            --accent-cyan-soft: #22d3ee;
+            --accent-cyan-glow: rgba(6, 182, 212, 0.18);
+            --accent-blue: #3b82f6;
+            --accent-blue-glow: rgba(59, 130, 246, 0.18);
             --border-subtle: #222222;
             --border-medium: #333333;
             --gradient-brand: linear-gradient(90deg, #22c55e, #06b6d4);
@@ -110,6 +115,7 @@
             padding: 2rem;
         }
         .tab-switcher {
+            position: relative;
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 0.75rem;
@@ -118,6 +124,39 @@
             border: 1px solid var(--border-subtle);
             border-radius: 12px;
             padding: 0.5rem;
+        }
+        /* Plasma indicator: a glowing cyan rail that lives along the bottom
+           of the active tab and slides + stretches when the user swaps. */
+        .tab-indicator {
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            height: 3px;
+            border-radius: 999px;
+            background: linear-gradient(90deg,
+                rgba(6,182,212,0)   0%,
+                rgba(34,211,238,0.95) 18%,
+                #ffffff             50%,
+                rgba(34,211,238,0.95) 82%,
+                rgba(6,182,212,0)  100%);
+            box-shadow:
+                0 0 12px rgba(6, 182, 212, 0.85),
+                0 0 28px rgba(6, 182, 212, 0.45),
+                0 0 48px rgba(59, 130, 246, 0.25);
+            pointer-events: none;
+            transform-origin: center center;
+            transition:
+                transform 520ms cubic-bezier(.7, -0.05, .2, 1.25),
+                width    520ms cubic-bezier(.7, -0.05, .2, 1.25);
+            opacity: 1;
+        }
+        .tab-indicator.snapping {
+            animation: indicator-stretch 520ms cubic-bezier(.7, -0.05, .2, 1.25);
+        }
+        @keyframes indicator-stretch {
+            0%   { filter: brightness(1)   blur(0px); }
+            45%  { filter: brightness(1.6) blur(1.2px); }
+            100% { filter: brightness(1)   blur(0px); }
         }
         .tab-btn {
             border: 1px solid transparent;
@@ -276,12 +315,99 @@
             100% { transform: translate(var(--dx, 90px), var(--dy, 40px)) scale(0.2); opacity: 0; }
         }
 
+        /* ─────────────────────────────────────────────────────────────
+           Underwater caustics — when the splash wave clears, the form
+           is briefly submerged in dancing blue light patterns that
+           ripple across it and evaporate before interaction resumes.
+        ───────────────────────────────────────────────────────────── */
+        .caustics-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            opacity: 0;
+            mix-blend-mode: screen;
+            overflow: hidden;
+            border-radius: 12px;
+            z-index: 4;
+        }
+        .form-stage.swapping .caustics-layer {
+            animation: caustics-flood 1100ms ease-out 320ms forwards;
+        }
+        @keyframes caustics-flood {
+            0%   { opacity: 0;    }
+            18%  { opacity: 0.85; }
+            70%  { opacity: 0.55; }
+            100% { opacity: 0;    }
+        }
+        .caustics-svg {
+            position: absolute;
+            inset: -20%;
+            width: 140%;
+            height: 140%;
+            filter: blur(0.4px) saturate(1.25) contrast(1.15);
+        }
+        .form-stage.swapping .caustics-svg {
+            animation: caustics-drift 1100ms ease-out 320ms;
+        }
+        @keyframes caustics-drift {
+            0%   { transform: translate(0,    0)    scale(1.0); }
+            50%  { transform: translate(-3%,  2%)   scale(1.05); }
+            100% { transform: translate(-6%, -1%)   scale(1.08); }
+        }
+
+        /* Cyan spark burst — fires from every checkbox tick */
+        .spark-burst {
+            position: absolute;
+            pointer-events: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: radial-gradient(circle,
+                rgba(255,255,255,0.95) 0%,
+                rgba(34,211,238,0.85) 35%,
+                rgba(6,182,212,0)    100%);
+            box-shadow: 0 0 18px rgba(34, 211, 238, 0.8);
+            transform: translate(-50%, -50%) scale(0.2);
+            opacity: 0;
+            animation: spark-pop 480ms cubic-bezier(.2, .8, .3, 1) forwards;
+            z-index: 99;
+        }
+        @keyframes spark-pop {
+            0%   { transform: translate(-50%, -50%) scale(0.2); opacity: 0;   }
+            18%  { opacity: 1; }
+            60%  { transform: translate(-50%, -50%) scale(1.6); opacity: 0.55;}
+            100% { transform: translate(-50%, -50%) scale(2.4); opacity: 0;   }
+        }
+        .spark-flicker {
+            position: absolute;
+            pointer-events: none;
+            width: 4px; height: 4px;
+            border-radius: 50%;
+            background: #e8fbff;
+            box-shadow: 0 0 6px rgba(34,211,238,0.95);
+            opacity: 0;
+            animation: flicker-fly 520ms cubic-bezier(.2, .8, .3, 1) forwards;
+            z-index: 99;
+        }
+        @keyframes flicker-fly {
+            0%   { transform: translate(0, 0)        scale(0.4); opacity: 0;    }
+            20%  { opacity: 1; }
+            100% { transform: translate(var(--fx, 18px), var(--fy, -18px)) scale(0.2); opacity: 0; }
+        }
+
         @media (prefers-reduced-motion: reduce) {
             .tab-panel.exiting,
             .tab-panel.entering { animation: none !important; transform: none !important; opacity: 1 !important; }
             .splash-wave,
             .splash-impact,
-            .splash-droplet { animation: none !important; opacity: 0 !important; }
+            .splash-droplet,
+            .caustics-layer,
+            .caustics-svg,
+            .spark-burst,
+            .spark-flicker,
+            .tab-indicator { animation: none !important; opacity: 0 !important; }
+            .device-picker::before,
+            .device-picker::after { transition: none !important; }
         }
         .form-intro {
             color: var(--text-secondary);
@@ -398,12 +524,65 @@
             vertical-align: middle;
         }
 
-        /* Cascading device picker — same footprint cycles brand → make → model */
+        /* Cascading device picker — same footprint cycles brand → make → model.
+           Liquid blue progress climbs along the bottom as steps complete. */
         .device-picker {
+            position: relative;
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             border-radius: 10px;
             padding: 0.9rem 1rem;
+            overflow: hidden;
+            isolation: isolate;
+        }
+        .device-picker::before {
+            /* The fluid: liquid that rises from 0 → 33 → 66 → 100% */
+            content: '';
+            position: absolute;
+            inset: auto 0 0 0;
+            height: var(--device-fill, 0%);
+            background:
+                linear-gradient(180deg,
+                    rgba(34, 211, 238, 0.0)   0%,
+                    rgba(34, 211, 238, 0.18) 20%,
+                    rgba(6, 182, 212, 0.28)  60%,
+                    rgba(59, 130, 246, 0.42) 100%);
+            transition: height 620ms cubic-bezier(.5, .15, .25, 1);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .device-picker::after {
+            /* The meniscus — a thin, slowly drifting wave on the liquid surface */
+            content: '';
+            position: absolute;
+            left: -25%;
+            right: -25%;
+            bottom: calc(var(--device-fill, 0%) - 4px);
+            height: 8px;
+            background:
+                radial-gradient(ellipse 120px 8px at 20% 50%, rgba(255,255,255,0.55), transparent 70%),
+                radial-gradient(ellipse 160px 6px at 55% 60%, rgba(34,211,238,0.7),  transparent 70%),
+                radial-gradient(ellipse 140px 8px at 85% 40%, rgba(255,255,255,0.45), transparent 70%);
+            opacity: var(--device-fill-vis, 0);
+            transform: translateX(0);
+            transition: bottom 620ms cubic-bezier(.5, .15, .25, 1), opacity 220ms;
+            animation: meniscus-drift 4.5s ease-in-out infinite;
+            filter: blur(0.6px);
+            pointer-events: none;
+            z-index: 1;
+        }
+        @keyframes meniscus-drift {
+            0%, 100% { transform: translateX(0); }
+            50%      { transform: translateX(-12%); }
+        }
+        .device-picker > * { position: relative; z-index: 2; }
+        .device-picker.surge {
+            animation: liquid-surge 720ms ease-out;
+        }
+        @keyframes liquid-surge {
+            0%   { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+            45%  { box-shadow: 0 0 28px 4px rgba(6, 182, 212, 0.55), inset 0 0 24px rgba(34, 211, 238, 0.35); }
+            100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
         }
         .device-crumbs {
             display: flex;
@@ -584,6 +763,7 @@
             <div class="tab-switcher" role="tablist" aria-label="App tester form tabs">
                 <button type="button" id="tab-btn-become" class="tab-btn active" role="tab" aria-selected="true" aria-controls="panel-become" data-tab-target="become-tester">Become an App Tester</button>
                 <button type="button" id="tab-btn-already" class="tab-btn" role="tab" aria-selected="false" aria-controls="panel-already" data-tab-target="already-testing">Already testing</button>
+                <div class="tab-indicator" id="tab-indicator" aria-hidden="true"></div>
             </div>
 
             <div class="form-stage" id="form-stage">
@@ -615,6 +795,33 @@
                               fill="url(#splashFoam)" opacity="0.55" />
                     </svg>
                     <div class="splash-impact"></div>
+                </div>
+
+                <div class="caustics-layer" aria-hidden="true">
+                    <svg class="caustics-svg" viewBox="0 0 600 400" preserveAspectRatio="xMidYMid slice">
+                        <defs>
+                            <filter id="causticFilter" x="-20%" y="-20%" width="140%" height="140%">
+                                <feTurbulence type="fractalNoise" baseFrequency="0.012 0.022" numOctaves="2" seed="7">
+                                    <animate attributeName="baseFrequency"
+                                             dur="2.4s"
+                                             values="0.012 0.022; 0.020 0.014; 0.012 0.022"
+                                             repeatCount="indefinite"/>
+                                </feTurbulence>
+                                <feColorMatrix type="matrix"
+                                    values="0 0 0 0 0.06
+                                            0 0 0 0 0.50
+                                            0 0 0 0 0.90
+                                            0 0 0 18 -9"/>
+                                <feGaussianBlur stdDeviation="1.5"/>
+                            </filter>
+                            <linearGradient id="causticTint" x1="0" y1="0" x2="0" y2="1">
+                                <stop offset="0%"   stop-color="#22d3ee" stop-opacity="0.6"/>
+                                <stop offset="60%"  stop-color="#3b82f6" stop-opacity="0.35"/>
+                                <stop offset="100%" stop-color="#0ea5e9" stop-opacity="0.2"/>
+                            </linearGradient>
+                        </defs>
+                        <rect width="600" height="400" fill="url(#causticTint)" filter="url(#causticFilter)"/>
+                    </svg>
                 </div>
 
             <!-- BECOME-TESTER FORM -->
@@ -915,13 +1122,82 @@
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let isSwapping = false;
 
+    const tabIndicator = document.getElementById('tab-indicator');
+
+    function moveTabIndicator(tabName) {
+        if (!tabIndicator) return;
+        const activeBtn = tabButtons.find((b) => b.dataset.tabTarget === tabName);
+        if (!activeBtn) return;
+        const switcher = activeBtn.parentElement;
+        const swRect = switcher.getBoundingClientRect();
+        const btnRect = activeBtn.getBoundingClientRect();
+        // Position the rail along the bottom of the active button, inset 18%.
+        const inset = btnRect.width * 0.18;
+        const left = (btnRect.left - swRect.left) + inset;
+        const width = btnRect.width - (inset * 2);
+        tabIndicator.style.width = width + 'px';
+        tabIndicator.style.transform = 'translateX(' + left + 'px)';
+        tabIndicator.classList.remove('snapping');
+        // restart animation by next frame
+        requestAnimationFrame(() => tabIndicator.classList.add('snapping'));
+        setTimeout(() => tabIndicator.classList.remove('snapping'), 540);
+    }
+
     function updateTabButtons(tabName) {
         tabButtons.forEach((button) => {
             const isActive = button.dataset.tabTarget === tabName;
             button.classList.toggle('active', isActive);
             button.setAttribute('aria-selected', isActive ? 'true' : 'false');
         });
+        moveTabIndicator(tabName);
     }
+
+    // Initial placement once layout has settled.
+    window.addEventListener('load', () => {
+        const activeTab = (tabButtons.find((b) => b.classList.contains('active')) || tabButtons[0]).dataset.tabTarget;
+        moveTabIndicator(activeTab);
+    });
+    window.addEventListener('resize', () => {
+        const activeTab = (tabButtons.find((b) => b.classList.contains('active')) || tabButtons[0]).dataset.tabTarget;
+        moveTabIndicator(activeTab);
+    });
+
+    // ── Cyan spark burst — fires every time a checkbox flips ──
+    function spawnSpark(target) {
+        const host = target.closest('.form-card, .device-picker, body') || document.body;
+        const hostRect = host.getBoundingClientRect();
+        const r = target.getBoundingClientRect();
+        const cx = (r.left + r.right) / 2 - hostRect.left;
+        const cy = (r.top + r.bottom) / 2 - hostRect.top;
+        if (getComputedStyle(host).position === 'static') host.style.position = 'relative';
+
+        const burst = document.createElement('span');
+        burst.className = 'spark-burst';
+        burst.style.left = cx + 'px';
+        burst.style.top = cy + 'px';
+        host.appendChild(burst);
+        burst.addEventListener('animationend', () => burst.remove());
+
+        for (let i = 0; i < 6; i++) {
+            const flicker = document.createElement('span');
+            flicker.className = 'spark-flicker';
+            flicker.style.left = cx + 'px';
+            flicker.style.top = cy + 'px';
+            const angle = (Math.random() * Math.PI * 2);
+            const dist = 18 + Math.random() * 28;
+            flicker.style.setProperty('--fx', Math.cos(angle) * dist + 'px');
+            flicker.style.setProperty('--fy', Math.sin(angle) * dist + 'px');
+            flicker.style.animationDelay = (i * 14) + 'ms';
+            host.appendChild(flicker);
+            flicker.addEventListener('animationend', () => flicker.remove());
+        }
+    }
+    document.addEventListener('change', (e) => {
+        if (e.target && e.target.type === 'checkbox' && e.target.checked) {
+            // Honor reduced motion.
+            if (!prefersReducedMotion) spawnSpark(e.target);
+        }
+    });
 
     function instantSwap(tabName) {
         tabPanels.forEach((panel) => {
@@ -1170,7 +1446,10 @@
 
     function resetPicker(picker) {
         picker._state = { brand: '', make: '', model: '', otherBrand: '', otherMake: '', otherModel: '' };
-        picker.classList.remove('complete');
+        picker.classList.remove('complete', 'surge');
+        picker.dataset.lastFill = '0';
+        picker.style.setProperty('--device-fill', '0%');
+        picker.style.setProperty('--device-fill-vis', '0');
         renderDevicePicker(picker);
     }
 
@@ -1181,6 +1460,30 @@
         const model = s.model === '__OTHER__' ? s.otherModel : s.model;
         if (brand && make && model) hidden.value = brand + ' / ' + make + ' / ' + model;
         else hidden.value = '';
+        updateLiquidLevel(picker, brand, make, model);
+    }
+
+    // Compute % completion for the device picker and lift the blue liquid
+    // up the inside of the card. Surge animation fires when the picker
+    // crosses into the fully complete state.
+    function updateLiquidLevel(picker, brand, make, model) {
+        let steps = 0;
+        if (brand) steps++;
+        if (make)  steps++;
+        if (model) steps++;
+        const pct = (steps / 3) * 100;
+        const prev = parseFloat(picker.dataset.lastFill || '0');
+        picker.style.setProperty('--device-fill', pct + '%');
+        picker.style.setProperty('--device-fill-vis', steps > 0 ? '1' : '0');
+        picker.dataset.lastFill = String(pct);
+        // Surge when we cross over to fully complete.
+        if (pct === 100 && prev < 100 && !prefersReducedMotion) {
+            picker.classList.remove('surge');
+            // restart animation cleanly
+            void picker.offsetWidth;
+            picker.classList.add('surge');
+            setTimeout(() => picker.classList.remove('surge'), 760);
+        }
     }
 
     document.querySelectorAll('[data-device-picker]').forEach((picker) => {
