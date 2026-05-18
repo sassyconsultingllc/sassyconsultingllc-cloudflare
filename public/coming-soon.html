@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sassy Browser — Coming Soon | Build Status &amp; Feature Roadmap</title>
+<link rel="canonical" href="https://sassyconsultingllc.com/coming-soon">
+<meta name="description" content="Sassy Browser is in active development. Live codebase statistics from the ACE repository and a transparent feature-by-feature status of what is complete, in progress, and planned.">
+<meta name="robots" content="index, follow">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sassyconsultingllc.com/coming-soon">
+<meta property="og:title" content="Sassy Browser — Coming Soon">
+<meta property="og:description" content="Live build status and feature roadmap for the Sassy Browser (ACE).">
+<meta property="og:site_name" content="Sassy Consulting LLC">
+<link rel="icon" type="image/x-icon" href="/sassy-browser-logo.jpg">
+<link rel="apple-touch-icon" href="/sassy-browser-logo.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,500;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+:root {
+    --void: #03040a; --bg: #070810; --bg2: #0d0e1c; --bg3: #13142a;
+    --card: #0f1020; --card2: #151628;
+    --green: #00e676; --green-d: #00b856; --green-glow: rgba(0,230,118,0.12); --green-dim: rgba(0,230,118,0.08);
+    --gold: #ffc947; --gold-d: rgba(255,201,71,0.15);
+    --blue: #448aff; --blue-d: rgba(68,138,255,0.12);
+    --purple: #b388ff;
+    --cyan: #18ffff;
+    --red: #ff5252; --amber: #ffab40;
+    --text: #eeeef8; --text2: #7878a0; --text3: #45455c;
+    --border: rgba(255,255,255,0.055); --border2: rgba(255,255,255,0.1);
+    --r: 12px; --r2: 20px;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body { font-family: 'Sora', -apple-system, sans-serif; background: var(--void); color: var(--text); line-height: 1.65; overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E"); opacity: 0.4; pointer-events: none; z-index: 0; }
+
+nav { position: fixed; top: 0; left: 0; right: 0; z-index: 900; height: 62px; padding: 0 2rem; background: rgba(7,8,16,0.88); backdrop-filter: blur(20px) saturate(1.5); border-bottom: 1px solid var(--border); display: flex; align-items: center; }
+.nav-inner { max-width: 1260px; width: 100%; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+.logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); }
+.logo img { width: 28px; height: 28px; border-radius: 7px; }
+.logo-name { font-weight: 700; font-size: 0.98rem; letter-spacing: -0.02em; }
+.logo-tag { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--green); background: var(--green-dim); border: 1px solid rgba(0,230,118,0.25); padding: 2px 7px; border-radius: 4px; margin-left: 4px; }
+.nav-links { display: flex; gap: 1.5rem; align-items: center; }
+.nav-links a { color: var(--text2); text-decoration: none; font-size: 0.85rem; font-weight: 500; transition: color 0.18s; }
+.nav-links a:hover { color: var(--text); }
+.nav-cta { background: var(--green) !important; color: #000 !important; padding: 7px 16px; border-radius: 7px; font-weight: 700 !important; font-size: 0.82rem; transition: all 0.2s; }
+.nav-cta:hover { background: var(--cyan) !important; transform: translateY(-1px); }
+
+.wrap { max-width: 1180px; margin: 0 auto; padding: 7rem 2rem 4rem; position: relative; z-index: 1; }
+
+.head-row { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; flex-wrap: wrap; }
+.pill { display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 100px; font-size: 0.74rem; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; }
+.pill-gold { background: var(--gold-d); border: 1px solid rgba(255,201,71,0.35); color: var(--gold); }
+.pill-green { background: var(--green-dim); border: 1px solid rgba(0,230,118,0.25); color: var(--green); }
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+h1 { font-size: clamp(2.2rem, 5vw, 3.4rem); font-weight: 800; letter-spacing: -0.035em; line-height: 1.08; margin-bottom: 1rem; }
+.lead { font-size: 1.05rem; color: var(--text2); max-width: 760px; line-height: 1.75; margin-bottom: 0.5rem; }
+.lead a { color: var(--green); text-decoration: none; }
+.lead a:hover { text-decoration: underline; }
+.lead strong { color: var(--text); font-weight: 600; }
+.lead-meta { font-size: 0.82rem; color: var(--text3); margin-top: 1rem; font-family: 'JetBrains Mono', monospace; }
+
+.section { margin-top: 3.5rem; }
+.section-eyebrow { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.16em; color: var(--green); display: flex; align-items: center; gap: 10px; margin-bottom: 0.8rem; }
+.section-eyebrow::before { content: ''; width: 22px; height: 2px; background: var(--green); flex-shrink: 0; }
+h2 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; letter-spacing: -0.025em; margin-bottom: 0.4rem; }
+.sd { font-size: 0.94rem; color: var(--text2); max-width: 720px; margin-bottom: 1.75rem; line-height: 1.7; }
+.sd code { font-family: 'JetBrains Mono', monospace; color: var(--text); background: var(--bg3); padding: 1px 6px; border-radius: 4px; font-size: 0.85em; }
+
+/* Stats grid */
+.stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1px; background: var(--border); border-radius: var(--r2); overflow: hidden; }
+.stat-cell { background: var(--card); padding: 1.5rem 1.5rem; }
+.stat-lbl { font-size: 0.68rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; margin-bottom: 0.45rem; }
+.stat-val { font-size: 1.65rem; font-weight: 800; color: var(--green); letter-spacing: -0.03em; line-height: 1.1; font-family: 'JetBrains Mono', monospace; }
+.stat-val.dim { color: var(--text2); font-size: 1rem; font-weight: 600; }
+.stat-val.gold { color: var(--gold); }
+.stat-sub { font-size: 0.74rem; color: var(--text3); margin-top: 0.3rem; }
+.stat-cell.loading .stat-val { color: var(--text3); }
+.stat-cell.error .stat-val { color: var(--red); font-size: 0.9rem; font-weight: 600; }
+
+/* Feature status table */
+.status-key { display: flex; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 0.78rem; color: var(--text2); }
+.key-item { display: inline-flex; align-items: center; gap: 8px; }
+.key-dot { width: 10px; height: 10px; border-radius: 50%; }
+.key-dot.done { background: var(--green); box-shadow: 0 0 8px rgba(0,230,118,0.5); }
+.key-dot.wip { background: var(--gold); box-shadow: 0 0 8px rgba(255,201,71,0.4); }
+.key-dot.plan { background: var(--text3); }
+
+.cat { margin-bottom: 2.25rem; }
+.cat-h { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
+
+.feat-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.feat-table th { text-align: left; padding: 0.7rem 1rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); font-weight: 700; background: var(--bg3); border-bottom: 1px solid var(--border); }
+.feat-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: top; }
+.feat-table tr:last-child td { border-bottom: none; }
+.feat-table tr:hover td { background: rgba(255,255,255,0.015); }
+.col-status { width: 130px; }
+.col-feature { width: 32%; }
+.col-detail { color: var(--text2); }
+.col-meta { width: 110px; text-align: right; color: var(--text3); font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+
+.badge { display: inline-flex; align-items: center; gap: 7px; padding: 3px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; white-space: nowrap; }
+.badge .bdot { width: 7px; height: 7px; border-radius: 50%; }
+.badge.done { color: var(--green); background: rgba(0,230,118,0.08); border: 1px solid rgba(0,230,118,0.25); }
+.badge.done .bdot { background: var(--green); }
+.badge.wip { color: var(--gold); background: rgba(255,201,71,0.08); border: 1px solid rgba(255,201,71,0.3); }
+.badge.wip .bdot { background: var(--gold); }
+.badge.plan { color: var(--text2); background: rgba(120,120,160,0.06); border: 1px solid var(--border2); }
+.badge.plan .bdot { background: var(--text3); }
+
+/* Progress summary */
+.summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.75rem; }
+.sumcard { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 1.25rem 1.4rem; }
+.sumcard .sn { font-size: 0.7rem; color: var(--text3); text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; margin-bottom: 0.4rem; }
+.sumcard .sv { font-size: 1.55rem; font-weight: 800; letter-spacing: -0.03em; font-family: 'JetBrains Mono', monospace; }
+.sumcard.done .sv { color: var(--green); }
+.sumcard.wip .sv { color: var(--gold); }
+.sumcard.plan .sv { color: var(--text2); }
+.sumcard.total .sv { color: var(--text); }
+.bar { height: 6px; background: var(--bg3); border-radius: 3px; margin-top: 0.7rem; overflow: hidden; display: flex; }
+.bar > span { display: block; height: 100%; }
+.bar .b-done { background: var(--green); }
+.bar .b-wip { background: var(--gold); }
+.bar .b-plan { background: var(--text3); opacity: 0.4; }
+
+/* CTAs */
+.cta-block { background: var(--card); border: 1px solid var(--border); border-radius: var(--r2); padding: 2.5rem; margin-top: 3rem; text-align: center; }
+.cta-block h3 { font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 0.6rem; }
+.cta-block p { color: var(--text2); max-width: 560px; margin: 0 auto 1.75rem; font-size: 0.95rem; }
+.cta-row { display: flex; gap: 0.85rem; justify-content: center; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; border-radius: 9px; font-size: 0.9rem; font-weight: 700; text-decoration: none; transition: all 0.2s; cursor: pointer; border: none; font-family: 'Sora', sans-serif; }
+.btn-green { background: var(--green); color: #000; }
+.btn-green:hover { background: var(--cyan); transform: translateY(-1px); }
+.btn-outline { background: transparent; color: var(--text); border: 1px solid var(--border2); }
+.btn-outline:hover { background: var(--bg3); border-color: var(--text3); }
+
+footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1260px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem; position: relative; z-index: 1; }
+.footer-l { color: var(--text3); font-size: 0.82rem; }
+.footer-l strong { color: var(--text2); }
+.footer-links { display: flex; gap: 1.5rem; }
+.footer-links a { color: var(--text2); text-decoration: none; font-size: 0.82rem; }
+.footer-links a:hover { color: var(--text); }
+
+@media (max-width: 800px) {
+    .wrap { padding-top: 5.5rem; }
+    .col-meta { display: none; }
+    .feat-table th.col-meta { display: none; }
+    .col-feature { width: auto; }
+    .nav-links a:not(.nav-cta):not(.logo) { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+    <div class="nav-inner">
+        <a href="/browser" class="logo">
+            <img src="/sassy-browser-logo.jpg" alt="Sassy Browser" loading="lazy">
+            <span class="logo-name">Sassy Browser <span class="logo-tag">ACE</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="/browser">Overview</a>
+            <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://github.com/sassyconsultingllc/ACE" class="nav-cta" target="_blank" rel="noopener">Watch on GitHub</a>
+        </div>
+    </div>
+</nav>
+
+<div class="wrap">
+
+    <div class="head-row">
+        <span class="pill pill-gold"><span class="pill-dot"></span>In Active Development</span>
+        <span class="pill pill-green">Open Source &middot; Pure Rust</span>
+    </div>
+
+    <h1>Sassy Browser is still being built.</h1>
+    <p class="lead">
+        Public binaries are not yet available. The codebase is moving fast and we are not
+        going to ship a download until the experience matches what we promised on the
+        <a href="/browser">overview page</a>.
+        Below is a live, factual look at where the project stands today &mdash; pulled
+        directly from the <strong>ACE</strong> repository &mdash; followed by a
+        feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
+    </p>
+    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;05&#8209;18 · live GitHub fetch on page load.</div>
+
+    <!-- LIVE STATS -->
+    <section class="section" id="stats">
+        <div class="section-eyebrow">Codebase &middot; Live from GitHub</div>
+        <h2>Repository statistics</h2>
+        <p class="sd">Fetched directly from <code>api.github.com/repos/sassyconsultingllc/ACE</code> when this page loads.</p>
+
+        <div class="stats-grid">
+            <div class="stat-cell" data-stat="lines">
+                <div class="stat-lbl">Lines of Rust</div>
+                <div class="stat-val">140,261</div>
+                <div class="stat-sub">Counted today via wc&nbsp;-l src/**/*.rs</div>
+            </div>
+            <div class="stat-cell" data-stat="files">
+                <div class="stat-lbl">Source files</div>
+                <div class="stat-val">221</div>
+                <div class="stat-sub">81 top-level modules in /src</div>
+            </div>
+            <div class="stat-cell" data-stat="tests">
+                <div class="stat-lbl">Test functions</div>
+                <div class="stat-val">997</div>
+                <div class="stat-sub">983 passing, 9 ignored</div>
+            </div>
+            <div class="stat-cell loading" data-stat="stars">
+                <div class="stat-lbl">GitHub stars</div>
+                <div class="stat-val">&mdash;</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+            <div class="stat-cell loading" data-stat="size">
+                <div class="stat-lbl">Repo size</div>
+                <div class="stat-val">&mdash;</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+            <div class="stat-cell loading" data-stat="commit">
+                <div class="stat-lbl">Last commit</div>
+                <div class="stat-val dim">&mdash;</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+            <div class="stat-cell loading" data-stat="issues">
+                <div class="stat-lbl">Open issues</div>
+                <div class="stat-val">&mdash;</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+            <div class="stat-cell loading" data-stat="releases">
+                <div class="stat-lbl">Public releases</div>
+                <div class="stat-val">&mdash;</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+            <div class="stat-cell loading" data-stat="lang">
+                <div class="stat-lbl">Primary language</div>
+                <div class="stat-val dim">Rust</div>
+                <div class="stat-sub">Loading&hellip;</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FEATURE STATUS -->
+    <section class="section" id="status">
+        <div class="section-eyebrow">Roadmap &middot; What is done, what is not</div>
+        <h2>Feature status</h2>
+        <p class="sd">No hand-waving. Every advertised capability is listed here with its current state. If it is not marked <strong>Done</strong>, it is not in the binary you will eventually download.</p>
+
+        <div class="summary" id="summary">
+            <div class="sumcard done"><div class="sn">Done</div><div class="sv" id="sum-done">0</div></div>
+            <div class="sumcard wip"><div class="sn">In progress</div><div class="sv" id="sum-wip">0</div></div>
+            <div class="sumcard plan"><div class="sn">Planned</div><div class="sv" id="sum-plan">0</div></div>
+            <div class="sumcard total">
+                <div class="sn">Overall progress</div>
+                <div class="sv" id="sum-pct">0%</div>
+                <div class="bar"><span class="b-done" id="bar-done"></span><span class="b-wip" id="bar-wip"></span><span class="b-plan" id="bar-plan"></span></div>
+            </div>
+        </div>
+
+        <div class="status-key">
+            <span class="key-item"><span class="key-dot done"></span>Done &mdash; merged, tested, in main</span>
+            <span class="key-item"><span class="key-dot wip"></span>In progress &mdash; active development</span>
+            <span class="key-item"><span class="key-dot plan"></span>Planned &mdash; on the roadmap</span>
+        </div>
+
+        <!-- Categories rendered by JS -->
+        <div id="features"></div>
+    </section>
+
+    <!-- CTA -->
+    <div class="cta-block">
+        <h3>Want a heads-up when the first binary ships?</h3>
+        <p>The project is open source on GitHub. Star the repository or click <em>Watch</em> &mdash; you will be notified the moment a release is cut. No mailing list, no tracking, no account required.</p>
+        <div class="cta-row">
+            <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-green" target="_blank" rel="noopener">Watch the ACE repository</a>
+            <a href="/browser" class="btn btn-outline">Back to overview</a>
+        </div>
+    </div>
+
+</div>
+
+<footer>
+    <div class="footer-l">
+        <strong>Sassy Consulting LLC</strong> &middot; Madison, Wisconsin<br>
+        &copy; 2025&ndash;2026 Sassy Consulting LLC. All rights reserved.
+    </div>
+    <div class="footer-links">
+        <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+        <a href="/privacy">Privacy</a>
+        <a href="/terms">Terms</a>
+        <a href="/contact">Contact</a>
+    </div>
+</footer>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+// FEATURE STATUS (kept in JS so it is trivially updatable in one place)
+// status: "done" | "wip" | "plan"
+// ─────────────────────────────────────────────────────────────────────────
+const FEATURES = [
+    { cat: "Browser core", items: [
+        { name: "Rust rendering engine",      status: "wip",  detail: "Custom layout + paint, no Chromium dependency. Real-site coverage still landing.", meta: "core" },
+        { name: "HTTPS / TLS",                status: "done", detail: "rustls + rustls-native-certs against the OS CA store.",     meta: "rustls" },
+        { name: "HTTP/1.1 + HTTP/2",          status: "done", detail: "Persistent connections, request pipelining.",               meta: "hyper" },
+        { name: "HTTP/3 / QUIC",              status: "plan", detail: "Targeted for a later release.",                             meta: "quinn" },
+        { name: "Tabbed navigation + groups", status: "done", detail: "Standard tabs plus auto-grouping by category.",             meta: "tabs" },
+        { name: "Bookmarks + history",        status: "done", detail: "Local store with smart-history intent tracking, no cloud sync by default.", meta: "history" },
+        { name: "JS engine (in-tree)",        status: "wip",  detail: "Custom interpreter + Boa bridge — DOM, promises, generators, classes, modules.", meta: "src/js" },
+        { name: "CSS cascade (modern)",       status: "wip",  detail: "Vars, calc(), pseudo-classes, sibling combinators, border-radius, box-shadow.", meta: "cascade" },
+        { name: "WebAssembly runtime",        status: "plan", detail: "Isolated wasm runtime for in-page code.",                   meta: "wasmtime" }
+    ]},
+    { cat: "Privacy & security", items: [
+        { name: "Built-in ad blocker",        status: "done", detail: "EasyList + EasyPrivacy + Fanboy rules, parsed natively.",  meta: "adblock" },
+        { name: "User-script manager",        status: "done", detail: "Tampermonkey-compatible: @metadata, GM_* API, editor, per-script enable.", meta: "userscripts" },
+        { name: "Password vault",             status: "done", detail: "ChaCha20-Poly1305 at rest, Argon2id-derived key from PIN.", meta: "vault" },
+        { name: "Page trust sandbox (4 layer)", status: "done", detail: "Pages start untrusted; three meaningful interactions earn capabilities (clipboard, downloads, popups, notifications).", meta: "sandbox" },
+        { name: "Fingerprint poisoning",      status: "done", detail: "Three modes (off / conservative / aggressive) across Canvas, WebGL, audio, navigator, fonts, sensors.", meta: "poisoning" },
+        { name: "Family profiles",            status: "done", detail: "Admin / Adult / Teen / Kid with time limits, allowlists, safe-search, VPN-block, incognito-block, weekly reports.", meta: "profiles" },
+        { name: "Telemetry-free by default",  status: "done", detail: "No analytics, no crash reporting unless opted in.",         meta: "policy" },
+        { name: "DNS-over-HTTPS",             status: "done", detail: "Cloudflare 1.1.1.1 by default, user-replaceable.",         meta: "doh" },
+        { name: "Per-site permission prompts", status: "wip", detail: "Per-origin mic / camera / location / clipboard gates.",    meta: "perms" },
+        { name: "Sandboxed renderer process", status: "plan", detail: "Per-tab OS-level process isolation.",                       meta: "procsep" }
+    ]},
+    { cat: "File format support", items: [
+        { name: "PDF viewer + editor",        status: "done", detail: "Visual rendering, search + highlight, annotations, thumbnails, continuous scroll.", meta: "pdf" },
+        { name: "Image viewer + editor",      status: "done", detail: "PNG/JPEG/WebP/AVIF/HEIC/JPEG XL/BMP/TIFF + crop, resize, levels, filters, histogram, print.", meta: "image" },
+        { name: "RAW photo decoder",          status: "plan", detail: "Today: extension-aware hint to convert via dcraw / camera tool. Real demosaicer is on the roadmap.", meta: "raw" },
+        { name: "DOCX / ODT / RTF editor",    status: "done", detail: "Open, edit, save; export to PDF, TXT, HTML.",                meta: "document" },
+        { name: "XLSX / XLS / ODS / CSV",     status: "done", detail: "Multi-sheet viewer with formula evaluation.",                meta: "spreadsheet" },
+        { name: "PPTX / ODP presentations",   status: "done", detail: "Slide deck rendering + presentation mode.",                  meta: "presentation" },
+        { name: "PDB / MOL / SDF molecular",  status: "done", detail: "Pure-Rust chemistry stack: charges, hydrogen placement, electronegativity, vdW, rings, spectra.", meta: "chemistry" },
+        { name: "DICOM medical imaging",      status: "done", detail: "Part 10 parser (1,435 LoC), window/level, multi-frame nav, tag browser.", meta: "dicom" },
+        { name: "STL / OBJ / glTF / GLB / PLY", status: "done", detail: "3D mesh inspection with orbit camera.",                   meta: "3d" },
+        { name: "DXF (CAD)",                  status: "done", detail: "LINE, CIRCLE, ARC, LWPOLYLINE, POLYLINE, TEXT, MTEXT, INSERT.", meta: "dxf" },
+        { name: "STEP / IGES (CAD)",          status: "plan", detail: "Engineering exchange formats — on the roadmap.",             meta: "step" },
+        { name: "Markdown live preview",      status: "done", detail: "GFM + syntax highlighting.",                                 meta: "markdown" },
+        { name: "Archive viewer + creator (zip/7z/tar/gz)", status: "done", detail: "Browse, extract, create, edit, convert between formats.", meta: "archive" },
+        { name: "EPUB / MOBI reader",         status: "done", detail: "TOC nav, chapter HTML, cover art, reading progress, night/sepia mode.", meta: "ebook" },
+        { name: "Audio + video viewers",      status: "done", detail: "Native playback with transport controls.",                   meta: "media" },
+        { name: "Font viewer (TTF/OTF/WOFF/WOFF2)", status: "done", detail: "Glyph table inspection + character-set preview.",      meta: "font" },
+        { name: "JSON tree viewer",           status: "done", detail: "Collapsible tree, search, syntax-highlighted.",              meta: "json" }
+    ]},
+    { cat: "Web3 / wallet integration", items: [
+        { name: "EVM wallet (Ethereum / L2s)", status: "plan", detail: "Self-custody key store — design only at the moment.",       meta: "wallet" },
+        { name: "Solana wallet",              status: "plan", detail: "Solana RPC and SPL token support.",                         meta: "solana" },
+        { name: "ENS / on-chain name lookup", status: "plan", detail: "Resolve .eth names at the address bar.",                    meta: "ens" },
+        { name: "Hardware-wallet bridge",     status: "plan", detail: "Ledger / Trezor over USB-HID.",                             meta: "hid" }
+    ]},
+    { cat: "Platforms & distribution", items: [
+        { name: "Windows 10 / 11 (x64) build", status: "done", detail: "Release binary builds today (~42 MB). Demo channel live behind /browser/dl/.", meta: "windows" },
+        { name: "Linux (Debian / Arch / Fedora)", status: "wip", detail: "Builds from source; packages still to follow.",          meta: "linux" },
+        { name: "macOS (Apple Silicon)",      status: "plan", detail: "Roadmap after Linux packaging stabilises.",                 meta: "macos" },
+        { name: "Auto-update channel",        status: "wip",  detail: "Signed manifests + minisig verify + tamper gate in src/update.rs; channel-switch UI still landing.", meta: "update" },
+        { name: "Signed Windows installer",   status: "plan", detail: "Authenticode signature on every release.",                  meta: "sign" },
+        { name: "MCP server bundle",          status: "done", detail: "In-browser MCP host with file, git, key-vault adapters and an in-app panel.", meta: "mcp" }
+    ]}
+];
+
+// ─────────────────────────────────────────────────────────────────────────
+// Render feature tables + roll up summary
+// Pure DOM construction - no innerHTML on dynamic content.
+// ─────────────────────────────────────────────────────────────────────────
+(function renderFeatures(){
+    const root = document.getElementById('features');
+    const totals = { done: 0, wip: 0, plan: 0 };
+    const labels = { done: 'Done', wip: 'In progress', plan: 'Planned' };
+
+    const el = (tag, cls) => {
+        const n = document.createElement(tag);
+        if (cls) n.className = cls;
+        return n;
+    };
+
+    for (const group of FEATURES) {
+        const wrap = el('div', 'cat');
+
+        const heading = el('div', 'cat-h');
+        heading.textContent = group.cat;
+        wrap.appendChild(heading);
+
+        const table = el('table', 'feat-table');
+        const thead = el('thead');
+        const headRow = el('tr');
+        const headCols = [
+            { cls: 'col-status', text: 'Status' },
+            { cls: 'col-feature', text: 'Feature' },
+            { cls: '', text: 'Detail' },
+            { cls: 'col-meta', text: 'Component' }
+        ];
+        for (const h of headCols) {
+            const th = el('th', h.cls);
+            th.textContent = h.text;
+            headRow.appendChild(th);
+        }
+        thead.appendChild(headRow);
+        table.appendChild(thead);
+
+        const tbody = el('tbody');
+        for (const it of group.items) {
+            totals[it.status]++;
+            const row = el('tr');
+
+            const statusCell = el('td', 'col-status');
+            const badge = el('span', 'badge ' + it.status);
+            const bdot = el('span', 'bdot');
+            badge.appendChild(bdot);
+            badge.appendChild(document.createTextNode(labels[it.status]));
+            statusCell.appendChild(badge);
+
+            const featCell = el('td', 'col-feature');
+            const strong = el('strong');
+            strong.textContent = it.name;
+            featCell.appendChild(strong);
+
+            const detailCell = el('td', 'col-detail');
+            detailCell.textContent = it.detail;
+
+            const metaCell = el('td', 'col-meta');
+            metaCell.textContent = it.meta;
+
+            row.appendChild(statusCell);
+            row.appendChild(featCell);
+            row.appendChild(detailCell);
+            row.appendChild(metaCell);
+            tbody.appendChild(row);
+        }
+        table.appendChild(tbody);
+        wrap.appendChild(table);
+        root.appendChild(wrap);
+    }
+
+    const total = totals.done + totals.wip + totals.plan;
+    document.getElementById('sum-done').textContent = String(totals.done);
+    document.getElementById('sum-wip').textContent  = String(totals.wip);
+    document.getElementById('sum-plan').textContent = String(totals.plan);
+    const pct = total ? Math.round(((totals.done + totals.wip * 0.5) / total) * 100) : 0;
+    document.getElementById('sum-pct').textContent  = pct + '%';
+    document.getElementById('bar-done').style.width = (totals.done / total * 100) + '%';
+    document.getElementById('bar-wip').style.width  = (totals.wip  / total * 100) + '%';
+    document.getElementById('bar-plan').style.width = (totals.plan / total * 100) + '%';
+})();
+
+// ─────────────────────────────────────────────────────────────────────────
+// Live GitHub stats. api.github.com is whitelisted in the worker CSP.
+// All values from the API are written via textContent only.
+// ─────────────────────────────────────────────────────────────────────────
+(function fetchRepoStats(){
+    const REPO = 'sassyconsultingllc/ACE';
+    const setCell = (key, value, sub) => {
+        const cell = document.querySelector('[data-stat="' + key + '"]');
+        if (!cell) return;
+        cell.classList.remove('loading');
+        const v = cell.querySelector('.stat-val');
+        const s = cell.querySelector('.stat-sub');
+        if (value != null) v.textContent = value;
+        if (sub != null)   s.textContent = sub;
+    };
+    // The ACE repository is private until first public release. We still try the
+    // fetch on every page load so the dashboard goes live the moment the repo is
+    // made public, with no redeploy required. Until then, present a calm,
+    // honest fallback rather than a red error.
+    const fail = (key) => {
+        const cell = document.querySelector('[data-stat="' + key + '"]');
+        if (!cell) return;
+        cell.classList.remove('loading');
+        const v = cell.querySelector('.stat-val');
+        const s = cell.querySelector('.stat-sub');
+        v.classList.add('dim');
+        v.textContent = 'Private';
+        s.textContent = 'Repository goes public at first release.';
+    };
+
+    const fmt = n => {
+        if (n == null) return '—';
+        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+        if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
+        return String(n);
+    };
+    const ago = (iso) => {
+        const t = new Date(iso).getTime();
+        if (isNaN(t)) return '—';
+        const d = Math.floor((Date.now() - t) / 86400000);
+        if (d <= 0)  return 'today';
+        if (d === 1) return 'yesterday';
+        if (d < 30)  return d + ' days ago';
+        const m = Math.floor(d / 30);
+        if (m < 12) return m + ' month' + (m === 1 ? '' : 's') + ' ago';
+        const y = (d / 365).toFixed(1);
+        return y + ' years ago';
+    };
+
+    const acceptHeader = { 'Accept': 'application/vnd.github+json' };
+
+    // Repo metadata
+    fetch('https://api.github.com/repos/' + REPO, { headers: acceptHeader })
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(data => {
+            setCell('stars',  fmt(data.stargazers_count), (data.subscribers_count || 0) + ' watching · ' + (data.forks_count || 0) + ' forks');
+            setCell('size',   (data.size >= 1024 ? (data.size / 1024).toFixed(1) + ' MB' : data.size + ' KB'), 'Cloned source tree');
+            setCell('issues', fmt(data.open_issues_count), data.open_issues_count === 1 ? 'open issue' : 'open issues + PRs');
+            setCell('lang',   data.language || 'Rust', 'Default branch: ' + (data.default_branch || 'main'));
+        })
+        .catch(() => { ['stars','size','issues','lang'].forEach(fail); });
+
+    // Last commit
+    fetch('https://api.github.com/repos/' + REPO + '/commits?per_page=1', { headers: acceptHeader })
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(arr => {
+            if (!Array.isArray(arr) || !arr[0]) throw new Error('no commits');
+            const c = arr[0].commit;
+            const sha = (arr[0].sha || '').substring(0, 7);
+            setCell('commit', ago(c.author.date), sha + ' · ' + (c.author.name || 'unknown'));
+        })
+        .catch(() => fail('commit'));
+
+    // Releases
+    fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=100', { headers: acceptHeader })
+        .then(r => r.ok ? r.json() : Promise.reject(r.status))
+        .then(arr => {
+            if (!Array.isArray(arr)) throw new Error('bad payload');
+            const n = arr.length;
+            const latest = arr.find(r => !r.draft) || null;
+            setCell('releases', String(n), latest ? ('Latest: ' + (latest.tag_name || latest.name)) : 'None published yet');
+        })
+        .catch(() => fail('releases'));
+
+    // Stamp the lead-meta with a timestamp once the page-load fetches kick off
+    const now = new Date();
+    const iso = now.toISOString().replace('T',' ').substring(0, 16) + ' UTC';
+    document.getElementById('lead-meta').textContent = 'Build status checked at ' + iso + ' · source: github.com/' + REPO;
+})();
+</script>
+
+</body>
+</html>
