@@ -172,6 +172,10 @@ export default {
         return await handleDownload(path, url, env, corsHeaders);
       }
 
+      if (path.startsWith("/scrub/")) {
+        return await handleScrubFetch(path, env, corsHeaders);
+      }
+
       if (path.startsWith("/privacy/")) {
         const r2Response = await handlePrivacy(path, env);
         if (r2Response) return r2Response;
@@ -347,6 +351,7 @@ async function handleAppTester(request, env, corsHeaders) {
   const RUBRIC_KEYS = ["rubric_stability","rubric_performance","rubric_functionality","rubric_ux","rubric_visual","rubric_accessibility","rubric_onboarding","rubric_engagement"];
   const ADVANCED_KEYS = ["install_duration","advanced_review","bug_severity","bug_repro","bug_steps","most_loved","most_broken","ship_readiness", ...RUBRIC_KEYS];
   let name, email, device, deviceSecond, experience, notes, apps, submissionType, appRating, wantsReply;
+  let scrubText, scrubOriginalName;
   const advanced = {};
   if (contentType.includes("application/x-www-form-urlencoded")) {
     const formData = await request.formData();
@@ -360,6 +365,8 @@ async function handleAppTester(request, env, corsHeaders) {
     submissionType = formData.get("submission_type") || "become-tester";
     appRating = formData.get("app_rating") || "";
     wantsReply = (formData.get("wants_reply") || "") === "yes";
+    scrubText = formData.get("scrub_text") || "";
+    scrubOriginalName = formData.get("scrub_original_name") || "";
     for (const k of ADVANCED_KEYS) advanced[k] = formData.get(k) || "";
   } else {
     const body = await request.json();
@@ -370,6 +377,8 @@ async function handleAppTester(request, env, corsHeaders) {
     submissionType = body.submission_type || body.submissionType || "become-tester";
     appRating = body.app_rating || body.appRating || "";
     wantsReply = body.wants_reply === "yes" || body.wantsReply === true;
+    scrubText = body.scrub_text || body.scrubText || "";
+    scrubOriginalName = body.scrub_original_name || body.scrubOriginalName || "";
     for (const k of ADVANCED_KEYS) advanced[k] = body[k] || "";
   }
 
@@ -488,6 +497,66 @@ async function handleAppTester(request, env, corsHeaders) {
       advancedEmail +
       `\n\n---\nSent from sassyconsultingllc.com/app-testers`,
   });
+
+  // ── Scrubbed-file pipeline ──────────────────────────────────────────
+  // If the tester used the in-browser file scrubber, the hidden
+  // scrub_text field carries the cleaned ASCII output. PDF-wrap it,
+  // park it in R2 GATED (worker-routed via /scrub/<uuid>.pdf), then
+  // send a separate email with the PDF attached and a re-download link.
+  // Non-fatal: any failure here is logged but never affects the tester's
+  // primary submission success (302 below still fires).
+  if (scrubText && env.GATED && env.CONTACT_EMAIL) {
+    try {
+      const pdf = buildPdfFromText(
+        scrubText,
+        `Scrubbed: ${scrubOriginalName || "unnamed"} (tester: ${safeName})`
+      );
+      const uuid = crypto.randomUUID();
+      const r2Key = `app-tester-scrubs/${uuid}.pdf`;
+      await env.GATED.put(r2Key, pdf.bytes, {
+        httpMetadata: { contentType: "application/pdf" },
+        customMetadata: {
+          tester_name: safeName.slice(0, 100),
+          tester_email: (safeEmail || "").slice(0, 254),
+          original_filename: (scrubOriginalName || "unknown").slice(0, 200),
+          line_count: String(pdf.lineCount),
+          page_count: String(pdf.pageCount),
+          truncated: String(pdf.truncated),
+          submitted_at: new Date().toISOString(),
+        },
+      });
+      const siteUrl = env.SITE_URL || "https://sassyconsultingllc.com";
+      const downloadUrl = `${siteUrl}/scrub/${uuid}.pdf`;
+      const attachmentBase = (scrubOriginalName || "scrub")
+        .replace(/\.[^.]+$/, "") // drop original extension
+        .replace(/[^A-Za-z0-9._-]/g, "_")
+        .slice(0, 60) || "scrub";
+      await sendEmailWithAttachment(env, {
+        from: "contact@sassyconsultingllc.com",
+        senderLabel: "Sassy Consulting (Scrubbed File)",
+        to: "info@sassyconsultingllc.com",
+        replyTo: safeEmail || undefined,
+        subject: `[Scrubbed file] ${safeName}: ${scrubOriginalName || "unnamed"}${pdf.truncated ? " [TRUNCATED]" : ""}`,
+        text:
+          `Tester ${safeName} attached a scrubbed file alongside their app-tester submission.\n\n` +
+          `Original filename: ${scrubOriginalName || "(none)"}\n` +
+          `Lines: ${pdf.lineCount}${pdf.truncated ? " (truncated at hard cap)" : ""}\n` +
+          `Pages: ${pdf.pageCount}\n` +
+          `Tester email: ${safeEmail || "(not provided — no reply requested)"}\n\n` +
+          `Re-download link (capability URL — keep private):\n${downloadUrl}\n\n` +
+          `The PDF is also attached to this email. The link above stays valid as long as the R2 object exists.\n\n` +
+          `---\nSent from sassyconsultingllc.com/app-testers (scrubbed-file pipeline)`,
+        attachment: {
+          filename: `scrub-${attachmentBase}.pdf`,
+          contentType: "application/pdf",
+          bytes: pdf.bytes,
+        },
+      });
+    } catch (e) {
+      console.error("Scrubbed-file pipeline failed (non-fatal):", e);
+    }
+  }
+
   return new Response(null, { status: 302, headers: { ...SECURITY_HEADERS, "Location": "/contact-success.html" } });
 }
 
@@ -1048,5 +1117,200 @@ function getTimezone(country, region) {
   const timezones = { "US": { "CA": "America/Los_Angeles", "NY": "America/New_York", "TX": "America/Chicago", "WI": "America/Chicago", "default": "America/New_York" }, "default": "UTC" };
   const countryTz = timezones[country] || timezones["default"];
   return typeof countryTz === "object" ? (countryTz[region] || countryTz["default"]) : countryTz;
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// SCRUBBED-FILE PDF PIPELINE
+//
+// The /app-testers page lets testers drop a file. JS in the browser strips
+// it to printable ASCII and defangs shell/batch syntax, then posts the
+// scrubbed text in the existing form. Here we:
+//   1. Wrap the text in a minimal, valid PDF (Courier, no embedded fonts).
+//   2. Save it to env.GATED under app-tester-scrubs/<uuid>.pdf.
+//   3. Build a multipart/mixed email with the PDF attached *and* a
+//      worker-routed link the recipient can re-download from.
+// Reusing GATED (not DOWNLOADS) keeps these PDFs off the public custom
+// domain — only this worker can hand them out, via /scrub/<uuid>.pdf.
+// ═══════════════════════════════════════════════════════════════════════════
+
+// Minimal PDF generator for ASCII-only text. Uses the standard Type1 Courier
+// font (no embedding required), letter paper, 9pt mono. Output is a valid
+// PDF 1.4 with a proper xref table — opens in any PDF reader.
+function buildPdfFromText(text, header) {
+  const FONT_SIZE = 9;
+  const LINE_HEIGHT = 11;
+  const PAGE_W = 612;       // 8.5" * 72
+  const PAGE_H = 792;       // 11"  * 72
+  const MARGIN_L = 50;
+  const MARGIN_T = 60;
+  const CHARS_PER_LINE = 94;
+  const LINES_PER_PAGE = 60;
+  const MAX_PAGES = 500;    // ~30k lines hard cap
+
+  // PDF string literals must escape \, (, )
+  const escPdf = (s) => s.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+
+  // Hard-wrap to CHARS_PER_LINE while preserving existing line breaks.
+  // Tabs expanded to 4 spaces so we don't lean on a tab-stop the font lacks.
+  const wrapped = [];
+  for (const rl of String(text || "").split("\n")) {
+    if (rl.length === 0) { wrapped.push(""); continue; }
+    const expanded = rl.replace(/\t/g, "    ");
+    if (expanded.length <= CHARS_PER_LINE) { wrapped.push(expanded); continue; }
+    for (let i = 0; i < expanded.length; i += CHARS_PER_LINE) {
+      wrapped.push(expanded.slice(i, i + CHARS_PER_LINE));
+    }
+  }
+  // Truncate if absurdly long, leaving a marker line.
+  const maxLines = MAX_PAGES * LINES_PER_PAGE;
+  let truncated = false;
+  if (wrapped.length > maxLines) {
+    wrapped.length = maxLines - 1;
+    wrapped.push("... [output truncated at " + maxLines + " lines]");
+    truncated = true;
+  }
+  if (wrapped.length === 0) wrapped.push("(empty)");
+
+  // Group into pages.
+  const pages = [];
+  for (let i = 0; i < wrapped.length; i += LINES_PER_PAGE) {
+    pages.push(wrapped.slice(i, i + LINES_PER_PAGE));
+  }
+  const N = pages.length;
+
+  // Object IDs: 1=Catalog, 2=Pages, 3..2+N=Page objs, 3+N..2+2N=Contents, 3+2N=Font
+  const pageObj = (i) => 3 + i;
+  const contentObj = (i) => 3 + N + i;
+  const fontObj = 3 + 2 * N;
+
+  const objects = [];
+  objects.push("<</Type /Catalog /Pages 2 0 R>>");
+  const kids = [];
+  for (let i = 0; i < N; i++) kids.push(`${pageObj(i)} 0 R`);
+  objects.push(`<</Type /Pages /Kids [${kids.join(" ")}] /Count ${N}>>`);
+  for (let i = 0; i < N; i++) {
+    objects.push(
+      `<</Type /Page /Parent 2 0 R /MediaBox [0 0 ${PAGE_W} ${PAGE_H}] ` +
+      `/Contents ${contentObj(i)} 0 R ` +
+      `/Resources <</Font <</F1 ${fontObj} 0 R>>>>>>`
+    );
+  }
+  for (let i = 0; i < N; i++) {
+    let stream = "";
+    // Page header line
+    const safeHeader = escPdf(`${header || "Scrubbed output"} - page ${i + 1} of ${N}`);
+    stream += `BT /F1 ${FONT_SIZE} Tf ${MARGIN_L} ${PAGE_H - 30} Td (${safeHeader}) Tj ET\n`;
+    // Body
+    stream += `BT /F1 ${FONT_SIZE} Tf ${MARGIN_L} ${PAGE_H - MARGIN_T} Td ${LINE_HEIGHT} TL `;
+    for (let j = 0; j < pages[i].length; j++) {
+      stream += `(${escPdf(pages[i][j])}) Tj T* `;
+    }
+    stream += "ET";
+    // Stream is fully ASCII, so JS char count == byte count.
+    objects.push(`<</Length ${stream.length}>>\nstream\n${stream}\nendstream`);
+  }
+  objects.push("<</Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding>>");
+
+  // Assemble PDF body with xref.
+  let pdf = "%PDF-1.4\n";
+  const offsets = [];
+  for (let i = 0; i < objects.length; i++) {
+    offsets.push(pdf.length);
+    pdf += `${i + 1} 0 obj\n${objects[i]}\nendobj\n`;
+  }
+  const xrefStart = pdf.length;
+  const totalEntries = objects.length + 1; // includes the free entry
+  pdf += `xref\n0 ${totalEntries}\n`;
+  pdf += "0000000000 65535 f \n";
+  for (const off of offsets) {
+    pdf += `${String(off).padStart(10, "0")} 00000 n \n`;
+  }
+  pdf += `trailer\n<</Size ${totalEntries} /Root 1 0 R>>\nstartxref\n${xrefStart}\n%%EOF\n`;
+
+  const bytes = new Uint8Array(pdf.length);
+  for (let i = 0; i < pdf.length; i++) bytes[i] = pdf.charCodeAt(i) & 0xff;
+  return { bytes, pageCount: N, lineCount: wrapped.length, truncated };
+}
+
+// Chunked btoa — avoids stack overflow on multi-MB inputs.
+function uint8ToBase64(bytes) {
+  let bin = "";
+  const CHUNK = 0x8000;
+  for (let i = 0; i < bytes.length; i += CHUNK) {
+    bin += String.fromCharCode.apply(null, bytes.subarray(i, Math.min(i + CHUNK, bytes.length)));
+  }
+  return btoa(bin);
+}
+
+// Send a Cloudflare Email Workers message with one binary attachment.
+// Builds a multipart/mixed RFC 5322 message by hand (the binding takes a raw string).
+async function sendEmailWithAttachment(env, { from, to, subject, text, replyTo, senderLabel, attachment }) {
+  if (!env.CONTACT_EMAIL) return;
+  try {
+    const boundary = "=_SassyMail_" + crypto.randomUUID().replace(/-/g, "");
+    const headers = [
+      `From: ${senderLabel ? `${senderLabel} <${from}>` : from}`,
+      `To: ${to}`,
+      replyTo ? `Reply-To: ${replyTo}` : null,
+      `Subject: ${subject}`,
+      `MIME-Version: 1.0`,
+      `Date: ${new Date().toUTCString()}`,
+      `Content-Type: multipart/mixed; boundary="${boundary}"`,
+    ].filter(Boolean);
+
+    // Wrap base64 at 76 cols per RFC 2045.
+    const b64 = uint8ToBase64(attachment.bytes);
+    const b64Lines = [];
+    for (let i = 0; i < b64.length; i += 76) b64Lines.push(b64.slice(i, i + 76));
+
+    const safeFilename = String(attachment.filename || "attachment.pdf").replace(/[^A-Za-z0-9._-]/g, "_").slice(0, 100);
+
+    const parts = [
+      "",
+      "This is a multi-part message in MIME format.",
+      "",
+      `--${boundary}`,
+      `Content-Type: text/plain; charset=utf-8`,
+      `Content-Transfer-Encoding: 7bit`,
+      "",
+      text,
+      "",
+      `--${boundary}`,
+      `Content-Type: ${attachment.contentType || "application/octet-stream"}; name="${safeFilename}"`,
+      `Content-Disposition: attachment; filename="${safeFilename}"`,
+      `Content-Transfer-Encoding: base64`,
+      "",
+      b64Lines.join("\r\n"),
+      "",
+      `--${boundary}--`,
+      "",
+    ];
+
+    const raw = headers.join("\r\n") + "\r\n" + parts.join("\r\n");
+    const msg = new EmailMessage(from, to, raw);
+    await env.CONTACT_EMAIL.send(msg);
+  } catch (e) {
+    console.error("CF email-with-attachment failed:", e);
+  }
+}
+
+// Worker-routed fetch for /scrub/<uuid>.pdf. UUIDs are unguessable, so this
+// acts as a capability link — the email recipient can re-download by URL.
+async function handleScrubFetch(path, env, corsHeaders) {
+  const m = path.match(/^\/scrub\/([a-f0-9-]{36})\.pdf$/i);
+  if (!m) return new Response("Not found", { status: 404 });
+  if (!env.GATED) return new Response("Storage unavailable", { status: 503 });
+  const uuid = m[1].toLowerCase();
+  const key = `app-tester-scrubs/${uuid}.pdf`;
+  const obj = await env.GATED.get(key);
+  if (!obj) return new Response("Not found", { status: 404 });
+  return new Response(obj.body, {
+    headers: {
+      ...SECURITY_HEADERS,
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `inline; filename="scrubbed-${uuid.slice(0, 8)}.pdf"`,
+      "Cache-Control": "private, no-store",
+    },
+  });
 }
 

@@ -1,0 +1,33 @@
+%PDF-1.4
+1 0 obj
+<</Type /Catalog /Pages 2 0 R>>
+endobj
+2 0 obj
+<</Type /Pages /Kids [3 0 R] /Count 1>>
+endobj
+3 0 obj
+<</Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R /Resources <</Font <</F1 5 0 R>>>>>>
+endobj
+4 0 obj
+<</Length 696>>
+stream
+BT /F1 9 Tf 50 762 Td (crash report - Brick 2.0 - page 1 of 1) Tj ET
+BT /F1 9 Tf 50 732 Td 11 TL (App crash report - 2026-05-20) Tj T* () Tj T* (Steps to reproduce:) Tj T* (  1. Open the app) Tj T* (  2. Tap Settings) Tj T* (  3. Tap Export data) Tj T* (  4. Observe crash) Tj T* () Tj T* (Stack trace \(Android logcat\):) Tj T* (05-20 14:23:11.412 E/AndroidRuntime: FATAL EXCEPTION: main) Tj T* (    java.lang.NullPointerException: Attempt to invoke virtual method) Tj T* (        on a null object reference) Tj T* (    at com.example.ExportActivity.onClick\(ExportActivity.java:127\)) Tj T* () Tj T* (Expected: data exports as CSV to Downloads/) Tj T* (Actual:   app crashes, no toast) Tj T* ET
+endstream
+endobj
+5 0 obj
+<</Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding>>
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000056 00000 n 
+0000000111 00000 n 
+0000000231 00000 n 
+0000000976 00000 n 
+trailer
+<</Size 6 /Root 1 0 R>>
+startxref
+1069
+%%EOF

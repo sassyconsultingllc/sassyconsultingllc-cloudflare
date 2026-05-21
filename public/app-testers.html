@@ -600,6 +600,105 @@
             font-size: 0.875rem;
         }
 
+        /* ── File Scrubber ───────────────────────────────────────────────
+           Drop a file, strip everything to printable ASCII (+ LF/CR/TAB),
+           output to a readonly textarea. Pure client-side — file never
+           uploads, so there's no server-side injection vector. */
+        .scrub-card { margin-bottom: 1.5rem; }
+        .scrub-card .section-heading { margin-bottom: 0.6rem; }
+        .scrub-drop {
+            position: relative;
+            border: 2px dashed var(--border-medium);
+            border-radius: 12px;
+            padding: 1.75rem 1rem;
+            text-align: center;
+            background: var(--bg-tertiary);
+            margin-bottom: 1rem;
+            transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+            cursor: pointer;
+        }
+        .scrub-drop:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.05);
+        }
+        .scrub-drop.dragover {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.10);
+            box-shadow: 0 0 22px rgba(6, 182, 212, 0.25), inset 0 0 18px rgba(34, 211, 238, 0.18);
+        }
+        .scrub-drop strong {
+            display: block;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 0.3rem;
+        }
+        .scrub-drop .scrub-hint {
+            display: block;
+            margin-top: 0.55rem;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            opacity: 0.85;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        .scrub-stats {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.75rem;
+            padding: 0.55rem 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 6px;
+            line-height: 1.55;
+            word-break: break-all;
+        }
+        .scrub-stats strong { color: var(--accent-cyan-soft); font-weight: 600; }
+        .scrub-stats .scrub-stat-dropped { color: var(--accent-primary); font-weight: 600; }
+        .scrub-output {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.82rem;
+            min-height: 160px;
+            max-height: 320px;
+        }
+        .scrub-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+        .scrub-actions button {
+            flex: 1 1 auto;
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-medium);
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.15s;
+            white-space: nowrap;
+        }
+        .scrub-actions button:hover:not(:disabled) {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan-soft);
+            background: rgba(6, 182, 212, 0.05);
+        }
+        .scrub-actions button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        .scrub-error {
+            display: none;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+            border-radius: 8px;
+            padding: 0.55rem 0.85rem;
+            margin-bottom: 0.75rem;
+            font-size: 0.85rem;
+        }
+
         @media (max-width: 600px) {
             h1 { font-size: 1.9rem; }
             .perks { grid-template-columns: 1fr; }
@@ -625,6 +724,38 @@
     <main>
         <h1><span class="gradient">App Tester</span> Feedback</h1>
         <p class="subtitle">You're testing an app — tell me how it works in your real use case. Anyone can join the open testing on Google Play; this page is just for feedback. Email is only needed if you want a reply.</p>
+
+        <!-- FILE SCRUBBER — drop any text-ish file, get printable ASCII back.
+             Pure client-side. The file is never uploaded; only the scrubbed
+             output (which the tester can copy/insert/download) ever leaves
+             this page, and only if they choose to send it. -->
+        <div class="form-card scrub-card" data-scrub-card>
+            <p class="section-heading">File Scrubber <span style="color: var(--text-secondary); font-weight: 400; text-transform: none; letter-spacing: 0;">— strip any file to printable ASCII</span></p>
+            <p class="form-intro">Got a log, crash dump, or stack trace? Drop it here. Everything is processed in your browser — nothing uploads. The output keeps only printable ASCII (plus newlines and tabs) <strong>and</strong> defangs shell / batch command syntax — backticks, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">$(...)</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">${...}</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">%VAR%</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">&amp;&amp;</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">||</code>, and lines starting with <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">rm</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">del</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">curl</code>, <code style="font-family:'JetBrains Mono',monospace;font-size:0.85em;">powershell</code>, etc. So even pasted into a shell, nothing runs.</p>
+
+            <div id="scrub-error" class="scrub-error"></div>
+
+            <div class="scrub-drop" data-scrub-drop tabindex="0" role="button" aria-label="Drop a file or click to pick one">
+                <input type="file" data-scrub-input id="scrub-input" hidden>
+                <strong>Drop a file here</strong>
+                <span style="color: var(--text-secondary); font-size: 0.9rem;">or click to pick one</span>
+                <span class="scrub-hint">Max 5 MB &middot; stays in your browser &middot; output is plain ASCII text</span>
+            </div>
+
+            <div class="scrub-stats" data-scrub-stats hidden></div>
+
+            <div class="field">
+                <label for="scrub-output">Scrubbed output (ASCII only)</label>
+                <textarea id="scrub-output" class="scrub-output" data-scrub-output readonly placeholder="Output appears here after you drop a file."></textarea>
+            </div>
+
+            <div class="scrub-actions">
+                <button type="button" data-scrub-copy disabled>Copy to clipboard</button>
+                <button type="button" data-scrub-download disabled>Download .txt</button>
+                <button type="button" data-scrub-insert disabled>Insert into form</button>
+                <button type="button" data-scrub-clear disabled>Clear</button>
+            </div>
+        </div>
 
         <div class="form-card">
             <div id="error-banner" class="error-banner"></div>
@@ -1338,6 +1469,291 @@
     document.querySelectorAll('.rubric-score').forEach((sel) => {
         sel.addEventListener('change', updateComposite);
     });
+
+    // ── File Scrubber — strip to printable ASCII (+ LF/CR/TAB), client-side only ──
+    (function () {
+        const MAX_BYTES = 5 * 1024 * 1024; // 5 MB hard cap
+        const drop      = document.querySelector('[data-scrub-drop]');
+        const input     = document.querySelector('[data-scrub-input]');
+        const output    = document.querySelector('[data-scrub-output]');
+        const stats     = document.querySelector('[data-scrub-stats]');
+        const errorBox  = document.getElementById('scrub-error');
+        const btnCopy   = document.querySelector('[data-scrub-copy]');
+        const btnDl     = document.querySelector('[data-scrub-download]');
+        const btnInsert = document.querySelector('[data-scrub-insert]');
+        const btnClear  = document.querySelector('[data-scrub-clear]');
+        if (!drop || !input || !output) return;
+
+        let currentName = 'scrubbed.txt';
+
+        function setBtns(on) {
+            [btnCopy, btnDl, btnInsert, btnClear].forEach((b) => { if (b) b.disabled = !on; });
+        }
+
+        function showScrubError(msg) {
+            if (!errorBox) return;
+            errorBox.textContent = msg;
+            errorBox.style.display = 'block';
+        }
+        function clearScrubError() {
+            if (!errorBox) return;
+            errorBox.textContent = '';
+            errorBox.style.display = 'none';
+        }
+
+        // Byte-level filter: keep only printable ASCII (0x20-0x7E) plus
+        // TAB (0x09), LF (0x0A), CR (0x0D). Everything else — control
+        // chars, NUL, high-byte UTF-8, anything that could carry an
+        // injection payload — is dropped. We never interpret the bytes
+        // as anything other than text codepoints.
+        function scrubBytes(bytes) {
+            const out = new Uint8Array(bytes.length);
+            let kept = 0, dropped = 0;
+            for (let i = 0; i < bytes.length; i++) {
+                const b = bytes[i];
+                if (b === 0x09 || b === 0x0A || b === 0x0D || (b >= 0x20 && b <= 0x7E)) {
+                    out[kept++] = b;
+                } else {
+                    dropped++;
+                }
+            }
+            // Build the string in chunks to avoid stack-overflow on very large arrays.
+            let text = '';
+            const CHUNK = 0x8000;
+            for (let i = 0; i < kept; i += CHUNK) {
+                text += String.fromCharCode.apply(null, out.subarray(i, Math.min(i + CHUNK, kept)));
+            }
+            // Normalize CRLF / lone CR to LF for clean paste targets.
+            text = text.replace(/\r\n?/g, '\n');
+            return { text, kept, dropped };
+        }
+
+        // Second pass: defang shell/batch command-line syntax so the output
+        // can't act as a payload when pasted into a terminal or interpreted
+        // by anything that parses command-line dialect. We replace, not
+        // strip, so the text stays readable in a bug report.
+        //
+        //   `cmd`               backticks (POSIX command substitution + MD)
+        //   $(cmd)  ${VAR}      bash command + variable expansion
+        //   %VAR%               batch variable expansion
+        //   && / ||             shell command chaining
+        //   leading "rm "/"del "/"curl "/"powershell "/etc → prefix with "# SCRUB: "
+        const SHELL_LEAD_RE = /^(\s*)(sudo\s|su\s|rm\s|del\s|erase\s|format\s|shutdown\s|reboot\s|mkfs\b|dd\s+if=|fdisk\b|chmod\s|chown\s|curl\s|wget\s|powershell\b|pwsh\b|cmd\s*\/c\b|cmd\s*\/k\b|bash\s|sh\s+-c\b|zsh\s|python\s|python3\s|node\s|deno\s|npm\s|npx\s|pip\s|exec\s|eval\s|source\s|@echo\b|net\s+user\b|reg\s+add\b|reg\s+delete\b|schtasks\b|wmic\b|certutil\b|bitsadmin\b|Invoke-(WebRequest|Expression|RestMethod)\b|iex\b|iwr\b)/gim;
+        function neutralizeShell(text) {
+            let count = 0;
+            const bump = (m) => { count++; return m; };
+
+            // Backticks → apostrophes. Breaks bash command substitution and
+            // Markdown code fences in one swing.
+            text = text.replace(/`/g, () => { count++; return "'"; });
+
+            // $(cmd) → $ (cmd) — broken substitution, still readable.
+            text = text.replace(/\$\(/g, () => { count++; return '$ ('; });
+            // ${VAR} → $ {VAR}
+            text = text.replace(/\$\{/g, () => { count++; return '$ {'; });
+
+            // %VAR% (batch) → [%]VAR[%]
+            text = text.replace(/%([A-Za-z_][A-Za-z0-9_]*)%/g, (_, v) => { count++; return '[%]' + v + '[%]'; });
+
+            // && and || (command chains) → & & / | |
+            text = text.replace(/&&/g, () => { count++; return '& &'; });
+            text = text.replace(/\|\|/g, () => { count++; return '| |'; });
+
+            // Lines starting with a known-dangerous command word get
+            // prefixed with "# SCRUB: " — comment in bash, harmless text
+            // in cmd.exe (which doesn't recognize "#" so won't execute it
+            // either since the original verb is no longer at line-start).
+            text = text.replace(SHELL_LEAD_RE, (_, lead, cmd) => {
+                count++;
+                return lead + '# SCRUB: ' + cmd;
+            });
+
+            return { text, count };
+        }
+
+        function fmt(n) { return n.toLocaleString('en-US'); }
+
+        function showStats(file, kept, dropped, neutralized) {
+            stats.replaceChildren();
+            const txt = (t) => document.createTextNode(t);
+            const strong = (t, cls) => {
+                const s = document.createElement('strong');
+                if (cls) s.className = cls;
+                s.textContent = t;
+                return s;
+            };
+            stats.appendChild(txt('Read '));
+            stats.appendChild(strong(fmt(file.size) + ' bytes'));
+            stats.appendChild(txt(' from '));
+            stats.appendChild(strong(file.name));
+            stats.appendChild(document.createElement('br'));
+            stats.appendChild(txt('Kept '));
+            stats.appendChild(strong(fmt(kept) + ' ASCII chars'));
+            stats.appendChild(txt(' · Dropped '));
+            stats.appendChild(strong(fmt(dropped) + ' non-ASCII bytes', 'scrub-stat-dropped'));
+            stats.appendChild(txt(' · Defanged '));
+            stats.appendChild(strong(fmt(neutralized) + ' shell pattern' + (neutralized === 1 ? '' : 's'), 'scrub-stat-dropped'));
+            stats.hidden = false;
+        }
+
+        // Hidden inputs the worker reads to build the PDF attachment.
+        // Populated whenever the scrubber has fresh output; cleared when
+        // the tester clicks Clear or no file is loaded.
+        function setHiddenFormState(text, originalName) {
+            const form = document.querySelector('[data-app-tester-form]');
+            if (!form) return;
+            let hText = form.querySelector('input[name="scrub_text"]');
+            let hName = form.querySelector('input[name="scrub_original_name"]');
+            if (!hText) {
+                hText = document.createElement('input');
+                hText.type = 'hidden';
+                hText.name = 'scrub_text';
+                form.appendChild(hText);
+            }
+            if (!hName) {
+                hName = document.createElement('input');
+                hName.type = 'hidden';
+                hName.name = 'scrub_original_name';
+                form.appendChild(hName);
+            }
+            hText.value = text || '';
+            hName.value = originalName || '';
+        }
+
+        async function handleFile(file) {
+            clearScrubError();
+            if (!file) return;
+            if (file.size === 0) {
+                showScrubError('That file is empty.');
+                return;
+            }
+            if (file.size > MAX_BYTES) {
+                showScrubError('File is ' + fmt(file.size) + ' bytes. Max is 5,242,880 (5 MB).');
+                return;
+            }
+            try {
+                const buf = await file.arrayBuffer();
+                let bytes = new Uint8Array(buf);
+                // Strip UTF-8 BOM if present — otherwise it'd show as garbage.
+                if (bytes.length >= 3 && bytes[0] === 0xEF && bytes[1] === 0xBB && bytes[2] === 0xBF) {
+                    bytes = bytes.subarray(3);
+                }
+                const ascii = scrubBytes(bytes);
+                const neut  = neutralizeShell(ascii.text);
+                output.value = neut.text;
+                const baseName = (file.name || 'scrubbed').replace(/\.[^./\\]+$/, '') || 'scrubbed';
+                currentName = baseName + '.ascii.txt';
+                showStats(file, ascii.kept, ascii.dropped, neut.count);
+                setBtns(true);
+                setHiddenFormState(neut.text, file.name || '');
+                if (neut.text.length === 0) {
+                    showScrubError('Nothing left after scrubbing — the file had no printable ASCII bytes.');
+                }
+            } catch (err) {
+                showScrubError('Could not read file: ' + (err && err.message ? err.message : 'unknown error'));
+            }
+        }
+
+        // Click anywhere on the drop zone opens the file picker.
+        drop.addEventListener('click', () => input.click());
+        drop.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                input.click();
+            }
+        });
+        input.addEventListener('change', () => {
+            const file = input.files && input.files[0];
+            if (file) handleFile(file);
+        });
+
+        // Drag and drop. preventDefault on dragover is required for drop to fire.
+        ['dragenter', 'dragover'].forEach((evt) => {
+            drop.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                drop.classList.add('dragover');
+            });
+        });
+        drop.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            if (drop.contains(e.relatedTarget)) return;
+            drop.classList.remove('dragover');
+        });
+        drop.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            drop.classList.remove('dragover');
+            const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) handleFile(file);
+        });
+        // Block the entire page from hijacking a missed drop and navigating away.
+        ['dragover', 'drop'].forEach((evt) => {
+            window.addEventListener(evt, (e) => {
+                if (!drop.contains(e.target)) e.preventDefault();
+            });
+        });
+
+        // Buttons
+        if (btnCopy) btnCopy.addEventListener('click', async () => {
+            if (!output.value) return;
+            try {
+                await navigator.clipboard.writeText(output.value);
+                btnCopy.textContent = 'Copied!';
+            } catch (e) {
+                output.select();
+                try { document.execCommand('copy'); btnCopy.textContent = 'Copied!'; }
+                catch (_) { btnCopy.textContent = 'Copy failed'; }
+            }
+            setTimeout(() => { btnCopy.textContent = 'Copy to clipboard'; }, 1400);
+        });
+
+        if (btnDl) btnDl.addEventListener('click', () => {
+            if (!output.value) return;
+            const blob = new Blob([output.value], { type: 'text/plain;charset=us-ascii' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentName;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 1000);
+        });
+
+        // Insert into the best visible form target — prefer bug_steps when
+        // the Advanced Review section is open (it has 1000 char headroom),
+        // otherwise fall back to notes (500 char limit).
+        if (btnInsert) btnInsert.addEventListener('click', () => {
+            if (!output.value) return;
+            const advSection = document.querySelector('[data-advanced-section]');
+            const bugSteps = document.getElementById('bug-steps');
+            const notes = document.getElementById('already-notes');
+            let target = null;
+            if (bugSteps && advSection && !advSection.hidden) target = bugSteps;
+            else if (notes) target = notes;
+            if (!target) return;
+            const max = target.maxLength || 1000;
+            const sep = target.value && !target.value.endsWith('\n') ? '\n\n' : '';
+            target.value = (target.value + sep + output.value).slice(0, max);
+            target.focus();
+            target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const label = target === bugSteps ? 'Inserted into Steps' : 'Inserted into Notes';
+            btnInsert.textContent = label;
+            setTimeout(() => { btnInsert.textContent = 'Insert into form'; }, 1600);
+        });
+
+        if (btnClear) btnClear.addEventListener('click', () => {
+            input.value = '';
+            output.value = '';
+            stats.hidden = true;
+            stats.replaceChildren();
+            clearScrubError();
+            setBtns(false);
+            setHiddenFormState('', '');
+        });
+    })();
 
     // ── Submit validation ──
     document.querySelectorAll('[data-app-tester-form]').forEach((form) => {
