@@ -811,7 +811,26 @@
                 70%  { transform: translateX(8vw);   }
                 100% { transform: translateX(-110vw); }
             }
-            .hamster-sign { font-size: 0.78rem !important; max-width: 220px !important; }
+            /* The sign wraps to 3-4 lines at this width plus a tagline; the
+               default 110px stage height clips the top of the sign (where
+               "Keep me installed for 14 days" lives) under overflow:hidden.
+               Grow the stage and anchor the caravan to the bottom so the
+               sign can expand upward without the lead text getting cropped. */
+            .hamster-stage { height: 170px; }
+            .hamster-caravan { align-items: flex-end; }
+            .hamster-sign {
+                font-size: 0.78rem !important;
+                max-width: 220px !important;
+                /* Tighter padding leaves more room for the wrapped text */
+                padding: 0.55rem 0.8rem !important;
+            }
+        }
+        @media (max-width: 380px) {
+            /* iPhone SE / older Androids — caravan total (hamster 72 + rope 38
+               + gaps + sign 220) overruns viewport. Squeeze the sign down so
+               the right edge stops clipping too. */
+            .hamster-sign { max-width: 180px !important; font-size: 0.72rem !important; }
+            .hamster-stage { height: 190px; }
         }
 
         .hamster {
