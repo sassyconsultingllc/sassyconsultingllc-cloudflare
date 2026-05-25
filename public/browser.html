@@ -177,6 +177,18 @@
         .y { color: var(--green); font-weight: 700; } .n { color: var(--red); opacity: 0.7; } .m { color: var(--gold); font-size: 0.8rem; }
         .sassy-col-h { color: var(--green); background: rgba(0,230,118,0.1) !important; }
         .sassy-col { background: rgba(0,230,118,0.025); }
+        /* Up-and-coming competitors grid */
+        .upcoming-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(305px, 1fr)); gap: 1.15rem; }
+        .upcoming-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 1.5rem 1.6rem; position: relative; transition: all 0.25s; }
+        .upcoming-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+        .upcoming-card.peer { border-color: rgba(0,230,118,0.25); background: linear-gradient(180deg, rgba(0,230,118,0.025) 0%, var(--card) 50%); }
+        .upcoming-card.legacy { opacity: 0.75; }
+        .upcoming-card .up-tag { display: inline-block; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); background: var(--bg3); border-radius: 4px; padding: 3px 8px; margin-bottom: 0.85rem; }
+        .upcoming-card.peer .up-tag { color: var(--green); background: rgba(0,230,118,0.08); }
+        .upcoming-card h4 { font-size: 1.05rem; font-weight: 800; margin-bottom: 0.3rem; letter-spacing: -0.015em; }
+        .upcoming-card .up-meta { font-size: 0.74rem; color: var(--text3); font-family: 'JetBrains Mono', 'SF Mono', Menlo, monospace; margin-bottom: 0.9rem; letter-spacing: -0.01em; }
+        .upcoming-card p:last-child { font-size: 0.86rem; color: var(--text2); line-height: 1.65; margin: 0; }
+
         .sec-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(255px, 1fr)); gap: 1.15rem; }
         .sec-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--r); padding: 1.75rem; transition: all 0.25s; }
         .sec-card:hover { border-color: var(--border2); }
@@ -556,31 +568,131 @@
 <!-- COMPARE -->
 <div class="wrap">
     <div class="section-eyebrow blue">How we compare</div>
-    <h2 class="sh">Chrome vs Brave vs Sassy Browser</h2>
-    <p class="sd">The others are still just browsers. We replaced an entire software stack.</p>
+    <h2 class="sh">Chrome vs Brave vs DuckDuckGo vs Sassy Browser</h2>
+    <p class="sd">The others are still just browsers — and most of them are still Chromium under the hood. We replaced the engine, the renderer, and the application stack together.</p>
     <div class="compare-wrap">
         <table class="compare-table">
-            <thead><tr><th>Feature</th><th>Chrome</th><th>Brave</th><th class="sassy-col-h">Sassy Browser</th></tr></thead>
+            <thead><tr><th>Feature</th><th>Chrome</th><th>Brave</th><th>DuckDuckGo</th><th class="sassy-col-h">Sassy Browser</th></tr></thead>
             <tbody>
-                <tr><td>Built on Chromium / Google code</td><td class="y">Yes</td><td class="y">Yes</td><td class="n sassy-col">Never</td></tr>
-                <tr><td>Sends telemetry to Google</td><td class="y">Yes</td><td class="m">Some</td><td class="n sassy-col">Zero</td></tr>
-                <tr><td>Native ad blocker</td><td class="n">No</td><td class="y">Yes</td><td class="y sassy-col">Yes — EasyList + EasyPrivacy</td></tr>
-                <tr><td>User script manager (Tampermonkey-equiv)</td><td class="n">Extension</td><td class="n">Extension</td><td class="y sassy-col">Native, sandboxed</td></tr>
-                <tr><td>PDF editor</td><td class="n">View only</td><td class="n">View only</td><td class="y sassy-col">Full edit/annotate/merge</td></tr>
-                <tr><td>Image editor (PSD, RAW)</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 30+ formats</td></tr>
-                <tr><td>DOCX / XLSX / PPTX editing</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — full edit + save</td></tr>
-                <tr><td>PDB / MOL / DICOM viewer</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 3D interactive</td></tr>
-                <tr><td>REST API client</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — built-in Postman-equiv</td></tr>
-                <tr><td>Password vault (local encrypted)</td><td class="m">Cloud-only</td><td class="m">Basic</td><td class="y sassy-col">Yes — ChaCha20, local</td></tr>
-                <tr><td>Web3 explainer / scam protection</td><td class="n">No</td><td class="m">Partial</td><td class="y sassy-col">Yes — plain-English guides</td></tr>
-                <tr><td>Written in memory-safe language</td><td class="n">C++</td><td class="n">C++</td><td class="y sassy-col">100% Rust</td></tr>
-                <tr><td>Family / parental profiles</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — PIN-locked</td></tr>
-                <tr><td>Archive browser (ZIP, RAR, 7Z…)</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 14 formats</td></tr>
-                <tr><td>3D model viewer (OBJ, STL, GLTF)</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes</td></tr>
-                <tr><td>Annual cost</td><td>Free*</td><td>Free*</td><td class="y sassy-col">Free — no asterisk</td></tr>
+                <tr><td>Built on Chromium / Google code</td><td class="y">Yes</td><td class="y">Yes</td><td class="m">System webview (Edge / WebKit)</td><td class="n sassy-col">Never</td></tr>
+                <tr><td>Sends telemetry to Google</td><td class="y">Yes</td><td class="m">Some</td><td class="m">Anonymised; underlying webview may phone home</td><td class="n sassy-col">Zero</td></tr>
+                <tr><td>Native ad blocker</td><td class="n">No</td><td class="y">Yes</td><td class="m">Tracker block only</td><td class="y sassy-col">Yes — EasyList + EasyPrivacy + Fanboy</td></tr>
+                <tr><td>User script manager (Tampermonkey-equiv)</td><td class="n">Extension</td><td class="n">Extension</td><td class="n">No</td><td class="y sassy-col">Native, sandboxed</td></tr>
+                <tr><td>PDF editor</td><td class="n">View only</td><td class="n">View only</td><td class="n">View only (system webview)</td><td class="y sassy-col">Full edit / annotate / merge / sign</td></tr>
+                <tr><td>Image editor (PSD, RAW)</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 30+ formats</td></tr>
+                <tr><td>DOCX / XLSX / PPTX editing</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — full edit + save</td></tr>
+                <tr><td>PDB / MOL / DICOM viewer</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 3D interactive</td></tr>
+                <tr><td>REST API client</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — built-in Postman-equiv</td></tr>
+                <tr><td>Password vault (local encrypted)</td><td class="m">Cloud-only</td><td class="m">Basic</td><td class="m">Autofill via OS keychain</td><td class="y sassy-col">Yes — ChaCha20-Poly1305, Argon2id, local</td></tr>
+                <tr><td>Anti-fingerprint engine</td><td class="n">No</td><td class="m">Partial</td><td class="m">Basic randomisation</td><td class="y sassy-col">Three modes; canvas/WebGL/audio/fonts/sensors</td></tr>
+                <tr><td>Web3 explainer / scam protection</td><td class="n">No</td><td class="m">Partial</td><td class="n">No</td><td class="y sassy-col">5-tier risk educator; MetaMask middleware</td></tr>
+                <tr><td>Multi-agent AI built in</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Voice / Coder / Auditor / Orchestrator + MCP</td></tr>
+                <tr><td>Written in memory-safe language</td><td class="n">C++</td><td class="n">C++</td><td class="n">C++ / Swift / .NET</td><td class="y sassy-col">100% Rust</td></tr>
+                <tr><td>Family / parental profiles</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Admin / Adult / Teen / Kid with PIN, time, allowlists</td></tr>
+                <tr><td>Archive browser (ZIP, RAR, 7Z…)</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 14 formats, create + edit + extract</td></tr>
+                <tr><td>3D model viewer (OBJ, STL, GLTF, STEP)</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes</td></tr>
+                <tr><td>Network transparency monitor</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Every outbound connection logged in real time</td></tr>
+                <tr><td>Annual cost</td><td>Free*</td><td>Free*</td><td>Free*</td><td class="y sassy-col">Free — no asterisk</td></tr>
             </tbody>
         </table>
     </div>
+    <p class="sd" style="margin-top:1.25rem;font-size:0.82rem;opacity:0.7;">*&nbsp;Chrome and Brave are subsidised by ad revenue. DuckDuckGo is subsidised by their search affiliate model. Sassy Browser has no business model that requires your data — it is open source, MIT licensed, and the binary is the product.</p>
+</div>
+
+<hr class="divider">
+
+<!-- UP-AND-COMING -->
+<div class="wrap" id="competitors">
+    <div class="section-eyebrow blue">The new wave</div>
+    <h2 class="sh">Up-and-coming browsers we&rsquo;re watching</h2>
+    <p class="sd">There has not been this much movement in browser engines since the early 2000s. Here is who is shipping, who is on the way, and where Sassy Browser fits in the field.</p>
+
+    <div class="upcoming-grid">
+
+        <div class="upcoming-card peer">
+            <div class="up-tag">Closest peer in spirit</div>
+            <h4>Ladybird</h4>
+            <p class="up-meta">C++ + Swift &middot; scratch-built engine &middot; pre-alpha</p>
+            <p>Andreas Kling&rsquo;s pure-from-scratch web browser &mdash; no Chromium, no WebKit, no Gecko. Targets a public release in 2026. Closest match in the field to what Sassy Browser is doing, just in C++ instead of Rust. If the open web has a future independent of Google and Apple, projects like Ladybird and Sassy Browser are how it gets there.</p>
+        </div>
+
+        <div class="upcoming-card peer">
+            <div class="up-tag">Sister project in language</div>
+            <h4>Servo / Verso</h4>
+            <p class="up-meta">Rust &middot; Mozilla / Linux Foundation &middot; engine + shell</p>
+            <p>Servo is the Rust web engine Mozilla open-sourced; the Linux Foundation revived it in 2023 and Verso is a desktop browser shell built on top. Same memory-safety thesis as Sassy Browser. Different decision tree &mdash; Servo focuses on the engine alone, Sassy bundles a full application stack (file viewers, vault, sandbox, MCP).</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">AI-first, Chromium-based</div>
+            <h4>Dia (Browser Company)</h4>
+            <p class="up-meta">Chromium &middot; AI agents inline &middot; closed beta 2025</p>
+            <p>The team behind Arc pivoted in May 2025 to an AI-native browser. Inline agents that read pages, summarise tabs, and take actions. Built on Chromium &mdash; so the AI is novel, the privacy posture is not. Our take: Sassy Browser ships a multi-agent MCP orchestrator (Voice, Coder, Auditor, Orchestrator) with no Chromium underneath and no agent that needs your data to leave the machine.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">AI-first, Chromium-based</div>
+            <h4>Comet (Perplexity)</h4>
+            <p class="up-meta">Chromium &middot; AI search-first &middot; public beta 2025</p>
+            <p>Perplexity&rsquo;s desktop browser. Search results are AI-summarised; the browser is the UI for their search product. Same Chromium critique as Dia. Sassy Browser&rsquo;s Web3 educator + scam-detection layer covers the &ldquo;is this real?&rdquo; problem without routing every page through a remote model.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">Privacy fork</div>
+            <h4>Mullvad Browser</h4>
+            <p class="up-meta">Firefox / Tor uplift &middot; shipping</p>
+            <p>Mullvad VPN&rsquo;s collaboration with the Tor Project: a Tor Browser without the Tor network. Strong anti-fingerprinting, hardened defaults. Shares the &ldquo;you own your machine&rdquo; thesis with Sassy Browser. Different scope &mdash; Mullvad is a hardened browser, Sassy is a hardened browser + 100-format viewer + native VPN + AI.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">Aesthetic + tab-mgmt</div>
+            <h4>Zen Browser</h4>
+            <p class="up-meta">Firefox fork &middot; shipping</p>
+            <p>2024&ndash;2025 breakout among the Firefox-fork crowd. Beautiful workspace UI, vertical tabs, container-tab improvements. Inherits the Firefox engine, so the privacy story is upstream-Mozilla. Sassy Browser&rsquo;s tab system (auto-grouping by category, group collapse, per-tab mute, age tooltip) addresses the same need with no Mozilla dependency.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">Privacy fork</div>
+            <h4>LibreWolf / Floorp</h4>
+            <p class="up-meta">Firefox forks &middot; shipping</p>
+            <p>Telemetry-stripped Firefox builds. LibreWolf is the minimalist; Floorp is the feature-rich one. Both inherit upstream Firefox. Useful today; tied to whatever Mozilla does next.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">WebKit, privacy-focused</div>
+            <h4>Orion (Kagi)</h4>
+            <p class="up-meta">WebKit &middot; Mac/iOS &middot; shipping</p>
+            <p>Kagi&rsquo;s desktop browser. WebKit-based, native ad blocker, no telemetry, runs Chrome and Firefox extensions. Strong on Mac; closed source. Closest non-pure-stack alternative to Sassy Browser for users who want a polished privacy browser today and aren&rsquo;t ready to live on an early-development binary.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">Anonymity-first</div>
+            <h4>Tor Browser</h4>
+            <p class="up-meta">Firefox + Tor network &middot; shipping</p>
+            <p>The reference implementation for fingerprint resistance. Bundles the Tor network &mdash; slow but anonymising. Sassy Browser borrows the fingerprint-resistance ideas (canvas / WebGL / audio / font / sensor poisoning) without forcing every byte through a relay.</p>
+        </div>
+
+        <div class="upcoming-card">
+            <div class="up-tag">Customisation-first</div>
+            <h4>Vivaldi</h4>
+            <p class="up-meta">Chromium &middot; shipping</p>
+            <p>The veteran Chromium fork. Maximum customisation, vertical tabs, built-in mail client. Still Chromium; still C++. We borrow the &ldquo;power user&rdquo; instinct without the engine baggage.</p>
+        </div>
+
+        <div class="upcoming-card legacy">
+            <div class="up-tag">Legacy &middot; for context</div>
+            <h4>Arc (Browser Company)</h4>
+            <p class="up-meta">Chromium &middot; deprecated 2025</p>
+            <p>Arc redefined the tab sidebar but was put into maintenance in 2025 when the Browser Company pivoted to Dia. Listed here because its tab-management ideas are still influential &mdash; Sassy Browser&rsquo;s auto-grouping and group collapse are an answer to the same problem Arc identified.</p>
+        </div>
+
+    </div>
+
+    <p class="sd" style="margin-top:1.5rem;">
+        Two clear camps: Chromium-with-AI (Dia, Comet, Vivaldi, Brave) and scratch-built-engine (Ladybird, Servo, Sassy Browser).
+        The Chromium camp ships faster; the scratch-built camp builds an open web that does not depend on a single American advertising company.
+        Both matter. Sassy Browser is the Rust answer in the second camp, with a 100-format viewer and an in-browser multi-agent stack the others have not attempted.
+    </p>
 </div>
 
 <hr class="divider">
