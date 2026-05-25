@@ -186,7 +186,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         directly from the <strong>ACE</strong> repository &mdash; followed by a
         feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;05&#8209;18 · live GitHub fetch on page load.</div>
+    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;05&#8209;25 · live GitHub fetch on page load.</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
@@ -197,18 +197,23 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         <div class="stats-grid">
             <div class="stat-cell" data-stat="lines">
                 <div class="stat-lbl">Lines of Rust</div>
-                <div class="stat-val">140,261</div>
+                <div class="stat-val">154,585</div>
                 <div class="stat-sub">Counted today via wc&nbsp;-l src/**/*.rs</div>
             </div>
             <div class="stat-cell" data-stat="files">
                 <div class="stat-lbl">Source files</div>
-                <div class="stat-val">221</div>
+                <div class="stat-val">223</div>
                 <div class="stat-sub">81 top-level modules in /src</div>
             </div>
             <div class="stat-cell" data-stat="tests">
                 <div class="stat-lbl">Test functions</div>
-                <div class="stat-val">997</div>
-                <div class="stat-sub">983 passing, 9 ignored</div>
+                <div class="stat-val">1,040</div>
+                <div class="stat-sub">1,020 passing, 16 ignored, 4 known JS&#8209;interp fails</div>
+            </div>
+            <div class="stat-cell" data-stat="warnings">
+                <div class="stat-lbl">Compiler warnings</div>
+                <div class="stat-val">0</div>
+                <div class="stat-sub">Workspace; 231 cleared this push, none suppressed</div>
             </div>
             <div class="stat-cell loading" data-stat="stars">
                 <div class="stat-lbl">GitHub stars</div>
@@ -303,24 +308,27 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 const FEATURES = [
     { cat: "Browser core", items: [
         { name: "Rust rendering engine",      status: "wip",  detail: "Custom layout + paint, no Chromium dependency. Real-site coverage still landing.", meta: "core" },
-        { name: "HTTPS / TLS",                status: "done", detail: "rustls + rustls-native-certs against the OS CA store.",     meta: "rustls" },
-        { name: "HTTP/1.1 + HTTP/2",          status: "done", detail: "Persistent connections, request pipelining.",               meta: "hyper" },
-        { name: "HTTP/3 / QUIC",              status: "plan", detail: "Targeted for a later release.",                             meta: "quinn" },
-        { name: "Tabbed navigation + groups", status: "done", detail: "Standard tabs plus auto-grouping by category.",             meta: "tabs" },
-        { name: "Bookmarks + history",        status: "done", detail: "Local store with smart-history intent tracking, no cloud sync by default.", meta: "history" },
-        { name: "JS engine (in-tree)",        status: "wip",  detail: "Custom interpreter + Boa bridge — DOM, promises, generators, classes, modules.", meta: "src/js" },
+        { name: "HTTPS / TLS",                status: "done", detail: "rustls + rustls-native-certs against the OS CA store, Chrome-132 JA3 fingerprint.", meta: "rustls" },
+        { name: "HTTP/1.1 + HTTP/2",          status: "done", detail: "Persistent connections, request pipelining, adaptive window.", meta: "hyper" },
+        { name: "HTTP/3 / QUIC",              status: "plan", detail: "Targeted for a later release; UI shows a disabled toggle with the rationale.", meta: "quinn" },
+        { name: "Tabbed navigation + groups", status: "done", detail: "Standard tabs, auto-grouping by category, per-tab mute, age tooltip, kind label, group collapse/expand.", meta: "tabs" },
+        { name: "Bookmarks + history",        status: "done", detail: "Local store with smart-history intent tracking, folder picker, per-entry delete, domain chips, rename. No cloud sync by default.", meta: "history" },
+        { name: "JS engine (in-tree)",        status: "wip",  detail: "Custom interpreter + Boa bridge — DOM, promises, generators, classes, modules, TDZ, DataView big-endian.", meta: "src/js" },
         { name: "CSS cascade (modern)",       status: "wip",  detail: "Vars, calc(), pseudo-classes, sibling combinators, border-radius, box-shadow.", meta: "cascade" },
         { name: "WebAssembly runtime",        status: "plan", detail: "Isolated wasm runtime for in-page code.",                   meta: "wasmtime" }
     ]},
     { cat: "Privacy & security", items: [
         { name: "Built-in ad blocker",        status: "done", detail: "EasyList + EasyPrivacy + Fanboy rules, parsed natively.",  meta: "adblock" },
         { name: "User-script manager",        status: "done", detail: "Tampermonkey-compatible: @metadata, GM_* API, editor, per-script enable.", meta: "userscripts" },
-        { name: "Password vault",             status: "done", detail: "ChaCha20-Poly1305 at rest, Argon2id-derived key from PIN.", meta: "vault" },
+        { name: "Password vault",             status: "done", detail: "ChaCha20-Poly1305 at rest, Argon2id-derived key from PIN, custom strength meter.", meta: "vault" },
+        { name: "Cookie inventory (Ctrl+Shift+K)", status: "done", detail: "Full transparency view: every cookie with raw Set-Cookie wire format, domain grouping, SameSite enforcement.", meta: "cookies" },
         { name: "Page trust sandbox (4 layer)", status: "done", detail: "Pages start untrusted; three meaningful interactions earn capabilities (clipboard, downloads, popups, notifications).", meta: "sandbox" },
-        { name: "Fingerprint poisoning",      status: "done", detail: "Three modes (off / conservative / aggressive) across Canvas, WebGL, audio, navigator, fonts, sensors.", meta: "poisoning" },
-        { name: "Family profiles",            status: "done", detail: "Admin / Adult / Teen / Kid with time limits, allowlists, safe-search, VPN-block, incognito-block, weekly reports.", meta: "profiles" },
-        { name: "Telemetry-free by default",  status: "done", detail: "No analytics, no crash reporting unless opted in.",         meta: "policy" },
+        { name: "Fingerprint poisoning",      status: "done", detail: "Three modes (off / conservative / aggressive) across Canvas, WebGL, audio, navigator, fonts, sensors. Hunter Mode active anti-tracker warfare.", meta: "poisoning" },
+        { name: "Behavioral mimicry (L4)",    status: "done", detail: "Per-tab seeded input mimic; self-adapting noise that escalates on detected countermeasures via EvolutionRequest channel.", meta: "mimicry" },
+        { name: "Family profiles",            status: "done", detail: "Admin / Adult / Teen / Kid with time limits, allowlists, safe-search, VPN-block, incognito-block, weekly reports. Device approval lifecycle.", meta: "profiles" },
+        { name: "Telemetry-free by default",  status: "done", detail: "No analytics, no crash reporting unless opted in. No hidden network traffic — visible in the Network panel.", meta: "policy" },
         { name: "DNS-over-HTTPS",             status: "done", detail: "Cloudflare 1.1.1.1 by default, user-replaceable.",         meta: "doh" },
+        { name: "Native VPN (WireGuard)",     status: "wip",  detail: "Per-tab / per-origin WG egress. Tailscale relegated to untrusted-fallback per project policy.", meta: "vpn" },
         { name: "Per-site permission prompts", status: "wip", detail: "Per-origin mic / camera / location / clipboard gates.",    meta: "perms" },
         { name: "Sandboxed renderer process", status: "plan", detail: "Per-tab OS-level process isolation.",                       meta: "procsep" }
     ]},
@@ -344,18 +352,32 @@ const FEATURES = [
         { name: "JSON tree viewer",           status: "done", detail: "Collapsible tree, search, syntax-highlighted.",              meta: "json" }
     ]},
     { cat: "Web3 / wallet integration", items: [
-        { name: "EVM wallet (Ethereum / L2s)", status: "plan", detail: "Self-custody key store — design only at the moment.",       meta: "wallet" },
+        { name: "MetaMask middleware",        status: "done", detail: "Routes buy/sell through MetaMask via injected window.ethereum (EIP-1193). Sassy Browser is not custodial — your keys, your MetaMask.", meta: "web3" },
+        { name: "Web3 risk educator",         status: "done", detail: "Plain-English warnings across five risk tiers (Safe → Critical). Bridge concept covers cross-chain lock-and-mint risk; token approval flagged Critical for unlimited approvals.", meta: "educator" },
+        { name: "EVM wallet (Ethereum / L2s)", status: "plan", detail: "MetaMask handles this today; native self-custody is a future option.", meta: "wallet" },
         { name: "Solana wallet",              status: "plan", detail: "Solana RPC and SPL token support.",                         meta: "solana" },
         { name: "ENS / on-chain name lookup", status: "plan", detail: "Resolve .eth names at the address bar.",                    meta: "ens" },
         { name: "Hardware-wallet bridge",     status: "plan", detail: "Ledger / Trezor over USB-HID.",                             meta: "hid" }
     ]},
+    { cat: "Multi-agent MCP + AI", items: [
+        { name: "MCP orchestrator (Voice / Coder / Auditor)", status: "done", detail: "Four-agent pipeline: Grok parses intent → Manus plans tasks → Claude executes edits → Gemini audits. Confidence percentages surfaced.", meta: "mcp" },
+        { name: "MCP server bundle",          status: "done", detail: "In-browser MCP host with file, git, key-vault adapters and an in-app panel (Ctrl+Shift+O). Per-agent URL/key/model builders.", meta: "mcp" },
+        { name: "MCP diagnostics (Ctrl+Shift+M)", status: "done", detail: "Live view of agents, session history, artifacts, tool surfaces.", meta: "mcp" },
+        { name: "Voice intake (Whisper)",     status: "done", detail: "Local-first; model picker; pipes into the orchestrator's Voice agent.", meta: "voice" },
+        { name: "Encrypted MCP key vault",    status: "done", detail: "API keys / bearer secrets encrypted at rest with user-supplied passphrase; never plaintext in ai.toml.", meta: "vault" }
+    ]},
+    { cat: "Family sync (WireGuard)", items: [
+        { name: "Device pairing + approval",  status: "done", detail: "Pending → Trusted / Blocked / Removed lifecycle. Admin approves; privacy-respecting Presence view shows online/offline without exposing browsing.", meta: "family" },
+        { name: "Multi-user profiles",        status: "done", detail: "Bootstrap admin → recovery key → add users → per-user PIN, identity, data + sync keys. Make-admin / remove-user policies.", meta: "users" },
+        { name: "Phone companion",            status: "wip",  detail: "PWA + Tailscale fallback. Wire protocol (UserCommand / UserEvent / SyncMessage) ships in this build.", meta: "phone" },
+        { name: "Family weekly report",       status: "done", detail: "Activity summary mailed to admin — no per-URL surveillance; only category-level aggregates.", meta: "report" }
+    ]},
     { cat: "Platforms & distribution", items: [
-        { name: "Windows 10 / 11 (x64) build", status: "done", detail: "Release binary builds today (~42 MB). Demo channel live behind /browser/dl/.", meta: "windows" },
+        { name: "Windows 10 / 11 (x64) build", status: "done", detail: "Release binary builds today (44 MB). Demo channel live behind /browser/dl/. Build SHA wired into binary via build.rs.", meta: "windows" },
         { name: "Linux (Debian / Arch / Fedora)", status: "wip", detail: "Builds from source; packages still to follow.",          meta: "linux" },
         { name: "macOS (Apple Silicon)",      status: "plan", detail: "Roadmap after Linux packaging stabilises.",                 meta: "macos" },
         { name: "Auto-update channel",        status: "wip",  detail: "Signed manifests + minisig verify + tamper gate in src/update.rs; channel-switch UI still landing.", meta: "update" },
-        { name: "Signed Windows installer",   status: "plan", detail: "Authenticode signature on every release.",                  meta: "sign" },
-        { name: "MCP server bundle",          status: "done", detail: "In-browser MCP host with file, git, key-vault adapters and an in-app panel.", meta: "mcp" }
+        { name: "Signed Windows installer",   status: "plan", detail: "Authenticode signature on every release.",                  meta: "sign" }
     ]}
 ];
 
