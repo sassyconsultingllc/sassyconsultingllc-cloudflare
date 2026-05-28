@@ -2,22 +2,22 @@
 -- Sassy Consulting LLC - Stripe -> Lemon Squeezy column rename
 -- Copyright (c) 2026 Sassy Consulting LLC
 --
--- Payment processor migrated from Stripe (suspended) to Lemon Squeezy.
--- The columns are reused unchanged by the LS flow -- only the *names* are
--- stale. Rename so the schema matches the active worker code.
+-- STATUS: APPLIED to the remote `contact-submissions` D1 database
+--         (verified 2026-05-28: licenses.payment_ref and products.ls_variant_id
+--         already exist; stripe_session_id / stripe_price_id no longer present).
 --
---   licenses.stripe_session_id -> licenses.payment_ref    (active in worker.js)
---   products.stripe_price_id   -> products.ls_variant_id  (table not queried
---                                                          by worker; rename
---                                                          for hygiene)
+-- This file is kept as a historical record of the rename. It is intentionally
+-- a no-op now because SQLite does NOT support `ALTER TABLE ... RENAME COLUMN
+-- IF EXISTS`, and re-running the ALTERs against an already-migrated database
+-- errors with `no such column: "stripe_session_id"`. Leaving the statements
+-- live would break any "apply every migration" workflow.
 --
--- Note: licenses.stripe_customer_id from 0002_licenses.sql was never applied
--- to the live DB and is intentionally skipped here.
+-- Original intent (do not re-run):
+--   ALTER TABLE licenses RENAME COLUMN stripe_session_id TO payment_ref;
+--   ALTER TABLE products RENAME COLUMN stripe_price_id   TO ls_variant_id;
 --
--- D1 / modern SQLite supports ALTER TABLE RENAME COLUMN. Apply this BEFORE
--- deploying the worker that reads `payment_ref`, otherwise live checkout
--- writes will fail until the column shows up.
+-- If you spin up a fresh D1 instance, uncomment the two ALTERs above and run
+-- this file once. Otherwise leave it alone.
 -- ============================================================================
 
-ALTER TABLE licenses RENAME COLUMN stripe_session_id TO payment_ref;
-ALTER TABLE products RENAME COLUMN stripe_price_id   TO ls_variant_id;
+SELECT 'migration 0004 already applied — no-op' AS status;
