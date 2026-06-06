@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buy SassyMCP Team | Sassy Consulting LLC</title>
+<title>Add SassyMCP Forensics | Sassy Consulting LLC</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -51,20 +51,20 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
 
 <div class="checkout-card">
     <a href="/pricing.html" class="back-link">&larr; Back to pricing</a>
-    <div class="plan-label">SassyMCP Team</div>
-    <h1>Site license. Buy once.</h1>
+    <div class="plan-label">SassyMCP Forensics</div>
+    <h1>Forensics add-on. Buy once.</h1>
     <div class="price-display">
-        <span id="price-amount">$199</span>
+        <span id="price-amount">$29</span>
         <span class="period">one-time</span>
     </div>
-    <div class="intro-note"><i class="fa-solid fa-infinity"></i> Up to 10 machines — own it forever, free updates</div>
+    <div class="intro-note"><i class="fa-solid fa-infinity"></i> Stacks on Free or Pro — own it forever</div>
 
     <ul class="features">
-        <li>Pro for up to 10 machines, one key to manage</li>
-        <li>Forensics add-on included for the whole team</li>
-        <li>Priority email support</li>
-        <li>Free updates forever</li>
-        <li>Need more than 10 seats? <a href="/contact">Talk to us</a></li>
+        <li>Security audit: hashing, file permissions, certificate validation</li>
+        <li>APK inspection for Android packages</li>
+        <li>Windows Defender + firewall status checks</li>
+        <li>Registry read / write / export</li>
+        <li>Autorun forensics — what runs at boot</li>
     </ul>
 
     <form id="checkout-form" onsubmit="handleCheckout(event)">
@@ -72,7 +72,7 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
             <label for="email">Email address</label>
             <input type="email" id="email" name="email" required placeholder="you@company.com" autocomplete="email">
         </div>
-        <button type="submit" class="btn-subscribe" id="submit-btn">Buy SassyMCP Team — $199</button>
+        <button type="submit" class="btn-subscribe" id="submit-btn">Add Forensics — $29</button>
         <div class="error-msg" id="error-msg"></div>
     </form>
 
@@ -93,7 +93,7 @@ async function handleCheckout(e) {
         const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product: 'mcp-team', email })
+            body: JSON.stringify({ product: 'mcp-forensics', email })
         });
         const data = await res.json();
         if (data.checkout_url) {
@@ -105,7 +105,7 @@ async function handleCheckout(e) {
         errorEl.textContent = err.message || 'Something went wrong, please try again';
         errorEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = 'Buy SassyMCP Team — $199';
+        btn.textContent = 'Add Forensics — $29';
     }
 }
 </script>

@@ -34,13 +34,18 @@ const PRODUCTS = {
   },
   "mcp-pro": {
     name: "SassyMCP Pro",
-    mode: "subscription",
-    description: "Production-grade MCP server with full access"
+    mode: "payment",
+    description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license"
+  },
+  "mcp-forensics": {
+    name: "SassyMCP Forensics",
+    mode: "payment",
+    description: "Forensics add-on: security audit + registry modules, stacks on Free or Pro"
   },
   "mcp-team": {
     name: "SassyMCP Team",
-    mode: "subscription",
-    description: "Multi-user MCP server with shared Crosslink"
+    mode: "payment",
+    description: "SassyMCP site license — Pro + Forensics for up to 10 machines"
   }
 };
 
@@ -900,7 +905,25 @@ async function handleDownload(path, url, env, corsHeaders) {
     }
   }
 
-  const r2Key = `${product}/${platform}/${filename}`;
+  // v2.7.x canonical-key alias. The public `sassytalkie.apk` URL stays stable
+  // across releases (baked into QR codes, posters, install scripts) but the
+  // R2 key it actually serves from rotates per release. The mapping is driven
+  // by wrangler env vars so a new ship is one `wrangler secret put` away from
+  // being live — no app code or QR re-prints.
+  //
+  // Why this exists: wrangler 4.60-4.98 on Windows silently truncates large
+  // PUTs to the literal canonical APK key (writes 0 bytes, reports "Upload
+  // complete"). Versioned-filename keys upload reliably, so we serve from
+  // those and rebind the canonical via this alias. Fallback to the original
+  // key keeps non-aliased downloads (sassy-browser, scrubs, etc.) unchanged.
+  const requestedKey = `${product}/${platform}/${filename}`;
+  const aliasMap = {
+    "sassy-talk/android/sassytalkie.apk":      env.LATEST_ANDROID_APK,
+    "sassy-talk/android/sassytalkie.aab":      env.LATEST_ANDROID_AAB,
+    "sassy-talk/windows/sassy-talk-setup.msi": env.LATEST_WINDOWS_MSI,
+    "sassy-talk/windows/sassy-talk-setup.exe": env.LATEST_WINDOWS_EXE,
+  };
+  const r2Key = aliasMap[requestedKey] || requestedKey;
   const bucket = isGated ? env.GATED : env.DOWNLOADS;
   const object = await bucket.get(r2Key);
   if (!object) return new Response("File not found", { status: 404 });

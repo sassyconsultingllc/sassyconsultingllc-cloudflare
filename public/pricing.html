@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SassyMCP — Pricing | Production-Ready MCP Server</title>
+    <title>SassyMCP — Pricing | One MCP server to replace 75+</title>
+    <meta name="description" content="SassyMCP replaces 75+ MCP servers with one 34MB exe. 270 tools across Claude Desktop, Cursor, Windsurf, VS Code and any MCP client. Buy once, own forever — no subscription.">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
@@ -13,18 +14,10 @@
         @keyframes loopBorder { 0% { border-color: rgba(16,185,129,0.3); } 33% { border-color: rgba(13,148,136,0.3); } 66% { border-color: rgba(59,130,246,0.3); } 100% { border-color: rgba(16,185,129,0.3); } }
         .card:hover { transform: translateY(-4px); box-shadow: 0 25px 50px -12px rgba(16,185,129,0.2); animation: loopBorder 3s linear infinite; }
         .popular { border: 3px solid #10b981; }
-        .toggle-active { background-color: #10b981; color: #111827; }
-        .intro-banner { }
     </style>
 </head>
 <body class="bg-zinc-950 text-zinc-100">
     <div class="max-w-7xl mx-auto px-6 py-16">
-
-        <!-- INTRODUCTORY SPECIAL BANNER -->
-        <div class="intro-banner bg-gradient-to-r from-emerald-500 to-teal-500 text-white text-center py-8 px-10 rounded-3xl mb-10 flex items-center justify-center gap-4 font-semibold text-xl shadow-2xl">
-            INTRODUCTORY SPECIAL — 75% OFF ALL PAID PLANS
-            <span class="bg-white text-emerald-600 text-base px-5 py-1 rounded-2xl font-bold">UNTIL JUNE 1ST, 2026</span>
-        </div>
 
         <!-- Header -->
         <div class="flex justify-between items-center mb-12">
@@ -37,19 +30,27 @@
             </a>
         </div>
 
-        <!-- Toggle -->
-        <div class="flex justify-center mb-8">
-            <div class="inline-flex bg-zinc-900 rounded-3xl p-1 text-sm font-medium">
-                <button onclick="setBilling('monthly')" id="btn-monthly"
-                        class="toggle-active px-6 py-3 rounded-3xl transition">Monthly</button>
-                <button onclick="setBilling('annual')" id="btn-annual"
-                        class="px-6 py-3 rounded-3xl transition">Annual <span class="text-emerald-400 text-xs ml-1">(save 17%)</span></button>
+        <!-- Hero -->
+        <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-sm font-semibold px-4 py-1.5 rounded-full mb-6">
+                <i class="fa-solid fa-infinity"></i> Buy once. Own forever. No subscription.
             </div>
+            <h2 class="text-6xl font-bold tracking-tighter mb-4">One MCP server<br>to replace them all.</h2>
+            <p class="text-2xl text-zinc-400 max-w-3xl mx-auto">270 tools. 35 modules. One 34 MB exe that replaces 75+ separate MCP servers — and patches every MCP client on your machine in one install.</p>
         </div>
 
-        <div class="text-center mb-16">
-            <h2 class="text-6xl font-bold tracking-tighter mb-4">Powerful Productivity</h2>
-            <p class="text-2xl text-zinc-400 max-w-2xl mx-auto">One install patches every MCP client on your machine. 267 tools, live reload, persistent state, full defensive hardening.</p>
+        <!-- Replaces strip (the hook) -->
+        <div class="bg-zinc-900/60 border border-zinc-800 rounded-3xl p-8 mb-16">
+            <p class="text-center text-zinc-400 text-sm uppercase tracking-widest mb-6">One install replaces all of these</p>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 text-center text-sm">
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">GitHub MCP</div><div class="text-zinc-500">28.6k★</div></div>
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">Desktop Commander</div><div class="text-zinc-500">5.9k★</div></div>
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">Windows-MCP</div><div class="text-zinc-500">5.0k★</div></div>
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">mobile-mcp</div><div class="text-zinc-500">4.4k★</div></div>
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">Filesystem + Memory</div><div class="text-zinc-500">Anthropic official</div></div>
+                <div class="bg-zinc-900 rounded-2xl py-4 px-3"><div class="font-semibold">+ 70 more</div><div class="text-zinc-500">SSH · OCR · nmap · …</div></div>
+            </div>
+            <p class="text-center text-zinc-500 text-sm mt-6">Six to ten servers, each eating context and config. SassyMCP is one — with a smart loader that keeps tool definitions under 5% of your context window.</p>
         </div>
 
         <!-- Pricing Grid -->
@@ -60,20 +61,21 @@
                 <div class="flex justify-between items-start mb-8">
                     <div>
                         <h3 class="text-2xl font-semibold">Free</h3>
-                        <p class="text-emerald-400 text-sm font-medium">Personal use</p>
+                        <p class="text-emerald-400 text-sm font-medium">Daily driver</p>
                     </div>
                     <div class="text-right">
                         <span class="text-5xl font-bold">$0</span>
                         <p class="text-zinc-400 text-sm">forever</p>
                     </div>
                 </div>
-                <ul class="space-y-4 text-zinc-300 mb-12">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Works with Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Core tools, GitHub Quick, and MCP slash-menu prompts</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 100,000 calls per month</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Smart loader — only the tools you actually use stay in context</li>
+                <ul class="space-y-4 text-zinc-300 mb-12 text-sm">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Works with Claude Desktop, Cursor, Windsurf, VS Code Copilot, Cline, Continue, Zed, Grok Desktop</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> File ops, shell, desktop automation, surgical edit, persistent memory, daily-driver GitHub</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Safe-delete interception + audit log</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Smart loader — only the tools you use stay in context</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> No telemetry. No account. No key.</li>
                 </ul>
-                <a href="/contact" class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Get Started Free</a>
+                <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest" class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Download free</a>
             </div>
 
             <!-- Pro (MOST POPULAR) -->
@@ -82,70 +84,74 @@
                 <div class="flex justify-between items-start mb-8">
                     <div>
                         <h3 class="text-2xl font-semibold">Pro</h3>
-                        <p class="text-emerald-400 text-sm font-medium">Full production</p>
+                        <p class="text-emerald-400 text-sm font-medium">All 270 tools</p>
                     </div>
                     <div class="text-right">
-                        <span id="price-pro" class="text-5xl font-bold">$29</span>
-                        <p id="period-pro" class="text-zinc-400 text-sm">per month</p>
-                        <span id="save-pro" class="hidden text-emerald-400 text-xs font-medium">Save $58/year</span>
+                        <span class="text-5xl font-bold">$49</span>
+                        <p class="text-zinc-400 text-sm">one-time</p>
                     </div>
                 </div>
-                <ul class="space-y-4 text-zinc-300 mb-12">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> All 267 tools — Android control, vision, security audit, persistent memory, combos</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> DXT one-click for Claude Desktop, VS Code Marketplace extension, installer CLI</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> HTTPS + Cloudflare Tunnel with OAuth proxy template</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Live reload, persistent state, built-in monitoring &amp; health checks</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 2 million calls/month</li>
+                <ul class="space-y-4 text-zinc-300 mb-12 text-sm">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Everything in Free, plus all paid tool groups</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Full GitHub API — 80 tools (repos, issues, PRs, actions, security)</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Android phone control + dynamic vision, OCR, app launcher, web inspector</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Remote Linux SSH, system monitoring, clipboard sync, event logs, crosslink</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Activate on 2 machines you own · free updates forever</li>
                 </ul>
-                <a href="/checkout/pro.html" id="cta-pro"
-                   class="block w-full text-center py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-semibold">Subscribe — $29/mo</a>
+                <a href="/checkout/pro.html" class="block w-full text-center py-4 bg-emerald-500 hover:bg-emerald-600 text-white rounded-2xl font-semibold">Buy once — $49</a>
             </div>
 
-            <!-- Team -->
+            <!-- Forensics add-on -->
+            <div class="card bg-zinc-900 rounded-3xl p-8">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold">Forensics</h3>
+                        <p class="text-emerald-400 text-sm font-medium">Add-on · stacks on any tier</p>
+                    </div>
+                    <div class="text-right">
+                        <span class="text-5xl font-bold">+$29</span>
+                        <p class="text-zinc-400 text-sm">one-time</p>
+                    </div>
+                </div>
+                <ul class="space-y-4 text-zinc-300 mb-12 text-sm">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Stacks additively on Free or Pro</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Security audit: hashing, file permissions, certificate validation, APK inspection</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Windows Defender + firewall status checks</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Registry read / write / export + autorun forensics</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Free updates forever</li>
+                </ul>
+                <a href="/checkout/forensics.html" class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Add Forensics — $29</a>
+            </div>
+
+            <!-- Team / Site license -->
             <div class="card bg-zinc-900 rounded-3xl p-8">
                 <div class="flex justify-between items-start mb-8">
                     <div>
                         <h3 class="text-2xl font-semibold">Team</h3>
-                        <p class="text-emerald-400 text-sm font-medium">Multi-user</p>
+                        <p class="text-emerald-400 text-sm font-medium">Site license</p>
                     </div>
                     <div class="text-right">
-                        <span id="price-team" class="text-5xl font-bold">$99</span>
-                        <p id="period-team" class="text-zinc-400 text-sm">per month</p>
-                        <span id="save-team" class="hidden text-emerald-400 text-xs font-medium">Save $198/year</span>
+                        <span class="text-5xl font-bold">$199</span>
+                        <p class="text-zinc-400 text-sm">one-time</p>
                     </div>
                 </div>
-                <ul class="space-y-4 text-zinc-300 mb-12">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Pro</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Up to 5 users</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Shared tool access between team members</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> 10 million calls/month</li>
+                <ul class="space-y-4 text-zinc-300 mb-12 text-sm">
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Pro for up to 10 machines, one key to manage</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Forensics add-on included for the whole team</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Priority email support</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Free updates forever</li>
+                    <li class="flex items-start gap-3"><i class="fa-solid fa-check text-emerald-400 mt-1"></i> Need more than 10 seats? <a href="/contact" class="text-emerald-400 underline">Talk to us</a></li>
                 </ul>
-                <a href="/checkout/team.html" id="cta-team"
-                   class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Subscribe — $99/mo</a>
+                <a href="/checkout/team.html" class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Buy team — $199</a>
             </div>
+        </div>
 
-            <!-- Enterprise -->
-            <div class="card bg-zinc-900 rounded-3xl p-8">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <h3 class="text-2xl font-semibold">Enterprise</h3>
-                        <p class="text-emerald-400 text-sm font-medium">Dedicated support</p>
-                    </div>
-                    <div class="text-right">
-                        <span id="price-enterprise" class="text-5xl font-bold">$499</span>
-                        <p id="period-enterprise" class="text-zinc-400 text-sm">per month</p>
-                        <span id="save-enterprise" class="hidden text-emerald-400 text-xs font-medium">Save $998/year</span>
-                    </div>
-                </div>
-                <ul class="space-y-4 text-zinc-300 mb-12">
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Everything in Team</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Unlimited calls with dedicated infrastructure</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Runs fully offline with no internet required</li>
-                    <li class="flex items-center gap-3"><i class="fa-solid fa-check text-emerald-400"></i> Custom integrations built for your workflow</li>
-                </ul>
-                <a href="/contact" id="cta-enterprise"
-                   class="block w-full text-center py-4 border border-zinc-400 hover:border-white rounded-2xl font-semibold">Talk to Sales</a>
-            </div>
+        <!-- Trust row -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 text-center text-sm text-zinc-400">
+            <div class="bg-zinc-900/60 rounded-2xl py-6 px-4"><i class="fa-solid fa-shield-halved text-emerald-400 text-xl mb-2 block"></i> Runs fully offline after activation</div>
+            <div class="bg-zinc-900/60 rounded-2xl py-6 px-4"><i class="fa-solid fa-eye-slash text-emerald-400 text-xl mb-2 block"></i> No telemetry, ever</div>
+            <div class="bg-zinc-900/60 rounded-2xl py-6 px-4"><i class="fa-solid fa-trash-can-arrow-up text-emerald-400 text-xl mb-2 block"></i> Safe-delete protects against AI mistakes</div>
+            <div class="bg-zinc-900/60 rounded-2xl py-6 px-4"><i class="fa-solid fa-rotate-left text-emerald-400 text-xl mb-2 block"></i> 14-day refund via Lemon Squeezy</div>
         </div>
 
         <!-- FAQ -->
@@ -153,16 +159,24 @@
             <h3 class="text-2xl font-semibold text-center mb-8">Frequently Asked Questions</h3>
             <div class="space-y-6">
                 <details class="bg-zinc-900 rounded-2xl p-6">
-                    <summary class="font-medium cursor-pointer">Can I switch between monthly and annual?</summary>
-                    <p class="text-zinc-400 mt-3">Yes — you can change billing anytime from your account.</p>
+                    <summary class="font-medium cursor-pointer">Is this really one-time? No subscription?</summary>
+                    <p class="text-zinc-400 mt-3">Correct. You buy once and own that version and every future update forever. There is no recurring charge and nothing expires. Activation lets the exe run fully offline.</p>
                 </details>
                 <details class="bg-zinc-900 rounded-2xl p-6">
-                    <summary class="font-medium cursor-pointer">What happens if I exceed my call limit?</summary>
-                    <p class="text-zinc-400 mt-3">Overages are $0.0005 per 1k additional calls. Never throttled.</p>
+                    <summary class="font-medium cursor-pointer">How many machines can I activate?</summary>
+                    <p class="text-zinc-400 mt-3">Pro activates on 2 machines you own. Team covers up to 10. You can deactivate a machine from your Lemon Squeezy account to free a seat.</p>
                 </details>
                 <details class="bg-zinc-900 rounded-2xl p-6">
-                    <summary class="font-medium cursor-pointer">Is Enterprise air-gapped?</summary>
-                    <p class="text-zinc-400 mt-3">Yes. Full offline .exe with no internet required.</p>
+                    <summary class="font-medium cursor-pointer">Do I need the paid tier to be useful?</summary>
+                    <p class="text-zinc-400 mt-3">No. The free tier is a complete daily driver — file ops, shell, desktop automation, persistent memory, surgical edit, and daily-driver GitHub. Pro unlocks the heavy automation surfaces (full GitHub API, Android, vision, remote Linux, system monitoring).</p>
+                </details>
+                <details class="bg-zinc-900 rounded-2xl p-6">
+                    <summary class="font-medium cursor-pointer">Which AI clients does it work with?</summary>
+                    <p class="text-zinc-400 mt-3">Any MCP client. One install auto-detects and patches Claude Desktop, Cursor, Windsurf, VS Code Copilot, Cline, Continue, Zed, and Grok Desktop — no JSON editing.</p>
+                </details>
+                <details class="bg-zinc-900 rounded-2xl p-6">
+                    <summary class="font-medium cursor-pointer">What does the Forensics add-on do, and can I add it later?</summary>
+                    <p class="text-zinc-400 mt-3">It unlocks the security-audit and registry modules (APK inspection, cert validation, hash + permission audit, Defender/firewall status, registry read/write/export, autorun forensics). It stacks on Free or Pro, and you can buy it any time.</p>
                 </details>
             </div>
         </div>
@@ -171,56 +185,5 @@
             © 2026 Sassy Consulting LLC • Madison, Wisconsin
         </div>
     </div>
-
-    <script>
-        let billingMode = 'monthly';
-
-        function setBilling(mode) {
-            billingMode = mode;
-            const monthlyBtn = document.getElementById('btn-monthly');
-            const annualBtn = document.getElementById('btn-annual');
-
-            if (mode === 'monthly') {
-                monthlyBtn.classList.add('toggle-active');
-                annualBtn.classList.remove('toggle-active');
-            } else {
-                annualBtn.classList.add('toggle-active');
-                monthlyBtn.classList.remove('toggle-active');
-            }
-            updatePrices();
-        }
-
-        function updatePrices() {
-            const suffix = billingMode === 'annual' ? '?billing=annual' : '';
-            if (billingMode === 'monthly') {
-                document.getElementById('price-pro').innerHTML = '$29 <span class="line-through text-zinc-400 text-2xl ml-2">$116</span>';
-                document.getElementById('period-pro').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
-                document.getElementById('cta-pro').textContent = 'Subscribe — $29/mo';
-                document.getElementById('cta-pro').href = '/checkout/pro.html';
-                document.getElementById('price-team').innerHTML = '$99 <span class="line-through text-zinc-400 text-2xl ml-2">$396</span>';
-                document.getElementById('period-team').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
-                document.getElementById('cta-team').textContent = 'Subscribe — $99/mo';
-                document.getElementById('cta-team').href = '/checkout/team.html';
-                document.getElementById('price-enterprise').innerHTML = '$499 <span class="line-through text-zinc-400 text-2xl ml-2">$1,996</span>';
-                document.getElementById('period-enterprise').innerHTML = 'per month <span class="text-emerald-400 text-xs">(75% off intro until June 1st)</span>';
-                document.getElementById('cta-enterprise').textContent = 'Talk to Sales';
-            } else {
-                document.getElementById('price-pro').innerHTML = '$73 <span class="line-through text-zinc-400 text-2xl ml-2">$290</span>';
-                document.getElementById('period-pro').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
-                document.getElementById('cta-pro').textContent = 'Subscribe — $73/year';
-                document.getElementById('cta-pro').href = '/checkout/pro.html?billing=annual';
-                document.getElementById('price-team').innerHTML = '$248 <span class="line-through text-zinc-400 text-2xl ml-2">$990</span>';
-                document.getElementById('period-team').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
-                document.getElementById('cta-team').textContent = 'Subscribe — $248/year';
-                document.getElementById('cta-team').href = '/checkout/team.html?billing=annual';
-                document.getElementById('price-enterprise').innerHTML = '$1,248 <span class="line-through text-zinc-400 text-2xl ml-2">$4,990</span>';
-                document.getElementById('period-enterprise').innerHTML = 'billed yearly <span class="text-emerald-400 text-xs">(75% off first year)</span>';
-                document.getElementById('cta-enterprise').textContent = 'Talk to Sales';
-            }
-        }
-
-        // Initialize
-        updatePrices();
-    </script>
 </body>
 </html>

@@ -186,7 +186,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         directly from the <strong>ACE</strong> repository &mdash; followed by a
         feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;05&#8209;25 · live GitHub fetch on page load.</div>
+    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;06&#8209;06 (v0.11.0) · live GitHub fetch on page load.</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
@@ -197,23 +197,23 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         <div class="stats-grid">
             <div class="stat-cell" data-stat="lines">
                 <div class="stat-lbl">Lines of Rust</div>
-                <div class="stat-val">154,585</div>
+                <div class="stat-val">156,601</div>
                 <div class="stat-sub">Counted today via wc&nbsp;-l src/**/*.rs</div>
             </div>
             <div class="stat-cell" data-stat="files">
                 <div class="stat-lbl">Source files</div>
-                <div class="stat-val">223</div>
+                <div class="stat-val">225</div>
                 <div class="stat-sub">81 top-level modules in /src</div>
             </div>
             <div class="stat-cell" data-stat="tests">
                 <div class="stat-lbl">Test functions</div>
-                <div class="stat-val">1,040</div>
-                <div class="stat-sub">1,020 passing, 16 ignored, 4 known JS&#8209;interp fails</div>
+                <div class="stat-val">1,087</div>
+                <div class="stat-sub">1,071 passing, 0 failing, 16 ignored</div>
             </div>
             <div class="stat-cell" data-stat="warnings">
                 <div class="stat-lbl">Compiler warnings</div>
                 <div class="stat-val">0</div>
-                <div class="stat-sub">Workspace; 231 cleared this push, none suppressed</div>
+                <div class="stat-sub">Workspace; 20 cleared this push, none suppressed</div>
             </div>
             <div class="stat-cell loading" data-stat="stars">
                 <div class="stat-lbl">GitHub stars</div>
@@ -307,14 +307,14 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 // ─────────────────────────────────────────────────────────────────────────
 const FEATURES = [
     { cat: "Browser core", items: [
-        { name: "Rust rendering engine",      status: "wip",  detail: "Custom layout + paint, no Chromium dependency. Real-site coverage still landing.", meta: "core" },
+        { name: "Rust rendering engine",      status: "wip",  detail: "Custom layout + paint, no Chromium dependency. W3C WPT-subset at 67 passing (up from 31) in v0.11.0; real-site coverage still landing.", meta: "core" },
         { name: "HTTPS / TLS",                status: "done", detail: "rustls + rustls-native-certs against the OS CA store, Chrome-132 JA3 fingerprint.", meta: "rustls" },
         { name: "HTTP/1.1 + HTTP/2",          status: "done", detail: "Persistent connections, request pipelining, adaptive window.", meta: "hyper" },
         { name: "HTTP/3 / QUIC",              status: "plan", detail: "Targeted for a later release; UI shows a disabled toggle with the rationale.", meta: "quinn" },
         { name: "Tabbed navigation + groups", status: "done", detail: "Standard tabs, auto-grouping by category, per-tab mute, age tooltip, kind label, group collapse/expand.", meta: "tabs" },
         { name: "Bookmarks + history",        status: "done", detail: "Local store with smart-history intent tracking, folder picker, per-entry delete, domain chips, rename. No cloud sync by default.", meta: "history" },
         { name: "JS engine (in-tree)",        status: "wip",  detail: "Custom interpreter + Boa bridge — DOM, promises, generators, classes, modules, TDZ, DataView big-endian.", meta: "src/js" },
-        { name: "CSS cascade (modern)",       status: "wip",  detail: "Vars, calc(), pseudo-classes, sibling combinators, border-radius, box-shadow.", meta: "cascade" },
+        { name: "CSS cascade (modern)",       status: "wip",  detail: "Vars, calc(), pseudo-classes, sibling + universal selectors, @media comma-OR, presentational attrs (bgcolor/align), border-radius, box-shadow.", meta: "cascade" },
         { name: "WebAssembly runtime",        status: "plan", detail: "Isolated wasm runtime for in-page code.",                   meta: "wasmtime" }
     ]},
     { cat: "Privacy & security", items: [

@@ -62,6 +62,13 @@
 
   // Environment variables (non-secret)
   "vars": {
-    "SITE_URL": "https://sassyconsultingllc.com"
+    "SITE_URL": "https://sassyconsultingllc.com",
+    // Canonical-key aliases. Bump these on each release; the public URLs
+    // (`sassytalkie.apk`, `sassytalkie.aab`) automatically serve the new
+    // version. Set blank ("") to fall through to the literal canonical key.
+    "LATEST_ANDROID_APK": "sassy-talk/android/sassytalkie-v2.7.5.apk",
+    "LATEST_ANDROID_AAB": "sassy-talk/android/sassytalkie-v2.7.5.aab",
+    "LATEST_WINDOWS_MSI": "",
+    "LATEST_WINDOWS_EXE": ""
   }
 }

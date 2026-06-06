@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Subscribe to SassyMCP Pro | Sassy Consulting LLC</title>
+<title>Buy SassyMCP Pro | Sassy Consulting LLC</title>
 <meta name="robots" content="noindex, nofollow">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -33,16 +33,11 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
 .plan-label{color:var(--accent);font-size:0.85rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:0.25rem}
 .price-display{font-size:2.5rem;font-weight:700;margin:1rem 0 0.25rem}
 .price-display .period{font-size:1rem;font-weight:400;color:var(--text-dim)}
-.price-display .original{text-decoration:line-through;color:var(--text-muted);font-size:1.2rem;margin-left:0.5rem}
-.intro-note{color:var(--accent);font-size:0.85rem;margin-bottom:1.5rem}
+.intro-note{color:var(--accent);font-size:0.85rem;margin-bottom:1.5rem;display:flex;align-items:center;gap:0.5rem}
 
-.toggle-wrap{display:flex;background:var(--surface2);border-radius:var(--radius);padding:3px;margin-bottom:2rem;border:1px solid var(--border)}
-.toggle-btn{flex:1;padding:0.6rem;text-align:center;border-radius:6px;font-size:0.85rem;font-weight:600;cursor:pointer;transition:all 0.2s;color:var(--text-dim);border:none;background:none;font-family:var(--sans)}
-.toggle-btn.active{background:var(--accent);color:#000}
-
-.features{margin-bottom:2rem}
-.features li{display:flex;align-items:center;gap:0.75rem;padding:0.5rem 0;color:var(--text-dim);font-size:0.9rem;list-style:none}
-.features li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:0.85rem}
+.features{margin-bottom:2rem;margin-top:1.5rem}
+.features li{display:flex;align-items:flex-start;gap:0.75rem;padding:0.5rem 0;color:var(--text-dim);font-size:0.9rem;list-style:none}
+.features li::before{content:'\2713';color:var(--accent);font-weight:700;font-size:0.85rem;margin-top:0.15rem}
 
 .field{margin-bottom:1.5rem}
 .field label{display:block;font-size:0.8rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-dim);margin-bottom:0.5rem}
@@ -62,25 +57,19 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
 <div class="checkout-card">
     <a href="/pricing.html" class="back-link">&larr; Back to pricing</a>
     <div class="plan-label">SassyMCP Pro</div>
-    <h1>Full production access</h1>
+    <h1>All 270 tools. Buy once.</h1>
     <div class="price-display">
-        <span id="price-amount">$29</span>
-        <span class="period" id="price-period">/month</span>
-        <span class="original" id="price-original">$116</span>
+        <span id="price-amount">$49</span>
+        <span class="period">one-time</span>
     </div>
-    <div class="intro-note">75% introductory discount applied — valid until June 1, 2026</div>
-
-    <div class="toggle-wrap">
-        <button class="toggle-btn active" id="btn-monthly" onclick="setBilling('monthly')">Monthly</button>
-        <button class="toggle-btn" id="btn-annual" onclick="setBilling('annual')">Annual (save 17%)</button>
-    </div>
+    <div class="intro-note"><i class="fa-solid fa-infinity"></i> Own it forever — no subscription, free updates</div>
 
     <ul class="features">
-        <li>All 267 tools — Android control, vision, security audit, persistent memory, combos</li>
-        <li>DXT one-click for Claude Desktop, VS Code Marketplace extension, installer CLI</li>
-        <li>HTTPS + Cloudflare Tunnel with OAuth proxy template</li>
-        <li>Live reload, persistent state, built-in monitoring &amp; health checks</li>
-        <li>2 million calls per month</li>
+        <li>Everything in Free, plus all paid tool groups</li>
+        <li>Full GitHub API — 80 tools (repos, issues, PRs, actions, security)</li>
+        <li>Android phone control, dynamic vision, OCR, app launcher, web inspector</li>
+        <li>Remote Linux SSH, system monitoring, clipboard sync, event logs, crosslink</li>
+        <li>Activate on 2 machines you own</li>
     </ul>
 
     <form id="checkout-form" onsubmit="handleCheckout(event)">
@@ -88,39 +77,14 @@ h1{font-family:var(--serif);font-size:1.8rem;font-weight:400;margin-bottom:0.5re
             <label for="email">Email address</label>
             <input type="email" id="email" name="email" required placeholder="you@company.com" autocomplete="email">
         </div>
-        <button type="submit" class="btn-subscribe" id="submit-btn">Subscribe — $29/mo</button>
+        <button type="submit" class="btn-subscribe" id="submit-btn">Buy SassyMCP Pro — $49</button>
         <div class="error-msg" id="error-msg"></div>
     </form>
 
-    <div class="secure-note">Payments are processed securely through Lemon Squeezy. You can cancel anytime from your account.</div>
+    <div class="secure-note">One-time payment processed securely through Lemon Squeezy. 14-day refund, no questions asked.</div>
 </div>
 
 <script>
-let billing = 'monthly';
-
-function setBilling(mode) {
-    billing = mode;
-    document.getElementById('btn-monthly').classList.toggle('active', mode === 'monthly');
-    document.getElementById('btn-annual').classList.toggle('active', mode === 'annual');
-    if (mode === 'monthly') {
-        document.getElementById('price-amount').textContent = '$29';
-        document.getElementById('price-period').textContent = '/month';
-        document.getElementById('price-original').textContent = '$116';
-        document.getElementById('submit-btn').textContent = 'Subscribe — $29/mo';
-    } else {
-        document.getElementById('price-amount').textContent = '$73';
-        document.getElementById('price-period').textContent = '/year';
-        document.getElementById('price-original').textContent = '$290';
-        document.getElementById('submit-btn').textContent = 'Subscribe — $73/year';
-    }
-}
-
-// Check URL param
-(function() {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('billing') === 'annual') setBilling('annual');
-})();
-
 async function handleCheckout(e) {
     e.preventDefault();
     const btn = document.getElementById('submit-btn');
@@ -134,7 +98,7 @@ async function handleCheckout(e) {
         const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product: 'mcp-pro', billing, email })
+            body: JSON.stringify({ product: 'mcp-pro', email })
         });
         const data = await res.json();
         if (data.checkout_url) {
@@ -146,7 +110,7 @@ async function handleCheckout(e) {
         errorEl.textContent = err.message || 'Something went wrong, please try again';
         errorEl.style.display = 'block';
         btn.disabled = false;
-        btn.textContent = billing === 'monthly' ? 'Subscribe — $29/mo' : 'Subscribe — $73/year';
+        btn.textContent = 'Buy SassyMCP Pro — $49';
     }
 }
 </script>
