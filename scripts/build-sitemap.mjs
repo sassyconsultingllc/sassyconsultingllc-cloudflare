@@ -31,7 +31,6 @@ const EXCLUDE = new Set([
 const RULES = [
   { match: "",                    priority: "1.0", changefreq: "weekly" },
   { match: "browser",             priority: "0.9", changefreq: "weekly" },
-  { match: "pricing",             priority: "0.8", changefreq: "monthly" },
   { match: "sassy-talk",          priority: "0.8", changefreq: "monthly" },
   { match: "winforensics",        priority: "0.8", changefreq: "monthly" },
   { match: "website-creator",     priority: "0.8", changefreq: "monthly" },

@@ -1,13 +1,7 @@
-async function buyProduct(product) {
-    try {
-        const response = await fetch('/api/checkout', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ product })
-        });
-        const data = await response.json();
-        if (data.url) window.location.href = data.url;
-    } catch (err) {
-        alert('Checkout failed. Please try again.');
-    }
+// Legacy buy buttons (buyProduct('...') on the product pages) route to the
+// unified /store page, which collects the email required by /api/checkout and
+// opens the Lemon Squeezy checkout. Kept as a thin shim so existing onclick
+// handlers keep working without per-page rewrites.
+function buyProduct(product) {
+    window.location.href = '/store?buy=' + encodeURIComponent(product);
 }

@@ -879,7 +879,7 @@ async function handleDownload(path, url, env, corsHeaders) {
   // sassycreates.sassyconsultingllc.com -- DO NOT put gated content there.
   const GATED_PRODUCTS = {
     sassytalk: "/sassy-talk.html",
-    sassymcp:  "/pricing.html",
+    sassymcp:  "/store",
   };
   const isGated = GATED_PRODUCTS[product] && platform !== "demo";
   if (isGated) {

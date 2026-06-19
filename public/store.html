@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Store — SassyMCP, Sassy-Talk, WinForensics-Pro & more | Sassy Consulting LLC</title>
+<meta name="description" content="The Sassy Consulting store. SassyMCP Pro, the Forensics add-on and Team license, plus Sassy-Talk, WinForensics-Pro and Website Creator — one-time payments, own forever, secure checkout via Lemon Squeezy.">
+<link rel="canonical" href="https://sassyconsultingllc.com/store">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://sassyconsultingllc.com/store">
+<meta property="og:title" content="Store | Sassy Consulting LLC">
+<meta property="og:description" content="SassyMCP, Sassy-Talk, WinForensics-Pro and more. Buy once, own forever.">
+<meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+<meta property="og:site_name" content="Sassy Consulting LLC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Store | Sassy Consulting LLC">
+<meta name="twitter:description" content="SassyMCP, Sassy-Talk, WinForensics-Pro and more. Buy once, own forever.">
+<meta name="twitter:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Lemon Squeezy overlay. The checkout itself is created server-side via
+     /api/checkout (signed webhooks + license generation); lemon.js only
+     renders the hosted checkout as an in-page overlay. If it fails to load
+     we fall back to a full redirect, so the buy flow never depends on it. -->
+<script src="https://assets.lemonsqueezy.com/lemon.js" defer></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0c10;--surface:#111318;--surface2:#181b22;
+  --border:#2a2e3a;--border-active:#3d4258;
+  --text:#e8eaf0;--text-dim:#8b90a0;--text-muted:#5c6070;
+  --accent:#10b981;--accent-dark:#0d9488;--accent-glow:#10b98133;
+  --danger:#ff5c5c;
+  --serif:'DM Serif Display',Georgia,serif;
+  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+  --mono:'JetBrains Mono',monospace;
+  --radius:8px;--radius-lg:14px;--radius-xl:22px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+img{max-width:100%}
+
+/* Top bar */
+.topbar{display:flex;justify-content:space-between;align-items:center;max-width:1200px;margin:0 auto;padding:1.5rem 2rem}
+.brand{display:flex;align-items:center;gap:0.6rem;font-weight:700;color:var(--text);font-size:1.05rem}
+.brand i{color:var(--accent)}
+.brand:hover{text-decoration:none}
+.back-link{display:inline-flex;align-items:center;gap:0.5rem;color:var(--text-dim);font-size:0.9rem}
+.back-link:hover{color:var(--text);text-decoration:none}
+
+/* Hero */
+.hero{max-width:880px;margin:2rem auto 0;padding:0 2rem;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:0.5rem;background:var(--accent-glow);border:1px solid var(--accent);color:var(--accent);font-size:0.8rem;font-weight:600;padding:0.4rem 1rem;border-radius:999px;margin-bottom:1.5rem;letter-spacing:0.02em}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(2.2rem,5vw,3.4rem);line-height:1.1;margin-bottom:1rem}
+.hero p{color:var(--text-dim);font-size:1.1rem;max-width:620px;margin:0 auto}
+
+/* Section */
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+.section{margin-top:4rem}
+.section-head{margin-bottom:1.75rem}
+.section-head h2{font-family:var(--serif);font-weight:400;font-size:1.7rem;display:flex;align-items:center;gap:0.6rem}
+.section-head h2 i{color:var(--accent);font-size:1.3rem}
+.section-head p{color:var(--text-dim);font-size:0.95rem;margin-top:0.3rem}
+
+/* Grid + cards */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
+.product{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);padding:2rem;display:flex;flex-direction:column;position:relative;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.product:hover{transform:translateY(-4px);border-color:var(--accent);box-shadow:0 24px 48px -18px var(--accent-glow)}
+.product.featured{border-color:var(--accent)}
+.ribbon{position:absolute;top:-12px;right:1.5rem;background:var(--accent);color:#04130d;font-size:0.7rem;font-weight:700;letter-spacing:0.06em;padding:0.3rem 0.9rem;border-radius:999px}
+.tag{font-size:0.75rem;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--accent);margin-bottom:0.4rem}
+.product h3{font-size:1.4rem;font-weight:700;margin-bottom:0.5rem}
+.product .desc{color:var(--text-dim);font-size:0.9rem;flex:0 0 auto;min-height:3.2em;margin-bottom:1.25rem}
+.price{display:flex;align-items:baseline;gap:0.5rem;margin-bottom:1.25rem}
+.price .amount{font-size:2.4rem;font-weight:700}
+.price .period{color:var(--text-dim);font-size:0.9rem}
+.feature-list{list-style:none;margin:0 0 1.75rem;display:flex;flex-direction:column;gap:0.55rem;flex:1 1 auto}
+.feature-list li{display:flex;align-items:flex-start;gap:0.6rem;color:var(--text-dim);font-size:0.88rem}
+.feature-list li::before{content:'\2713';color:var(--accent);font-weight:700;margin-top:0.05rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:0.5rem;width:100%;padding:0.95rem 1rem;border-radius:var(--radius);font-size:0.98rem;font-weight:700;font-family:var(--sans);cursor:pointer;border:1px solid transparent;transition:filter .2s,transform .15s,background .2s,border-color .2s;text-align:center}
+.btn-primary{background:var(--accent);color:#04130d}
+.btn-primary:hover{filter:brightness(1.08);transform:translateY(-1px);text-decoration:none}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--border-active)}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);text-decoration:none}
+
+/* Free / external row */
+.mini-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.mini{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.4rem;display:flex;flex-direction:column;gap:0.5rem;transition:border-color .2s,transform .2s}
+.mini:hover{border-color:var(--accent);transform:translateY(-2px);text-decoration:none}
+.mini h4{color:var(--text);font-size:1.05rem;display:flex;align-items:center;gap:0.5rem}
+.mini h4 i{color:var(--accent)}
+.mini p{color:var(--text-dim);font-size:0.85rem}
+.mini .pill{align-self:flex-start;font-size:0.72rem;font-weight:600;color:var(--accent);background:var(--accent-glow);padding:0.2rem 0.6rem;border-radius:999px}
+
+/* Trust row */
+.trust{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1rem;margin-top:2rem}
+.trust div{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.4rem;text-align:center;color:var(--text-dim);font-size:0.85rem}
+.trust i{color:var(--accent);font-size:1.3rem;display:block;margin-bottom:0.6rem}
+
+/* FAQ */
+.faq{max-width:760px;margin:0 auto}
+.faq details{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:0.9rem}
+.faq summary{cursor:pointer;font-weight:600;list-style:none}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:'\002B';float:right;color:var(--accent);font-weight:700}
+.faq details[open] summary::after{content:'\2212'}
+.faq p{color:var(--text-dim);font-size:0.9rem;margin-top:0.75rem}
+
+footer{margin-top:5rem;border-top:1px solid var(--border);padding:2.5rem 2rem;text-align:center;color:var(--text-muted);font-size:0.85rem}
+footer a{color:var(--text-dim)}
+
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(4,6,10,0.78);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:1.5rem;z-index:100}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border-active);border-radius:var(--radius-lg);padding:2.25rem;max-width:440px;width:100%;position:relative}
+.modal h3{font-family:var(--serif);font-weight:400;font-size:1.5rem;margin-bottom:0.25rem}
+.modal .modal-sub{color:var(--text-dim);font-size:0.9rem;margin-bottom:1.5rem}
+.modal .modal-price{color:var(--accent);font-weight:700}
+.modal-close{position:absolute;top:1rem;right:1.1rem;background:none;border:none;color:var(--text-dim);font-size:1.4rem;cursor:pointer;line-height:1}
+.modal-close:hover{color:var(--text)}
+.field label{display:block;font-size:0.78rem;font-weight:600;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-dim);margin-bottom:0.5rem}
+.field input{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:0.85rem 1rem;color:var(--text);font-size:0.95rem;font-family:var(--sans);outline:none;transition:border-color .2s}
+.field input:focus{border-color:var(--accent)}
+.modal .btn{margin-top:1.5rem}
+.modal-error{color:var(--danger);font-size:0.85rem;margin-top:0.75rem;display:none}
+.modal-secure{text-align:center;color:var(--text-muted);font-size:0.74rem;margin-top:1.25rem}
+
+@media(max-width:640px){
+  .topbar{padding:1.25rem}
+  .wrap,.hero{padding-left:1.25rem;padding-right:1.25rem}
+  .product{padding:1.6rem}
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <a href="/" class="brand"><i class="fa-solid fa-bolt"></i> Sassy Consulting LLC</a>
+  <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Back to home</a>
+</div>
+
+<header class="hero">
+  <span class="eyebrow"><i class="fa-solid fa-infinity"></i> Buy once. Own forever. No subscriptions.</span>
+  <h1>The Sassy Store</h1>
+  <p>Every paid tool we ship, in one place. One-time payments, lifetime licenses, secure checkout. No accounts, no telemetry, no recurring charges.</p>
+</header>
+
+<main class="wrap">
+
+  <!-- SassyMCP -->
+  <section class="section" id="sassymcp">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-layer-group"></i> SassyMCP</h2>
+      <p>One MCP server replacing 75+. 270 tools across every MCP client on your machine. Pro unlocks every paid tool group; the Forensics add-on and Team site license stack on top. The Free tier needs no key — <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">grab it on GitHub</a>.</p>
+    </div>
+    <div class="grid">
+
+      <article class="product featured">
+        <span class="ribbon">REPLACES 75+</span>
+        <span class="tag">All 270 tools</span>
+        <h3>SassyMCP Pro</h3>
+        <div class="price"><span class="amount">$49</span><span class="period">one-time</span></div>
+        <p class="desc">Everything in Free plus every paid tool group — the complete automation surface.</p>
+        <ul class="feature-list">
+          <li>Full GitHub API — 80 tools</li>
+          <li>Android control, vision, OCR, web inspector</li>
+          <li>Remote Linux SSH, system monitoring, crosslink</li>
+          <li>Activates on 2 machines you own</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="mcp-pro">Buy SassyMCP Pro — $49</button>
+      </article>
+
+      <article class="product">
+        <span class="tag">Add-on</span>
+        <h3>Forensics Add-on</h3>
+        <div class="price"><span class="amount">+$29</span><span class="period">one-time</span></div>
+        <p class="desc">Stacks additively on Free or Pro — the security-audit and registry modules.</p>
+        <ul class="feature-list">
+          <li>APK inspection, cert validation, hash + permission audit</li>
+          <li>Defender / firewall status</li>
+          <li>Registry read / write / export + autorun forensics</li>
+          <li>Buy any time — stacks on your existing license</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="mcp-forensics">Add Forensics — $29</button>
+      </article>
+
+      <article class="product">
+        <span class="tag">Site license</span>
+        <h3>SassyMCP Team</h3>
+        <div class="price"><span class="amount">$199</span><span class="period">one-time</span></div>
+        <p class="desc">Pro + Forensics for up to 10 machines, one key to manage.</p>
+        <ul class="feature-list">
+          <li>Pro for up to 10 machines</li>
+          <li>Forensics add-on included for the whole team</li>
+          <li>One key — deactivate and reassign seats any time</li>
+          <li>Best value for shops and teams</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="mcp-team">Buy Team — $199</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Apps & tools -->
+  <section class="section" id="apps">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-toolbox"></i> Apps &amp; Tools</h2>
+      <p>Standalone software. One-time purchase, lifetime license, instant download after checkout.</p>
+    </div>
+    <div class="grid">
+
+      <article class="product">
+        <span class="tag">Encrypted comms</span>
+        <h3>Sassy-Talk</h3>
+        <p class="desc">Encrypted push-to-talk walkie-talkie for Android and Windows. No servers you don't control.</p>
+        <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <ul class="feature-list">
+          <li>End-to-end encrypted voice channels</li>
+          <li>Android + Windows clients</li>
+          <li>No tracking, no accounts</li>
+          <li>Lifetime license</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="sassy-talk">Buy Sassy-Talk — $2</button>
+      </article>
+
+      <article class="product">
+        <span class="tag">Windows forensics</span>
+        <h3>WinForensics-Pro</h3>
+        <p class="desc">Scans your Windows system for compromise, hidden files and suspicious activity, then writes a readable report.</p>
+        <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <ul class="feature-list">
+          <li>Integrity, ADS, Prefetch, Amcache, MFT walk</li>
+          <li>VirusTotal lookup, quarantine &amp; restore</li>
+          <li>STIX2 + HTML reports</li>
+          <li>Lifetime license</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="winforensics">Buy WinForensics — $2</button>
+      </article>
+
+      <article class="product">
+        <span class="tag">WordPress builder</span>
+        <h3>Website Creator</h3>
+        <p class="desc">AI-powered WordPress builder with security hardening, automated backups and monitoring built in.</p>
+        <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <ul class="feature-list">
+          <li>AI content + layout generation</li>
+          <li>Security hardening baked in</li>
+          <li>Automated backups + monitoring</li>
+          <li>Lifetime license</li>
+        </ul>
+        <button class="btn btn-primary" data-buy="website-creator">Buy Website Creator — $2</button>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- Free & external -->
+  <section class="section" id="free">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-gift"></i> Free &amp; Open</h2>
+      <p>No charge, no signup. Download and go.</p>
+    </div>
+    <div class="mini-grid">
+      <a class="mini" href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">
+        <span class="pill">Free</span>
+        <h4><i class="fa-solid fa-bolt"></i> SassyMCP Free</h4>
+        <p>Daily-driver tier: file ops, shell, desktop automation, memory, safe-delete. No key.</p>
+      </a>
+      <a class="mini" href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe">
+        <span class="pill">Free</span>
+        <h4><i class="fa-solid fa-brain"></i> Sassy Brain</h4>
+        <p>Multi-AI consensus engine. Five providers debate, then synthesize one answer.</p>
+      </a>
+      <a class="mini" href="https://mybestsites.online" target="_blank" rel="noopener">
+        <span class="pill">Free / $10 / $29</span>
+        <h4><i class="fa-solid fa-globe"></i> My Best Sites</h4>
+        <p>Build a professional site in 5 minutes. AI content, free hosting, own it forever.</p>
+      </a>
+      <a class="mini" href="/donate">
+        <span class="pill">Support</span>
+        <h4><i class="fa-solid fa-heart"></i> Donate</h4>
+        <p>Back development of Sassy Browser and the open tools. Any amount helps.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- Trust -->
+  <section class="section">
+    <div class="trust">
+      <div><i class="fa-solid fa-shield-halved"></i> Runs fully offline after activation</div>
+      <div><i class="fa-solid fa-eye-slash"></i> No telemetry, ever</div>
+      <div><i class="fa-solid fa-lock"></i> Secure checkout via Lemon Squeezy</div>
+      <div><i class="fa-solid fa-rotate-left"></i> 14-day refund, no questions asked</div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section">
+    <div class="section-head" style="text-align:center">
+      <h2 style="justify-content:center"><i class="fa-solid fa-circle-question"></i> Questions</h2>
+    </div>
+    <div class="faq">
+      <details>
+        <summary>How does checkout work?</summary>
+        <p>Pick a product, enter your email, and you're handed to Lemon Squeezy to pay. The moment payment clears, your license key is generated and emailed to you, and shown on the confirmation page. Card details never touch our servers.</p>
+      </details>
+      <details>
+        <summary>Is this really one-time? No subscription?</summary>
+        <p>Yes. You buy once and own that product plus every future update forever. Nothing recurs and nothing expires.</p>
+      </details>
+      <details>
+        <summary>Where's my license after I pay?</summary>
+        <p>On the confirmation page and in your email. For Sassy-Talk and the gated apps, the download link carries your key automatically. Lost it? <a href="/contact">Contact us</a>.</p>
+      </details>
+      <details>
+        <summary>Can I get a refund?</summary>
+        <p>14 days, no questions asked, handled through Lemon Squeezy.</p>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  &copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made<br>
+  <a href="/">Home</a> &nbsp;&bull;&nbsp; <a href="/contact">Contact</a> &nbsp;&bull;&nbsp; <a href="/terms.html">Terms</a> &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy</a>
+</footer>
+
+<!-- Email-capture modal -->
+<div class="modal-backdrop" id="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-hidden="true">
+  <div class="modal">
+    <button class="modal-close" id="modal-close" aria-label="Close">&times;</button>
+    <h3 id="modal-title">Checkout</h3>
+    <p class="modal-sub" id="modal-sub"></p>
+    <form id="checkout-form">
+      <div class="field">
+        <label for="email">Email address</label>
+        <input type="email" id="email" name="email" required placeholder="you@company.com" autocomplete="email">
+      </div>
+      <button type="submit" class="btn btn-primary" id="submit-btn">Continue to payment</button>
+      <div class="modal-error" id="modal-error"></div>
+    </form>
+    <p class="modal-secure"><i class="fa-solid fa-lock"></i> Secured by Lemon Squeezy · 14-day refund</p>
+  </div>
+</div>
+
+<script type="application/ld+json">
+{
+  "@context":"https://schema.org",
+  "@type":"ItemList",
+  "name":"Sassy Consulting LLC Store",
+  "itemListElement":[
+    {"@type":"Product","name":"SassyMCP Pro","offers":{"@type":"Offer","price":"49","priceCurrency":"USD"}},
+    {"@type":"Product","name":"SassyMCP Forensics Add-on","offers":{"@type":"Offer","price":"29","priceCurrency":"USD"}},
+    {"@type":"Product","name":"SassyMCP Team","offers":{"@type":"Offer","price":"199","priceCurrency":"USD"}},
+    {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}},
+    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}},
+    {"@type":"Product","name":"Website Creator","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}}
+  ]
+}
+</script>
+
+<script>
+(function () {
+  // Canonical catalog — keep slugs in sync with PRODUCTS in src/worker.js.
+  var CATALOG = {
+    "mcp-pro":         { name: "SassyMCP Pro",          price: "$49"  },
+    "mcp-forensics":   { name: "SassyMCP Forensics Add-on", price: "$29" },
+    "mcp-team":        { name: "SassyMCP Team",         price: "$199" },
+    "sassy-talk":      { name: "Sassy-Talk",            price: "$2"   },
+    "winforensics":    { name: "WinForensics-Pro",      price: "$2"   },
+    "website-creator": { name: "Website Creator",       price: "$2"   }
+  };
+
+  var modal    = document.getElementById("modal");
+  var form     = document.getElementById("checkout-form");
+  var emailEl  = document.getElementById("email");
+  var subEl    = document.getElementById("modal-sub");
+  var titleEl  = document.getElementById("modal-title");
+  var errorEl  = document.getElementById("modal-error");
+  var submitBt = document.getElementById("submit-btn");
+  var current  = null;
+  var lastFocus = null;
+
+  function openModal(product) {
+    if (!CATALOG[product]) return;
+    current = product;
+    var p = CATALOG[product];
+    titleEl.textContent = "Buy " + p.name;
+    subEl.innerHTML = "One-time payment of <span class=\"modal-price\">" + p.price + "</span> · own it forever.";
+    errorEl.style.display = "none";
+    submitBt.disabled = false;
+    submitBt.textContent = "Continue to payment";
+    lastFocus = document.activeElement;
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    setTimeout(function () { emailEl.focus(); }, 50);
+  }
+
+  function closeModal() {
+    modal.classList.remove("open");
+    modal.setAttribute("aria-hidden", "true");
+    current = null;
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+
+  // Wire every buy button.
+  document.querySelectorAll("[data-buy]").forEach(function (btn) {
+    btn.addEventListener("click", function () { openModal(btn.getAttribute("data-buy")); });
+  });
+
+  document.getElementById("modal-close").addEventListener("click", closeModal);
+  modal.addEventListener("click", function (e) { if (e.target === modal) closeModal(); });
+  document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape" && modal.classList.contains("open")) closeModal();
+  });
+
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+    if (!current) return;
+    var email = emailEl.value.trim();
+    errorEl.style.display = "none";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errorEl.textContent = "Enter a valid email address.";
+      errorEl.style.display = "block";
+      return;
+    }
+    submitBt.disabled = true;
+    submitBt.textContent = "Redirecting to Lemon Squeezy…";
+
+    fetch("/api/checkout", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ product: current, email: email })
+    })
+      .then(function (res) { return res.json().then(function (d) { return { ok: res.ok, data: d }; }); })
+      .then(function (r) {
+        var url = r.data && r.data.checkout_url;
+        if (!r.ok || !url) throw new Error((r.data && r.data.error) || "Checkout failed");
+        // Prefer the Lemon Squeezy in-page overlay; fall back to a redirect.
+        if (window.LemonSqueezy && window.LemonSqueezy.Url && window.LemonSqueezy.Url.Open) {
+          var overlayUrl = url + (url.indexOf("?") === -1 ? "?" : "&") + "embed=1";
+          window.LemonSqueezy.Url.Open(overlayUrl);
+          submitBt.disabled = false;
+          submitBt.textContent = "Continue to payment";
+        } else {
+          window.location.href = url;
+        }
+      })
+      .catch(function (err) {
+        errorEl.textContent = err.message || "Something went wrong, please try again.";
+        errorEl.style.display = "block";
+        submitBt.disabled = false;
+        submitBt.textContent = "Continue to payment";
+      });
+  });
+
+  // Deep link: /store?buy=<product> opens the modal pre-selected. This is how
+  // legacy buyProduct() buttons on the product pages now reach checkout.
+  try {
+    var q = new URLSearchParams(window.location.search).get("buy");
+    if (q && CATALOG[q]) openModal(q);
+  } catch (_) {}
+})();
+</script>
+</body>
+</html>

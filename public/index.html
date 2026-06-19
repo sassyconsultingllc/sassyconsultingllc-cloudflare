@@ -84,7 +84,7 @@
                 "applicationCategory": "DeveloperApplication",
                 "operatingSystem": "Windows",
                 "description": "Production-grade Model Context Protocol server. One install patches every MCP client on your machine — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. 267 tools across file ops, shell, GitHub, Android control, vision, security audit, and persistent cross-session memory.",
-                "url": "https://sassyconsultingllc.com/pricing.html",
+                "url": "https://sassyconsultingllc.com/store",
                 "offers": {
                     "@type": "Offer",
                     "price": "49",
@@ -441,6 +441,7 @@
         .product-card .price { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 1rem; }
         .product-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         .product-tag { padding: 0.25rem 0.75rem; background: var(--bg-tertiary); border-radius: 100px; font-size: 0.75rem; color: var(--text-tertiary); }
+        .product-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.25rem; }
 
         .dashboard-section { background: var(--bg-secondary); padding: 6rem 2rem; }
         .dashboard-container { max-width: 1200px; margin: 0 auto; }
@@ -927,11 +928,12 @@ Sassy Consulting LLC
             </a>
             <div class="nav-links">
                 <a href="#products">Products</a>
+                <a href="/store">Store</a>
                 <a href="#apps">Android Apps</a>
                 <a href="#tools">Free Tools</a>
                 <a href="#about">About</a>
                 <a href="https://github.com/sassyconsultingllc/sassyconsultingllc-cloudflare">Audit My Code</a>
-                <a href="/pricing.html" class="btn btn-primary">Get SassyMCP</a>
+                <a href="/store#sassymcp" class="btn btn-primary">Get SassyMCP</a>
             </div>
         </div>
     </nav>
@@ -1102,7 +1104,7 @@ Sassy Consulting LLC
         </h1>
         <p class="hero-sub">U.S. Army veteran-led company creating secure software that puts control back in your hands with zero tracking, zero telemetry, and real protection.</p>
         <div class="hero-cta">
-            <a href="/pricing.html" class="btn btn-primary btn-large">Get SassyMCP — $49, buy once</a>
+            <a href="/store#sassymcp" class="btn btn-primary btn-large">Get SassyMCP — $49, buy once</a>
             <a href="#products" class="btn btn-secondary btn-large">Browse All Tools</a>
         </div>
     </section>
@@ -1115,7 +1117,7 @@ Sassy Consulting LLC
         <div class="products-grid">
 
             <!-- SassyMCP -->
-            <a href="/pricing.html" class="product-card">
+            <div class="product-card">
                 <span class="product-badge featured">REPLACES 75+ SERVERS</span>
                 <h3>SassyMCP</h3>
                 <p>Haven't you always wanted to tell your computer what to do? You made your home smarter, why not your computer? Double-click the installer and every MCP client on your machine gets auto-configured — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. 267 tools spanning file ops, shell, GitHub, Android control, screen vision, security audit, and persistent cross-session memory. Windows-native ~36 MB single .exe, plus DXT bundle and VS Code Marketplace extension for one-click installs.</p>
@@ -1124,7 +1126,11 @@ Sassy Consulting LLC
                     <span class="product-tag">MCP</span>
                     <span class="product-tag">Production</span>
                 </div>
-            </a>
+                <div class="product-cta">
+                    <a href="/store#sassymcp" class="btn btn-primary">Get SassyMCP — from $49</a>
+                    <a href="https://github.com/sassyconsultingllc/SassyMCP" class="btn btn-secondary" target="_blank" rel="noopener">Free on GitHub</a>
+                </div>
+            </div>
 
             <!-- WinForensics-Pro -->
             <a href="/winforensics.html" class="product-card">
@@ -1323,7 +1329,8 @@ Sassy Consulting LLC
                 <span style="font-size: 0.8rem;">Still serving. Different uniform.</span>
             </div>
             <div class="footer-links">
-                <a href="/pricing.html">SassyMCP</a>
+                <a href="/store">Store</a>
+                <a href="/store#sassymcp">SassyMCP</a>
                 <a href="/winforensics.html">WinForensics-Pro</a>
                 <a href="/browser">Browser</a>
                 <a href="#apps">Android Apps</a>
