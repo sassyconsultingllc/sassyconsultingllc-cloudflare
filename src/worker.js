@@ -83,6 +83,22 @@ function isAllowedOrigin(request) {
   return ALLOWED_ORIGINS.has(origin);
 }
 
+// Per-isolate rate limiter (Map of key -> {count, resetAt}). Not global — each
+// isolate counts separately — but cheap and enough to blunt brute-force loops
+// against license validation. Entries expire lazily on next check.
+const rateBuckets = new Map();
+function isRateLimited(key, limit = 10, windowMs = 60_000) {
+  const now = Date.now();
+  const bucket = rateBuckets.get(key);
+  if (!bucket || now >= bucket.resetAt) {
+    rateBuckets.set(key, { count: 1, resetAt: now + windowMs });
+    if (rateBuckets.size > 10_000) rateBuckets.clear(); // memory backstop
+    return false;
+  }
+  bucket.count++;
+  return bucket.count > limit;
+}
+
 // Headers applied to every dynamic response (JSON + redirect) for defense in depth.
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
@@ -171,6 +187,14 @@ export default {
       // PTT relay moved to relay.sassy-consults.com (sassytalk-relay worker)
       if (path === "/api/ptt/ws" || path === "/api/ptt/room-info") {
         return Response.redirect("https://relay.sassy-consults.com/ws" + url.search, 301);
+      }
+
+      // File-serving routes are GET/HEAD only — anything else gets a 405.
+      const isRead = method === "GET" || method === "HEAD";
+      if (path.startsWith("/download/") || path.startsWith("/scrub/") || path.startsWith("/privacy/")) {
+        if (!isRead) {
+          return new Response("Method not allowed", { status: 405, headers: { ...SECURITY_HEADERS, "Allow": "GET, HEAD" } });
+        }
       }
 
       if (path.startsWith("/download/")) {
@@ -797,13 +821,20 @@ async function handleValidateLicense(request, env, corsHeaders) {
   if (!isAllowedOrigin(request)) {
     return jsonResponse({ error: "Cross-origin request rejected" }, 403, corsHeaders);
   }
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  if (isRateLimited(`validate:${ip}`)) {
+    return jsonResponse({ valid: false, error: "Too many attempts. Try again in a minute." }, 429, corsHeaders);
+  }
   const body = await request.json();
   const { license_key } = body;
   if (!license_key) return jsonResponse({ valid: false, error: "License key required" }, 400, corsHeaders);
   if (!license_key.startsWith("SASSY-")) return jsonResponse({ valid: false, error: "Invalid license format" }, 200, corsHeaders);
   if (env.DB) {
-    const result = await env.DB.prepare("SELECT product, email, created_at FROM licenses WHERE license_key = ?").bind(license_key).first();
-    if (result) return jsonResponse({ valid: true, product: result.product, created_at: result.created_at }, 200, corsHeaders);
+    const result = await env.DB.prepare("SELECT product, email, created_at, revoked FROM licenses WHERE license_key = ?").bind(license_key).first();
+    if (result) {
+      if (result.revoked) return jsonResponse({ valid: false, error: "License has been revoked. Contact support." }, 200, corsHeaders);
+      return jsonResponse({ valid: true, product: result.product, created_at: result.created_at }, 200, corsHeaders);
+    }
   }
   return jsonResponse({ valid: false, error: "License not found" }, 200, corsHeaders);
 }

@@ -70,11 +70,18 @@ wrangler secret put LEMONSQUEEZY_DONATE_URL          # full URL e.g. https://sas
 wrangler secret put LS_VARIANT_SASSY_TALK
 wrangler secret put LS_VARIANT_WINFORENSICS
 wrangler secret put LS_VARIANT_WEBSITE_CREATOR
-wrangler secret put LS_VARIANT_MCP_PRO_MONTHLY
-wrangler secret put LS_VARIANT_MCP_PRO_ANNUAL
-wrangler secret put LS_VARIANT_MCP_TEAM_MONTHLY
-wrangler secret put LS_VARIANT_MCP_TEAM_ANNUAL
+wrangler secret put LS_VARIANT_MCP_PRO          # one-time; catalog moved off subscriptions
+wrangler secret put LS_VARIANT_MCP_FORENSICS
+wrangler secret put LS_VARIANT_MCP_TEAM
 wrangler secret put LICENSE_SALT
+```
+
+The `_MONTHLY` / `_ANNUAL` suffixed variants are only read for products with
+`mode: "subscription"` in `PRODUCTS` (src/worker.js). Every current product is
+one-time (`mode: "payment"`), so only the base `LS_VARIANT_<PRODUCT>` vars above
+are required.
+
+```bash
 ```
 
 ### 6. Deploy
