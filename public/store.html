@@ -228,7 +228,7 @@ footer a{color:var(--text-dim)}
         <div class="price"><span class="amount">$3.99</span><span class="period">one-time</span></div>
         <ul class="feature-list">
           <li>End-to-end encrypted voice channels</li>
-          <li>Android + Windows clients</li>
+          <li>Android client (Windows in development)</li>
           <li>No tracking, no accounts</li>
           <li>Lifetime license</li>
         </ul>
@@ -249,7 +249,7 @@ footer a{color:var(--text-dim)}
         <button class="btn btn-primary" data-buy="winforensics">Buy WinForensics — $2</button>
       </article>
 
-      <article class="product">
+      <article class="product" style="opacity:0.75">
         <span class="tag">WordPress builder</span>
         <h3>Website Creator</h3>
         <p class="desc">AI-powered WordPress builder with security hardening, automated backups and monitoring built in.</p>
@@ -260,7 +260,7 @@ footer a{color:var(--text-dim)}
           <li>Automated backups + monitoring</li>
           <li>Lifetime license</li>
         </ul>
-        <button class="btn btn-primary" data-buy="website-creator">Buy Website Creator — $2</button>
+        <span class="btn btn-ghost" style="cursor:default" aria-disabled="true">Coming soon</span>
       </article>
 
     </div>
@@ -339,7 +339,7 @@ footer a{color:var(--text-dim)}
 
 <footer>
   &copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made<br>
-  <a href="/">Home</a> &nbsp;&bull;&nbsp; <a href="/contact">Contact</a> &nbsp;&bull;&nbsp; <a href="/terms.html">Terms</a> &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy</a>
+  <a href="/">Home</a> &nbsp;&bull;&nbsp; <a href="/contact">Contact</a> &nbsp;&bull;&nbsp; <a href="/terms.html">Terms</a> &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy</a> &nbsp;&bull;&nbsp; <a href="/refund-policy.html">Refunds</a> &nbsp;&bull;&nbsp; <a href="/eula.html">EULA</a>
 </footer>
 
 <!-- Email-capture modal -->
@@ -356,7 +356,7 @@ footer a{color:var(--text-dim)}
       <button type="submit" class="btn btn-primary" id="submit-btn">Continue to payment</button>
       <div class="modal-error" id="modal-error"></div>
     </form>
-    <p class="modal-secure"><i class="fa-solid fa-lock"></i> Secured by Lemon Squeezy · 14-day refund</p>
+    <p class="modal-secure"><i class="fa-solid fa-lock"></i> Secured by Lemon Squeezy · <a href="/refund-policy.html">14-day refund</a><br>By purchasing you agree to the <a href="/eula.html">EULA</a>.</p>
   </div>
 </div>
 
@@ -370,8 +370,7 @@ footer a{color:var(--text-dim)}
     {"@type":"Product","name":"SassyMCP Forensics Add-on","offers":{"@type":"Offer","price":"29","priceCurrency":"USD"}},
     {"@type":"Product","name":"SassyMCP Team","offers":{"@type":"Offer","price":"199","priceCurrency":"USD"}},
     {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD"}},
-    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}},
-    {"@type":"Product","name":"Website Creator","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}}
+    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}}
   ]
 }
 </script>
@@ -384,8 +383,8 @@ footer a{color:var(--text-dim)}
     "mcp-forensics":   { name: "SassyMCP Forensics Add-on", price: "$29" },
     "mcp-team":        { name: "SassyMCP Team",         price: "$199" },
     "sassy-talk":      { name: "Sassy-Talk",            price: "$3.99"   },
-    "winforensics":    { name: "WinForensics-Pro",      price: "$2"   },
-    "website-creator": { name: "Website Creator",       price: "$2"   }
+    "winforensics":    { name: "WinForensics-Pro",      price: "$2"   }
+    // "website-creator" intentionally absent — no shippable artifact yet.
   };
 
   var modal    = document.getElementById("modal");

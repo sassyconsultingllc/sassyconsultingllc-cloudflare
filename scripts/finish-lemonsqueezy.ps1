@@ -4,15 +4,20 @@
 #requires -Version 7
 <#
 .SYNOPSIS
-  One-shot Lemon Squeezy store wiring. Run AFTER creating the six products in
-  the LS dashboard (https://app.lemonsqueezy.com -> Store "Sassy Apps" 382820):
+  One-shot Lemon Squeezy store wiring. Run AFTER creating the missing products
+  in the LS dashboard (https://app.lemonsqueezy.com -> LIVE store
+  "Sassy Consulting LLC Apps" 377151, login sassyconsultingllc):
 
-    SassyMCP Pro            $49
-    SassyMCP Forensics      $29   (add-on)
-    SassyMCP Team           $199
-    Sassy-Talk              $3.99
-    WinForensics-Pro        $2
-    Website Creator         $2
+    SassyMCP Pro            $49    Generate license keys: ON, activation limit 2
+    SassyMCP Forensics      $29    Generate license keys: ON, activation limit 2
+    SassyMCP Team           $199   Generate license keys: ON, activation limit 10
+    Sassy-Talk              $3.99  license keys OFF (relay worker mints keys)
+    WinForensics-Pro        $2     license keys OFF (winforensics-license-api mints WFP- keys)
+    Website Creator         $2     DO NOT create until an artifact ships (no deliverable exists)
+
+  License-key generation is dashboard-only (not settable via API) and is
+  REQUIRED for the mcp-* SKUs — SassyMCP activates against LS's license API,
+  so a product without LS keys sells a license the app can't activate.
 
   What it does:
     1. Sets LEMONSQUEEZY_STORE_ID on the worker.
@@ -21,15 +26,22 @@
     3. Pulls every variant from the LS API, maps product names to the
        PRODUCTS slugs in src/worker.js, and sets each LS_VARIANT_* secret.
 
+  AFTER it succeeds:
+    - wrangler secret delete LS_FALLBACK_VARIANT   (interim custom-price path, no longer needed)
+    - Bake the printed mcp variant IDs into DEFAULT_VARIANT_MAP in
+      V:\Projects\SassyMCP\sassymcp\_lemonsqueezy.py and cut a release,
+      e.g. "1234567": {"tier":"pro","addons":[]} / {"tier":"free","addons":["forensics"]}
+      / {"tier":"pro","addons":["forensics"]} for Pro / Forensics / Team.
+
 .NOTES
-  Reads the API key from $env:LEMON_SQUEEZY_TEST_KEY (or pass -ApiKey).
+  Reads the LIVE API key from $env:LEMON_SQUEEZY_API_KEY (or pass -ApiKey).
   Run from repo root: pwsh -File scripts/finish-lemonsqueezy.ps1
 #>
 
 [CmdletBinding()]
 param(
-    [string]$ApiKey = $env:LEMON_SQUEEZY_TEST_KEY,
-    [string]$StoreId = '382820',
+    [string]$ApiKey = $env:LEMON_SQUEEZY_API_KEY,
+    [string]$StoreId = '377151',
     [string]$WebhookUrl = 'https://sassyconsultingllc.com/api/webhook'
 )
 

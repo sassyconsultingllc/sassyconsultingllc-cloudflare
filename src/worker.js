@@ -23,32 +23,52 @@ const PRODUCTS = {
   "sassy-talk": {
     name: "Sassy-Talk",
     mode: "payment",
-    description: "Encrypted walkie-talkie app for Android and Windows"
+    description: "Encrypted walkie-talkie app for Android",
+    // priceCents + lsFallbackOk: while this SKU has no dedicated LS product,
+    // checkout rides the LS_FALLBACK_VARIANT with a custom_price override.
+    // License delivery doesn't depend on LS (relay mints the key), so the
+    // fallback is safe. Setting LS_VARIANT_SASSY_TALK disables the fallback.
+    priceCents: 399,
+    lsFallbackOk: true
   },
   "winforensics": {
     name: "WinForensics",
     mode: "payment",
-    description: "Digital forensics toolkit for Windows"
+    description: "Digital forensics toolkit for Windows",
+    priceCents: 200,
+    lsFallbackOk: true
   },
   "website-creator": {
     name: "Website Creator",
     mode: "payment",
-    description: "AI-powered WordPress builder with security hardening"
+    description: "AI-powered WordPress builder with security hardening",
+    // No shippable artifact exists yet (no plugin zip in any repo or R2).
+    // Checkout is refused until there is something to deliver.
+    available: false
   },
+  // SassyMCP SKUs activate via Lemon Squeezy's native license keys
+  // (sassymcp/_lemonsqueezy.py calls /v1/licenses/activate), so they can NOT
+  // ride the fallback variant — LS only generates keys on variants that have
+  // "Generate license keys" enabled, which is a dashboard-only setting.
+  // Until those products exist in the LS dashboard, checkout returns the
+  // `pending` message below instead of a dead error.
   "mcp-pro": {
     name: "SassyMCP Pro",
     mode: "payment",
-    description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license"
+    description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license",
+    priceCents: 4900
   },
   "mcp-forensics": {
     name: "SassyMCP Forensics",
     mode: "payment",
-    description: "Forensics add-on: security audit + registry modules, stacks on Free or Pro"
+    description: "Forensics add-on: security audit + registry modules, stacks on Free or Pro",
+    priceCents: 2900
   },
   "mcp-team": {
     name: "SassyMCP Team",
     mode: "payment",
-    description: "SassyMCP site license — Pro + Forensics for up to 10 machines"
+    description: "SassyMCP site license — Pro + Forensics for up to 10 machines",
+    priceCents: 19900
   }
 };
 
@@ -170,6 +190,12 @@ export default {
         return await handleGatedUpload(request, url, env, corsHeaders);
       }
       if (path === "/api/validate" && method === "POST") {
+        return await handleValidateLicense(request, env, corsHeaders);
+      }
+      // Alias baked into shipped clients: SassyMCP's legacy weekly check
+      // GETs /api/license/validate?key=... (sassymcp/license.py VALIDATE_URL).
+      // Same D1-backed validation as /api/validate.
+      if (path === "/api/license/validate" && (method === "GET" || method === "POST")) {
         return await handleValidateLicense(request, env, corsHeaders);
       }
       if (path === "/api/vpn-recommendations") {
@@ -641,6 +667,9 @@ async function handleCheckout(request, env, corsHeaders) {
   const body = await request.json();
   const { product, email, billing, success_url, cancel_url } = body;
   if (!product || !PRODUCTS[product]) return jsonResponse({ error: "Invalid product" }, 400, corsHeaders);
+  if (PRODUCTS[product].available === false) {
+    return jsonResponse({ error: `${PRODUCTS[product].name} isn't available for purchase yet. Check back soon.` }, 409, corsHeaders);
+  }
   if (!email) return jsonResponse({ error: "Email required" }, 400, corsHeaders);
   if (!env.LEMONSQUEEZY_API_KEY || !env.LEMONSQUEEZY_STORE_ID) {
     return jsonResponse({ error: "Payment processor not configured" }, 500, corsHeaders);
@@ -649,8 +678,22 @@ async function handleCheckout(request, env, corsHeaders) {
   const productInfo = PRODUCTS[product];
   const isSubscription = productInfo.mode === "subscription";
 
-  const variantId = resolveVariantId(env, product, isSubscription, billing);
-  if (!variantId) return jsonResponse({ error: "Product variant not configured" }, 500, corsHeaders);
+  let variantId = resolveVariantId(env, product, isSubscription, billing);
+  // Interim wiring: SKUs whose license chain doesn't depend on LS-generated
+  // keys can check out against a shared fallback variant with an LS
+  // custom_price + display-name override. A dedicated LS_VARIANT_* secret
+  // always wins once the real product exists in the LS dashboard.
+  let customPriceCents = null;
+  if (!variantId && productInfo.lsFallbackOk && productInfo.priceCents && env.LS_FALLBACK_VARIANT) {
+    variantId = env.LS_FALLBACK_VARIANT;
+    customPriceCents = productInfo.priceCents;
+  }
+  if (!variantId) {
+    return jsonResponse({
+      error: `${productInfo.name} checkout is briefly offline while payment wiring is finished. ` +
+             `Email info@sassyconsultingllc.com and we'll send you a direct checkout link.`,
+    }, 503, corsHeaders);
+  }
 
   // Our own short-lived correlation ID -- echoed back in the webhook so we can
   // match the order to the success page without trusting a client-supplied key.
@@ -684,7 +727,11 @@ async function handleCheckout(request, env, corsHeaders) {
           redirect_url: successUrl,
           receipt_button_text: "Get my license",
           receipt_link_url: successUrl,
+          // On fallback checkouts the underlying variant belongs to a
+          // different product, so override what the buyer sees.
+          ...(customPriceCents ? { name: productInfo.name, description: productInfo.description } : {}),
         },
+        ...(customPriceCents ? { custom_price: customPriceCents } : {}),
       },
       relationships: {
         store:   { data: { type: "stores",   id: String(env.LEMONSQUEEZY_STORE_ID) } },
@@ -805,7 +852,10 @@ async function handleWebhook(request, env, corsHeaders) {
   // Sassy-Talk keys must exist in the relay license DB so the direct APK can
   // activate via /license/activate. WinForensics keys must exist in the
   // winforensics-license-api D1 (WFP- format) — the desktop app validates
-  // against that worker, not this one. Other products keep the legacy website key.
+  // against that worker, not this one. SassyMCP activates against Lemon
+  // Squeezy's own license API (sassymcp/_lemonsqueezy.py), so mcp-* buyers
+  // need the LS-issued key — a SASSY- key cannot activate the app. Other
+  // products keep the legacy website key.
   let licenseKey = null;
   if (product === "sassy-talk") {
     licenseKey = await issueRelayLicense(env, {
@@ -817,6 +867,8 @@ async function handleWebhook(request, env, corsHeaders) {
       email,
       note: `lemonsqueezy:${orderId || ref}`,
     });
+  } else if (product.startsWith("mcp-") && orderId) {
+    licenseKey = await fetchLsLicenseKey(env, orderId);
   }
   if (!licenseKey) {
     licenseKey = await generateLicenseKey(email, product, ref, env.LICENSE_SALT);
@@ -857,12 +909,17 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
   }
   const name = PRODUCTS[product]?.name || product;
   const keyParam = encodeURIComponent(licenseKey);
+  const mcpActivate = (seats) =>
+    `Download SassyMCP (free installer, your key unlocks the paid tiers):\n` +
+    `https://github.com/sassyconsultingllc/SassyMCP/releases/latest\n\n` +
+    `Activate: run the setup wizard (or the "activate license" tool in any MCP client),\n` +
+    `paste your key when prompted. Works on ${seats}.`;
   const downloadLines = {
     "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
-    "mcp-pro":      `Install: ${env.SITE_URL}/store#sassymcp — activate with your key (2 machines).`,
-    "mcp-forensics":`Install: ${env.SITE_URL}/store#sassymcp — the add-on stacks on your existing SassyMCP license.`,
-    "mcp-team":     `Install: ${env.SITE_URL}/store#sassymcp — one key, up to 10 machines.`,
+    "mcp-pro":      mcpActivate("2 machines you own"),
+    "mcp-forensics":mcpActivate("2 machines — stacks on Free or Pro"),
+    "mcp-team":     mcpActivate("up to 10 machines"),
     "website-creator": `Getting started: ${env.SITE_URL}/website-creator.html`,
   };
   const text = [
@@ -944,8 +1001,9 @@ async function handleGatedUpload(request, url, env, corsHeaders) {
   }
   const key = url.searchParams.get("path") || "";
   const segments = key.split("/");
-  if (segments[0] !== "winforensics" || segments.length < 2 || !segments.every(isSafeSegment)) {
-    return jsonResponse({ error: "path must be winforensics/<safe segments>" }, 400, corsHeaders);
+  const UPLOAD_PREFIXES = new Set(["winforensics", "sassymcp", "website-creator"]);
+  if (!UPLOAD_PREFIXES.has(segments[0]) || segments.length < 2 || !segments.every(isSafeSegment)) {
+    return jsonResponse({ error: "path must be <winforensics|sassymcp|website-creator>/<safe segments>" }, 400, corsHeaders);
   }
   if (!env.GATED) return jsonResponse({ error: "GATED bucket unavailable" }, 500, corsHeaders);
   const contentType = request.headers.get("Content-Type") || "application/octet-stream";
@@ -963,18 +1021,26 @@ async function handleValidateLicense(request, env, corsHeaders) {
   if (isRateLimited(`validate:${ip}`)) {
     return jsonResponse({ valid: false, error: "Too many attempts. Try again in a minute." }, 429, corsHeaders);
   }
-  const body = await request.json();
-  const { license_key } = body;
+  // POST takes {license_key} (or {key}); the GET alias takes ?key= to match
+  // the URL shape shipped in SassyMCP's legacy weekly check.
+  let license_key;
+  if (request.method === "GET") {
+    const q = new URL(request.url).searchParams;
+    license_key = q.get("key") || q.get("license_key") || "";
+  } else {
+    const body = await request.json();
+    license_key = body.license_key || body.key || "";
+  }
   if (!license_key) return jsonResponse({ valid: false, error: "License key required" }, 400, corsHeaders);
-  if (!license_key.startsWith("SASSY-")) return jsonResponse({ valid: false, error: "Invalid license format" }, 200, corsHeaders);
+  if (!license_key.startsWith("SASSY-")) return jsonResponse({ valid: false, reason: "invalid_format", error: "Invalid license format" }, 200, corsHeaders);
   if (env.DB) {
     const result = await env.DB.prepare("SELECT product, email, created_at, revoked FROM licenses WHERE license_key = ?").bind(license_key).first();
     if (result) {
-      if (result.revoked) return jsonResponse({ valid: false, error: "License has been revoked. Contact support." }, 200, corsHeaders);
+      if (result.revoked) return jsonResponse({ valid: false, reason: "revoked", error: "License has been revoked. Contact support." }, 200, corsHeaders);
       return jsonResponse({ valid: true, product: result.product, created_at: result.created_at }, 200, corsHeaders);
     }
   }
-  return jsonResponse({ valid: false, error: "License not found" }, 200, corsHeaders);
+  return jsonResponse({ valid: false, reason: "not_found", error: "License not found" }, 200, corsHeaders);
 }
 
 async function handleVPNRecommendations(corsHeaders) {
@@ -1076,9 +1142,12 @@ async function handleDownload(path, url, env, corsHeaders) {
       }
       // Require the license's product to match the gated bucket prefix. Legacy keys may
       // store product slugs that differ from the R2 prefix (e.g. "sassy-talk" vs "sassytalk"),
-      // so compare with dashes/spaces stripped.
+      // so compare with dashes/spaces stripped. All SassyMCP SKUs (mcp-pro /
+      // mcp-forensics / mcp-team) entitle the shared sassymcp prefix.
       const norm = (s) => String(s || "").toLowerCase().replace(/[-_\s]/g, "");
-      if (norm(result.product) !== norm(product)) {
+      const productMatches = norm(result.product) === norm(product) ||
+        (norm(product) === "sassymcp" && String(result.product || "").startsWith("mcp-"));
+      if (!productMatches) {
         return jsonResponse({ error: "License does not match this product." }, 403, corsHeaders);
       }
     }
@@ -1334,6 +1403,37 @@ async function issueRelayLicense(env, { email, note }) {
     console.error("Relay license issue error:", e);
     return null;
   }
+}
+
+/**
+ * Fetch the Lemon Squeezy-generated license key for an order. Used for
+ * SassyMCP SKUs, whose variants have "Generate license keys" enabled —
+ * the app's activation flow calls LS /v1/licenses/activate, so only the
+ * LS-native key works. Keys are minted with the order, but give LS a
+ * short grace window in case the webhook races key creation.
+ */
+async function fetchLsLicenseKey(env, orderId) {
+  if (!env.LEMONSQUEEZY_API_KEY) return null;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      const resp = await fetch(`${LS_API}/license-keys?filter[order_id]=${encodeURIComponent(orderId)}`, {
+        headers: lsHeaders(env),
+        signal: AbortSignal.timeout(10000),
+      });
+      if (resp.ok) {
+        const data = await resp.json();
+        const key = data?.data?.[0]?.attributes?.key;
+        if (key) return key;
+      } else {
+        console.error("LS license-key fetch failed:", resp.status);
+      }
+    } catch (e) {
+      console.error("LS license-key fetch error:", e);
+    }
+    await new Promise(r => setTimeout(r, 1500));
+  }
+  console.error("LS license key not found for order", orderId, "— falling back to SASSY- key");
+  return null;
 }
 
 async function issueWinforensicsLicense(env, { email, note }) {

@@ -100,10 +100,12 @@
         
         <div id="download-links" style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 12px;">
             <div class="license-label" style="margin-bottom: 1rem;">Download Your Software</div>
-            <a id="apk-download" href="#" class="btn btn-primary" style="margin-bottom: 0.5rem; display: inline-block;">Download Android APK</a>
+            <a id="apk-download" href="#" class="btn btn-primary" style="margin-bottom: 0.5rem; display: inline-block;">Download</a>
             <br>
             <a id="msi-download" href="#" class="btn btn-secondary" style="margin-top: 0.5rem; display: inline-block;">Download Windows MSI</a>
+            <p id="download-note" style="font-size: 0.85rem; margin: 1rem 0 0;"></p>
         </div>
+        <p style="font-size: 0.8rem; margin-top: 1rem;">Purchases are covered by our <a href="/refund-policy.html" style="color: var(--accent-primary);">14-day refund policy</a> and the <a href="/eula.html" style="color: var(--accent-primary);">software EULA</a>.</p>
 
         <div style="margin-top: 2rem;">
             <a href="/" class="btn btn-secondary">Back to Home</a>
@@ -124,18 +126,29 @@
             .then(data => {
                 if (data.license_key) {
                     document.getElementById('license-key').textContent = data.license_key;
-                    // Show download links with license key embedded
+                    // Show download links per product. The primary button is
+                    // #apk-download; #msi-download is a secondary slot.
+                    const primary = document.getElementById('apk-download');
+                    const secondary = document.getElementById('msi-download');
                     if (data.product === 'sassy-talk') {
-                        const key = encodeURIComponent(data.license_key);
-                        document.getElementById('apk-download').href = '/download/sassytalk/android/SassyTalk-latest.apk?key=' + key;
-                        document.getElementById('msi-download').href = '/download/sassytalk/windows/SassyTalk-1.0.0-x64.msi?key=' + key;
+                        // The APK is a public download; the key activates in-app.
+                        primary.textContent = 'Download Sassy-Talk (Android APK)';
+                        primary.href = '/download/sassy-talk/android/sassytalkie.apk';
+                        secondary.style.display = 'none';
+                        document.getElementById('download-note').textContent = 'Install the APK, then paste your license key on the activation screen.';
                         document.getElementById('download-links').style.display = 'block';
                     } else if (data.product === 'winforensics') {
                         const key = encodeURIComponent(data.license_key);
-                        const exe = document.getElementById('apk-download');
-                        exe.textContent = 'Download WinForensics-Pro (Windows)';
-                        exe.href = '/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=' + key;
-                        document.getElementById('msi-download').style.display = 'none';
+                        primary.textContent = 'Download WinForensics-Pro (Windows)';
+                        primary.href = '/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=' + key;
+                        secondary.style.display = 'none';
+                        document.getElementById('download-note').textContent = 'Activate in Settings > License Management with the key above.';
+                        document.getElementById('download-links').style.display = 'block';
+                    } else if (data.product && data.product.indexOf('mcp-') === 0) {
+                        primary.textContent = 'Download SassyMCP (GitHub, latest release)';
+                        primary.href = 'https://github.com/sassyconsultingllc/SassyMCP/releases/latest';
+                        secondary.style.display = 'none';
+                        document.getElementById('download-note').textContent = 'Install, then run the setup wizard and paste your license key to unlock your tier.';
                         document.getElementById('download-links').style.display = 'block';
                     }
                 }
