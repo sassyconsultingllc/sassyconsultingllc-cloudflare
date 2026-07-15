@@ -66,9 +66,13 @@
     // Canonical-key aliases. Bump these on each release; the public URLs
     // (`sassytalkie.apk`, `sassytalkie.aab`) automatically serve the new
     // version. Set blank ("") to fall through to the literal canonical key.
-    "LATEST_ANDROID_APK": "sassy-talk/android/sassytalkie-v2.7.5.apk",
-    "LATEST_ANDROID_AAB": "sassy-talk/android/sassytalkie-v2.7.5.aab",
+    "LATEST_ANDROID_APK": "sassy-talk/android/sassytalkie-v2.9.0.apk",
+    "LATEST_ANDROID_AAB": "sassy-talk/android/sassytalkie-v2.9.0.aab",
     "LATEST_WINDOWS_MSI": "",
-    "LATEST_WINDOWS_EXE": ""
+    "LATEST_WINDOWS_EXE": "",
+    // WinForensics gated download + updater artifact (GATED bucket key).
+    "LATEST_WINFORENSICS_EXE": "winforensics/windows/WinForensicsPro-GUI-v0.5.2.exe",
+    // Direct APK activation lives on the PTT relay worker.
+    "RELAY_LICENSE_URL": "https://relay.sassyconsultingllc.com"
   }
 }

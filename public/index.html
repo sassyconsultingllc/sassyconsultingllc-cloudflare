@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+   CodeMark: SCLLC1-sassyconsultingllc_cloudflare-GM6VUO74XGGR
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -127,7 +132,7 @@
                 "applicationCategory": "FoodAndDrinkApplication",
                 "operatingSystem": "Android",
                 "description": "Find restaurants worth driving to. Community-powered tips, local hidden gems, honest reviews. No ads, no tracking.",
-                "url": "https://play.google.com/apps/testing/com.sassyconsultingllc.foodiefinder",
+                "url": "https://play.google.com/store/apps/details?id=com.sassyconsultingllc.foodiefinder",
                 "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
                 "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
             },
@@ -148,6 +153,15 @@
                 "operatingSystem": "Android",
                 "description": "Chromatic instrument tuner with real-time pitch detection and calibration controls. Currently in open testing on Google Play.",
                 "url": "https://play.google.com/apps/testing/com.sassyconsultingllc.tuner",
+                "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
+                "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
+            },
+            {
+                "@type": "MobileApplication",
+                "name": "Cloudflare Admin",
+                "applicationCategory": "DeveloperApplication",
+                "operatingSystem": "Android",
+                "description": "Manage your Cloudflare zones, DNS, Workers, R2, D1, and security from anywhere. API token stored on-device, never sent to third parties. Coming soon to Google Play.",
                 "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
                 "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
             }
@@ -699,6 +713,17 @@
             animation: pulse 2s infinite;
         }
 
+        .open-testing-pill.coming-soon {
+            background: rgba(148, 163, 184, 0.12);
+            border-color: rgba(148, 163, 184, 0.4);
+            color: var(--text-secondary);
+        }
+
+        .open-testing-pill.coming-soon .dot {
+            background: var(--text-secondary);
+            animation: none;
+        }
+
         .play-badge {
             display: inline-block;
             margin-top: auto;
@@ -814,7 +839,7 @@
             }
             /* The sign wraps to 3-4 lines at this width plus a tagline; the
                default 110px stage height clips the top of the sign (where
-               "Keep me installed for 14 days" lives) under overflow:hidden.
+               the "rating on Google Play" lead line lives) under overflow:hidden.
                Grow the stage and anchor the caravan to the bottom so the
                sign can expand upward without the lead text getting cropped. */
             .hamster-stage { height: 170px; }
@@ -941,9 +966,9 @@ Sassy Consulting LLC
     <!-- ANDROID APPS TOP BAND -->
     <section id="apps" class="apps-band">
         <div class="apps-band-header">
-            <span class="section-label">Open Testing on Google Play</span>
-            <h2 class="apps-band-title">Help shape our Android apps</h2>
-            <p class="apps-band-desc">Three apps in open testing. Verify below, then tap any tile to opt in on Google Play.</p>
+            <span class="section-label">Android Apps on Google Play</span>
+            <h2 class="apps-band-title">Our Android apps</h2>
+            <p class="apps-band-desc">Foodie Finder and Sassy Talk are live on Google Play. Rebel Tuner is in open testing &mdash; opt in and help shape it. Cloudflare Admin is coming soon. Verify below to unlock the install links.</p>
         </div>
 
         <div class="captcha-gate" id="apps-captcha-gate" aria-live="polite">
@@ -953,21 +978,21 @@ Sassy Consulting LLC
 
         <div class="apps-grid" id="apps-grid" data-locked="true">
 
-            <a class="app-tile" href="https://play.google.com/apps/testing/com.sassyconsultingllc.foodiefinder" target="_blank" rel="noopener" data-play-link aria-label="Join Foodie Finder open testing on Google Play">
+            <a class="app-tile" href="https://play.google.com/store/apps/details?id=com.sassyconsultingllc.foodiefinder" target="_blank" rel="noopener" data-play-link aria-label="Get Foodie Finder on Google Play">
                 <img class="app-icon-img" src="/images/apps/foodie-finder.png" alt="Foodie Finder app icon" width="512" height="512" loading="lazy">
                 <h3>Foodie Finder</h3>
                 <p>Local restaurant discovery with community tips. No ads, no algorithm push.</p>
-                <span class="open-testing-pill"><span class="dot"></span>Open Testing</span>
+                <span class="open-testing-pill"><span class="dot"></span>Live on Google Play</span>
                 <span class="play-badge" aria-hidden="true">
                     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
                 </span>
             </a>
 
-            <a class="app-tile" href="https://play.google.com/apps/testing/com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" data-play-link aria-label="Join Sassy Talk open testing on Google Play">
+            <a class="app-tile" href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" data-play-link aria-label="Get Sassy Talk on Google Play">
                 <img class="app-icon-img" src="/images/apps/sassy-talk.png" alt="Sassy Talk app icon" width="512" height="512" loading="lazy">
                 <h3>Sassy Talk</h3>
                 <p>Encrypted push-to-talk over local WiFi. AES-256-GCM, no servers, no accounts.</p>
-                <span class="open-testing-pill"><span class="dot"></span>Open Testing</span>
+                <span class="open-testing-pill"><span class="dot"></span>Live on Google Play</span>
                 <span class="play-badge" aria-hidden="true">
                     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
                 </span>
@@ -982,6 +1007,13 @@ Sassy Consulting LLC
                     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
                 </span>
             </a>
+
+            <div class="app-tile">
+                <img class="app-icon-img" src="/images/apps/cfadmin.png" alt="Cloudflare Admin app icon" width="512" height="512" loading="lazy">
+                <h3>Cloudflare Admin</h3>
+                <p>Manage Cloudflare zones, DNS, Workers, R2, and D1 from your phone.</p>
+                <span class="open-testing-pill coming-soon"><span class="dot"></span>Coming Soon</span>
+            </div>
 
         </div>
 
@@ -1030,8 +1062,8 @@ Sassy Consulting LLC
             </svg>
             <div class="hamster-rope" aria-hidden="true"></div>
             <div class="hamster-sign">
-                Keep me installed for <strong>14 days</strong> — that's the Google Play Store production-rollout requirement.
-                <span class="hamster-sign-tagline">Every day you keep it on your phone counts.</span>
+                Installed one? A <strong>rating on Google Play</strong> goes further than you'd think.
+                <span class="hamster-sign-tagline">Blunt feedback welcome — tell us what breaks.</span>
             </div>
         </div>
     </div>

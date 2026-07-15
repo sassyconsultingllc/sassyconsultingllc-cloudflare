@@ -1,3 +1,6 @@
+// Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+// Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+// CodeMark: SCLLC1-sassyconsultingllc_cloudflare-XZBSPDS6DWRR
 import { EmailMessage } from "cloudflare:email";
 
 const DATACENTER_ASNS = new Set([
@@ -159,6 +162,12 @@ export default {
       }
       if (path === "/api/webhook" && method === "POST") {
         return await handleWebhook(request, env, corsHeaders);
+      }
+      // Release-pipeline upload into the GATED bucket (winforensics/ prefix
+      // only). Exists because the wrangler OAuth token lacks the r2 scope
+      // and wrangler 4.60-4.98 truncated large PUTs on Windows anyway.
+      if (path === "/api/admin/gated-upload" && method === "PUT") {
+        return await handleGatedUpload(request, url, env, corsHeaders);
       }
       if (path === "/api/validate" && method === "POST") {
         return await handleValidateLicense(request, env, corsHeaders);
@@ -793,7 +802,25 @@ async function handleWebhook(request, env, corsHeaders) {
     return jsonResponse({ received: true, error: "Missing metadata" }, 200, corsHeaders);
   }
 
-  const licenseKey = await generateLicenseKey(email, product, ref, env.LICENSE_SALT);
+  // Sassy-Talk keys must exist in the relay license DB so the direct APK can
+  // activate via /license/activate. WinForensics keys must exist in the
+  // winforensics-license-api D1 (WFP- format) — the desktop app validates
+  // against that worker, not this one. Other products keep the legacy website key.
+  let licenseKey = null;
+  if (product === "sassy-talk") {
+    licenseKey = await issueRelayLicense(env, {
+      email,
+      note: `lemonsqueezy:${orderId || ref}`,
+    });
+  } else if (product === "winforensics") {
+    licenseKey = await issueWinforensicsLicense(env, {
+      email,
+      note: `lemonsqueezy:${orderId || ref}`,
+    });
+  }
+  if (!licenseKey) {
+    licenseKey = await generateLicenseKey(email, product, ref, env.LICENSE_SALT);
+  }
 
   if (env.DB) {
     try {
@@ -809,12 +836,123 @@ async function handleWebhook(request, env, corsHeaders) {
   }
 
   const total = attrs.total_formatted || (attrs.total != null ? `$${(attrs.total / 100).toFixed(2)}` : "n/a");
+  await sendBuyerLicenseEmail(env, { email, product, licenseKey });
   await sendNotification(env,
     `Payment Confirmed: ${PRODUCTS[product]?.name || product}`,
     `Lemon Squeezy ${eventName}!\n\nProduct: ${PRODUCTS[product]?.name || product}\nEmail: ${email}\nLicense: ${licenseKey}\nOrder ID: ${orderId}\nRef: ${ref}\nAmount: ${total}`
   );
 
   return jsonResponse({ received: true }, 200, corsHeaders);
+}
+
+// Deliver the license key to the buyer. The Cloudflare Email binding can
+// only send to verified destination addresses (that's why sendNotification
+// targets info@ only), so buyer mail goes out through the Resend API.
+// Without RESEND_API_KEY this is a logged no-op and delivery falls back to
+// the success page + the Lemon Squeezy receipt.
+async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
+  if (!env.RESEND_API_KEY) {
+    console.warn("RESEND_API_KEY unset — buyer license email skipped");
+    return;
+  }
+  const name = PRODUCTS[product]?.name || product;
+  const keyParam = encodeURIComponent(licenseKey);
+  const downloadLines = {
+    "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
+    "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
+    "mcp-pro":      `Install: ${env.SITE_URL}/store#sassymcp — activate with your key (2 machines).`,
+    "mcp-forensics":`Install: ${env.SITE_URL}/store#sassymcp — the add-on stacks on your existing SassyMCP license.`,
+    "mcp-team":     `Install: ${env.SITE_URL}/store#sassymcp — one key, up to 10 machines.`,
+    "website-creator": `Getting started: ${env.SITE_URL}/website-creator.html`,
+  };
+  const text = [
+    `Thanks for buying ${name}.`,
+    ``,
+    `Your license key:`,
+    `${licenseKey}`,
+    ``,
+    downloadLines[product] || `Getting started: ${env.SITE_URL}/store`,
+    ``,
+    `Keep this email — the key is your lifetime license.`,
+    `Questions or refunds (14 days, no questions asked): info@sassyconsultingllc.com`,
+    ``,
+    `— Sassy Consulting LLC`,
+  ].join("\n");
+  try {
+    const resp = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: env.EMAIL_FROM || "Sassy Consulting <notifications@sassyconsultingllc.com>",
+        to: [email],
+        subject: `Your ${sanitizeHeaderValue(name, 60)} license key`,
+        text,
+      }),
+    });
+    if (!resp.ok) {
+      console.error("Buyer license email failed:", resp.status, await resp.text());
+    }
+  } catch (e) {
+    console.error("Buyer license email error:", e);
+  }
+}
+
+// True when `key` is a WFP- license the winforensics-license-api accepts.
+// No machine_id is passed, so "valid but not activated on this machine"
+// still counts — a buyer must be able to download before first activation.
+async function validateWinfKey(env, key) {
+  if (!key || !key.startsWith("WFP-")) return false;
+  const base = (env.WINF_LICENSE_URL || "https://winforensics-license-api.sassyconsultingllc.workers.dev").replace(/\/$/, "");
+  try {
+    const resp = await fetch(`${base}/api/license/validate?key=${encodeURIComponent(key)}`, {
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    return data.valid === true;
+  } catch (e) {
+    console.error("WinForensics key validation error:", e);
+    return false;
+  }
+}
+
+// Compare secrets by SHA-256 digest so string-compare timing reveals nothing.
+async function secretsMatch(a, b) {
+  const enc = new TextEncoder();
+  const [da, db] = await Promise.all([
+    crypto.subtle.digest("SHA-256", enc.encode(a)),
+    crypto.subtle.digest("SHA-256", enc.encode(b)),
+  ]);
+  const va = new Uint8Array(da), vb = new Uint8Array(db);
+  let diff = 0;
+  for (let i = 0; i < va.length; i++) diff |= va[i] ^ vb[i];
+  return diff === 0;
+}
+
+// PUT /api/admin/gated-upload?path=winforensics/windows/<file>
+// Streams the request body into the GATED bucket. Auth: the same bearer
+// token the webhook uses to mint WinForensics licenses — ops-internal,
+// never shipped to clients. Path is confined to the winforensics/ prefix;
+// every segment must pass isSafeSegment so nothing can escape it.
+async function handleGatedUpload(request, url, env, corsHeaders) {
+  const token = (request.headers.get("Authorization") || "").replace(/^Bearer /, "");
+  if (!env.WINF_LICENSE_ADMIN_TOKEN || !token || !(await secretsMatch(token, env.WINF_LICENSE_ADMIN_TOKEN))) {
+    return jsonResponse({ error: "Unauthorized" }, 401, corsHeaders);
+  }
+  const key = url.searchParams.get("path") || "";
+  const segments = key.split("/");
+  if (segments[0] !== "winforensics" || segments.length < 2 || !segments.every(isSafeSegment)) {
+    return jsonResponse({ error: "path must be winforensics/<safe segments>" }, 400, corsHeaders);
+  }
+  if (!env.GATED) return jsonResponse({ error: "GATED bucket unavailable" }, 500, corsHeaders);
+  const contentType = request.headers.get("Content-Type") || "application/octet-stream";
+  const object = await env.GATED.put(key, request.body, {
+    httpMetadata: { contentType },
+  });
+  return jsonResponse({ ok: true, key, size: object?.size ?? null, etag: object?.etag ?? null }, 200, corsHeaders);
 }
 
 async function handleValidateLicense(request, env, corsHeaders) {
@@ -911,9 +1049,19 @@ async function handleDownload(path, url, env, corsHeaders) {
   const GATED_PRODUCTS = {
     sassytalk: "/sassy-talk.html",
     sassymcp:  "/store",
+    winforensics: "/store",
   };
   const isGated = GATED_PRODUCTS[product] && platform !== "demo";
-  if (isGated) {
+  if (isGated && product === "winforensics") {
+    // WinForensics keys are WFP- format, minted into (and validated by)
+    // the winforensics-license-api worker — not this worker's D1. This
+    // same gate serves both the store download and the app's updater
+    // (update.json + versioned exe live under the winforensics/ prefix).
+    const licenseKey = url.searchParams.get("key");
+    if (!(await validateWinfKey(env, licenseKey))) {
+      return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
+    }
+  } else if (isGated) {
     const licenseKey = url.searchParams.get("key");
     if (!licenseKey || !licenseKey.startsWith("SASSY-")) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
@@ -953,6 +1101,7 @@ async function handleDownload(path, url, env, corsHeaders) {
     "sassy-talk/android/sassytalkie.aab":      env.LATEST_ANDROID_AAB,
     "sassy-talk/windows/sassy-talk-setup.msi": env.LATEST_WINDOWS_MSI,
     "sassy-talk/windows/sassy-talk-setup.exe": env.LATEST_WINDOWS_EXE,
+    "winforensics/windows/WinForensicsPro-GUI-latest.exe": env.LATEST_WINFORENSICS_EXE,
   };
   const r2Key = aliasMap[requestedKey] || requestedKey;
   const bucket = isGated ? env.GATED : env.DOWNLOADS;
@@ -1156,6 +1305,63 @@ async function sha256(str) {
   const data = new TextEncoder().encode(str);
   const hashBuffer = await crypto.subtle.digest("SHA-256", data);
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+
+/** Issue a relay-side license key for the direct APK (Play uses Billing). */
+async function issueRelayLicense(env, { email, note }) {
+  const base = (env.RELAY_LICENSE_URL || "https://relay.sassyconsultingllc.com").replace(/\/$/, "");
+  const token = env.LICENSE_RELAY_ADMIN_TOKEN;
+  if (!token) {
+    console.warn("LICENSE_RELAY_ADMIN_TOKEN unset — sassy-talk keys will not activate in the app");
+    return null;
+  }
+  try {
+    const resp = await fetch(`${base}/license/issue`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ count: 1, email, note, max_devices: 3 }),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok || !data.keys?.[0]) {
+      console.error("Relay license issue failed:", resp.status, data);
+      return null;
+    }
+    return data.keys[0];
+  } catch (e) {
+    console.error("Relay license issue error:", e);
+    return null;
+  }
+}
+
+async function issueWinforensicsLicense(env, { email, note }) {
+  const base = (env.WINF_LICENSE_URL || "https://winforensics-license-api.sassyconsultingllc.workers.dev").replace(/\/$/, "");
+  const token = env.WINF_LICENSE_ADMIN_TOKEN;
+  if (!token) {
+    console.warn("WINF_LICENSE_ADMIN_TOKEN unset — winforensics keys will not activate in the app");
+    return null;
+  }
+  try {
+    const resp = await fetch(`${base}/api/license/issue`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, note, tier: "professional", billing_type: "lifetime" }),
+    });
+    const data = await resp.json();
+    if (!resp.ok || !data.ok || !data.key) {
+      console.error("WinForensics license issue failed:", resp.status, data);
+      return null;
+    }
+    return data.key;
+  } catch (e) {
+    console.error("WinForensics license issue error:", e);
+    return null;
+  }
 }
 
 async function generateLicenseKey(email, product, orderId, salt) {

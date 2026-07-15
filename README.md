@@ -1,3 +1,8 @@
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+   CodeMark: SCLLC1-sassyconsultingllc_cloudflare-TEOQTJWWOZYO
+-->
 # Sassy Consulting LLC - Full Stack Site
 
 Cloudflare Workers site with Lemon Squeezy payments, license generation, network analysis, and product downloads.
@@ -74,6 +79,8 @@ wrangler secret put LS_VARIANT_MCP_PRO          # one-time; catalog moved off su
 wrangler secret put LS_VARIANT_MCP_FORENSICS
 wrangler secret put LS_VARIANT_MCP_TEAM
 wrangler secret put LICENSE_SALT
+wrangler secret put WINF_LICENSE_ADMIN_TOKEN    # same value as ISSUE_ADMIN_TOKEN on winforensics-license-api; lets the webhook mint WFP- keys the desktop app can activate, and authenticates PUT /api/admin/gated-upload (release pipeline)
+wrangler secret put RESEND_API_KEY              # optional: enables buyer license-key emails via Resend (verify the sending domain there first); unset = success page + LS receipt only
 ```
 
 The `_MONTHLY` / `_ANNUAL` suffixed variants are only read for products with

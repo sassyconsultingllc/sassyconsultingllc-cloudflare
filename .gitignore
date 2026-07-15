@@ -94,3 +94,4 @@ htmlcov/
 # Misc
 .idea/
 .vagrant/
+.dev.vars

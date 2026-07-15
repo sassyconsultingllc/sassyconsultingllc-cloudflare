@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+# Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+# CodeMark: SCLLC1-sassyconsultingllc_cloudflare-HKQS4GWQ7PDD
 #requires -Version 7
 <#
 .SYNOPSIS
@@ -7,7 +10,7 @@
     SassyMCP Pro            $49
     SassyMCP Forensics      $29   (add-on)
     SassyMCP Team           $199
-    Sassy-Talk              $2
+    Sassy-Talk              $3.99
     WinForensics-Pro        $2
     Website Creator         $2
 
@@ -55,7 +58,7 @@ if ($existing) {
     Write-Host "  NOTE: its secret is not retrievable; if LEMONSQUEEZY_WEBHOOK_SECRET is unset," -ForegroundColor Yellow
     Write-Host "  delete the webhook in the dashboard and re-run this script." -ForegroundColor Yellow
 } else {
-    $secret = -join ((1..48) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) })
+    $secret = -join ((1..20) | ForEach-Object { '{0:x2}' -f (Get-Random -Max 256) })
     $body = @{ data = @{
         type = 'webhooks'
         attributes = @{ url = $WebhookUrl; events = @('order_created','subscription_created'); secret = $secret }

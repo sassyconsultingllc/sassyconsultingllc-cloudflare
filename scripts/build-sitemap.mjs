@@ -1,4 +1,7 @@
 #!/usr/bin/env node
+// Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+// Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+// CodeMark: SCLLC1-sassyconsultingllc_cloudflare-EDCYHKMIUEZQ
 // Auto-generates public/sitemap.xml from:
 //   1. Every .html file under public/ (minus excludes)
 //   2. Extra R2/dynamic URLs declared in scripts/sitemap.extras.json

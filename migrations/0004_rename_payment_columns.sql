@@ -1,3 +1,6 @@
+-- Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+-- Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+-- CodeMark: SCLLC1-sassyconsultingllc_cloudflare-7DULGOKSVVOD
 -- ============================================================================
 -- Sassy Consulting LLC - Stripe -> Lemon Squeezy column rename
 -- Copyright (c) 2026 Sassy Consulting LLC

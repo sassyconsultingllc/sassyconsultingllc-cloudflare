@@ -1,3 +1,6 @@
+-- Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+-- Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+-- CodeMark: SCLLC1-sassyconsultingllc_cloudflare-E7VP4A6HJCBM
 -- NDA D1 Schema for Sassy Consulting LLC
 -- Run: wrangler d1 execute contact-submissions --file=db/nda-schema.sql
 

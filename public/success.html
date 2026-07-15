@@ -1,4 +1,9 @@
 <!DOCTYPE html>
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+   CodeMark: SCLLC1-sassyconsultingllc_cloudflare-IJGTKG4VQETU
+-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -124,6 +129,13 @@
                         const key = encodeURIComponent(data.license_key);
                         document.getElementById('apk-download').href = '/download/sassytalk/android/SassyTalk-latest.apk?key=' + key;
                         document.getElementById('msi-download').href = '/download/sassytalk/windows/SassyTalk-1.0.0-x64.msi?key=' + key;
+                        document.getElementById('download-links').style.display = 'block';
+                    } else if (data.product === 'winforensics') {
+                        const key = encodeURIComponent(data.license_key);
+                        const exe = document.getElementById('apk-download');
+                        exe.textContent = 'Download WinForensics-Pro (Windows)';
+                        exe.href = '/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=' + key;
+                        document.getElementById('msi-download').style.display = 'none';
                         document.getElementById('download-links').style.display = 'block';
                     }
                 }

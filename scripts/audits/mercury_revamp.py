@@ -1,3 +1,6 @@
+# Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+# Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+# CodeMark: SCLLC1-sassyconsultingllc_cloudflare-PBYHN5AW73U5
 """Send the Sassy Consulting public site UI to Inception Mercury-2 for a UI revamp pass.
 
 Sibling of mercury_audit.py. Where the audit script does strict security/bug-hunting,
