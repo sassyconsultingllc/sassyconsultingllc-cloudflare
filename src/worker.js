@@ -1034,7 +1034,9 @@ async function handleValidateLicense(request, env, corsHeaders) {
   if (!license_key) return jsonResponse({ valid: false, error: "License key required" }, 400, corsHeaders);
   if (!license_key.startsWith("SASSY-")) return jsonResponse({ valid: false, reason: "invalid_format", error: "Invalid license format" }, 200, corsHeaders);
   if (env.DB) {
-    const result = await env.DB.prepare("SELECT product, email, created_at, revoked FROM licenses WHERE license_key = ?").bind(license_key).first();
+    // SELECT * so a missing `revoked` column (prod schema predates migration
+    // 0005) reads as undefined -> not revoked, instead of a SQLITE_ERROR.
+    const result = await env.DB.prepare("SELECT * FROM licenses WHERE license_key = ?").bind(license_key).first();
     if (result) {
       if (result.revoked) return jsonResponse({ valid: false, reason: "revoked", error: "License has been revoked. Contact support." }, 200, corsHeaders);
       return jsonResponse({ valid: true, product: result.product, created_at: result.created_at }, 200, corsHeaders);
@@ -1133,7 +1135,8 @@ async function handleDownload(path, url, env, corsHeaders) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
     }
     if (env.DB) {
-      const result = await env.DB.prepare("SELECT product, revoked FROM licenses WHERE license_key = ?").bind(licenseKey).first();
+      // SELECT * — see handleValidateLicense; prod may lack `revoked`.
+      const result = await env.DB.prepare("SELECT * FROM licenses WHERE license_key = ?").bind(licenseKey).first();
       if (!result) {
         return jsonResponse({ error: "Invalid license key" }, 403, corsHeaders);
       }
