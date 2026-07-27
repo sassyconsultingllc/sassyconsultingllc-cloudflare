@@ -1,0 +1,75 @@
+{
+  "title": "Sassy Browser public smoke scoreboard",
+  "version": "0.13.1",
+  "as_of": "2026-07-27",
+  "method": "Honest engineering assessment from README capability matrix, DataROOM metrics, and Mercury/render audits — not a fresh automated crawl of every URL on this date. Re-run before claiming improvements.",
+  "legend": {
+    "pass": "Usable for the site's primary read/browse task in current builds",
+    "partial": "Loads or partially renders; major layout/JS/interaction gaps remain",
+    "fail": "Primary experience broken or SPA hydration requirements unmet"
+  },
+  "sites": [
+    {
+      "url": "https://example.com",
+      "result": "pass",
+      "notes": "Simple static document; baseline smoke that historically worked when complex pages failed."
+    },
+    {
+      "url": "https://news.ycombinator.com",
+      "result": "partial",
+      "notes": "Mostly HTML list UI; readable with layout/CSS gaps vs Chromium. Cited in render-collapse investigations."
+    },
+    {
+      "url": "https://duckduckgo.com",
+      "result": "partial",
+      "notes": "Search shell loads; historically hit render-collapse / zero-width layout bugs. Interactive search UX incomplete."
+    },
+    {
+      "url": "https://github.com",
+      "result": "fail",
+      "notes": "Heavy SPA; JS/DOM gaps dominate. Not a support claim for GitHub.com workflows."
+    },
+    {
+      "url": "https://www.google.com",
+      "result": "partial",
+      "notes": "0.13.1 included Google render-hang fixes (CSS attribute indexing + connection storm dedup). Results UX still far from Chrome."
+    },
+    {
+      "url": "https://en.wikipedia.org",
+      "result": "partial",
+      "notes": "Article text generally reachable; chrome, media, and interactive elements incomplete."
+    },
+    {
+      "url": "https://developer.mozilla.org",
+      "result": "fail",
+      "notes": "Modern MDN requires broader web-platform surface than current SassyScript/DOM coverage."
+    },
+    {
+      "url": "https://www.rust-lang.org",
+      "result": "partial",
+      "notes": "Marketing pages often readable; richer interactive sections vary."
+    },
+    {
+      "url": "https://archive.org",
+      "result": "partial",
+      "notes": "Document-ish pages may load; player/search SPA surfaces incomplete."
+    },
+    {
+      "url": "https://www.craigslist.org",
+      "result": "pass",
+      "notes": "Mostly static forms/lists; better fit for current engine than SPA giants. Form edge cases still possible."
+    }
+  ],
+  "summary": {
+    "pass": 2,
+    "partial": 6,
+    "fail": 2,
+    "total": 10
+  },
+  "wpt_subset": {
+    "command": "cargo test --release wpt_subset",
+    "tests": 83,
+    "passing_recorded": 82,
+    "as_of": "2026-07-07"
+  }
+}

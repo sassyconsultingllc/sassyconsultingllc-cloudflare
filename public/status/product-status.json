@@ -1,0 +1,113 @@
+{
+  "$schema_note": "Canonical marketing/product truth for Sassy Browser. Copy to sassyconsultingllc-cloudflare/public/status/ on deploy. Do not invent a second narrative elsewhere.",
+  "product": "Sassy Browser",
+  "repo": "https://github.com/sassyconsultingllc/ACE",
+  "version": "0.13.1",
+  "as_of": "2026-07-27",
+  "cargo_toml_version": "0.13.1",
+  "download": {
+    "public_binaries_available": false,
+    "signed_manifest_url": "https://sassyconsultingllc.com/browser/dists/stable/manifest.json",
+    "signed_manifest_status": "404",
+    "cta_policy": "gated",
+    "cta_label": "View build status",
+    "cta_href": "/coming-soon",
+    "notes": "Installer/download CTAs must stay gated until a real signed stable manifest exists on the CDN. Local dist/ binaries may exist for internal packaging; they are not a public download claim."
+  },
+  "metrics": {
+    "loc_rust_src": 200424,
+    "source_files_rs": 230,
+    "test_attributes": 2276,
+    "wpt_subset_tests": 83,
+    "wpt_subset_passing_recorded": 82,
+    "compiler_warnings_release": 0,
+    "direct_crate_deps": 119,
+    "release_binary_windows_x64_mb": 43.31,
+    "loc_source": "DataROOM/03-CODEBASE-METRICS.md (2026-07-07 refresh)",
+    "notes": "LOC is src/ Rust only. Test count is #[test] attributes, not a fresh full-suite pass/fail run."
+  },
+  "engine": {
+    "js": "SassyScript tree-walker (production default); optional bytecode VM via \"use vm;\"; Boa removed",
+    "layout_paint": "Hand-rolled CPU layout + paint (production); taffy/parley/vello linked as probe/chrome helpers",
+    "http": "HTTP/1.1 (TLS-spoofed) + HTTP/2 document navigation; HTTP/3 planned"
+  },
+  "feature_matrix": [
+    {
+      "cat": "Browser core",
+      "items": [
+        { "name": "Rust rendering engine", "status": "partial", "detail": "Custom layout + paint, no Chromium. Real sites still incomplete; see smoke scoreboard.", "meta": "core" },
+        { "name": "HTTPS / TLS (Chrome-132 JA3)", "status": "done", "detail": "rustls + Chrome-132 fingerprint spoof.", "meta": "tls_spoof" },
+        { "name": "HTTP/1.1 + HTTP/2", "status": "done", "detail": "HTTP/2 navigation with HTTP/1.1 fallback; cookies/referer/gzip/br.", "meta": "http" },
+        { "name": "HTTP/3 / QUIC", "status": "planned", "detail": "UI shows disabled toggle; not implemented.", "meta": "quic" },
+        { "name": "Tabbed navigation + groups", "status": "done", "detail": "Tabs, mute, age tooltip, kind label, group collapse.", "meta": "tabs" },
+        { "name": "Bookmarks + history", "status": "done", "detail": "Folders, rename, domain chips, per-entry delete, retention.", "meta": "history" },
+        { "name": "SassyScript JS engine", "status": "partial", "detail": "~60% ES2020; tree-walker production default; bytecode VM opt-in. Boa removed.", "meta": "src/js" },
+        { "name": "CSS cascade + flex/grid", "status": "partial", "detail": "Cascade improving; flex/grid via taffy path still incomplete vs modern sites.", "meta": "cascade" },
+        { "name": "DOM events / forms / timers / rAF", "status": "done", "detail": "Interactive egui shell: timers, rAF, click/keyboard, forms, CSS transitions.", "meta": "events" },
+        { "name": "fetch / storage / history.pushState", "status": "done", "detail": "Real implementations wired.", "meta": "webapi" },
+        { "name": "AbortController / MutationObserver", "status": "partial", "detail": "Stub constructors (do not throw); not full semantics.", "meta": "stubs" },
+        { "name": "Private / incognito mode", "status": "partial", "detail": "Flag only; no cookie partition yet.", "meta": "incognito" },
+        { "name": "video / WebGL / WebRTC / ServiceWorker", "status": "planned", "detail": "Not implemented.", "meta": "media-web" },
+        { "name": "WebAssembly runtime", "status": "planned", "detail": "Isolated wasm runtime for in-page code.", "meta": "wasm" }
+      ]
+    },
+    {
+      "cat": "Privacy & security",
+      "items": [
+        { "name": "Built-in ad blocker", "status": "done", "detail": "EasyList + tracking + cosmetic.", "meta": "adblock" },
+        { "name": "Password vault", "status": "done", "detail": "ChaCha20-Poly1305 + Argon2id + strength meter.", "meta": "vault" },
+        { "name": "Cookie inventory", "status": "done", "detail": "Ctrl+Shift+K; raw Set-Cookie wire view.", "meta": "cookies" },
+        { "name": "Page trust sandbox", "status": "done", "detail": "Capability gating for clipboard/downloads/popups.", "meta": "sandbox" },
+        { "name": "Fingerprint poisoning", "status": "done", "detail": "Canvas/WebGL/audio/fonts; Hunter Mode.", "meta": "poisoning" },
+        { "name": "Behavioral mimicry L4", "status": "done", "detail": "Per-tab + EvolutionRequest channel.", "meta": "mimicry" },
+        { "name": "Family profiles", "status": "done", "detail": "Multi-user profiles + pairing approval lifecycle.", "meta": "profiles" },
+        { "name": "Telemetry-free by default", "status": "done", "detail": "No analytics by default.", "meta": "policy" },
+        { "name": "Native VPN (WireGuard)", "status": "planned", "detail": "Feature-map commitment; not product-complete.", "meta": "vpn" },
+        { "name": "Sandboxed renderer process", "status": "planned", "detail": "Per-tab OS process isolation.", "meta": "procsep" }
+      ]
+    },
+    {
+      "cat": "File format support",
+      "items": [
+        { "name": "PDF viewer (+ annotate)", "status": "done", "detail": "View/search/annotate path present; not Acrobat parity.", "meta": "pdf" },
+        { "name": "Image viewer (+ basic edit)", "status": "partial", "detail": "View + crop/resize/levels/filters. Photoshop/Photopea replacement still In planning (FEATURE-MAP).", "meta": "image" },
+        { "name": "RAW photo decode", "status": "partial", "detail": "RAW formats open in viewer stack; full demosaic/Lightroom parity not claimed.", "meta": "raw" },
+        { "name": "DOCX / ODT / RTF", "status": "partial", "detail": "Open/edit/save viewers exist; not Microsoft Word parity.", "meta": "document" },
+        { "name": "XLSX / ODS / CSV", "status": "partial", "detail": "Spreadsheet viewer present; Excel/Sheets replacement still In planning (FEATURE-MAP).", "meta": "spreadsheet" },
+        { "name": "PPTX / ODP", "status": "partial", "detail": "Presentation viewing; not PowerPoint parity.", "meta": "presentation" },
+        { "name": "PDB / MOL / SDF / chemistry", "status": "done", "detail": "Pure-Rust chemistry + 3D views. Not ChemDraw feature-parity.", "meta": "chemistry" },
+        { "name": "DICOM", "status": "done", "detail": "Medical imaging viewer path present.", "meta": "dicom" },
+        { "name": "3D meshes (STL/OBJ/glTF/…)", "status": "done", "detail": "Interactive mesh inspection.", "meta": "3d" },
+        { "name": "DXF + CAD interchange", "status": "partial", "detail": "DXF + STEP/IGES/3MF/OpenSCAD viewers shipped; full CAD suite still expanding.", "meta": "cad" },
+        { "name": "Archives (zip/7z/tar/gz)", "status": "done", "detail": "Browse/extract/create/Mark for Removal.", "meta": "archive" },
+        { "name": "EPUB / MOBI", "status": "done", "detail": "Ebook reader path present.", "meta": "ebook" }
+      ]
+    },
+    {
+      "cat": "Web3 / MCP / family",
+      "items": [
+        { "name": "Web3 risk educator", "status": "done", "detail": "Five risk tiers + EIP-1193 MetaMask middleware path.", "meta": "web3" },
+        { "name": "MCP diagnostics + Control Center", "status": "done", "detail": "Ctrl+Shift+M / Ctrl+Shift+O; auth-gated MCP server.", "meta": "mcp" },
+        { "name": "Encrypted MCP key vault", "status": "done", "detail": "Passphrase-encrypted; never plaintext in ai.toml.", "meta": "mcp-vault" },
+        { "name": "Multi-agent orchestrator", "status": "done", "detail": "Voice / Coder / Auditor / Orchestrator wired.", "meta": "agents" },
+        { "name": "Phone companion sync", "status": "partial", "detail": "WireGuard-primary / Tailscale fallback; still hardening.", "meta": "phone" }
+      ]
+    },
+    {
+      "cat": "Platforms & distribution",
+      "items": [
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 packaged locally in dist/ (~43.31 MB). Not a public CDN download until manifest is live.", "meta": "windows" },
+        { "name": "Linux packages", "status": "partial", "detail": "Builds from source; distro packages not published.", "meta": "linux" },
+        { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
+        { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },
+        { "name": "Authenticode-signed public installer", "status": "planned", "detail": "SignPath path documented; public installer gated on manifest publish.", "meta": "sign" }
+      ]
+    }
+  ],
+  "status_legend": {
+    "done": "Shipped in main at usable depth for the stated scope",
+    "partial": "Present but incomplete vs marketing depth / office-parity claims",
+    "planned": "On the roadmap; not a downloadable capability claim"
+  },
+  "smoke_scoreboard_path": "docs/status/smoke-scoreboard.json"
+}

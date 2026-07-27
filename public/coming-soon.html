@@ -191,89 +191,103 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         directly from the <strong>ACE</strong> repository &mdash; followed by a
         feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Static stats updated 2026&#8209;06&#8209;06 (v0.11.0) · live GitHub fetch on page load.</div>
+    <div class="lead-meta" id="lead-meta">Truth layer v0.13.1 · 200,424 LOC · sourced from ACE <code>docs/status/</code> (not GitHub API guesses).</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
-        <div class="section-eyebrow">Codebase &middot; Live from GitHub</div>
+        <div class="section-eyebrow">Codebase &middot; Product truth</div>
         <h2>Repository statistics</h2>
-        <p class="sd">Fetched directly from <code>api.github.com/repos/sassyconsultingllc/ACE</code> when this page loads.</p>
+        <p class="sd">Canonical numbers from the ACE repo status JSON (<code>/status/product-status.json</code>), aligned with <code>Cargo.toml</code> and DataROOM. Optional GitHub fields fill in only if the public API responds.</p>
 
         <div class="stats-grid">
+            <div class="stat-cell" data-stat="version">
+                <div class="stat-lbl">Product version</div>
+                <div class="stat-val gold" id="stat-version">0.13.1</div>
+                <div class="stat-sub">Cargo.toml</div>
+            </div>
             <div class="stat-cell" data-stat="lines">
                 <div class="stat-lbl">Lines of Rust</div>
-                <div class="stat-val">156,601</div>
-                <div class="stat-sub">Counted today via wc&nbsp;-l src/**/*.rs</div>
+                <div class="stat-val" id="stat-lines">200,424</div>
+                <div class="stat-sub">src/ · DataROOM metrics</div>
             </div>
             <div class="stat-cell" data-stat="files">
                 <div class="stat-lbl">Source files</div>
-                <div class="stat-val">225</div>
-                <div class="stat-sub">81 top-level modules in /src</div>
+                <div class="stat-val" id="stat-files">230</div>
+                <div class="stat-sub">.rs files under src/</div>
             </div>
             <div class="stat-cell" data-stat="tests">
-                <div class="stat-lbl">Test functions</div>
-                <div class="stat-val">1,087</div>
-                <div class="stat-sub">1,071 passing, 0 failing, 16 ignored</div>
+                <div class="stat-lbl">Test attributes</div>
+                <div class="stat-val" id="stat-tests">2,276</div>
+                <div class="stat-sub">#[test] count · not a fresh suite run</div>
+            </div>
+            <div class="stat-cell" data-stat="wpt">
+                <div class="stat-lbl">WPT subset</div>
+                <div class="stat-val" id="stat-wpt">82/83</div>
+                <div class="stat-sub">cargo test wpt_subset</div>
             </div>
             <div class="stat-cell" data-stat="warnings">
                 <div class="stat-lbl">Compiler warnings</div>
-                <div class="stat-val">0</div>
-                <div class="stat-sub">Workspace; 20 cleared this push, none suppressed</div>
+                <div class="stat-val" id="stat-warnings">0</div>
+                <div class="stat-sub">release check target</div>
+            </div>
+            <div class="stat-cell" data-stat="download">
+                <div class="stat-lbl">Public download</div>
+                <div class="stat-val dim" id="stat-download">Gated</div>
+                <div class="stat-sub">Signed stable manifest is 404</div>
             </div>
             <div class="stat-cell loading" data-stat="stars">
                 <div class="stat-lbl">GitHub stars</div>
                 <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Loading&hellip;</div>
-            </div>
-            <div class="stat-cell loading" data-stat="size">
-                <div class="stat-lbl">Repo size</div>
-                <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Loading&hellip;</div>
+                <div class="stat-sub">Optional live fetch&hellip;</div>
             </div>
             <div class="stat-cell loading" data-stat="commit">
-                <div class="stat-lbl">Last commit</div>
+                <div class="stat-lbl">Last public commit</div>
                 <div class="stat-val dim">&mdash;</div>
-                <div class="stat-sub">Loading&hellip;</div>
-            </div>
-            <div class="stat-cell loading" data-stat="issues">
-                <div class="stat-lbl">Open issues</div>
-                <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Loading&hellip;</div>
+                <div class="stat-sub">Optional live fetch&hellip;</div>
             </div>
             <div class="stat-cell loading" data-stat="releases">
                 <div class="stat-lbl">Public releases</div>
                 <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Loading&hellip;</div>
-            </div>
-            <div class="stat-cell loading" data-stat="lang">
-                <div class="stat-lbl">Primary language</div>
-                <div class="stat-val dim">Rust</div>
-                <div class="stat-sub">Loading&hellip;</div>
+                <div class="stat-sub">Optional live fetch&hellip;</div>
             </div>
         </div>
+    </section>
+
+    <!-- SMOKE SCOREBOARD -->
+    <section class="section" id="smoke">
+        <div class="section-eyebrow">Web compat &middot; Honest smoke</div>
+        <h2>Public smoke scoreboard</h2>
+        <p class="sd">Ten representative sites with pass / partial / fail. This is an engineering assessment, not a Chromium claim. Source: <code>/status/smoke-scoreboard.json</code>.</p>
+        <div class="summary" id="smoke-summary">
+            <div class="sumcard done"><div class="sn">Pass</div><div class="sv" id="smoke-pass">—</div></div>
+            <div class="sumcard wip"><div class="sn">Partial</div><div class="sv" id="smoke-partial">—</div></div>
+            <div class="sumcard plan"><div class="sn">Fail</div><div class="sv" id="smoke-fail">—</div></div>
+            <div class="sumcard total"><div class="sn">Sites scored</div><div class="sv" id="smoke-total">10</div></div>
+        </div>
+        <div id="smoke-table"></div>
     </section>
 
     <!-- FEATURE STATUS -->
     <section class="section" id="status">
         <div class="section-eyebrow">Roadmap &middot; What is done, what is not</div>
         <h2>Feature status</h2>
-        <p class="sd">No hand-waving. Every advertised capability is listed here with its current state. If it is not marked <strong>Done</strong>, it is not in the binary you will eventually download.</p>
+        <p class="sd">No hand-waving. Sourced from README capability honesty + FEATURE-MAP. Office-parity (Photoshop / Excel / PowerPoint / ChemDraw) is <strong>not</strong> claimed — those stay Partial or Planned. Public download stays gated until a signed manifest exists.</p>
 
         <div class="summary" id="summary">
-            <div class="sumcard done"><div class="sn">Done</div><div class="sv" id="sum-done">0</div></div>
-            <div class="sumcard wip"><div class="sn">In progress</div><div class="sv" id="sum-wip">0</div></div>
-            <div class="sumcard plan"><div class="sn">Planned</div><div class="sv" id="sum-plan">0</div></div>
+            <div class="sumcard done"><div class="sn">Done</div><div class="sv" id="sum-done">—</div></div>
+            <div class="sumcard wip"><div class="sn">Partial</div><div class="sv" id="sum-wip">—</div></div>
+            <div class="sumcard plan"><div class="sn">Planned</div><div class="sv" id="sum-plan">—</div></div>
             <div class="sumcard total">
-                <div class="sn">Overall progress</div>
-                <div class="sv" id="sum-pct">0%</div>
+                <div class="sn">Weighted progress</div>
+                <div class="sv" id="sum-pct">—</div>
                 <div class="bar"><span class="b-done" id="bar-done"></span><span class="b-wip" id="bar-wip"></span><span class="b-plan" id="bar-plan"></span></div>
             </div>
         </div>
 
         <div class="status-key">
-            <span class="key-item"><span class="key-dot done"></span>Done &mdash; merged, tested, in main</span>
-            <span class="key-item"><span class="key-dot wip"></span>In progress &mdash; active development</span>
-            <span class="key-item"><span class="key-dot plan"></span>Planned &mdash; on the roadmap</span>
+            <span class="key-item"><span class="key-dot done"></span>Done &mdash; usable depth for the stated scope</span>
+            <span class="key-item"><span class="key-dot wip"></span>Partial &mdash; present but incomplete vs deeper claims</span>
+            <span class="key-item"><span class="key-dot plan"></span>Planned &mdash; roadmap only</span>
         </div>
 
         <!-- Categories rendered by JS -->
@@ -306,258 +320,223 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 </footer>
 
 <script>
-// ─────────────────────────────────────────────────────────────────────────
-// FEATURE STATUS (kept in JS so it is trivially updatable in one place)
-// status: "done" | "wip" | "plan"
-// ─────────────────────────────────────────────────────────────────────────
-const FEATURES = [
-    { cat: "Browser core", items: [
-        { name: "Rust rendering engine",      status: "wip",  detail: "Custom layout + paint, no Chromium dependency. W3C WPT-subset at 67 passing (up from 31) in v0.11.0; real-site coverage still landing.", meta: "core" },
-        { name: "HTTPS / TLS",                status: "done", detail: "rustls + rustls-native-certs against the OS CA store, Chrome-132 JA3 fingerprint.", meta: "rustls" },
-        { name: "HTTP/1.1 + HTTP/2",          status: "done", detail: "Persistent connections, request pipelining, adaptive window.", meta: "hyper" },
-        { name: "HTTP/3 / QUIC",              status: "plan", detail: "Targeted for a later release; UI shows a disabled toggle with the rationale.", meta: "quinn" },
-        { name: "Tabbed navigation + groups", status: "done", detail: "Standard tabs, auto-grouping by category, per-tab mute, age tooltip, kind label, group collapse/expand.", meta: "tabs" },
-        { name: "Bookmarks + history",        status: "done", detail: "Local store with smart-history intent tracking, folder picker, per-entry delete, domain chips, rename. No cloud sync by default.", meta: "history" },
-        { name: "JS engine (in-tree)",        status: "wip",  detail: "Custom interpreter + Boa bridge — DOM, promises, generators, classes, modules, TDZ, DataView big-endian.", meta: "src/js" },
-        { name: "CSS cascade (modern)",       status: "wip",  detail: "Vars, calc(), pseudo-classes, sibling + universal selectors, @media comma-OR, presentational attrs (bgcolor/align), border-radius, box-shadow.", meta: "cascade" },
-        { name: "WebAssembly runtime",        status: "plan", detail: "Isolated wasm runtime for in-page code.",                   meta: "wasmtime" }
-    ]},
-    { cat: "Privacy & security", items: [
-        { name: "Built-in ad blocker",        status: "done", detail: "EasyList + EasyPrivacy + Fanboy rules, parsed natively.",  meta: "adblock" },
-        { name: "User-script manager",        status: "done", detail: "Tampermonkey-compatible: @metadata, GM_* API, editor, per-script enable.", meta: "userscripts" },
-        { name: "Password vault",             status: "done", detail: "ChaCha20-Poly1305 at rest, Argon2id-derived key from PIN, custom strength meter.", meta: "vault" },
-        { name: "Cookie inventory (Ctrl+Shift+K)", status: "done", detail: "Full transparency view: every cookie with raw Set-Cookie wire format, domain grouping, SameSite enforcement.", meta: "cookies" },
-        { name: "Page trust sandbox (4 layer)", status: "done", detail: "Pages start untrusted; three meaningful interactions earn capabilities (clipboard, downloads, popups, notifications).", meta: "sandbox" },
-        { name: "Fingerprint poisoning",      status: "done", detail: "Three modes (off / conservative / aggressive) across Canvas, WebGL, audio, navigator, fonts, sensors. Hunter Mode active anti-tracker warfare.", meta: "poisoning" },
-        { name: "Behavioral mimicry (L4)",    status: "done", detail: "Per-tab seeded input mimic; self-adapting noise that escalates on detected countermeasures via EvolutionRequest channel.", meta: "mimicry" },
-        { name: "Family profiles",            status: "done", detail: "Admin / Adult / Teen / Kid with time limits, allowlists, safe-search, VPN-block, incognito-block, weekly reports. Device approval lifecycle.", meta: "profiles" },
-        { name: "Telemetry-free by default",  status: "done", detail: "No analytics, no crash reporting unless opted in. No hidden network traffic — visible in the Network panel.", meta: "policy" },
-        { name: "DNS-over-HTTPS",             status: "done", detail: "Cloudflare 1.1.1.1 by default, user-replaceable.",         meta: "doh" },
-        { name: "Native VPN (WireGuard)",     status: "wip",  detail: "Per-tab / per-origin WG egress. Tailscale relegated to untrusted-fallback per project policy.", meta: "vpn" },
-        { name: "Per-site permission prompts", status: "wip", detail: "Per-origin mic / camera / location / clipboard gates.",    meta: "perms" },
-        { name: "Sandboxed renderer process", status: "plan", detail: "Per-tab OS-level process isolation.",                       meta: "procsep" }
-    ]},
-    { cat: "File format support", items: [
-        { name: "PDF viewer + editor",        status: "done", detail: "Visual rendering, search + highlight, annotations, thumbnails, continuous scroll.", meta: "pdf" },
-        { name: "Image viewer + editor",      status: "done", detail: "PNG/JPEG/WebP/AVIF/HEIC/JPEG XL/BMP/TIFF + crop, resize, levels, filters, histogram, print.", meta: "image" },
-        { name: "RAW photo decoder",          status: "plan", detail: "Today: extension-aware hint to convert via dcraw / camera tool. Real demosaicer is on the roadmap.", meta: "raw" },
-        { name: "DOCX / ODT / RTF editor",    status: "done", detail: "Open, edit, save; export to PDF, TXT, HTML.",                meta: "document" },
-        { name: "XLSX / XLS / ODS / CSV",     status: "done", detail: "Multi-sheet viewer with formula evaluation.",                meta: "spreadsheet" },
-        { name: "PPTX / ODP presentations",   status: "done", detail: "Slide deck rendering + presentation mode.",                  meta: "presentation" },
-        { name: "PDB / MOL / SDF molecular",  status: "done", detail: "Pure-Rust chemistry stack: charges, hydrogen placement, electronegativity, vdW, rings, spectra.", meta: "chemistry" },
-        { name: "DICOM medical imaging",      status: "done", detail: "Part 10 parser (1,435 LoC), window/level, multi-frame nav, tag browser.", meta: "dicom" },
-        { name: "STL / OBJ / glTF / GLB / PLY", status: "done", detail: "3D mesh inspection with orbit camera.",                   meta: "3d" },
-        { name: "DXF (CAD)",                  status: "done", detail: "LINE, CIRCLE, ARC, LWPOLYLINE, POLYLINE, TEXT, MTEXT, INSERT.", meta: "dxf" },
-        { name: "STEP / IGES (CAD)",          status: "plan", detail: "Engineering exchange formats — on the roadmap.",             meta: "step" },
-        { name: "Markdown live preview",      status: "done", detail: "GFM + syntax highlighting.",                                 meta: "markdown" },
-        { name: "Archive viewer + creator (zip/7z/tar/gz)", status: "done", detail: "Browse, extract, create, edit, convert between formats.", meta: "archive" },
-        { name: "EPUB / MOBI reader",         status: "done", detail: "TOC nav, chapter HTML, cover art, reading progress, night/sepia mode.", meta: "ebook" },
-        { name: "Audio + video viewers",      status: "done", detail: "Native playback with transport controls.",                   meta: "media" },
-        { name: "Font viewer (TTF/OTF/WOFF/WOFF2)", status: "done", detail: "Glyph table inspection + character-set preview.",      meta: "font" },
-        { name: "JSON tree viewer",           status: "done", detail: "Collapsible tree, search, syntax-highlighted.",              meta: "json" }
-    ]},
-    { cat: "Web3 / wallet integration", items: [
-        { name: "MetaMask middleware",        status: "done", detail: "Routes buy/sell through MetaMask via injected window.ethereum (EIP-1193). Sassy Browser is not custodial — your keys, your MetaMask.", meta: "web3" },
-        { name: "Web3 risk educator",         status: "done", detail: "Plain-English warnings across five risk tiers (Safe → Critical). Bridge concept covers cross-chain lock-and-mint risk; token approval flagged Critical for unlimited approvals.", meta: "educator" },
-        { name: "EVM wallet (Ethereum / L2s)", status: "plan", detail: "MetaMask handles this today; native self-custody is a future option.", meta: "wallet" },
-        { name: "Solana wallet",              status: "plan", detail: "Solana RPC and SPL token support.",                         meta: "solana" },
-        { name: "ENS / on-chain name lookup", status: "plan", detail: "Resolve .eth names at the address bar.",                    meta: "ens" },
-        { name: "Hardware-wallet bridge",     status: "plan", detail: "Ledger / Trezor over USB-HID.",                             meta: "hid" }
-    ]},
-    { cat: "Multi-agent MCP + AI", items: [
-        { name: "MCP orchestrator (Voice / Coder / Auditor)", status: "done", detail: "Four-agent pipeline: Grok parses intent → Manus plans tasks → Claude executes edits → Gemini audits. Confidence percentages surfaced.", meta: "mcp" },
-        { name: "MCP server bundle",          status: "done", detail: "In-browser MCP host with file, git, key-vault adapters and an in-app panel (Ctrl+Shift+O). Per-agent URL/key/model builders.", meta: "mcp" },
-        { name: "MCP diagnostics (Ctrl+Shift+M)", status: "done", detail: "Live view of agents, session history, artifacts, tool surfaces.", meta: "mcp" },
-        { name: "Voice intake (Whisper)",     status: "done", detail: "Local-first; model picker; pipes into the orchestrator's Voice agent.", meta: "voice" },
-        { name: "Encrypted MCP key vault",    status: "done", detail: "API keys / bearer secrets encrypted at rest with user-supplied passphrase; never plaintext in ai.toml.", meta: "vault" }
-    ]},
-    { cat: "Family sync (WireGuard)", items: [
-        { name: "Device pairing + approval",  status: "done", detail: "Pending → Trusted / Blocked / Removed lifecycle. Admin approves; privacy-respecting Presence view shows online/offline without exposing browsing.", meta: "family" },
-        { name: "Multi-user profiles",        status: "done", detail: "Bootstrap admin → recovery key → add users → per-user PIN, identity, data + sync keys. Make-admin / remove-user policies.", meta: "users" },
-        { name: "Phone companion",            status: "wip",  detail: "PWA + Tailscale fallback. Wire protocol (UserCommand / UserEvent / SyncMessage) ships in this build.", meta: "phone" },
-        { name: "Family weekly report",       status: "done", detail: "Activity summary mailed to admin — no per-URL surveillance; only category-level aggregates.", meta: "report" }
-    ]},
-    { cat: "Platforms & distribution", items: [
-        { name: "Windows 10 / 11 (x64) build", status: "done", detail: "Release binary builds today (44 MB). Demo channel live behind /browser/dl/. Build SHA wired into binary via build.rs.", meta: "windows" },
-        { name: "Linux (Debian / Arch / Fedora)", status: "wip", detail: "Builds from source; packages still to follow.",          meta: "linux" },
-        { name: "macOS (Apple Silicon)",      status: "plan", detail: "Roadmap after Linux packaging stabilises.",                 meta: "macos" },
-        { name: "Auto-update channel",        status: "wip",  detail: "Signed manifests + minisig verify + tamper gate in src/update.rs; channel-switch UI still landing.", meta: "update" },
-        { name: "Signed Windows installer",   status: "plan", detail: "Authenticode signature on every release.",                  meta: "sign" }
-    ]}
-];
-
-// ─────────────────────────────────────────────────────────────────────────
-// Render feature tables + roll up summary
-// Pure DOM construction - no innerHTML on dynamic content.
-// ─────────────────────────────────────────────────────────────────────────
-(function renderFeatures(){
-    const root = document.getElementById('features');
-    const totals = { done: 0, wip: 0, plan: 0 };
-    const labels = { done: 'Done', wip: 'In progress', plan: 'Planned' };
-
-    const el = (tag, cls) => {
-        const n = document.createElement(tag);
-        if (cls) n.className = cls;
-        return n;
+// Product truth: load /status/*.json (copied from ACE docs/status/). Map
+// done|partial|planned → done|wip|plan for existing badge CSS.
+(function () {
+    const el = (tag, cls) => { const n = document.createElement(tag); if (cls) n.className = cls; return n; };
+    const fmt = (n) => (n == null ? '—' : Number(n).toLocaleString('en-US'));
+    const mapStatus = (s) => {
+        if (s === 'done') return 'done';
+        if (s === 'partial' || s === 'wip') return 'wip';
+        return 'plan';
     };
+    const labels = { done: 'Done', wip: 'Partial', plan: 'Planned' };
+    const smokeLabels = { pass: 'Pass', partial: 'Partial', fail: 'Fail' };
+    const smokeBadge = { pass: 'done', partial: 'wip', fail: 'plan' };
 
-    for (const group of FEATURES) {
-        const wrap = el('div', 'cat');
+    function applyMetrics(status) {
+        const m = status.metrics || {};
+        const set = (id, text) => { const n = document.getElementById(id); if (n) n.textContent = text; };
+        set('stat-version', status.version || '0.13.1');
+        set('stat-lines', fmt(m.loc_rust_src));
+        set('stat-files', fmt(m.source_files_rs));
+        set('stat-tests', fmt(m.test_attributes));
+        set('stat-wpt', (m.wpt_subset_passing_recorded || 82) + '/' + (m.wpt_subset_tests || 83));
+        set('stat-warnings', String(m.compiler_warnings_release != null ? m.compiler_warnings_release : 0));
+        const dl = status.download || {};
+        set('stat-download', dl.public_binaries_available ? 'Available' : 'Gated');
+        const dlCell = document.querySelector('[data-stat="download"] .stat-sub');
+        if (dlCell) dlCell.textContent = dl.signed_manifest_status === '404'
+            ? 'Signed stable manifest is 404'
+            : (dl.notes || 'See INSTALL.md / update-server');
+        const meta = document.getElementById('lead-meta');
+        if (meta) {
+            meta.textContent = 'Truth layer v' + (status.version || '0.13.1')
+                + ' · as of ' + (status.as_of || '—')
+                + ' · ' + fmt(m.loc_rust_src) + ' LOC · source /status/product-status.json';
+        }
+    }
 
-        const heading = el('div', 'cat-h');
-        heading.textContent = group.cat;
-        wrap.appendChild(heading);
+    function renderFeatures(matrix) {
+        const root = document.getElementById('features');
+        if (!root || !Array.isArray(matrix)) return;
+        root.textContent = '';
+        const totals = { done: 0, wip: 0, plan: 0 };
 
+        for (const group of matrix) {
+            const wrap = el('div', 'cat');
+            const heading = el('div', 'cat-h');
+            heading.textContent = group.cat;
+            wrap.appendChild(heading);
+
+            const table = el('table', 'feat-table');
+            const thead = el('thead');
+            const headRow = el('tr');
+            [{ cls: 'col-status', text: 'Status' }, { cls: 'col-feature', text: 'Feature' }, { cls: '', text: 'Detail' }, { cls: 'col-meta', text: 'Component' }]
+                .forEach((h) => { const th = el('th', h.cls); th.textContent = h.text; headRow.appendChild(th); });
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+
+            const tbody = el('tbody');
+            for (const it of (group.items || [])) {
+                const st = mapStatus(it.status);
+                totals[st]++;
+                const row = el('tr');
+                const statusCell = el('td', 'col-status');
+                const badge = el('span', 'badge ' + st);
+                badge.appendChild(el('span', 'bdot'));
+                badge.appendChild(document.createTextNode(labels[st]));
+                statusCell.appendChild(badge);
+
+                const featCell = el('td', 'col-feature');
+                const strong = el('strong');
+                strong.textContent = it.name;
+                featCell.appendChild(strong);
+
+                const detailCell = el('td', 'col-detail');
+                detailCell.textContent = it.detail || '';
+                const metaCell = el('td', 'col-meta');
+                metaCell.textContent = it.meta || '';
+
+                row.appendChild(statusCell);
+                row.appendChild(featCell);
+                row.appendChild(detailCell);
+                row.appendChild(metaCell);
+                tbody.appendChild(row);
+            }
+            table.appendChild(tbody);
+            wrap.appendChild(table);
+            root.appendChild(wrap);
+        }
+
+        const total = totals.done + totals.wip + totals.plan;
+        document.getElementById('sum-done').textContent = String(totals.done);
+        document.getElementById('sum-wip').textContent = String(totals.wip);
+        document.getElementById('sum-plan').textContent = String(totals.plan);
+        const pct = total ? Math.round(((totals.done + totals.wip * 0.5) / total) * 100) : 0;
+        document.getElementById('sum-pct').textContent = pct + '%';
+        if (total) {
+            document.getElementById('bar-done').style.width = (totals.done / total * 100) + '%';
+            document.getElementById('bar-wip').style.width = (totals.wip / total * 100) + '%';
+            document.getElementById('bar-plan').style.width = (totals.plan / total * 100) + '%';
+        }
+    }
+
+    function renderSmoke(smoke) {
+        if (!smoke) return;
+        const sum = smoke.summary || {};
+        document.getElementById('smoke-pass').textContent = String(sum.pass != null ? sum.pass : '—');
+        document.getElementById('smoke-partial').textContent = String(sum.partial != null ? sum.partial : '—');
+        document.getElementById('smoke-fail').textContent = String(sum.fail != null ? sum.fail : '—');
+        document.getElementById('smoke-total').textContent = String(sum.total != null ? sum.total : (smoke.sites || []).length);
+
+        const root = document.getElementById('smoke-table');
+        if (!root) return;
+        root.textContent = '';
         const table = el('table', 'feat-table');
         const thead = el('thead');
         const headRow = el('tr');
-        const headCols = [
-            { cls: 'col-status', text: 'Status' },
-            { cls: 'col-feature', text: 'Feature' },
-            { cls: '', text: 'Detail' },
-            { cls: 'col-meta', text: 'Component' }
-        ];
-        for (const h of headCols) {
-            const th = el('th', h.cls);
-            th.textContent = h.text;
-            headRow.appendChild(th);
-        }
+        ['Result', 'Site', 'Notes'].forEach((t) => { const th = el('th'); th.textContent = t; headRow.appendChild(th); });
         thead.appendChild(headRow);
         table.appendChild(thead);
-
         const tbody = el('tbody');
-        for (const it of group.items) {
-            totals[it.status]++;
+        for (const site of (smoke.sites || [])) {
             const row = el('tr');
-
+            const st = smokeBadge[site.result] || 'plan';
             const statusCell = el('td', 'col-status');
-            const badge = el('span', 'badge ' + it.status);
-            const bdot = el('span', 'bdot');
-            badge.appendChild(bdot);
-            badge.appendChild(document.createTextNode(labels[it.status]));
+            const badge = el('span', 'badge ' + st);
+            badge.appendChild(el('span', 'bdot'));
+            badge.appendChild(document.createTextNode(smokeLabels[site.result] || site.result));
             statusCell.appendChild(badge);
-
-            const featCell = el('td', 'col-feature');
-            const strong = el('strong');
-            strong.textContent = it.name;
-            featCell.appendChild(strong);
-
-            const detailCell = el('td', 'col-detail');
-            detailCell.textContent = it.detail;
-
-            const metaCell = el('td', 'col-meta');
-            metaCell.textContent = it.meta;
-
+            const urlCell = el('td', 'col-feature');
+            const a = el('a');
+            a.href = site.url;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = site.url.replace(/^https?:\/\//, '');
+            a.style.color = 'var(--green)';
+            a.style.textDecoration = 'none';
+            urlCell.appendChild(a);
+            const noteCell = el('td', 'col-detail');
+            noteCell.textContent = site.notes || '';
             row.appendChild(statusCell);
-            row.appendChild(featCell);
-            row.appendChild(detailCell);
-            row.appendChild(metaCell);
+            row.appendChild(urlCell);
+            row.appendChild(noteCell);
             tbody.appendChild(row);
         }
         table.appendChild(tbody);
-        wrap.appendChild(table);
-        root.appendChild(wrap);
+        root.appendChild(table);
     }
 
-    const total = totals.done + totals.wip + totals.plan;
-    document.getElementById('sum-done').textContent = String(totals.done);
-    document.getElementById('sum-wip').textContent  = String(totals.wip);
-    document.getElementById('sum-plan').textContent = String(totals.plan);
-    const pct = total ? Math.round(((totals.done + totals.wip * 0.5) / total) * 100) : 0;
-    document.getElementById('sum-pct').textContent  = pct + '%';
-    document.getElementById('bar-done').style.width = (totals.done / total * 100) + '%';
-    document.getElementById('bar-wip').style.width  = (totals.wip  / total * 100) + '%';
-    document.getElementById('bar-plan').style.width = (totals.plan / total * 100) + '%';
-})();
+    function optionalGithub() {
+        const REPO = 'sassyconsultingllc/ACE';
+        const setCell = (key, value, sub) => {
+            const cell = document.querySelector('[data-stat="' + key + '"]');
+            if (!cell) return;
+            cell.classList.remove('loading');
+            const v = cell.querySelector('.stat-val');
+            const s = cell.querySelector('.stat-sub');
+            if (value != null) v.textContent = value;
+            if (sub != null) s.textContent = sub;
+        };
+        const fail = (key) => {
+            const cell = document.querySelector('[data-stat="' + key + '"]');
+            if (!cell) return;
+            cell.classList.remove('loading');
+            const v = cell.querySelector('.stat-val');
+            const s = cell.querySelector('.stat-sub');
+            v.classList.add('dim');
+            v.textContent = 'Private / N/A';
+            s.textContent = 'Optional GitHub field — truth layer does not depend on this.';
+        };
+        const ago = (iso) => {
+            const t = new Date(iso).getTime();
+            if (isNaN(t)) return '—';
+            const d = Math.floor((Date.now() - t) / 86400000);
+            if (d <= 0) return 'today';
+            if (d === 1) return 'yesterday';
+            if (d < 30) return d + ' days ago';
+            return Math.floor(d / 30) + ' mo ago';
+        };
+        const hdr = { 'Accept': 'application/vnd.github+json' };
+        fetch('https://api.github.com/repos/' + REPO, { headers: hdr })
+            .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+            .then((data) => setCell('stars', String(data.stargazers_count), (data.forks_count || 0) + ' forks'))
+            .catch(() => fail('stars'));
+        fetch('https://api.github.com/repos/' + REPO + '/commits?per_page=1', { headers: hdr })
+            .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+            .then((arr) => {
+                if (!arr || !arr[0]) throw new Error('none');
+                setCell('commit', ago(arr[0].commit.author.date), (arr[0].sha || '').substring(0, 7));
+            })
+            .catch(() => fail('commit'));
+        fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=20', { headers: hdr })
+            .then((r) => r.ok ? r.json() : Promise.reject(r.status))
+            .then((arr) => setCell('releases', String(arr.length), arr[0] ? ('Latest: ' + (arr[0].tag_name || '')) : 'None yet'))
+            .catch(() => fail('releases'));
+    }
 
-// ─────────────────────────────────────────────────────────────────────────
-// Live GitHub stats. api.github.com is whitelisted in the worker CSP.
-// All values from the API are written via textContent only.
-// ─────────────────────────────────────────────────────────────────────────
-(function fetchRepoStats(){
-    const REPO = 'sassyconsultingllc/ACE';
-    const setCell = (key, value, sub) => {
-        const cell = document.querySelector('[data-stat="' + key + '"]');
-        if (!cell) return;
-        cell.classList.remove('loading');
-        const v = cell.querySelector('.stat-val');
-        const s = cell.querySelector('.stat-sub');
-        if (value != null) v.textContent = value;
-        if (sub != null)   s.textContent = sub;
-    };
-    // The ACE repository is private until first public release. We still try the
-    // fetch on every page load so the dashboard goes live the moment the repo is
-    // made public, with no redeploy required. Until then, present a calm,
-    // honest fallback rather than a red error.
-    const fail = (key) => {
-        const cell = document.querySelector('[data-stat="' + key + '"]');
-        if (!cell) return;
-        cell.classList.remove('loading');
-        const v = cell.querySelector('.stat-val');
-        const s = cell.querySelector('.stat-sub');
-        v.classList.add('dim');
-        v.textContent = 'Private';
-        s.textContent = 'Repository goes public at first release.';
-    };
-
-    const fmt = n => {
-        if (n == null) return '—';
-        if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-        if (n >= 1000)    return (n / 1000).toFixed(1) + 'K';
-        return String(n);
-    };
-    const ago = (iso) => {
-        const t = new Date(iso).getTime();
-        if (isNaN(t)) return '—';
-        const d = Math.floor((Date.now() - t) / 86400000);
-        if (d <= 0)  return 'today';
-        if (d === 1) return 'yesterday';
-        if (d < 30)  return d + ' days ago';
-        const m = Math.floor(d / 30);
-        if (m < 12) return m + ' month' + (m === 1 ? '' : 's') + ' ago';
-        const y = (d / 365).toFixed(1);
-        return y + ' years ago';
-    };
-
-    const acceptHeader = { 'Accept': 'application/vnd.github+json' };
-
-    // Repo metadata
-    fetch('https://api.github.com/repos/' + REPO, { headers: acceptHeader })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(data => {
-            setCell('stars',  fmt(data.stargazers_count), (data.subscribers_count || 0) + ' watching · ' + (data.forks_count || 0) + ' forks');
-            setCell('size',   (data.size >= 1024 ? (data.size / 1024).toFixed(1) + ' MB' : data.size + ' KB'), 'Cloned source tree');
-            setCell('issues', fmt(data.open_issues_count), data.open_issues_count === 1 ? 'open issue' : 'open issues + PRs');
-            setCell('lang',   data.language || 'Rust', 'Default branch: ' + (data.default_branch || 'main'));
-        })
-        .catch(() => { ['stars','size','issues','lang'].forEach(fail); });
-
-    // Last commit
-    fetch('https://api.github.com/repos/' + REPO + '/commits?per_page=1', { headers: acceptHeader })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(arr => {
-            if (!Array.isArray(arr) || !arr[0]) throw new Error('no commits');
-            const c = arr[0].commit;
-            const sha = (arr[0].sha || '').substring(0, 7);
-            setCell('commit', ago(c.author.date), sha + ' · ' + (c.author.name || 'unknown'));
-        })
-        .catch(() => fail('commit'));
-
-    // Releases
-    fetch('https://api.github.com/repos/' + REPO + '/releases?per_page=100', { headers: acceptHeader })
-        .then(r => r.ok ? r.json() : Promise.reject(r.status))
-        .then(arr => {
-            if (!Array.isArray(arr)) throw new Error('bad payload');
-            const n = arr.length;
-            const latest = arr.find(r => !r.draft) || null;
-            setCell('releases', String(n), latest ? ('Latest: ' + (latest.tag_name || latest.name)) : 'None published yet');
-        })
-        .catch(() => fail('releases'));
-
-    // Stamp the lead-meta with a timestamp once the page-load fetches kick off
-    const now = new Date();
-    const iso = now.toISOString().replace('T',' ').substring(0, 16) + ' UTC';
-    document.getElementById('lead-meta').textContent = 'Build status checked at ' + iso + ' · source: github.com/' + REPO;
+    Promise.all([
+        fetch('/status/product-status.json').then((r) => r.ok ? r.json() : Promise.reject(r.status)),
+        fetch('/status/smoke-scoreboard.json').then((r) => r.ok ? r.json() : Promise.reject(r.status))
+    ]).then(([status, smoke]) => {
+        applyMetrics(status);
+        renderFeatures(status.feature_matrix || []);
+        renderSmoke(smoke);
+        optionalGithub();
+    }).catch(() => {
+        document.getElementById('sum-done').textContent = 'err';
+        document.getElementById('sum-wip').textContent = 'err';
+        document.getElementById('sum-plan').textContent = 'err';
+        document.getElementById('sum-pct').textContent = '—';
+        const root = document.getElementById('features');
+        if (root) {
+            const p = el('p', 'sd');
+            p.textContent = 'Could not load /status/product-status.json. Deploy ACE docs/status/*.json to public/status/ on this site.';
+            root.appendChild(p);
+        }
+        optionalGithub();
+    });
 })();
 </script>
 

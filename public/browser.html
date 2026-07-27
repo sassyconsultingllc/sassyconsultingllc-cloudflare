@@ -28,9 +28,9 @@
         "applicationCategory": "BrowserApplication", "operatingSystem": "Windows, Linux",
         "url": "https://sassyconsultingllc.com/browser",
         "downloadUrl": "https://sassyconsultingllc.com/coming-soon",
-        "softwareVersion": "2.0.0",
+        "softwareVersion": "0.13.1",
         "author": {"@type": "Organization", "name": "Sassy Consulting LLC"},
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder"}
     }
     </script>
     <link rel="icon" type="image/x-icon" href="/sassy-browser-logo.jpg">
@@ -279,7 +279,7 @@
             <a href="#features">Features</a>
             <a href="#security">Security</a>
             <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
-            <a href="/coming-soon" class="nav-dl">Download Free</a>
+            <a href="/coming-soon" class="nav-dl">Build status</a>
         </div>
         <button class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
     </div>
@@ -305,16 +305,16 @@
         </p>
         <div class="hero-actions">
             <a href="/coming-soon" class="btn btn-green btn-lg">
-                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download Free — Windows
+                View build status — v0.13.1
             </a>
             <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source — ACE</a>
         </div>
+        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--text2);">Public Windows installers are gated until a signed release manifest is published. Build from source today; see <a href="/coming-soon" style="color:var(--green);">/coming-soon</a> for the honest feature matrix and smoke scoreboard.</p>
         <div class="stat-bar">
-            <div class="stat-item"><div class="stat-val">139K+</div><div class="stat-lbl">Lines of Rust</div></div>
-            <div class="stat-item"><div class="stat-val">145</div><div class="stat-lbl">Source Files</div></div>
-            <div class="stat-item"><div class="stat-val">200+</div><div class="stat-lbl">File Formats</div></div>
-            <div class="stat-item"><div class="stat-val">$0</div><div class="stat-lbl">Subscriptions</div></div>
+            <div class="stat-item"><div class="stat-val">200,424</div><div class="stat-lbl">Lines of Rust</div></div>
+            <div class="stat-item"><div class="stat-val">230</div><div class="stat-lbl">Source Files</div></div>
+            <div class="stat-item"><div class="stat-val">0.13.1</div><div class="stat-lbl">Product version</div></div>
+            <div class="stat-item"><div class="stat-val">Gated</div><div class="stat-lbl">Public download</div></div>
         </div>
     </div>
 </section>
@@ -338,7 +338,7 @@
         <div class="aud-card">
             <div class="aud-icon">🔬</div>
             <h3>Scientists &amp; Researchers</h3>
-            <p>Open PDB proteins. View DICOM scans. Analyze MOL structures. Read FASTA sequences. No $2,600 ChemDraw license. No PACS subscription.</p>
+            <p>Open PDB proteins. View DICOM scans. Inspect MOL structures. Read FASTA sequences. Chemistry viewers are real — ChemDraw / clinical PACS parity is not claimed.</p>
         </div>
         <div class="aud-card">
             <div class="aud-icon">🌐</div>
@@ -374,7 +374,7 @@
             <h4>Images <span class="cap-sub">— 30+ formats including all RAW</span></h4>
             <div class="formats">PNG · JPG · WebP · GIF · BMP · TIFF · PSD · SVG · ICO · AVIF · HEIC<br>HDR · EXR · DDS · QOI · TGA · PCX · PPM · PGM · XBM · XPM<br>RAW: CR2 · CR3 · NEF · ARW · DNG · ORF · RW2 · RAF · PEF · SRW · X3F</div>
             <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Edit</span><span class="tag tag-s">Save</span><span class="tag tag-p">Print</span></div>
-            <p class="cap-note">Crop, resize, rotate, flip, adjustments, filters, curves. Export to PNG/JPEG/WebP/BMP/TIFF. RAW processing from Canon, Nikon, Sony, Fuji, Olympus. Replaces Photoshop + Lightroom.</p>
+            <p class="cap-note">Viewer with crop, resize, rotate, levels, filters, and export. RAW formats open in the viewer stack. Not a Photoshop / Lightroom replacement — full image editor remains In planning.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📄</div>
@@ -387,8 +387,8 @@
             <div class="cap-icon">📽️</div>
             <h4>Presentations <span class="cap-sub">— slide editing</span></h4>
             <div class="formats">PPTX · PPT · ODP · KEY (import)</div>
-            <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Edit Slides</span><span class="tag tag-s">Save</span><span class="tag tag-p">Present / Print</span></div>
-            <p class="cap-note">Slide editor with text, images, shapes, speaker notes, transitions. No PowerPoint license needed.</p>
+            <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-p">Present / Print</span></div>
+            <p class="cap-note">Slide deck viewing / presentation mode. Not PowerPoint feature-parity — treat edit depth as partial.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📑</div>
@@ -401,15 +401,15 @@
             <div class="cap-icon">📈</div>
             <h4>Spreadsheets <span class="cap-sub">— formulas + multi-sheet</span></h4>
             <div class="formats">XLSX · XLS · XLSM · ODS · CSV · TSV · NUMBERS (import)</div>
-            <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Cell Edit</span><span class="tag tag-e">Formulas</span><span class="tag tag-e">Charts</span><span class="tag tag-s">Save XLSX/ODS</span><span class="tag tag-p">Print</span></div>
-            <p class="cap-note">Multi-sheet workbooks, formula bar, cell formatting, charts. Import CSV/TSV. No Office 365 subscription.</p>
+            <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Partial edit</span><span class="tag tag-p">Print</span></div>
+            <p class="cap-note">Spreadsheet viewer with multi-sheet / formula paths. Not an Excel / Google Sheets replacement — that product depth is still In planning.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">🧬</div>
             <h4>Chemical &amp; Biological <span class="cap-sub">— 3D interactive</span></h4>
             <div class="formats">PDB · mmCIF · MOL · MOL2 · SDF · XYZ · CIF · FASTA · FASTQ<br>DICOM · NIfTI · SMILES · InChI</div>
             <div class="tag-row"><span class="tag tag-v">3D View</span><span class="tag tag-v">Rotate/Zoom</span><span class="tag tag-v">Measure</span><span class="tag tag-p">Print</span><span class="tag tag-full">Complete</span></div>
-            <p class="cap-note">Ball-and-stick, wireframe, ribbon, spacefill, surface rendering. Color by element, chain, residue, B-factor. Distance measurements. DICOM medical imaging viewer. FASTA/FASTQ sequence viewer. Replaces ChemDraw ($2,600/yr) and PACS viewers ($5,000+/yr).</p>
+            <p class="cap-note">Ball-and-stick, wireframe, ribbon, spacefill, surface rendering; DICOM / FASTA paths present. Strong chemistry viewer — not ChemDraw or full PACS parity.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📐</div>
@@ -461,24 +461,24 @@
 <!-- SAVINGS -->
 <div class="wrap" id="savings">
     <div class="section-eyebrow gold">Kill subscriptions</div>
-    <h2 class="sh">$15,248/year. Gone.</h2>
-    <p class="sd">One browser replaces all of this. No monthly fees. No Adobe. No Microsoft tax. No specialty software that only runs on expensive hardware.</p>
+    <h2 class="sh">Subscription software it aims to displace</h2>
+    <p class="sd">Directional story only. Viewers and partial editors exist today; Photoshop / Excel / PowerPoint / ChemDraw <strong>parity is not claimed</strong>. See <a href="/coming-soon" style="color:var(--green);">/coming-soon</a> for Done / Partial / Planned.</p>
     <div class="savings-wrap">
         <table class="savings-table">
             <thead><tr><th>Software It Replaces</th><th>What It Does</th><th>Their Price</th><th>Sassy Browser</th></tr></thead>
             <tbody>
-                <tr><td><strong>Adobe Photoshop</strong></td><td>Image editing, PSD, filters, adjustments</td><td class="killed">$263/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>Adobe Lightroom</strong></td><td>RAW photo processing (CR2, NEF, ARW, DNG…)</td><td class="killed">$120/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>Adobe Acrobat Pro</strong></td><td>PDF edit, annotate, form fill, merge/split</td><td class="killed">$240/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>Microsoft 365</strong></td><td>DOCX, XLSX, PPTX editing and saving</td><td class="killed">$100/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>ChemDraw / PerkinElmer</strong></td><td>Molecular structures (PDB, MOL, SDF)</td><td class="killed">$2,600/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>PACS / DICOM Viewer</strong></td><td>Medical imaging (DICOM, NIfTI)</td><td class="killed">$5,000/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>AutoCAD LT (view tier)</strong></td><td>DXF/DWG file viewing and printing</td><td class="killed">$525/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>Postman Pro</strong></td><td>REST API testing, collections, environments</td><td class="killed">$180/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>uBlock Origin + Tampermonkey</strong></td><td>Ad blocking and user script management</td><td class="killed">Extensions</td><td class="free-tag">✓ Native, built-in</td></tr>
-                <tr><td><strong>1Password / LastPass</strong></td><td>Password management and autofill</td><td class="killed">$36/yr</td><td class="free-tag">✓ Included</td></tr>
-                <tr><td><strong>+ 12 more applications</strong></td><td>Ebook readers, font tools, archive managers, media players…</td><td class="killed">$6,184/yr</td><td class="free-tag">✓ All included</td></tr>
-                <tr class="total-row"><td colspan="2"><strong>TOTAL ANNUAL SAVINGS</strong></td><td class="killed" style="font-size:1.2rem;">$15,248/yr</td><td class="free-tag" style="font-size:1.2rem;">$0 Forever</td></tr>
+                <tr><td><strong>Adobe Photoshop</strong></td><td>Image editing, PSD, filters, adjustments</td><td class="killed">$263/yr</td><td class="free-tag">Partial viewer</td></tr>
+                <tr><td><strong>Adobe Lightroom</strong></td><td>RAW photo processing (CR2, NEF, ARW, DNG…)</td><td class="killed">$120/yr</td><td class="free-tag">Partial viewer</td></tr>
+                <tr><td><strong>Adobe Acrobat Pro</strong></td><td>PDF edit, annotate, form fill, merge/split</td><td class="killed">$240/yr</td><td class="free-tag">Partial (viewer + annotate)</td></tr>
+                <tr><td><strong>Microsoft 365</strong></td><td>DOCX, XLSX, PPTX editing and saving</td><td class="killed">$100/yr</td><td class="free-tag">Partial viewers</td></tr>
+                <tr><td><strong>ChemDraw / PerkinElmer</strong></td><td>Molecular structures (PDB, MOL, SDF)</td><td class="killed">$2,600/yr</td><td class="free-tag">Chemistry viewer (not parity)</td></tr>
+                <tr><td><strong>PACS / DICOM Viewer</strong></td><td>Medical imaging (DICOM, NIfTI)</td><td class="killed">$5,000/yr</td><td class="free-tag">DICOM viewer path</td></tr>
+                <tr><td><strong>AutoCAD LT (view tier)</strong></td><td>DXF/DWG file viewing and printing</td><td class="killed">$525/yr</td><td class="free-tag">Partial CAD viewers</td></tr>
+                <tr><td><strong>Postman Pro</strong></td><td>REST API testing, collections, environments</td><td class="killed">$180/yr</td><td class="free-tag">REST client wired</td></tr>
+                <tr><td><strong>uBlock Origin + Tampermonkey</strong></td><td>Ad blocking and user script management</td><td class="killed">Extensions</td><td class="free-tag">Native, built-in</td></tr>
+                <tr><td><strong>1Password / LastPass</strong></td><td>Password management and autofill</td><td class="killed">$36/yr</td><td class="free-tag">Vault wired</td></tr>
+                <tr><td><strong>+ more format viewers</strong></td><td>Ebook, font, archive, media, and related tools</td><td class="killed">varies</td><td class="free-tag">Many viewers present</td></tr>
+                <tr class="total-row"><td colspan="2"><strong>DIRECTIONAL SAVINGS STORY</strong></td><td class="killed" style="font-size:1.2rem;">aspirational</td><td class="free-tag" style="font-size:1.05rem;">Honesty &gt; parity claims</td></tr>
             </tbody>
         </table>
     </div>
@@ -507,27 +507,27 @@
         <div class="tool-card">
             <div class="tool-icon">🖼️</div>
             <h3>Image Editor</h3>
-            <p>Crop, resize, rotate, flip, brightness/contrast/saturation, filters, curves. Opens every RAW format from Canon, Nikon, Sony, Fuji, and Olympus. Export to PNG, JPEG, WebP, BMP, TIFF. Replaces Photoshop and Lightroom combined.</p>
+            <p>Basic edit path: crop, resize, rotate, levels, filters. RAW formats open in the viewer. Photoshop / Photopea replacement depth remains In planning — do not treat this as Creative Cloud parity.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">📄</div>
             <h3>Document Editor</h3>
-            <p>Full rich text with styles, headings, bullet lists, tables, images, find/replace. Open DOCX or ODT files, edit, export to PDF or save back as DOCX. Like OpenOffice Writer, running inside your browser.</p>
+            <p>DOCX/ODT/RTF open/edit/save viewers exist. Useful, but not Microsoft Word parity.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">📈</div>
-            <h3>Spreadsheet Editor</h3>
-            <p>Full XLSX/ODS editing with formula bar, cell formatting, conditional formatting, charts, multi-sheet workbooks. Import CSV/TSV, export to Excel. No Office 365 subscription required.</p>
+            <h3>Spreadsheet Viewer</h3>
+            <p>XLSX/ODS/CSV viewing with partial formula support. Excel / Sheets replacement remains In planning (FEATURE-MAP).</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">📑</div>
             <h3>PDF Studio</h3>
-            <p>View, annotate, highlight, add sticky notes, draw freehand, search text, fill forms, merge PDFs, split pages. Full editing suite that replaces Acrobat Pro at $240/yr.</p>
+            <p>View, search, annotate, and related PDF workflows. Stronger than a dumb viewer; not Acrobat Pro parity.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">🧬</div>
             <h3>Molecular &amp; Medical Viewer</h3>
-            <p>Interactive 3D protein structures (PDB). Chemical structures (MOL/SDF). DICOM and NIfTI medical imaging. Ball-and-stick, ribbon, surface rendering. Distance measurements. Replaces ChemDraw ($2,600/yr) and PACS viewers.</p>
+            <p>Interactive PDB/MOL/SDF chemistry views plus DICOM path. Not ChemDraw or full clinical PACS parity.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">🔑</div>
@@ -718,9 +718,9 @@
         <div class="sec-card"><h4>📜 Sandboxed Scripts</h4><p>User scripts run in an isolated context inside the browser process — not as external processes or loaded extensions. No extension attack surface. Scripts cannot reach system APIs.</p></div>
     </div>
     <div class="rust-block">
-        <div class="rust-big">139,000+</div>
+        <div class="rust-big">200,424</div>
         <div class="rust-lbl">Lines of pure Rust. Zero C/C++ in the core.</div>
-        <p>145 source files across viewers, engine, security, networking, AI integration, and UI. Compiles clean. Runs fast. No garbage collection pauses, no memory leaks, no undefined behavior. This is what it looks like when a security professional builds a browser from scratch.</p>
+        <p>230 source files across viewers, engine, security, networking, AI integration, and UI. Compiles clean. Runs fast. No garbage collection pauses, no memory leaks, no undefined behavior. This is what it looks like when a security professional builds a browser from scratch.</p>
         <div class="rust-badge">🦀 Built in Rust</div>
     </div>
 </div>
@@ -742,51 +742,48 @@
 
 <hr class="divider">
 
-<!-- DOWNLOAD -->
+<!-- DOWNLOAD (gated) -->
 <div class="wrap" id="download">
     <div class="section-eyebrow">Get started</div>
-    <h2 class="sh">Download Sassy Browser — Free</h2>
-    <p class="sd">No account required. No email address. No license key. Download, run, done.</p>
+    <h2 class="sh">Public download is gated</h2>
+    <p class="sd">There is no signed stable release manifest on the CDN yet (<code>/browser/dists/stable/manifest.json</code> returns 404). CTAs stay on build status until that changes. Build from source today.</p>
     <div class="dl-grid">
         <div class="dl-card main-dl">
             <div class="dl-os">🪟</div>
             <h4>Windows</h4>
-            <p>Windows 10 / 11, x64. Portable or installer.</p>
-            <a href="/coming-soon">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Download for Windows
-            </a>
+            <p>v0.13.1 builds locally (~43 MB). Public installer gated.</p>
+            <a href="/coming-soon">View build status</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🐧</div>
             <h4>Linux</h4>
-            <p>Build from source. Debian/Ubuntu, Arch, Fedora.</p>
-            <a href="/coming-soon">Download for Linux</a>
+            <p>Build from source. Packages not published.</p>
+            <a href="/coming-soon">View build status</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🍎</div>
             <h4>macOS</h4>
-            <p>Coming soon. Follow the repo for updates.</p>
-            <a href="/coming-soon">Download for macOS</a>
+            <p>Planned. Follow the repo for updates.</p>
+            <a href="/coming-soon">View build status</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">📦</div>
             <h4>Source Code</h4>
-            <p>139K lines of Rust. Build it yourself.</p>
-            <a href="/coming-soon">Get the source</a>
+            <p>200,424 lines of Rust. Build it yourself.</p>
+            <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">Open ACE on GitHub</a>
         </div>
     </div>
 </div>
 
 <!-- FINAL CTA -->
 <section class="final-cta">
-    <h2>The browser that replaces<br><span style="color:var(--green);">everything</span>.</h2>
-    <p class="sub">Free. Forever. No subscriptions. No ads. No Google. No compromises.</p>
+    <h2>A pure-Rust browser<br><span style="color:var(--green);">still being built honestly</span>.</h2>
+    <p class="sub">No Chromium. No Google telemetry. No fake download buttons while the signed manifest is 404.</p>
     <div class="cta-row">
-        <a href="/coming-soon" class="btn btn-green btn-lg">Download Free</a>
+        <a href="/coming-soon" class="btn btn-green btn-lg">View build status</a>
         <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source</a>
     </div>
-    <a href="/donate" class="support-link" target="_blank" rel="noopener">❤️ Support development with a donation</a>
+    <a href="/donate" class="support-link" target="_blank" rel="noopener">Support development with a donation</a>
 </section>
 
 <!-- FOOTER -->
