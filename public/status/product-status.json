@@ -3,16 +3,28 @@
   "product": "Sassy Browser",
   "repo": "https://github.com/sassyconsultingllc/ACE",
   "version": "0.13.1",
-  "as_of": "2026-07-27",
+  "as_of": "2026-07-28",
   "cargo_toml_version": "0.13.1",
   "download": {
     "public_binaries_available": false,
     "signed_manifest_url": "https://sassyconsultingllc.com/browser/dists/stable/manifest.json",
     "signed_manifest_status": "404",
-    "cta_policy": "gated",
-    "cta_label": "View build status",
-    "cta_href": "/coming-soon",
-    "notes": "Installer/download CTAs must stay gated until a real signed stable manifest exists on the CDN. Local dist/ binaries may exist for internal packaging; they are not a public download claim."
+    "cta_policy": "dev_build",
+    "cta_label": "Download Windows dev build",
+    "cta_href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
+    "dev_build": {
+      "available": true,
+      "label": "Windows x64 dev build (unsigned)",
+      "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
+      "filename": "sassy-browser.exe",
+      "approx_size_mb": 44.3,
+      "version": "0.13.1",
+      "channel": "dev",
+      "signed": false,
+      "uploaded_at": "2026-07-27T22:38:44Z",
+      "notes": "Raw unsigned exe on public R2. Not an Authenticode-signed installer and not a signed update-channel manifest."
+    },
+    "notes": "Signed stable channel still 404. Public CTAs may link the unsigned Windows dev build on R2; do not claim signed stable."
   },
   "metrics": {
     "loc_rust_src": 200424,
@@ -96,7 +108,7 @@
     {
       "cat": "Platforms & distribution",
       "items": [
-        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 packaged locally in dist/ (~43.31 MB). Not a public CDN download until manifest is live.", "meta": "windows" },
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 unsigned Windows exe (~44.3 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
         { "name": "Linux packages", "status": "partial", "detail": "Builds from source; distro packages not published.", "meta": "linux" },
         { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
         { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },

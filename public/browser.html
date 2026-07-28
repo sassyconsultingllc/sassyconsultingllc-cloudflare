@@ -27,10 +27,10 @@
         "name": "Sassy Browser", "alternateName": "ACE Browser",
         "applicationCategory": "BrowserApplication", "operatingSystem": "Windows, Linux",
         "url": "https://sassyconsultingllc.com/browser",
-        "downloadUrl": "https://sassyconsultingllc.com/coming-soon",
+        "downloadUrl": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
         "softwareVersion": "0.13.1",
         "author": {"@type": "Organization", "name": "Sassy Consulting LLC"},
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/PreOrder"}
+        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/OnlineOnly"}
     }
     </script>
     <link rel="icon" type="image/x-icon" href="/sassy-browser-logo.jpg">
@@ -279,7 +279,7 @@
             <a href="#features">Features</a>
             <a href="#security">Security</a>
             <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
-            <a href="/coming-soon" class="nav-dl">Build status</a>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-dl">Dev build</a>
         </div>
         <button class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
     </div>
@@ -304,17 +304,17 @@
             <strong>Simple enough for your parents. Deep enough for your engineers.</strong>
         </p>
         <div class="hero-actions">
-            <a href="/coming-soon" class="btn btn-green btn-lg">
-                View build status — v0.13.1
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">
+                Download Windows dev build — v0.13.1
             </a>
             <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source — ACE</a>
         </div>
-        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--text2);">Public Windows installers are gated until a signed release manifest is published. Build from source today; see <a href="/coming-soon" style="color:var(--green);">/coming-soon</a> for the honest feature matrix and smoke scoreboard.</p>
+        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--text2);">Unsigned Windows <strong>dev</strong> exe (~44&nbsp;MB) on R2 — not Authenticode-signed, not the stable update channel. Signed stable manifest is still 404. See <a href="/coming-soon" style="color:var(--green);">/coming-soon</a> for the honest feature matrix.</p>
         <div class="stat-bar">
             <div class="stat-item"><div class="stat-val">200,424</div><div class="stat-lbl">Lines of Rust</div></div>
             <div class="stat-item"><div class="stat-val">230</div><div class="stat-lbl">Source Files</div></div>
             <div class="stat-item"><div class="stat-val">0.13.1</div><div class="stat-lbl">Product version</div></div>
-            <div class="stat-item"><div class="stat-val">Gated</div><div class="stat-lbl">Public download</div></div>
+            <div class="stat-item"><div class="stat-val">Dev</div><div class="stat-lbl">Public download</div></div>
         </div>
     </div>
 </section>
@@ -742,17 +742,17 @@
 
 <hr class="divider">
 
-<!-- DOWNLOAD (gated) -->
+<!-- DOWNLOAD (dev build on R2; signed stable still gated) -->
 <div class="wrap" id="download">
     <div class="section-eyebrow">Get started</div>
-    <h2 class="sh">Public download is gated</h2>
-    <p class="sd">There is no signed stable release manifest on the CDN yet (<code>/browser/dists/stable/manifest.json</code> returns 404). CTAs stay on build status until that changes. Build from source today.</p>
+    <h2 class="sh">Windows dev build available</h2>
+    <p class="sd">Grab the unsigned v0.13.1 Windows x64 exe from R2 (~44&nbsp;MB). This is a <strong>dev</strong> build — not Authenticode-signed and not published on the signed update channel (<code>/browser/dists/stable/manifest.json</code> is still 404).</p>
     <div class="dl-grid">
         <div class="dl-card main-dl">
             <div class="dl-os">🪟</div>
-            <h4>Windows</h4>
-            <p>v0.13.1 builds locally (~43 MB). Public installer gated.</p>
-            <a href="/coming-soon">View build status</a>
+            <h4>Windows (dev)</h4>
+            <p>v0.13.1 unsigned exe (~44 MB) on R2.</p>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🐧</div>
@@ -778,9 +778,9 @@
 <!-- FINAL CTA -->
 <section class="final-cta">
     <h2>A pure-Rust browser<br><span style="color:var(--green);">still being built honestly</span>.</h2>
-    <p class="sub">No Chromium. No Google telemetry. No fake download buttons while the signed manifest is 404.</p>
+    <p class="sub">No Chromium. No Google telemetry. Dev build available; signed stable still pending.</p>
     <div class="cta-row">
-        <a href="/coming-soon" class="btn btn-green btn-lg">View build status</a>
+        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">Download Windows dev build</a>
         <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source</a>
     </div>
     <a href="/donate" class="support-link" target="_blank" rel="noopener">Support development with a donation</a>

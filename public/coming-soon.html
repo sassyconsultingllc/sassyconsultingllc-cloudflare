@@ -170,7 +170,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         <div class="nav-links">
             <a href="/browser">Overview</a>
             <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
-            <a href="https://github.com/sassyconsultingllc/ACE" class="nav-cta" target="_blank" rel="noopener">Watch on GitHub</a>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-cta">Dev build</a>
         </div>
     </div>
 </nav>
@@ -184,8 +184,9 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 
     <h1>Sassy Browser is still being built.</h1>
     <p class="lead">
-        Public binaries are not yet available. The codebase is moving fast and we are not
-        going to ship a download until the experience matches what we promised on the
+        An unsigned Windows <strong>dev</strong> build is available for early testers.
+        The signed stable release channel is not live yet &mdash; we will not claim a polished
+        installer until the experience matches what we promised on the
         <a href="/browser">overview page</a>.
         Below is a live, factual look at where the project stands today &mdash; pulled
         directly from the <strong>ACE</strong> repository &mdash; followed by a
@@ -232,8 +233,8 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
             </div>
             <div class="stat-cell" data-stat="download">
                 <div class="stat-lbl">Public download</div>
-                <div class="stat-val dim" id="stat-download">Gated</div>
-                <div class="stat-sub">Signed stable manifest is 404</div>
+                <div class="stat-val dim" id="stat-download">Dev</div>
+                <div class="stat-sub">Unsigned Windows exe on R2</div>
             </div>
             <div class="stat-cell loading" data-stat="stars">
                 <div class="stat-lbl">GitHub stars</div>
@@ -271,7 +272,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
     <section class="section" id="status">
         <div class="section-eyebrow">Roadmap &middot; What is done, what is not</div>
         <h2>Feature status</h2>
-        <p class="sd">No hand-waving. Sourced from README capability honesty + FEATURE-MAP. Office-parity (Photoshop / Excel / PowerPoint / ChemDraw) is <strong>not</strong> claimed — those stay Partial or Planned. Public download stays gated until a signed manifest exists.</p>
+        <p class="sd">No hand-waving. Sourced from README capability honesty + FEATURE-MAP. Office-parity (Photoshop / Excel / PowerPoint / ChemDraw) is <strong>not</strong> claimed — those stay Partial or Planned. Signed stable stays gated; an unsigned Windows <strong>dev</strong> build is linked below.</p>
 
         <div class="summary" id="summary">
             <div class="sumcard done"><div class="sn">Done</div><div class="sv" id="sum-done">—</div></div>
@@ -296,10 +297,11 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 
     <!-- CTA -->
     <div class="cta-block">
-        <h3>Want a heads-up when the first binary ships?</h3>
-        <p>The project is open source on GitHub. Star the repository or click <em>Watch</em> &mdash; you will be notified the moment a release is cut. No mailing list, no tracking, no account required.</p>
+        <h3>Try the Windows dev build</h3>
+        <p>Unsigned v0.13.1 Windows x64 exe (~44&nbsp;MB) on R2. Expect SmartScreen warnings and rough edges — this is not a signed stable installer. Watch GitHub for the real release channel.</p>
         <div class="cta-row">
-            <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-green" target="_blank" rel="noopener">Watch the ACE repository</a>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green">Download Windows dev build</a>
+            <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline" target="_blank" rel="noopener">Watch on GitHub</a>
             <a href="/browser" class="btn btn-outline">Back to overview</a>
         </div>
     </div>
@@ -344,11 +346,20 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         set('stat-wpt', (m.wpt_subset_passing_recorded || 82) + '/' + (m.wpt_subset_tests || 83));
         set('stat-warnings', String(m.compiler_warnings_release != null ? m.compiler_warnings_release : 0));
         const dl = status.download || {};
-        set('stat-download', dl.public_binaries_available ? 'Available' : 'Gated');
+        const dev = dl.dev_build || {};
+        if (dl.public_binaries_available) {
+            set('stat-download', 'Available');
+        } else if (dev.available || dl.cta_policy === 'dev_build') {
+            set('stat-download', 'Dev');
+        } else {
+            set('stat-download', 'Gated');
+        }
         const dlCell = document.querySelector('[data-stat="download"] .stat-sub');
-        if (dlCell) dlCell.textContent = dl.signed_manifest_status === '404'
-            ? 'Signed stable manifest is 404'
-            : (dl.notes || 'See INSTALL.md / update-server');
+        if (dlCell) {
+            if (dev.available) dlCell.textContent = 'Unsigned Windows exe on R2';
+            else if (dl.signed_manifest_status === '404') dlCell.textContent = 'Signed stable manifest is 404';
+            else dlCell.textContent = dl.notes || 'See INSTALL.md / update-server';
+        }
         const meta = document.getElementById('lead-meta');
         if (meta) {
             meta.textContent = 'Truth layer v' + (status.version || '0.13.1')
