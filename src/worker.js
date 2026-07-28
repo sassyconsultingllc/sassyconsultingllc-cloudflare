@@ -56,10 +56,12 @@ const PRODUCTS = {
     name: "SassyMCP Pro",
     mode: "payment",
     description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license",
-    // Live LS catalog currently has a single "SassyMCP" SKU at $25 (variant
-    // LS_VARIANT_MCP_PRO). Store UI should match until Pro/Forensics/Team are
-    // created as separate dashboard products with license keys enabled.
-    priceCents: 2500
+    // No dedicated LS "SassyMCP Pro" product with license keys yet. Ride the
+    // published Foodie Finder fallback variant (has_license_keys=true) with a
+    // custom_price override so buyers get a real LS key. Entitlement map in
+    // SassyMCP must include LS_FALLBACK_VARIANT → {tier:"pro", addons:[]}.
+    priceCents: 2500,
+    lsFallbackOk: true
   },
   "mcp-forensics": {
     name: "SassyMCP Forensics",
