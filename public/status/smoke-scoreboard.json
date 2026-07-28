@@ -1,8 +1,8 @@
 {
   "title": "Sassy Browser public smoke scoreboard",
   "version": "0.13.1",
-  "as_of": "2026-07-27",
-  "method": "Honest engineering assessment from README capability matrix, DataROOM metrics, and Mercury/render audits — not a fresh automated crawl of every URL on this date. Re-run before claiming improvements.",
+  "as_of": "2026-07-28",
+  "method": "Prior engineering assessment plus 2026-07-28 live pass on clean build 274877db (Task Manager + DevTools). See live-diagnostics/2026-07-28-clean-build-assessment.md. Re-run before claiming improvements.",
   "legend": {
     "pass": "Usable for the site's primary read/browse task in current builds",
     "partial": "Loads or partially renders; major layout/JS/interaction gaps remain",
@@ -12,17 +12,17 @@
     {
       "url": "https://example.com",
       "result": "pass",
-      "notes": "Simple static document; baseline smoke that historically worked when complex pages failed."
+      "notes": "Confirmed 2026-07-28 on clean 274877db: text paints. Working set still ~450–719 MB for a static page."
     },
     {
       "url": "https://news.ycombinator.com",
       "result": "partial",
-      "notes": "Mostly HTML list UI; readable with layout/CSS gaps vs Chromium. Cited in render-collapse investigations."
+      "notes": "Mostly HTML list UI; readable with layout/CSS gaps vs Chromium. Live 2026-07-28: cold launch ~558 MB; in-session address-bar automation unreliable."
     },
     {
       "url": "https://duckduckgo.com",
-      "result": "partial",
-      "notes": "Search shell loads; historically hit render-collapse / zero-width layout bugs. Interactive search UX incomplete."
+      "result": "fail",
+      "notes": "Live 2026-07-28 on 274877db: tab/URL update but viewport blank/dark (faint Ask privately only). Root cause: Next.js `body{display:none}` until `html.partially-hydrated` + hydration JS. DevTools Network stayed empty because page loads only wrote `network_monitor`, not `dev_console` (dual-write landing post-274877db)."
     },
     {
       "url": "https://github.com",
@@ -62,8 +62,8 @@
   ],
   "summary": {
     "pass": 2,
-    "partial": 6,
-    "fail": 2,
+    "partial": 5,
+    "fail": 3,
     "total": 10
   },
   "wpt_subset": {
