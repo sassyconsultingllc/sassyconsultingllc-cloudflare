@@ -46,37 +46,32 @@ const PRODUCTS = {
     // Checkout is refused until there is something to deliver.
     available: false
   },
-  // SassyMCP SKUs activate via Lemon Squeezy's native license keys
-  // (sassymcp/_lemonsqueezy.py calls /v1/licenses/activate), so they can NOT
-  // ride the fallback variant — LS only generates keys on variants that have
-  // "Generate license keys" enabled, which is a dashboard-only setting.
-  // Until those products exist in the LS dashboard, checkout returns the
-  // `pending` message below instead of a dead error.
+  // SassyMCP — all-or-nothing as of v1.13.0. The only commercial SKU is an
+  // optional supporter license (slug kept as mcp-pro for deep-link / entitlement
+  // back-compat). Keys activate via Lemon Squeezy's native license API
+  // (sassymcp/_lemonsqueezy.py → /v1/licenses/activate). Until a dedicated
+  // "SassyMCP Supporter" LS product exists with Generate license keys ON,
+  // checkout rides LS_FALLBACK_VARIANT + custom_price. Map that variant →
+  // {tier:"pro", addons:[]} in SassyMCP DEFAULT_VARIANT_MAP / lemonsqueezy.json.
   "mcp-pro": {
-    name: "SassyMCP Pro",
+    name: "SassyMCP Supporter",
     mode: "payment",
-    description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license",
-    // No dedicated LS "SassyMCP Pro" product with license keys yet. Ride the
-    // published Foodie Finder fallback variant (has_license_keys=true) with a
-    // custom_price override so buyers get a real LS key. Entitlement map in
-    // SassyMCP must include LS_FALLBACK_VARIANT → {tier:"pro", addons:[]}.
+    description: "Optional one-time supporter license — all tools already unlocked; badge + 2 seats",
     priceCents: 2500,
     lsFallbackOk: true
   },
+  // Retired SKUs (all-or-nothing). Kept available:false so old deep links /
+  // webhooks get a clear refusal instead of a 404.
   "mcp-forensics": {
-    name: "SassyMCP Forensics",
+    name: "SassyMCP Forensics (retired)",
     mode: "payment",
-    description: "Forensics add-on: security audit + registry modules, stacks on Free or Pro",
-    priceCents: 2900,
-    // No dedicated LS product yet (API cannot create products). Refuse checkout
-    // with a clear message instead of the generic "briefly offline" 503.
+    description: "Retired — forensics tools ship unlocked in the free all-or-nothing release",
     available: false
   },
   "mcp-team": {
-    name: "SassyMCP Team",
+    name: "SassyMCP Team (retired)",
     mode: "payment",
-    description: "SassyMCP site license — Pro + Forensics for up to 10 machines",
-    priceCents: 19900,
+    description: "Retired — no gated tiers; use the optional supporter license (mcp-pro)",
     available: false
   }
 };
@@ -920,15 +915,16 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
   const name = PRODUCTS[product]?.name || product;
   const keyParam = encodeURIComponent(licenseKey);
   const mcpActivate = (seats) =>
-    `Download SassyMCP (free installer, your key unlocks the paid tiers):\n` +
+    `Download SassyMCP (every tool group is already unlocked — no key required):\n` +
     `https://github.com/sassyconsultingllc/SassyMCP/releases/latest\n\n` +
-    `Activate: run the setup wizard (or the "activate license" tool in any MCP client),\n` +
-    `paste your key when prompted. Works on ${seats}.`;
+    `Your key is an optional supporter license. Activate it to show the supporter\n` +
+    `badge (it does not unlock tools): run the setup wizard or sassy_setup_license\n` +
+    `in any MCP client, paste your key when prompted. Works on ${seats}.`;
   const downloadLines = {
     "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
     "mcp-pro":      mcpActivate("2 machines you own"),
-    "mcp-forensics":mcpActivate("2 machines — stacks on Free or Pro"),
+    "mcp-forensics":mcpActivate("2 machines you own"),
     "mcp-team":     mcpActivate("up to 10 machines"),
     "website-creator": `Getting started: ${env.SITE_URL}/website-creator.html`,
   };

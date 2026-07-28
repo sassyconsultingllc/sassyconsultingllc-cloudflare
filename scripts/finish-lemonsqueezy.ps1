@@ -8,16 +8,20 @@
   in the LS dashboard (https://app.lemonsqueezy.com -> LIVE store
   "Sassy Consulting LLC Apps" 377151, login sassyconsultingllc):
 
-    SassyMCP Pro            $49    Generate license keys: ON, activation limit 2
-    SassyMCP Forensics      $29    Generate license keys: ON, activation limit 2
-    SassyMCP Team           $199   Generate license keys: ON, activation limit 10
+    SassyMCP Supporter      $25    Generate license keys: ON, activation limit 2
+                                   (name may be "SassyMCP" — slug maps either)
     Sassy-Talk              $3.99  license keys OFF (relay worker mints keys)
     WinForensics-Pro        $2     license keys OFF (winforensics-license-api mints WFP- keys)
     Website Creator         $2     DO NOT create until an artifact ships (no deliverable exists)
 
+  DO NOT create "SassyMCP Forensics" or "SassyMCP Team" — those tiers are retired.
+  SassyMCP v1.13+ is all-or-nothing: every tool group ships unlocked; the store
+  SKU is an optional supporter license only (same story as CuratedMCP free listing).
+
   License-key generation is dashboard-only (not settable via API) and is
-  REQUIRED for the mcp-* SKUs — SassyMCP activates against LS's license API,
-  so a product without LS keys sells a license the app can't activate.
+  REQUIRED for mcp-pro — SassyMCP activates against LS's license API, so a
+  product without LS keys sells a license the app can't activate. Until that
+  dedicated product exists, checkout uses LS_FALLBACK_VARIANT + custom_price.
 
   What it does:
     1. Sets LEMONSQUEEZY_STORE_ID on the worker.
@@ -28,10 +32,9 @@
 
   AFTER it succeeds:
     - wrangler secret delete LS_FALLBACK_VARIANT   (interim custom-price path, no longer needed)
-    - Bake the printed mcp variant IDs into DEFAULT_VARIANT_MAP in
+    - Bake the printed mcp-pro variant ID into DEFAULT_VARIANT_MAP in
       V:\Projects\SassyMCP\sassymcp\_lemonsqueezy.py and cut a release,
-      e.g. "1234567": {"tier":"pro","addons":[]} / {"tier":"free","addons":["forensics"]}
-      / {"tier":"pro","addons":["forensics"]} for Pro / Forensics / Team.
+      e.g. "1234567": {"tier":"pro","addons":[]}  (label only — no tool gating).
 
 .NOTES
   Reads the LIVE API key from $env:LEMON_SQUEEZY_API_KEY (or pass -ApiKey).
@@ -46,7 +49,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-if (-not $ApiKey) { throw "No API key. Set LEMON_SQUEEZY_TEST_KEY or pass -ApiKey." }
+if (-not $ApiKey) { throw "No API key. Set LEMON_SQUEEZY_API_KEY or pass -ApiKey." }
 
 $h = @{ Authorization = "Bearer $ApiKey"; Accept = 'application/vnd.api+json' }
 $hPost = $h + @{ 'Content-Type' = 'application/vnd.api+json' }
@@ -91,12 +94,13 @@ $products = (Invoke-RestMethod -Uri 'https://api.lemonsqueezy.com/v1/products?pa
 $variants = (Invoke-RestMethod -Uri 'https://api.lemonsqueezy.com/v1/variants?page[size]=100' -Headers $h).data
 if (-not $products) { throw "Store has no products. Create them in the LS dashboard first (see .SYNOPSIS)." }
 
-# Product-name pattern -> worker slug. Evaluated top-down; first match wins,
-# so the more specific SassyMCP patterns come before the bare 'forensics'.
+# Product-name pattern -> worker slug. Evaluated top-down; first match wins.
+# Forensics/Team patterns are listed only so a mistaken dashboard product is
+# warned instead of silently mapped onto mcp-pro.
 $slugMap = [ordered]@{
     'mcp-forensics'   = 'sassymcp.*forensics|forensics.*add'
     'mcp-team'        = 'sassymcp.*team|mcp team'
-    'mcp-pro'         = 'sassymcp'
+    'mcp-pro'         = 'sassymcp.*supporter|sassymcp'
     'winforensics'    = 'winforensics'
     'sassy-talk'      = 'sassy[- ]?talk'
     'website-creator' = 'website creator'
@@ -107,6 +111,10 @@ foreach ($p in $products) {
     $name = $p.attributes.name
     $slug = ($slugMap.GetEnumerator() | Where-Object { $name -imatch $_.Value } | Select-Object -First 1).Key
     if (-not $slug) { Write-Warning "no slug match for LS product '$name' — skipped"; continue }
+    if ($slug -in @('mcp-forensics','mcp-team')) {
+        Write-Warning "LS product '$name' matches retired slug '$slug' — do not sell; delete or unpublish in LS"
+        continue
+    }
     if ($assigned.Contains($slug)) { Write-Warning "'$name' also matched '$slug' (already taken) — skipped"; continue }
     $variant = $variants | Where-Object { "$($_.attributes.product_id)" -eq "$($p.id)" } | Select-Object -First 1
     if (-not $variant) { Write-Warning "product '$name' has no variant — skipped"; continue }
@@ -116,10 +124,15 @@ foreach ($p in $products) {
     Set-WorkerSecret $envName "$($variant.id)"
 }
 
-$expected = @('mcp-pro','mcp-forensics','mcp-team','sassy-talk','winforensics','website-creator')
+# Required live SKUs (website-creator intentionally optional until artifact ships).
+$expected = @('mcp-pro','sassy-talk','winforensics')
 $missing = $expected | Where-Object { -not $assigned.Contains($_) }
 if ($missing) {
     Write-Host "`nMISSING (create these products in the dashboard, then re-run): $($missing -join ', ')" -ForegroundColor Yellow
+    Write-Host "Until mcp-pro has a dedicated LS product with license keys ON, checkout uses LS_FALLBACK_VARIANT." -ForegroundColor Yellow
 } else {
-    Write-Host "`nAll six products wired. Checkout is live once the worker is deployed." -ForegroundColor Green
+    Write-Host "`nRequired products wired (mcp-pro, sassy-talk, winforensics). Deploy the worker if secrets changed." -ForegroundColor Green
+}
+if ($assigned.Contains('website-creator')) {
+    Write-Host "NOTE: website-creator is mapped but store marks it unavailable until an artifact ships." -ForegroundColor Yellow
 }
