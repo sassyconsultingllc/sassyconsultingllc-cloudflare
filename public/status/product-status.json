@@ -17,12 +17,15 @@
       "label": "Windows x64 dev build (unsigned)",
       "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
       "filename": "sassy-browser.exe",
-      "approx_size_mb": 44.3,
+      "approx_size_mb": 44.38,
       "version": "0.13.1",
+      "build_sha": "274877db",
+      "dirty": false,
       "channel": "dev",
       "signed": false,
-      "uploaded_at": "2026-07-27T22:38:44Z",
-      "notes": "Raw unsigned exe on public R2. Not an Authenticode-signed installer and not a signed update-channel manifest."
+      "sha256": "1C7FB01E2B0B8DF690477E753DFF3F44BF21D8D5EE93E0C8A435474569C19C8B",
+      "uploaded_at": "2026-07-28T22:18:12Z",
+      "notes": "Clean (non-dirty) unsigned Windows exe on public R2 from git HEAD 274877db. Not Authenticode-signed; signed update-channel manifest still 404."
     },
     "notes": "Signed stable channel still 404. Public CTAs may link the unsigned Windows dev build on R2; do not claim signed stable."
   },
@@ -30,11 +33,11 @@
     "loc_rust_src": 200424,
     "source_files_rs": 230,
     "test_attributes": 2276,
-    "wpt_subset_tests": 83,
-    "wpt_subset_passing_recorded": 82,
+    "wpt_subset_tests": 89,
+    "wpt_subset_passing_recorded": 89,
     "compiler_warnings_release": 0,
     "direct_crate_deps": 119,
-    "release_binary_windows_x64_mb": 43.31,
+    "release_binary_windows_x64_mb": 44.38,
     "loc_source": "DataROOM/03-CODEBASE-METRICS.md (2026-07-07 refresh)",
     "notes": "LOC is src/ Rust only. Test count is #[test] attributes, not a fresh full-suite pass/fail run."
   },
@@ -57,9 +60,12 @@
         { "name": "CSS cascade + flex/grid", "status": "partial", "detail": "Cascade improving; flex/grid via taffy path still incomplete vs modern sites.", "meta": "cascade" },
         { "name": "DOM events / forms / timers / rAF", "status": "done", "detail": "Interactive egui shell: timers, rAF, click/keyboard, forms, CSS transitions.", "meta": "events" },
         { "name": "fetch / storage / history.pushState", "status": "done", "detail": "Real implementations wired.", "meta": "webapi" },
-        { "name": "AbortController / MutationObserver", "status": "partial", "detail": "Stub constructors (do not throw); not full semantics.", "meta": "stubs" },
-        { "name": "Private / incognito mode", "status": "partial", "detail": "Flag only; no cookie partition yet.", "meta": "incognito" },
-        { "name": "video / WebGL / WebRTC / ServiceWorker", "status": "planned", "detail": "Not implemented.", "meta": "media-web" },
+        { "name": "AbortController / MutationObserver", "status": "partial", "detail": "AbortController wired; MutationObserver delivers coarse childList records on tick after observe().", "meta": "stubs" },
+        { "name": "Private / incognito mode", "status": "partial", "detail": "History suppressed + separate cookie jar + localStorage/sessionStorage partitions (cleared on exit). Image HTTP disk cache disabled in private mode (memory-only; cleared on enter/exit). No general HTTP response disk cache yet.", "meta": "incognito" },
+        { "name": "IndexedDB", "status": "partial", "detail": "In-memory open/createObjectStore/createIndex/put/get/getAll/getAllKeys/clear + index.get + store openCursor/continue (forward primary-key order); no key ranges or disk persistence.", "meta": "indexeddb" },
+        { "name": "Dedicated Worker", "status": "partial", "detail": "Same-thread host: new Worker(url), postMessage/onmessage/terminate for data: and http(s) scripts. No importScripts, transferables, SharedWorker, or ServiceWorker.", "meta": "worker" },
+        { "name": "Canvas 2D", "status": "partial", "detail": "Live + DomBridge getContext('2d') share pixmap rasterizer with fillRect/clearRect/path/text plus translate/scale/resetTransform; rotate/clip/gradients still stubbed.", "meta": "canvas2d" },
+        { "name": "video / WebGL / WebRTC / ServiceWorker", "status": "planned", "detail": "Not implemented. Dedicated Worker (same-thread) is separate and partial.", "meta": "media-web" },
         { "name": "WebAssembly runtime", "status": "planned", "detail": "Isolated wasm runtime for in-page code.", "meta": "wasm" }
       ]
     },
@@ -108,7 +114,7 @@
     {
       "cat": "Platforms & distribution",
       "items": [
-        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 unsigned Windows exe (~44.3 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 clean build 274877db (~44.38 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
         { "name": "Linux packages", "status": "partial", "detail": "Builds from source; distro packages not published.", "meta": "linux" },
         { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
         { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },
@@ -123,3 +129,4 @@
   },
   "smoke_scoreboard_path": "docs/status/smoke-scoreboard.json"
 }
+
