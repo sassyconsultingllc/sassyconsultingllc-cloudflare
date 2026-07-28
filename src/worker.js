@@ -56,19 +56,26 @@ const PRODUCTS = {
     name: "SassyMCP Pro",
     mode: "payment",
     description: "One MCP server replacing 75+ — all 270 tools, one-time perpetual license",
-    priceCents: 4900
+    // Live LS catalog currently has a single "SassyMCP" SKU at $25 (variant
+    // LS_VARIANT_MCP_PRO). Store UI should match until Pro/Forensics/Team are
+    // created as separate dashboard products with license keys enabled.
+    priceCents: 2500
   },
   "mcp-forensics": {
     name: "SassyMCP Forensics",
     mode: "payment",
     description: "Forensics add-on: security audit + registry modules, stacks on Free or Pro",
-    priceCents: 2900
+    priceCents: 2900,
+    // No dedicated LS product yet (API cannot create products). Refuse checkout
+    // with a clear message instead of the generic "briefly offline" 503.
+    available: false
   },
   "mcp-team": {
     name: "SassyMCP Team",
     mode: "payment",
     description: "SassyMCP site license — Pro + Forensics for up to 10 machines",
-    priceCents: 19900
+    priceCents: 19900,
+    available: false
   }
 };
 
@@ -715,7 +722,8 @@ async function handleCheckout(request, env, corsHeaders) {
             ref,
             product,
             product_name: productInfo.name,
-            billing: billing || "",
+            // LS requires every custom_* value to be a non-empty string.
+            billing: String(billing || (isSubscription ? "monthly" : "once")),
           },
         },
         checkout_options: {

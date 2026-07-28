@@ -171,43 +171,43 @@ footer a{color:var(--text-dim)}
         <span class="ribbon">REPLACES 75+</span>
         <span class="tag">All 270 tools</span>
         <h3>SassyMCP Pro</h3>
-        <div class="price"><span class="amount">$49</span><span class="period">one-time</span></div>
-        <p class="desc">Everything in Free plus every paid tool group — the complete automation surface.</p>
+        <div class="price"><span class="amount">$25</span><span class="period">one-time</span></div>
+        <p class="desc">Everything in Free plus every paid tool group — the complete automation surface. Matches the live Lemon Squeezy &ldquo;SassyMCP&rdquo; SKU.</p>
         <ul class="feature-list">
           <li>Full GitHub API — 80 tools</li>
           <li>Android control, vision, OCR, web inspector</li>
           <li>Remote Linux SSH, system monitoring, crosslink</li>
           <li>Activates on 2 machines you own</li>
         </ul>
-        <button class="btn btn-primary" data-buy="mcp-pro">Buy SassyMCP Pro — $49</button>
+        <button class="btn btn-primary" data-buy="mcp-pro">Buy SassyMCP Pro — $25</button>
       </article>
 
-      <article class="product">
+      <article class="product" style="opacity:0.75">
         <span class="tag">Add-on</span>
         <h3>Forensics Add-on</h3>
         <div class="price"><span class="amount">+$29</span><span class="period">one-time</span></div>
-        <p class="desc">Stacks additively on Free or Pro — the security-audit and registry modules.</p>
+        <p class="desc">Stacks additively on Free or Pro — the security-audit and registry modules. Checkout paused until the Lemon Squeezy product is created.</p>
         <ul class="feature-list">
           <li>APK inspection, cert validation, hash + permission audit</li>
           <li>Defender / firewall status</li>
           <li>Registry read / write / export + autorun forensics</li>
           <li>Buy any time — stacks on your existing license</li>
         </ul>
-        <button class="btn btn-primary" data-buy="mcp-forensics">Add Forensics — $29</button>
+        <button class="btn btn-primary" disabled title="Lemon Squeezy product not created yet">Coming soon — $29</button>
       </article>
 
-      <article class="product">
+      <article class="product" style="opacity:0.75">
         <span class="tag">Site license</span>
         <h3>SassyMCP Team</h3>
         <div class="price"><span class="amount">$199</span><span class="period">one-time</span></div>
-        <p class="desc">Pro + Forensics for up to 10 machines, one key to manage.</p>
+        <p class="desc">Pro + Forensics for up to 10 machines, one key to manage. Checkout paused until the Lemon Squeezy product is created.</p>
         <ul class="feature-list">
           <li>Pro for up to 10 machines</li>
           <li>Forensics add-on included for the whole team</li>
           <li>One key — deactivate and reassign seats any time</li>
           <li>Best value for shops and teams</li>
         </ul>
-        <button class="btn btn-primary" data-buy="mcp-team">Buy Team — $199</button>
+        <button class="btn btn-primary" disabled title="Lemon Squeezy product not created yet">Coming soon — $199</button>
       </article>
 
     </div>
@@ -366,9 +366,7 @@ footer a{color:var(--text-dim)}
   "@type":"ItemList",
   "name":"Sassy Consulting LLC Store",
   "itemListElement":[
-    {"@type":"Product","name":"SassyMCP Pro","offers":{"@type":"Offer","price":"49","priceCurrency":"USD"}},
-    {"@type":"Product","name":"SassyMCP Forensics Add-on","offers":{"@type":"Offer","price":"29","priceCurrency":"USD"}},
-    {"@type":"Product","name":"SassyMCP Team","offers":{"@type":"Offer","price":"199","priceCurrency":"USD"}},
+    {"@type":"Product","name":"SassyMCP Pro","offers":{"@type":"Offer","price":"25","priceCurrency":"USD"}},
     {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD"}},
     {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}}
   ]
@@ -379,12 +377,10 @@ footer a{color:var(--text-dim)}
 (function () {
   // Canonical catalog — keep slugs in sync with PRODUCTS in src/worker.js.
   var CATALOG = {
-    "mcp-pro":         { name: "SassyMCP Pro",          price: "$49"  },
-    "mcp-forensics":   { name: "SassyMCP Forensics Add-on", price: "$29" },
-    "mcp-team":        { name: "SassyMCP Team",         price: "$199" },
+    "mcp-pro":         { name: "SassyMCP Pro",          price: "$25"  },
     "sassy-talk":      { name: "Sassy-Talk",            price: "$3.99"   },
     "winforensics":    { name: "WinForensics-Pro",      price: "$2"   }
-    // "website-creator" intentionally absent — no shippable artifact yet.
+    // mcp-forensics / mcp-team / website-creator: no live LS product yet.
   };
 
   var modal    = document.getElementById("modal");
