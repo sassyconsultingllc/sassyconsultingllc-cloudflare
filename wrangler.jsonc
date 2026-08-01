@@ -66,8 +66,8 @@
     // Canonical-key aliases. Bump these on each release; the public URLs
     // (`sassytalkie.apk`, `sassytalkie.aab`) automatically serve the new
     // version. Set blank ("") to fall through to the literal canonical key.
-    "LATEST_ANDROID_APK": "sassy-talk/android/sassytalkie-v2.9.0.apk",
-    "LATEST_ANDROID_AAB": "sassy-talk/android/sassytalkie-v2.9.0.aab",
+    "LATEST_ANDROID_APK": "sassy-talk/android/sassytalkie-v3.1.15.apk",
+    "LATEST_ANDROID_AAB": "sassy-talk/android/sassytalkie-v3.1.15.aab",
     "LATEST_WINDOWS_MSI": "",
     "LATEST_WINDOWS_EXE": "",
     // WinForensics gated download + updater artifact (GATED bucket key).
