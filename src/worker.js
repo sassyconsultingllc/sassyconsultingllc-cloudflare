@@ -35,7 +35,7 @@ const PRODUCTS = {
     name: "WinForensics",
     mode: "payment",
     description: "Digital forensics toolkit for Windows",
-    priceCents: 200,
+    priceCents: 999,
     lsFallbackOk: true
   },
   "website-creator": {
@@ -44,6 +44,18 @@ const PRODUCTS = {
     description: "AI-powered WordPress builder with security hardening",
     // No shippable artifact exists yet (no plugin zip in any repo or R2).
     // Checkout is refused until there is something to deliver.
+    available: false
+  },
+  "sector-scope": {
+    name: "SectorScope",
+    mode: "payment",
+    description: "Real-time disk activity monitor with a defrag-style cluster map",
+    priceCents: 999,
+    // Priced and published in Lemon Squeezy (variant 1874036), but not
+    // sellable from here yet: the crates carry no licensing/activation code,
+    // there is no GitHub release, and no artifact under any R2 download alias.
+    // A purchase today would mint a key nothing validates and hand the buyer
+    // no binary. Flip to available:true once activation + a hosted build exist.
     available: false
   },
   // SassyMCP — all-or-nothing as of v1.13.0. The only commercial SKU is an

@@ -9,7 +9,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Store — Every Sassy Consulting Product and Its Price</title>
-<meta name="description" content="Every product we ship and what it costs. SassyMCP free (274 tools), optional $25 supporter, Sassy-Talk $3.99, WinForensics $2. One-time, own forever.">
+<meta name="description" content="Every product we ship and what it costs. SassyMCP free (274 tools), optional $25 supporter, Sassy-Talk $3.99, WinForensics $9.99. One-time, own forever.">
 <link rel="canonical" href="https://sassyconsultingllc.com/store">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
@@ -183,7 +183,8 @@ footer a{color:var(--text-dim)}
         <tbody>
           <tr><td><a href="#sassymcp">SassyMCP</a></td><td><strong>Free</strong> &mdash; all 274 tools</td><td>v1.14.2 shipping. Optional <strong>$25</strong> supporter license (badge + 2 seats, unlocks nothing).</td></tr>
           <tr><td><a href="#apps">Sassy-Talk</a></td><td><strong>$3.99</strong> one-time</td><td>Android live on Google Play (free install, in-app unlock). Direct license key by request &mdash; card checkout is being re-wired. Windows build not released.</td></tr>
-          <tr><td><a href="#apps">WinForensics-Pro</a></td><td><strong>$2</strong> one-time</td><td>Windows GUI v0.5.2 shipping. Direct license key by request &mdash; card checkout is being re-wired.</td></tr>
+          <tr><td><a href="#apps">WinForensics-Pro</a></td><td><strong>$9.99</strong> one-time</td><td>Windows GUI v0.5.2 shipping. Direct license key by request &mdash; card checkout is being re-wired.</td></tr>
+          <tr><td><a href="#apps">SectorScope</a></td><td><strong>$9.99</strong> one-time</td><td>v0.2.0, Windows + macOS. Built and priced, but not on sale yet &mdash; it has no activation and no published build, so we will not take money for it.</td></tr>
           <tr><td><a href="/browser">Sassy Browser</a></td><td><strong>Free</strong> &mdash; donations fund it</td><td>v0.13.2, in active development. Unsigned Windows dev build only; no signed installer yet.</td></tr>
           <tr><td><a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe">Sassy Brain</a></td><td><strong>Free</strong></td><td>v0.2.1 Windows installer, direct download.</td></tr>
           <tr><td>Foodie Finder</td><td><strong>Free</strong></td><td>Live on Google Play. No ads, no in-app purchases.</td></tr>
@@ -255,7 +256,7 @@ footer a{color:var(--text-dim)}
         <span class="tag">Windows forensics</span>
         <h3>WinForensics-Pro</h3>
         <p class="desc">Scans your Windows system for compromise, hidden files and suspicious activity, then writes a readable report.</p>
-        <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <div class="price"><span class="amount">$9.99</span><span class="period">one-time</span></div>
         <div class="note"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day.</div>
         <ul class="feature-list">
           <li>Windows GUI build v0.5.2</li>
@@ -263,7 +264,22 @@ footer a{color:var(--text-dim)}
           <li>VirusTotal lookup, quarantine &amp; restore</li>
           <li>STIX2 + HTML reports, lifetime license</li>
         </ul>
-        <a class="btn btn-primary" href="/contact?product=winforensics">Request checkout link — $2</a>
+        <a class="btn btn-primary" href="/contact?product=winforensics">Request checkout link — $9.99</a>
+      </article>
+
+      <article class="product">
+        <span class="tag">Disk forensics &middot; Windows + macOS</span>
+        <h3>SectorScope</h3>
+        <p class="desc">Real-time disk activity monitor with a defrag-style cluster map and live per-IO capture.</p>
+        <div class="price"><span class="amount">$9.99</span><span class="period">one-time, when it ships</span></div>
+        <ul class="feature-list">
+          <li>Defrag-style cluster map of live disk activity</li>
+          <li>Per-IO capture with on-disk location tagging</li>
+          <li>3-layer content decode HUD</li>
+          <li>Console (ratatui) and GUI (Slint) over one engine</li>
+          <li>v0.2.0 &mdash; no activation or published build yet</li>
+        </ul>
+        <span class="btn btn-ghost" style="cursor:default" aria-disabled="true">Not on sale yet</span>
       </article>
 
       <article class="product" style="opacity:0.75">
@@ -409,9 +425,10 @@ footer a{color:var(--text-dim)}
     {"@type":"Product","name":"SassyMCP","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
     {"@type":"Product","name":"SassyMCP Supporter","offers":{"@type":"Offer","price":"25","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
     {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
-    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
+    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"9.99","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
     {"@type":"Product","name":"Sassy Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/PreOrder"}},
     {"@type":"Product","name":"Sassy Brain","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+    {"@type":"Product","name":"SectorScope","offers":{"@type":"Offer","price":"9.99","priceCurrency":"USD","availability":"https://schema.org/PreOrder"}},
     {"@type":"Product","name":"Website Creator","offers":{"@type":"Offer","price":"2","priceCurrency":"USD","availability":"https://schema.org/PreOrder"}}
   ]
 }
