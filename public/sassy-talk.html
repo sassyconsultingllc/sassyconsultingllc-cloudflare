@@ -8,8 +8,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sassy-Talk | Encrypted Walkie-Talkie</title>
-    <meta name="description" content="AES-256-GCM encrypted voice chat over local WiFi. No servers, no accounts, no data collection.">
+    <title>Sassy-Talk — Encrypted Push-to-Talk for Android</title>
+    <link rel="canonical" href="https://sassyconsultingllc.com/sassy-talk">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sassyconsultingllc.com/sassy-talk">
+    <meta property="og:title" content="Sassy-Talk — Encrypted Push-to-Talk for Android">
+    <meta property="og:description" content="AES-256-GCM encrypted push-to-talk. Three transports — WiFi multicast, Bluetooth, and cellular relay — so you stay connected on or off a network.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta property="og:site_name" content="Sassy Consulting LLC">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sassy-Talk — Encrypted Push-to-Talk for Android">
+    <meta name="twitter:description" content="AES-256-GCM encrypted push-to-talk. Three transports — WiFi multicast, Bluetooth, and cellular relay — so you stay connected on or off a network.">
+    <meta name="twitter:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta name="description" content="AES-256-GCM encrypted push-to-talk. Three transports — WiFi multicast, Bluetooth, and cellular relay — so you stay connected on or off a network.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -520,7 +531,7 @@
         </h1>
         
         <p class="hero-sub">
-            Military-grade AES-256-GCM encryption over local WiFi. No servers, 
+            Military-grade AES-256-GCM encryption across WiFi, Bluetooth and cellular. No accounts, 
             no accounts, no data collection. Just secure communication.
         </p>
         
@@ -531,13 +542,13 @@
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Download Now — $3.99
+                Get Sassy-Talk
             </a>
         </div>
         
         <div class="price-hero">
             <div class="price">$3.99</div>
-            <div class="price-sub">One-time purchase. Lifetime license. Up to 3 devices.</div>
+            <div class="price-sub">One-time purchase. Lifetime license. Up to 3 devices.<br><span style="opacity:0.75;font-size:0.92em">The Android app is also free to install on Google Play with an in-app unlock.</span></div>
         </div>
         
         <div class="hero-stats">
@@ -550,8 +561,8 @@
                 <div class="stat-label">Channels</div>
             </div>
             <div class="stat">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Servers</div>
+                <div class="stat-value">3</div>
+                <div class="stat-label">Transports</div>
             </div>
             <div class="stat">
                 <div class="stat-value">0</div>
@@ -573,8 +584,8 @@
             </div>
             <div class="feature-card">
                 <div class="feature-icon">LAN</div>
-                <h3>No Internet Required</h3>
-                <p>Perfect for offline environments, the encrypted communication is between the two (or more) devices, no servers or outside listeners.</p>
+                <h3>Three Ways to Stay Connected</h3>
+                <p>WiFi multicast when you share a network, Bluetooth when you don&rsquo;t, and cellular through our Cloudflare relay when you&rsquo;re apart. On a LAN or over Bluetooth nothing leaves the room; the relay only carries traffic it cannot read.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">CH</div>
@@ -584,7 +595,7 @@
             <div class="feature-card">
                 <div class="feature-icon">0</div>
                 <h3>Zero Data Collection</h3>
-                <p>No accounts, no tracking, no analytics. We never see your data because it never leaves your network.</p>
+                <p>No accounts, no tracking, no analytics. Keys are exchanged device-to-device, so even when a call is relayed over cellular we are passing ciphertext we have no way to open.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">KEY</div>
@@ -610,10 +621,10 @@
                         <tr><td>Encryption</td><td>AES-256-GCM (Galois/Counter Mode)</td></tr>
                         <tr><td>Key Exchange</td><td>QR-based pre-shared key + ECDH X25519</td></tr>
                         <tr><td>Audio Codec</td><td>IMA ADPCM (4:1 compression, low latency)</td></tr>
-                        <tr><td>Network</td><td>WiFi Direct · WiFi multicast · Cellular relay</td></tr>
+                        <tr><td>Network</td><td>WiFi multicast (LAN) · Bluetooth · cellular via Cloudflare relay</td></tr>
                         <tr><td>Language</td><td>Rust (memory-safe)</td></tr>
-                        <tr><td>Platforms</td><td>Android 8.0+, Windows 10/11</td></tr>
-                        <tr><td>Install Size</td><td>~15 MB (Android), ~25 MB (Windows)</td></tr>
+                        <tr><td>Platforms</td><td>Android 8.0+ (shipping). Windows client still in development &mdash; no build released.</td></tr>
+                        <tr><td>Install Size</td><td>~18 MB (Android APK)</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -623,10 +634,13 @@
     <section id="download">
         <span class="section-label">Download</span>
         <h2 class="section-title" style="text-align: center;">Get Sassy-Talk for your platform</h2>
-        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Purchase a license ($3.99), or enter a promo code in the app for friends &amp; family access.</p>
-        
-        <div style="text-align: center; margin-bottom: 2rem;">
-            <button onclick="buyProduct('sassy-talk')" class="btn btn-primary btn-large">Buy License — $3.99</button>
+        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Install free from Google Play, buy a $3.99 lifetime license key, or enter a promo code in the app for friends &amp; family access.</p>
+
+        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 1.5rem;padding:0.85rem 1.1rem;border:1px solid #333;border-left:3px solid #22c55e;border-radius:8px;font-size:0.9rem;"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The $3.99 price is real &mdash; ask us and we&rsquo;ll send a direct checkout link, usually the same day.</p>
+
+        <div style="text-align: center; margin-bottom: 2rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+            <a href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" class="btn btn-primary btn-large">Install free on Google Play</a>
+            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Request license link — $3.99</button>
         </div>
         
         <div id="license-gate" style="text-align: center; margin-top: 1.5rem;">
@@ -644,14 +658,14 @@
                 <div class="download-card">
                     <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-2.12-1.1-3.98-2.77-5.04h.3zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg></div>
                     <h3 id="android">Android</h3>
-                    <p>APK for Android 7.0+</p>
+                    <p>APK for Android 8.0+</p>
                     <a id="apk-download" href="#" class="btn btn-primary">Download APK</a>
                 </div>
                 <div class="download-card">
                     <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><rect x="1" y="1" width="10" height="10" rx="1.5"/><rect x="13" y="1" width="10" height="10" rx="1.5"/><rect x="1" y="13" width="10" height="10" rx="1.5"/><rect x="13" y="13" width="10" height="10" rx="1.5"/></svg></div>
                     <h3>Windows</h3>
-                    <p>MSI for Windows 10/11</p>
-                    <a id="msi-download" href="#" class="btn btn-primary">Download MSI</a>
+                    <p>In development &mdash; no build released yet</p>
+                    <span id="msi-download" class="btn btn-secondary" style="cursor:default;opacity:0.6" aria-disabled="true">Not available yet</span>
                 </div>
             </div>
         </div>
@@ -661,7 +675,8 @@
         <h2>Secure communication &mdash; $3.99 forever</h2>
         <p>No subscriptions and no hidden fees, just privacy you can count on.</p>
         <div class="cta-buttons">
-            <button onclick="buyProduct('sassy-talk')" class="btn btn-primary btn-large">Buy Now — $3.99</button>
+            <a href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" class="btn btn-primary btn-large">Install free on Google Play</a>
+            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Request license link — $3.99</button>
         </div>
     </section>
 
@@ -701,8 +716,12 @@
                 if (data.valid) {
                     document.getElementById('license-gate').style.display = 'none';
                     document.getElementById('download-links').style.display = 'block';
-                    document.getElementById('apk-download').href = '/download/sassytalk/android/SassyTalk-latest.apk?key=' + encodeURIComponent(key);
-                    document.getElementById('msi-download').href = '/download/sassytalk/windows/SassyTalk-1.0.0-x64.msi?key=' + encodeURIComponent(key);
+                    // Canonical alias keys served by the worker (see the alias
+                    // map in src/worker.js). The old /download/sassytalk/...
+                    // /SassyTalk-latest.apk path 404'd — the bucket prefix is
+                    // `sassy-talk` and the file is `sassytalkie.apk`.
+                    document.getElementById('apk-download').href = '/download/sassy-talk/android/sassytalkie.apk?key=' + encodeURIComponent(key);
+                    // No Windows build has shipped, so there is nothing to link.
                 } else {
                     errorEl.textContent = data.error || 'Invalid license key';
                     errorEl.style.display = 'block';
@@ -723,5 +742,26 @@
             }
         })();
     </script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "SoftwareApplication",
+ "name": "Sassy-Talk",
+ "applicationCategory": "CommunicationApplication",
+ "operatingSystem": "Android 8.0+",
+ "description": "AES-256-GCM encrypted push-to-talk. Transports over WiFi multicast on a LAN, Bluetooth, and cellular through a Cloudflare relay.",
+ "url": "https://sassyconsultingllc.com/sassy-talk",
+ "downloadUrl": "https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie",
+ "offers": {
+  "@type": "Offer",
+  "price": "3.99",
+  "priceCurrency": "USD",
+  "availability": "https://schema.org/LimitedAvailability"
+ },
+ "publisher": {
+  "@id": "https://sassyconsultingllc.com/#organization"
+ }
+}
+</script>
 </body>
 </html>

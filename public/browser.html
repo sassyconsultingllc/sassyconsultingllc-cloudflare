@@ -8,19 +8,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sassy Browser — Open, Edit, Save, Print 200+ Formats. Built-in Ad Blocker. Zero Subscriptions.</title>
+    <title>Sassy Browser — Pure-Rust Browser & File Viewer (v0.13.2)</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/browser">
-    <meta name="description" content="A privacy-first desktop browser built in pure Rust. Opens and edits PDFs, images, Word docs, spreadsheets, PDB molecules, CAD files and 200+ formats natively. Built-in ad blocker, user script manager, password vault. No Chrome. No Google. No subscriptions.">
-    <meta name="keywords" content="PDF editor free, image editor free, DOCX editor free, PDB viewer, molecular viewer, Chrome alternative, Adobe alternative, Microsoft 365 alternative, secure browser, Rust browser, ad blocker built-in, tampermonkey alternative, ublock alternative, web3 browser, RAW photo editor, DICOM viewer, CAD viewer, privacy browser, open source browser">
+    <meta name="description" content="A privacy-first desktop browser written in pure Rust, in active development. 200+ file formats, built-in ad blocker, no Chromium. Unsigned dev build.">
+    <meta name="keywords" content="PDF editor free, image editor free, DOCX editor free, PDB viewer, molecular viewer, Chrome alternative, Adobe alternative, Microsoft 365 alternative, secure browser, Rust browser, ad blocker built-in, tampermonkey alternative, ublock alternative, web3 browser, RAW photo editor, DICOM viewer, CAD viewer, privacy browser, rust browser engine">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sassyconsultingllc.com/browser">
-    <meta property="og:title" content="Sassy Browser — One Browser Replaces $15K/yr in Software">
-    <meta property="og:description" content="Open, edit, save, print 200+ file formats. PDF editor, image editor, document editor, molecular viewer. Built-in ad blocker. No subscriptions. Pure Rust.">
+    <meta property="og:title" content="Sassy Browser — A Pure-Rust Browser &amp; File Viewer, Built in the Open About Its Gaps">
+    <meta property="og:description" content="Opens 200+ file formats — PDF, image, document and molecular viewers, built-in ad blocker, no subscriptions, no Chromium. v0.13.2, in active development: unsigned Windows dev build, honest Done/Partial/Planned matrix on /coming-soon.">
     <meta property="og:image" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
     <meta property="og:site_name" content="Sassy Consulting LLC">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sassy Browser — The Browser That Replaces Everything">
-    <meta name="twitter:description" content="200+ file formats. Edit, save, print. Built-in ad blocker. No subscriptions. Pure Rust.">
+    <meta name="twitter:title" content="Sassy Browser — Pure Rust, In Development, Honest About It">
+    <meta name="twitter:description" content="200+ file formats. Built-in ad blocker. No subscriptions. Pure Rust. v0.13.2 dev build — see the real feature matrix before you download.">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org", "@type": "SoftwareApplication",
@@ -28,7 +28,7 @@
         "applicationCategory": "BrowserApplication", "operatingSystem": "Windows, Linux",
         "url": "https://sassyconsultingllc.com/browser",
         "downloadUrl": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
-        "softwareVersion": "0.13.1",
+        "softwareVersion": "0.13.2",
         "author": {"@type": "Organization", "name": "Sassy Consulting LLC"},
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/OnlineOnly"}
     }
@@ -278,7 +278,7 @@
             <a href="#savings">Savings</a>
             <a href="#features">Features</a>
             <a href="#security">Security</a>
-            <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+            <a href="/coming-soon">Build status</a>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-dl">Dev build</a>
         </div>
         <button class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
@@ -290,7 +290,7 @@
     <div class="hero-glow"></div>
     <div class="hero-grid-bg"></div>
     <div class="hero-content">
-        <div class="pill pill-gold"><span class="pill-dot"></span>Replaces $15,248/year in software subscriptions</div>
+        <div class="pill pill-gold"><span class="pill-dot"></span>Aiming to replace $15,248/year in subscriptions &mdash; see how far along we are</div>
         <h1 class="hero-h1">
             <span class="h1-italic h1-dim">One browser.</span><br>
             <span class="h1-green">Open. Edit. Save. Print.</span><br>
@@ -298,22 +298,22 @@
         </h1>
         <p class="hero-sub">
             Open <strong>any file. Edit it. Print it. Save it.</strong> PDFs, photos, Word docs, spreadsheets,
-            molecular structures, 3D models — <em>200+ formats</em>, full editing, zero extra software.
+            molecular structures, 3D models — <em>200+ formats</em> read natively, editing depth varies by format.
             Built-in ad blocker and user script manager powerful enough to replace uBlock Origin and Tampermonkey.
             No Chrome. No Google. No subscriptions.
             <strong>Simple enough for your parents. Deep enough for your engineers.</strong>
         </p>
         <div class="hero-actions">
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">
-                Download Windows dev build — v0.13.1 (clean)
+                Download Windows dev build — v0.13.2 (clean)
             </a>
-            <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source — ACE</a>
+            <a href="/coming-soon" class="btn btn-outline btn-lg">See the honest build status</a>
         </div>
         <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--text2);">Unsigned Windows <strong>dev</strong> exe (~44&nbsp;MB) on R2 — not Authenticode-signed, not the stable update channel. Signed stable manifest is still 404. See <a href="/coming-soon" style="color:var(--green);">/coming-soon</a> for the honest feature matrix.</p>
         <div class="stat-bar">
             <div class="stat-item"><div class="stat-val">200,424</div><div class="stat-lbl">Lines of Rust</div></div>
             <div class="stat-item"><div class="stat-val">230</div><div class="stat-lbl">Source Files</div></div>
-            <div class="stat-item"><div class="stat-val">0.13.1</div><div class="stat-lbl">Product version</div></div>
+            <div class="stat-item"><div class="stat-val">0.13.2</div><div class="stat-lbl">Product version</div></div>
             <div class="stat-item"><div class="stat-val">Dev</div><div class="stat-lbl">Public download</div></div>
         </div>
     </div>
@@ -366,8 +366,8 @@
 <!-- CAPABILITIES -->
 <div class="wrap" id="capabilities">
     <div class="section-eyebrow cyan">What it opens</div>
-    <h2 class="sh">200+ Formats. Open. Edit. Save. Print.</h2>
-    <p class="sd">Not just a viewer. Full editing, export, and printing for every file type. This is the software replacement engine.</p>
+    <h2 class="sh">200+ Formats. Open Everything, Edit What&rsquo;s Ready.</h2>
+    <p class="sd">More than a viewer for most of these — editing and export depth varies by format, and each card below says which. The <a href="/coming-soon" style="color:var(--green);">Done / Partial / Planned matrix</a> is the authority.</p>
     <div class="caps-grid">
         <div class="cap-card">
             <div class="cap-icon">🖼️</div>
@@ -381,7 +381,7 @@
             <h4>Documents <span class="cap-sub">— like LibreOffice, inside your browser</span></h4>
             <div class="formats">DOCX · DOC · ODT · RTF · WPD · WPS · TXT · Markdown · HTML</div>
             <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Edit</span><span class="tag tag-s">Save DOCX/ODT/RTF/PDF/MD</span><span class="tag tag-p">Print</span></div>
-            <p class="cap-note">Rich text editing with styles, headings, lists, tables, images, find/replace. Replaces Microsoft Word and LibreOffice Writer.</p>
+            <p class="cap-note">Rich text editing with styles, headings, lists, tables, images, find/replace. Aimed at Word and LibreOffice Writer &mdash; useful today, not yet parity.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📽️</div>
@@ -395,7 +395,7 @@
             <h4>PDFs <span class="cap-sub">— full editing suite</span></h4>
             <div class="formats">PDF (all versions) · XPS · OXPS</div>
             <div class="tag-row"><span class="tag tag-v">View</span><span class="tag tag-e">Annotate</span><span class="tag tag-e">Highlight</span><span class="tag tag-e">Forms</span><span class="tag tag-s">Save</span><span class="tag tag-p">Print</span></div>
-            <p class="cap-note">Annotations, highlights, sticky notes, freehand drawing, text search, form filling, merge/split pages. Replaces Adobe Acrobat Pro at $240/yr.</p>
+            <p class="cap-note">Annotations, highlights, sticky notes, freehand drawing, text search, form filling, merge/split pages. Covers most of what people pay Acrobat Pro $240/yr for &mdash; not full Acrobat parity.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📈</div>
@@ -444,7 +444,7 @@
             <h4>Audio &amp; Video</h4>
             <div class="formats">Audio: MP3 · FLAC · WAV · OGG · AAC · OPUS · AIFF · M4A · WMA<br>Video: MP4 · MKV · WebM · AVI · MOV · WMV · FLV · M4V</div>
             <div class="tag-row"><span class="tag tag-v">Play</span><span class="tag tag-v">Waveform</span><span class="tag tag-v">Metadata</span><span class="tag tag-v">Chapters</span></div>
-            <p class="cap-note">Full media player with waveform visualization, metadata inspector, chapter navigation, speed controls.</p>
+            <p class="cap-note"><strong>Planned, not shipping.</strong> In-page <code>&lt;video&gt;</code> and the standalone media player are on the roadmap; today these files are recognised but do not play. Tracked as Planned on /coming-soon.</p>
         </div>
         <div class="cap-card">
             <div class="cap-icon">📚</div>
@@ -542,7 +542,7 @@
         <div class="tool-card">
             <div class="tool-icon">🤖</div>
             <h3>AI Integration</h3>
-            <p>Optional assistant powered by Claude (Anthropic) and Grok (xAI). Sandboxed file access — the AI sees only what you share. Git integration for code context. Voice input via Whisper. Your conversations stay private.</p>
+            <p>Optional assistant powered by Claude (Anthropic) and Grok (xAI), with a multi-agent orchestrator (Voice / Coder / Auditor / Orchestrator) and an encrypted MCP key vault. Sandboxed file access — the AI sees only what you share. Your conversations stay private.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">👨‍👩‍👧‍👦</div>
@@ -558,12 +558,12 @@
         <div class="tool-card">
             <div class="tool-icon">📱</div>
             <h3>Phone Sync</h3>
-            <p>Share tabs, bookmarks, and files between desktop and phone via Tailscale P2P — no cloud server, no accounts on our systems, fully end-to-end encrypted. Works on any network, anywhere.</p>
+            <p><strong>Partial &mdash; still hardening.</strong> Share tabs, bookmarks, and files between desktop and phone over WireGuard (Tailscale as fallback) — no cloud server, no accounts on our systems. The pairing path works; treat it as early.</p>
         </div>
         <div class="tool-card">
             <div class="tool-icon">🎤</div>
-            <h3>Voice Input via Whisper</h3>
-            <p>Dictate into any text field using on-device Whisper speech recognition. GPU-accelerated for fast transcription. Your voice never leaves your machine.</p>
+            <h3>Voice Input via Whisper <span style="font-size:0.7em;opacity:0.7">(planned)</span></h3>
+            <p>Dictating into any text field with on-device Whisper is on the roadmap, wired to the Voice agent. Not in the current dev build &mdash; listed here so you know where it sits.</p>
         </div>
     </div>
 </div>
@@ -583,9 +583,9 @@
                 <tr><td>Sends telemetry to Google</td><td class="y">Yes</td><td class="m">Some</td><td class="m">Anonymised; underlying webview may phone home</td><td class="n sassy-col">Zero</td></tr>
                 <tr><td>Native ad blocker</td><td class="n">No</td><td class="y">Yes</td><td class="m">Tracker block only</td><td class="y sassy-col">Yes — EasyList + EasyPrivacy + Fanboy</td></tr>
                 <tr><td>User script manager (Tampermonkey-equiv)</td><td class="n">Extension</td><td class="n">Extension</td><td class="n">No</td><td class="y sassy-col">Native, sandboxed</td></tr>
-                <tr><td>PDF editor</td><td class="n">View only</td><td class="n">View only</td><td class="n">View only (system webview)</td><td class="y sassy-col">Full edit / annotate / merge / sign</td></tr>
+                <tr><td>PDF editor</td><td class="n">View only</td><td class="n">View only</td><td class="n">View only (system webview)</td><td class="y sassy-col">View / annotate / forms / merge-split</td></tr>
                 <tr><td>Image editor (PSD, RAW)</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 30+ formats</td></tr>
-                <tr><td>DOCX / XLSX / PPTX editing</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — full edit + save</td></tr>
+                <tr><td>DOCX / XLSX / PPTX editing</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Partial — viewers + DOCX/ODT/RTF edit</td></tr>
                 <tr><td>PDB / MOL / DICOM viewer</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — 3D interactive</td></tr>
                 <tr><td>REST API client</td><td class="n">No</td><td class="n">No</td><td class="n">No</td><td class="y sassy-col">Yes — built-in Postman-equiv</td></tr>
                 <tr><td>Password vault (local encrypted)</td><td class="m">Cloud-only</td><td class="m">Basic</td><td class="m">Autofill via OS keychain</td><td class="y sassy-col">Yes — ChaCha20-Poly1305, Argon2id, local</td></tr>
@@ -601,7 +601,7 @@
             </tbody>
         </table>
     </div>
-    <p class="sd" style="margin-top:1.25rem;font-size:0.82rem;opacity:0.7;">*&nbsp;Chrome and Brave are subsidised by ad revenue. DuckDuckGo is subsidised by their search affiliate model. Sassy Browser has no business model that requires your data — it is open source, MIT licensed, and the binary is the product.</p>
+    <p class="sd" style="margin-top:1.25rem;font-size:0.82rem;opacity:0.7;">*&nbsp;Chrome and Brave are subsidised by ad revenue. DuckDuckGo is subsidised by their search affiliate model. Sassy Browser has no business model that requires your data — there is nothing to monetise but the binary itself. The source is proprietary and the repository is private; the honest build status lives on <a href="/coming-soon">/coming-soon</a>.</p>
 </div>
 
 <hr class="divider">
@@ -646,7 +646,7 @@
             <div class="up-tag">Privacy fork</div>
             <h4>Mullvad Browser</h4>
             <p class="up-meta">Firefox / Tor uplift &middot; shipping</p>
-            <p>Mullvad VPN&rsquo;s collaboration with the Tor Project: a Tor Browser without the Tor network. Strong anti-fingerprinting, hardened defaults. Shares the &ldquo;you own your machine&rdquo; thesis with Sassy Browser. Different scope &mdash; Mullvad is a hardened browser, Sassy is a hardened browser + 100-format viewer + native VPN + AI.</p>
+            <p>Mullvad VPN&rsquo;s collaboration with the Tor Project: a Tor Browser without the Tor network. Strong anti-fingerprinting, hardened defaults. Shares the &ldquo;you own your machine&rdquo; thesis with Sassy Browser. Different scope &mdash; Mullvad is a hardened browser, Sassy is a hardened browser + 100-format viewer + AI, with a native WireGuard VPN still on the roadmap.</p>
         </div>
 
         <div class="upcoming-card">
@@ -709,7 +709,7 @@
     <p class="sd">Security isn't a marketing checkbox — it's baked into the architecture. Pure Rust eliminates entire classes of vulnerabilities that haunt Chrome and Brave.</p>
     <div class="sec-grid">
         <div class="sec-card"><h4>🦀 Memory Safety by Default</h4><p>Written entirely in Rust — no null pointers, no buffer overflows, no use-after-free. The classes of bugs that power 70%+ of browser CVEs simply cannot exist in safe Rust code.</p></div>
-        <div class="sec-card"><h4>🔲 4-Layer Process Sandbox</h4><p>Web content, file viewers, extensions, and AI each run in isolated sandboxes. A compromised webpage cannot reach your files. A malicious script cannot escape its layer.</p></div>
+        <div class="sec-card"><h4>🔲 Capability Sandbox <span style="font-size:0.7em;opacity:0.7">(process isolation planned)</span></h4><p>A page-trust model gates clipboard, downloads and popups, and user scripts run in an isolated in-process context. Per-tab OS <em>process</em> isolation is on the roadmap, not in the current build &mdash; we are not going to call it shipped until it is.</p></div>
         <div class="sec-card"><h4>🚫 Zero Google Dependencies</h4><p>No Chromium. No V8. No SafeBrowsing. No telemetry. No sync servers. No Google APIs. Your browsing data exists only on your machine.</p></div>
         <div class="sec-card"><h4>🛡️ Anti-Fingerprint Engine</h4><p>Canvas, WebGL, AudioContext, and font enumeration fingerprinting are randomized or blocked. Advertisers cannot build a persistent profile of your device across sites.</p></div>
         <div class="sec-card"><h4>🔐 Local Encryption</h4><p>Passwords use ChaCha20-Poly1305 with Argon2id key derivation. Your vault key never leaves your machine. No cloud sync means no breach risk from our servers — because we don't have any.</p></div>
@@ -746,31 +746,45 @@
 <div class="wrap" id="download">
     <div class="section-eyebrow">Get started</div>
     <h2 class="sh">Windows dev build available</h2>
-    <p class="sd">Grab the unsigned v0.13.1 Windows x64 exe from R2 (~44&nbsp;MB). This is a <strong>dev</strong> build — not Authenticode-signed and not published on the signed update channel (<code>/browser/dists/stable/manifest.json</code> is still 404).</p>
+    <p class="sd">Grab the unsigned v0.13.2 Windows x64 exe from R2 (~45&nbsp;MB). This is a <strong>dev</strong> build — not Authenticode-signed and not published on the signed update channel (<code>/browser/dists/stable/manifest.json</code> is still 404).</p>
+
+    <div class="dl-card" style="margin-bottom:1.5rem;">
+        <h4>New in v0.13.2</h4>
+        <ul style="margin:0.5rem 0 0 1.1rem; line-height:1.7;">
+            <li><strong>Fits your screen.</strong> The window no longer opens larger than the display it lands on — a 1366&times;768 laptop was getting a title bar above the top edge. Minimum size dropped from 800&times;600 to 640&times;400, so half-screen snapping works.</li>
+            <li><strong>Interface density.</strong> A new Compact / Comfortable / Spacious control scales toolbars, tabs, and icons <em>without</em> shrinking page text — the old zoom slider could only do both at once. Auto picks a density from your window size.</li>
+            <li><strong>Two-line, rearrangeable toolbar.</strong> Buttons used to clip off the right edge on a narrow window and become unreachable. They now wrap to a second line, and Settings &rarr; Appearance lets you choose which of 16 buttons appear, on which line, in what order.</li>
+            <li><strong>Setup no longer needs a PIN.</strong> Encryption is always on, keyed off a per-install secret in the Windows credential store. Previously, skipping the PIN meant no encryption <em>and</em> a setup wizard that could never be finished. Add, change, or remove a PIN later from Settings.</li>
+            <li><strong>API keys are actually read back.</strong> Keys entered during setup were encrypted to disk and then never loaded, so the AI panel reported "no key" right after you typed one in.</li>
+            <li><strong>Windows "Open with" opens the file.</strong> It was launching the browser to an empty window whenever setup hadn't been completed.</li>
+            <li><strong>Images edit a cached copy.</strong> Opening an image clones it into the cache and edits that, so your original is only touched when you explicitly overwrite it.</li>
+        </ul>
+    </div>
+
     <div class="dl-grid">
         <div class="dl-card main-dl">
             <div class="dl-os">🪟</div>
             <h4>Windows (dev)</h4>
-            <p>v0.13.1 unsigned exe (~44 MB) on R2.</p>
+            <p>v0.13.2 unsigned exe (~44 MB) on R2.</p>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🐧</div>
             <h4>Linux</h4>
-            <p>Build from source. Packages not published.</p>
+            <p>Builds from source internally. No distro packages published.</p>
             <a href="/coming-soon">View build status</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🍎</div>
             <h4>macOS</h4>
-            <p>Planned. Follow the repo for updates.</p>
+            <p>Planned, after Linux packaging settles.</p>
             <a href="/coming-soon">View build status</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">📦</div>
             <h4>Source Code</h4>
-            <p>200,424 lines of Rust. Build it yourself.</p>
-            <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">Open ACE on GitHub</a>
+            <p>200,424 lines of Rust across 230 files. Proprietary &mdash; repository is private today.</p>
+            <a href="/coming-soon">See build status &amp; metrics</a>
         </div>
     </div>
 </div>
@@ -781,7 +795,7 @@
     <p class="sub">No Chromium. No Google telemetry. Dev build available; signed stable still pending.</p>
     <div class="cta-row">
         <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">Download Windows dev build</a>
-        <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline btn-lg" target="_blank" rel="noopener">View Source</a>
+        <a href="/coming-soon" class="btn btn-outline btn-lg">Build status</a>
     </div>
     <a href="/donate" class="support-link" target="_blank" rel="noopener">Support development with a donation</a>
 </section>
@@ -793,7 +807,7 @@
         &copy; 2025&ndash;2026 Sassy Consulting LLC. All rights reserved.
     </div>
     <div class="footer-links">
-        <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+        <a href="/coming-soon">Build status</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/donate" target="_blank" rel="noopener">Donate</a>

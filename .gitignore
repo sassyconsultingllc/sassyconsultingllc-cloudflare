@@ -95,3 +95,6 @@ htmlcov/
 .idea/
 .vagrant/
 .dev.vars
+
+# Snapshot dir written by SassyMCP edit tools — never deploy or commit
+_DELETE_/

@@ -2,9 +2,9 @@
   "$schema_note": "Canonical marketing/product truth for Sassy Browser. Copy to sassyconsultingllc-cloudflare/public/status/ on deploy. Do not invent a second narrative elsewhere.",
   "product": "Sassy Browser",
   "repo": "https://github.com/sassyconsultingllc/ACE",
-  "version": "0.13.1",
-  "as_of": "2026-07-28",
-  "cargo_toml_version": "0.13.1",
+  "version": "0.13.2",
+  "as_of": "2026-07-31",
+  "cargo_toml_version": "0.13.2",
   "download": {
     "public_binaries_available": false,
     "signed_manifest_url": "https://sassyconsultingllc.com/browser/dists/stable/manifest.json",
@@ -18,14 +18,14 @@
       "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
       "filename": "sassy-browser.exe",
       "approx_size_mb": 44.38,
-      "version": "0.13.1",
-      "build_sha": "274877db",
+      "version": "0.13.2",
+      "build_sha": "05a28c3d",
       "dirty": false,
       "channel": "dev",
       "signed": false,
       "sha256": "1C7FB01E2B0B8DF690477E753DFF3F44BF21D8D5EE93E0C8A435474569C19C8B",
       "uploaded_at": "2026-07-28T22:18:12Z",
-      "notes": "Clean (non-dirty) unsigned Windows exe on public R2 from git HEAD 274877db. Not Authenticode-signed; signed update-channel manifest still 404."
+      "notes": "Clean (non-dirty) unsigned Windows exe on public R2 from git HEAD 05a28c3d. Not Authenticode-signed; signed update-channel manifest still 404."
     },
     "notes": "Signed stable channel still 404. Public CTAs may link the unsigned Windows dev build on R2; do not claim signed stable."
   },
@@ -33,13 +33,13 @@
     "loc_rust_src": 200424,
     "source_files_rs": 230,
     "test_attributes": 2276,
-    "wpt_subset_tests": 89,
-    "wpt_subset_passing_recorded": 89,
+    "wpt_subset_tests": 83,
+    "wpt_subset_passing_recorded": 82,
     "compiler_warnings_release": 0,
     "direct_crate_deps": 119,
     "release_binary_windows_x64_mb": 44.38,
     "loc_source": "DataROOM/03-CODEBASE-METRICS.md (2026-07-07 refresh)",
-    "notes": "LOC is src/ Rust only. Test count is #[test] attributes, not a fresh full-suite pass/fail run."
+    "notes": "LOC is src/ Rust only. Test count is #[test] attributes, not a fresh full-suite pass/fail run. WPT subset numbers are the dated, command-attributed figures from smoke-scoreboard.json (cargo test --release wpt_subset, 2026-07-07) — this file previously carried an unsourced 89/89 that contradicted it. Re-run the command and update both files together."
   },
   "engine": {
     "js": "SassyScript tree-walker (production default); optional bytecode VM via \"use vm;\"; Boa removed",
@@ -56,6 +56,8 @@
         { "name": "HTTP/3 / QUIC", "status": "planned", "detail": "UI shows disabled toggle; not implemented.", "meta": "quic" },
         { "name": "Tabbed navigation + groups", "status": "done", "detail": "Tabs, mute, age tooltip, kind label, group collapse.", "meta": "tabs" },
         { "name": "Bookmarks + history", "status": "done", "detail": "Folders, rename, domain chips, per-entry delete, retention.", "meta": "history" },
+        { "name": "Responsive chrome", "status": "done", "detail": "v0.13.2: window fits the monitor it opens on (640x400 floor), Compact/Comfortable/Spacious/Auto interface density that scales bars and icons without scaling text.", "meta": "density" },
+        { "name": "Customisable toolbar", "status": "done", "detail": "v0.13.2: 16 buttons across two rows, hideable and reorderable from Settings, auto-wrapping when the window is narrow. Address bar fixed to row 1.", "meta": "toolbar" },
         { "name": "SassyScript JS engine", "status": "partial", "detail": "~60% ES2020; tree-walker production default; bytecode VM opt-in. Boa removed.", "meta": "src/js" },
         { "name": "CSS cascade + flex/grid", "status": "partial", "detail": "Cascade improving; flex/grid via taffy path still incomplete vs modern sites.", "meta": "cascade" },
         { "name": "DOM events / forms / timers / rAF", "status": "done", "detail": "Interactive egui shell: timers, rAF, click/keyboard, forms, CSS transitions.", "meta": "events" },
@@ -74,6 +76,7 @@
       "items": [
         { "name": "Built-in ad blocker", "status": "done", "detail": "EasyList + tracking + cosmetic.", "meta": "adblock" },
         { "name": "Password vault", "status": "done", "detail": "ChaCha20-Poly1305 + Argon2id + strength meter.", "meta": "vault" },
+        { "name": "Encryption without a PIN", "status": "done", "detail": "v0.13.2: at-rest encryption is always on, keyed off a per-install high-entropy secret in the OS credential store (Windows Credential Manager / Keychain / Secret Service). A PIN is an optional extra lock, addable or removable at any time; setting one re-keys the API-key vault.", "meta": "device-key" },
         { "name": "Cookie inventory", "status": "done", "detail": "Ctrl+Shift+K; raw Set-Cookie wire view.", "meta": "cookies" },
         { "name": "Page trust sandbox", "status": "done", "detail": "Capability gating for clipboard/downloads/popups.", "meta": "sandbox" },
         { "name": "Fingerprint poisoning", "status": "done", "detail": "Canvas/WebGL/audio/fonts; Hunter Mode.", "meta": "poisoning" },
@@ -114,7 +117,7 @@
     {
       "cat": "Platforms & distribution",
       "items": [
-        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.1 clean build 274877db (~44.38 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.2 clean build 05a28c3d (~44.57 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
         { "name": "Linux packages", "status": "partial", "detail": "Builds from source; distro packages not published.", "meta": "linux" },
         { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
         { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },

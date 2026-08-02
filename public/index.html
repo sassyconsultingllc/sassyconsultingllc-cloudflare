@@ -88,7 +88,7 @@
                 "name": "SassyMCP",
                 "applicationCategory": "DeveloperApplication",
                 "operatingSystem": "Windows",
-                "description": "Production-grade Model Context Protocol server. One install patches every MCP client on your machine — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. ~270 tools across file ops, shell, GitHub, Android control, vision, security audit, and persistent cross-session memory. All tool groups unlocked with no key (all-or-nothing); optional $25 supporter license.",
+                "description": "Production-grade Model Context Protocol server. One install patches every MCP client on your machine — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. 274 tools across 18 groups covering file ops, shell, GitHub, Android control, vision, security audit, and persistent cross-session memory. All tool groups unlocked with no key (all-or-nothing); optional $25 supporter license.",
                 "url": "https://sassyconsultingllc.com/store#sassymcp",
                 "offers": {
                     "@type": "Offer",
@@ -141,7 +141,7 @@
                 "name": "Sassy Talk",
                 "applicationCategory": "CommunicationApplication",
                 "operatingSystem": "Android",
-                "description": "Encrypted push-to-talk over local WiFi. AES-256-GCM, no servers, no accounts, no data collection.",
+                "description": "Encrypted push-to-talk for Android. AES-256-GCM over three transports — WiFi multicast on a LAN, Bluetooth, and cellular through our Cloudflare relay. No accounts, no data collection.",
                 "url": "https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie",
                 "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"},
                 "creator": {"@id": "https://sassyconsultingllc.com/#organization"}
@@ -390,13 +390,112 @@
             justify-content: center;
         }
 
+        /* ─────────────────────────────────────────────────────────────
+           Products: a hand-placed composition, not an auto-fit grid.
+           Six columns, and every tile is assigned its span deliberately so
+           the block reads as an editorial layout — a wide flagship, a tall
+           rail beside it, then paired and half-width tiles that break the
+           rhythm. Two tiles are nudged off the baseline so the row edges
+           don't line up like a spreadsheet.
+
+               ┌───────────────────────┬───────────┐
+               │        SassyMCP       │  WinFor-  │
+               ├───────────┬───────────┤  ensics   │
+               │ Sassy-Talk│SassyBrain │  (tall)   │
+               ├───────────┴─┬─────────┴───────────┤
+               │   Browser   │    My Best Sites    │
+               ├───────────┬─┴─────────────────────┤
+               │ Web Creat.│   Network Analysis    │
+               └───────────┴───────────────────────┘
+        ───────────────────────────────────────────────────────────── */
         .products-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2.5rem; /* increased padding / spacing */
-            justify-items: center; /* centered tiles */
+            grid-template-columns: repeat(6, 1fr);
+            gap: 1.75rem;
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        .tile-hero { grid-column: span 4; }
+        .tile-rail { grid-column: span 2; grid-row: span 2; }
+        .tile-duo  { grid-column: span 2; }
+        .tile-half { grid-column: span 3; }
+        .tile-quad { grid-column: span 4; }
+
+        /* Off-baseline nudges — the thing an auto-generated grid never does. */
+        .tile-drop  { margin-top: 2.25rem; }
+        .tile-lift  { margin-bottom: 2.25rem; }
+
+        /* Break the container on purpose. Three tiles run past the 1200px
+           gutter and bleed toward the viewport edge, so the block stops
+           reading as a boxed grid.
+
+           The panel extends; the text does not. Each breaking tile pulls its
+           margin out by --bleed and adds the same amount back as padding on
+           that side, so copy stays aligned to the container edge while the
+           surface runs off-page. The breaking edge drops its radius and
+           border so it reads as continuing past the viewport rather than as
+           a misaligned card. Clipping is on <body>, not the section — clip on
+           the section would just crop the bleed back off again. */
+        :root { --bleed: clamp(0rem, 6vw, 5.5rem); }
+        body { overflow-x: clip; }
+
+        /* .product-card sets width:100%. With an explicit width the box is
+           over-constrained in LTR and a negative margin-right is discarded —
+           only margin-left would shift it. Let the breaking tiles size from
+           their grid area instead so both edges can actually bleed. */
+        .product-card.tile-break-right, .product-card.tile-break-left { width: auto; }
+
+        .product-card.tile-break-right {
+            margin-right: calc(-1 * var(--bleed));
+            padding-right: calc(2.25rem + var(--bleed));
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            border-right-color: transparent;
+        }
+        .product-card.tile-break-left {
+            margin-left: calc(-1 * var(--bleed));
+            padding-left: calc(2.25rem + var(--bleed));
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            border-left-color: transparent;
+        }
+        /* The flagship runs a wider base padding, so it compensates by more. */
+        .product-card.tile-hero.tile-break-left  { padding-left:  calc(2.75rem + var(--bleed)); }
+        .product-card.tile-hero.tile-break-right { padding-right: calc(2.75rem + var(--bleed)); }
+
+        /* The flagship carries more visual weight than its neighbours. */
+        .product-card.tile-hero { padding: 2.75rem; }
+        .tile-hero h3 { font-size: 1.85rem; letter-spacing: -0.02em; }
+        .tile-hero p { font-size: 1rem; }
+
+        /* The rail is vertical: it has room to breathe downward, so the
+           price and tags settle at the bottom instead of floating mid-card. */
+        .product-card.tile-rail { display: flex; flex-direction: column; }
+        .tile-rail p { flex: 1 1 auto; }
+        .tile-rail h3 { font-size: 1.4rem; }
+
+        /* Paired tiles are tighter and quieter by design. */
+        .product-card.tile-duo { padding: 1.75rem; }
+        .tile-duo h3 { font-size: 1.1rem; }
+        .tile-duo p { font-size: 0.9rem; }
+
+        @media (max-width: 1080px) {
+            /* Collapse to a 2-up rhythm, keeping the flagship full-bleed. */
+            .products-grid { grid-template-columns: repeat(2, 1fr); }
+            .tile-hero, .tile-quad { grid-column: span 2; }
+            .tile-rail { grid-column: span 1; grid-row: span 1; }
+            .tile-duo, .tile-half { grid-column: span 1; }
+            .tile-drop, .tile-lift { margin-top: 0; margin-bottom: 0; }
+            /* No room to bleed once the grid is viewport-width — pull the
+               breaking tiles back in and give them their corners back. */
+            .product-card.tile-break-right, .product-card.tile-break-left,
+            .product-card.tile-hero.tile-break-left, .product-card.tile-hero.tile-break-right {
+                margin-right: 0; margin-left: 0;
+                padding-left: 1.75rem; padding-right: 1.75rem;
+                border-radius: 16px;
+                border-color: var(--border-subtle);
+            }
         }
 
         .product-card {
@@ -410,7 +509,7 @@
             position: relative;
             overflow: hidden;
             width: 100%;
-            max-width: 380px; /* keeps cards consistent */
+            /* No max-width: each tile fills the span it was given above. */
         }
 
         .product-card:hover {
@@ -991,7 +1090,7 @@ Sassy Consulting LLC
             <a class="app-tile" href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" data-play-link aria-label="Get Sassy Talk on Google Play">
                 <img class="app-icon-img" src="/images/apps/sassy-talk.png" alt="Sassy Talk app icon" width="512" height="512" loading="lazy">
                 <h3>Sassy Talk</h3>
-                <p>Encrypted push-to-talk over local WiFi. AES-256-GCM, no servers, no accounts.</p>
+                <p>Encrypted push-to-talk over WiFi, Bluetooth or cellular. AES-256-GCM, no accounts.</p>
                 <span class="open-testing-pill"><span class="dot"></span>Live on Google Play</span>
                 <span class="play-badge" aria-hidden="true">
                     <img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="" loading="lazy" width="200" height="64">
@@ -1149,11 +1248,11 @@ Sassy Consulting LLC
         <div class="products-grid">
 
             <!-- SassyMCP -->
-            <div class="product-card">
+            <div class="product-card tile-hero tile-break-left">
                 <span class="product-badge featured">ALL OR NOTHING</span>
                 <h3>SassyMCP</h3>
-                <p>Haven't you always wanted to tell your computer what to do? You made your home smarter, why not your computer? Double-click the installer and every MCP client on your machine gets auto-configured — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. ~270 tools spanning file ops, shell, GitHub, Android control, screen vision, security audit, and persistent cross-session memory — every group unlocked, no key required. Windows-native single .exe, plus DXT bundle and VS Code Marketplace extension. Optional $25 supporter license funds development and shows a badge; it does not unlock tools.</p>
-                <div class="price">Free <span style="color: #34d399; font-size: 0.75em;">full suite · optional $25 supporter</span></div>
+                <p>Haven't you always wanted to tell your computer what to do? You made your home smarter, why not your computer? Double-click the installer and every MCP client on your machine gets auto-configured — Claude Desktop, VS Code Copilot, Cursor, Windsurf, Cline, Continue, Zed, and Grok Desktop. 274 tools across 18 groups spanning file ops, shell, GitHub, Android control, screen vision, security audit, and persistent cross-session memory — every group unlocked, no key required. Windows-native single .exe, plus DXT bundle and VS Code Marketplace extension. Optional $25 supporter license funds development and shows a badge; it does not unlock tools.</p>
+                <div class="price">Free <span style="color: #34d399; font-size: 0.75em;">v1.14.2 · all 274 tools · optional $25 supporter</span></div>
                 <div class="product-tags">
                     <span class="product-tag">MCP</span>
                     <span class="product-tag">Production</span>
@@ -1165,20 +1264,33 @@ Sassy Consulting LLC
             </div>
 
             <!-- WinForensics-Pro -->
-            <a href="/winforensics.html" class="product-card">
+            <a href="/winforensics.html" class="product-card tile-rail tile-break-right">
                 <span class="product-badge featured">Forensics</span>
                 <h3>WinForensics-Pro</h3>
-                <p>Scans your entire Windows system for signs of compromise, hidden files, suspicious activity, and malware — then generates a detailed report you can actually read.</p>
-                <div class="price">$2 one-time</div>
+                <p>Scans your entire Windows system for signs of compromise, hidden files, suspicious activity, and malware — then generates a detailed report you can actually read. Windows GUI build v0.5.2.</p>
+                <div class="price">$2 one-time <span style="color: var(--text-tertiary); font-size: 0.6em;">card checkout offline — email for a link</span></div>
                 <div class="product-tags">
                     <span class="product-tag">Security</span>
                     <span class="product-tag">Windows</span>
-                    <span class="product-tag">Reports</span>
+                    <span class="product-tag">v0.5.2</span>
+                </div>
+            </a>
+
+            <!-- Sassy-Talk — paid license sold here; Android app free on Play -->
+            <a href="/sassy-talk.html" class="product-card tile-duo">
+                <span class="product-badge">Android</span>
+                <h3>Sassy-Talk</h3>
+                <p>Encrypted push-to-talk walkie-talkie. AES-256-GCM across three transports — WiFi multicast on a LAN, Bluetooth, and cellular through our Cloudflare relay — so range is not limited to one network. Live on Google Play, free to install, with a lifetime license key sold here.</p>
+                <div class="price">$3.99 one-time <span style="color: var(--text-tertiary); font-size: 0.6em;">card checkout offline — email for a link</span></div>
+                <div class="product-tags">
+                    <span class="product-tag">Encrypted</span>
+                    <span class="product-tag">Android</span>
+                    <span class="product-tag">Google Play</span>
                 </div>
             </a>
 
             <!-- Sassy Brain -->
-            <a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe" class="product-card">
+            <a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe" class="product-card tile-duo tile-drop">
                 <span class="product-badge new">New</span>
                 <h3>Sassy Brain</h3>
                 <p>Multi-AI consensus engine. 5 providers (Claude, Grok, Gemini, Mistral, HuggingFace) debate and refine, then synthesize one answer. Async steering, encrypted local keys, no telemetry.</p>
@@ -1190,9 +1302,9 @@ Sassy Consulting LLC
                 </div>
             </a>
 
-            <a href="/browser" class="product-card" aria-labelledby="sassy-browser-title" role="article">
+            <a href="/browser" class="product-card tile-half tile-lift tile-break-left" aria-labelledby="sassy-browser-title" role="article">
                 <span class="product-badge featured">Featured</span>
-                <h3 id="sassy-browser-title">Sassy Browser (v0.13.1)</h3>
+                <h3 id="sassy-browser-title">Sassy Browser (v0.13.2)</h3>
                 <p>Privacy-first universal file viewer &amp; secure browser in active development. Honest build status on /coming-soon.</p>
                 <div class="price">In Development &mdash; Needs Funding</div>
                 <div class="product-tags">
@@ -1202,7 +1314,7 @@ Sassy Consulting LLC
                 </div>
             </a>
             
-            <a href="https://mybestsites.online" class="product-card" target="_blank" rel="noopener">
+            <a href="https://mybestsites.online" class="product-card tile-half" target="_blank" rel="noopener">
                 <span class="product-badge new">New</span>
                 <h3>My Best Sites</h3>
                 <p>Create professional websites in 5 minutes. AI-powered content, free hosting, own everything forever.</p>
@@ -1214,10 +1326,11 @@ Sassy Consulting LLC
                 </div>
             </a>
 
-            <a href="/website-creator" class="product-card">
+            <a href="/website-creator" class="product-card tile-duo tile-drop">
+                <span class="product-badge" style="background: var(--text-tertiary); color: #000;">Not yet</span>
                 <h3>Website Creator</h3>
-                <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in.</p>
-                <div class="price">$2</div>
+                <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in. Still in development — there is no plugin to download yet, so we are not taking money for it.</p>
+                <div class="price">$2 <span style="color: var(--text-tertiary); font-size: 0.6em;">when it ships</span></div>
                 <div class="product-tags">
                     <span class="product-tag">WordPress</span>
                     <span class="product-tag">MCP</span>
@@ -1225,7 +1338,7 @@ Sassy Consulting LLC
                 </div>
             </a>
             
-            <a href="#tools" class="product-card">
+            <a href="#tools" class="product-card tile-quad tile-break-right">
                 <span class="product-badge free">Free Tool</span>
                 <h3>Network Analysis</h3>
                 <p>Check your connection security, detect VPNs, and get privacy recommendations. Instant results.</p>
@@ -1298,8 +1411,8 @@ Sassy Consulting LLC
                 
                 <ul style="list-style: disc; padding-left: 1.25rem; margin-top: 1.5rem;">
                     <li style="margin-bottom: 1rem;"><strong>Privacy First</strong> &mdash; We never track, collect telemetry, or harvest your data</li>
-                    <li style="margin-bottom: 1rem;"><strong>Source Available</strong> &mdash; Every product is available for audit on GitHub</li>
-                    <li><strong>Security Hardened</strong> &mdash; Every product is built in Rust with memory safety from the ground up</li>
+                    <li style="margin-bottom: 1rem;"><strong>Source Available Where We Can</strong> &mdash; SassyMCP and this website are public on GitHub and open to audit. Sassy Browser and WinForensics are proprietary and their repositories are private today.</li>
+                    <li><strong>Memory-Safe Where It Counts</strong> &mdash; Sassy Browser, Sassy-Talk and WinForensics are written in Rust. SassyMCP is Python, the Android apps are Kotlin and TypeScript. We pick the language that fits, and we say which one it is.</li>
                 </ul>
                 <p style="margin-top: 1.5rem;"><a href="/aboutme" class="btn btn-secondary">Meet Shane &mdash; the founder &rarr;</a></p>
             </div>
@@ -1313,7 +1426,7 @@ Sassy Consulting LLC
                 <pre><code><span class="kw">pub struct</span> <span class="ty">SassyConsulting</span> {
     privacy: <span class="ty">Priority</span>::Maximum,
     data_collection: <span class="ty">Option</span>&lt;<span class="ty">Never</span>&gt;,
-    source_code: <span class="ty">Visibility</span>::Auditable,
+    source_code: <span class="ty">Visibility</span>::SourceAvailable,
     telemetry: <span class="lit">false</span>,
     veteran_owned: <span class="lit">true</span>,
     years_service: <span class="lit">11</span>,
@@ -1325,7 +1438,7 @@ Sassy Consulting LLC
 
     <section class="cta">
         <h2>Your data, your control, your choice</h2>
-        <p>Start with our free tools, or grab a $2 license.</p>
+        <p>Start with the free tools &mdash; SassyMCP, Sassy Brain, and the Android apps cost nothing. The full price list is on the store.</p>
         <div class="cta-buttons">
             <a href="#tools" class="btn btn-primary btn-large">Try Free Tools</a>
             <a href="#products" class="btn btn-secondary btn-large">View Products</a>

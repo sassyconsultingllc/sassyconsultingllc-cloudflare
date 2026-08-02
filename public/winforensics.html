@@ -8,8 +8,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WinForensics | Digital Forensics Toolkit</title>
-    <meta name="description" content="Registry analysis, file recovery, timeline generation, evidence preservation. Built in Rust for Windows.">
+    <title>WinForensics-Pro — Windows Forensics Toolkit in Rust</title>
+    <link rel="canonical" href="https://sassyconsultingllc.com/winforensics">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://sassyconsultingllc.com/winforensics">
+    <meta property="og:title" content="WinForensics-Pro — Windows Forensics Toolkit in Rust">
+    <meta property="og:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $2 one-time.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta property="og:site_name" content="Sassy Consulting LLC">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="WinForensics-Pro — Windows Forensics Toolkit in Rust">
+    <meta name="twitter:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $2 one-time.">
+    <meta name="twitter:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta name="description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $2 one-time.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -371,13 +382,13 @@
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Download Now - $2
+                Get WinForensics - $2
             </a>
         </div>
         
         <div class="price-hero">
             <div class="price">$2</div>
-            <div class="price-sub">One-time purchase. Lifetime license.</div>
+            <div class="price-sub">One-time purchase. Lifetime license. Windows 10/11 x64 &mdash; v0.5.2.</div>
         </div>
         
         <div class="hero-stats">
@@ -386,12 +397,12 @@
                 <div class="stat-label">Memory Safe</div>
             </div>
             <div class="stat">
-                <div class="stat-value">CLI</div>
+                <div class="stat-value">GUI + CLI</div>
                 <div class="stat-label">Interface</div>
             </div>
             <div class="stat">
-                <div class="stat-value">0</div>
-                <div class="stat-label">Dependencies</div>
+                <div class="stat-value">STIX 2.1</div>
+                <div class="stat-label">Report Export</div>
             </div>
             <div class="stat">
                 <div class="stat-value">Fast</div>
@@ -408,33 +419,33 @@
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">REG</div>
-                <h3>Registry Analysis</h3>
-                <p>Parse and analyze Windows registry hives. Extract user activity, installed programs, network connections, and persistence mechanisms.</p>
+                <h3>Registry &amp; SAM Analysis</h3>
+                <p>Parse Windows registry hives and SAM. Extract user activity, installed programs, and persistence mechanisms. Android ADB/APK forensics included.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">REC</div>
-                <h3>File Recovery</h3>
-                <p>Recover deleted files from NTFS volumes. Carve files from unallocated space using signature-based detection.</p>
+                <h3>Integrity &amp; ADS Scanning</h3>
+                <p>Authenticode integrity checks plus alternate-data-stream discovery. Surfaces unsigned, tampered, and stream-hidden binaries.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">TL</div>
-                <h3>Timeline Generation</h3>
-                <p>Build comprehensive timelines from multiple sources. Correlate events across registry, file system, and logs.</p>
+                <h3>Timeline Correlation</h3>
+                <p>Correlate events across registry, execution artifacts and logs into one reviewable timeline. Sentinel mode keeps watching continuously.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">EV</div>
-                <h3>Evidence Preservation</h3>
-                <p>Create forensically sound copies with hash verification. Chain of custody documentation built in.</p>
+                <h3>Quarantine &amp; WORM Evidence</h3>
+                <p>VirusTotal hash lookups, quarantine with restore, and a removable-media kit mode backed by a write-once evidence store.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">MFT</div>
-                <h3>MFT Parser</h3>
-                <p>Parse NTFS Master File Table for complete file system analysis. Extract timestamps, paths, and metadata.</p>
+                <h3>Execution Artifacts</h3>
+                <p>Prefetch, Amcache and ShimCache parsing for what actually ran on the box, plus memory inspection.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">LOG</div>
-                <h3>Event Log Analysis</h3>
-                <p>Parse Windows Event Logs (EVTX). Filter, search, and export security-relevant events.</p>
+                <h3>Event Log &amp; Beaconing</h3>
+                <p>EVTX and PowerShell script-block logs, plus live connection inspection with beaconing detection. Exports JSON, HTML and STIX 2.1.</p>
             </div>
         </div>
     </section>
@@ -442,28 +453,34 @@
     <section id="usage" style="background: var(--bg-secondary); padding: 6rem 2rem;">
         <div style="max-width: 1000px; margin: 0 auto;">
             <span class="section-label">Usage</span>
-            <h2 class="section-title">Simple CLI, powerful results</h2>
-            
+            <h2 class="section-title">Point and click, or drive it from a shell</h2>
+            <p class="section-desc">The download is the GUI build. The same engine ships as <code>winforensics-pro.exe</code> for scripted use. Both prompt for UAC elevation, and some scanners need the LocalSystem agent installed by the MSI.</p>
+
             <div class="code-demo">
                 <div class="code-header">
                     <span class="code-dot red"></span>
                     <span class="code-dot yellow"></span>
                     <span class="code-dot green"></span>
                 </div>
-                <pre><code><span class="output"># Analyze registry for persistence mechanisms</span>
-<span class="cmd">winforensics</span> <span class="flag">registry</span> --hive C:\Windows\System32\config\SOFTWARE --persistence
+                <pre><code><span class="output"># Full forensic scan — every scanner group</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">full-scan</span> --output .\reports
 
-<span class="output"># Generate timeline from multiple sources</span>
-<span class="cmd">winforensics</span> <span class="flag">timeline</span> --mft C:\$MFT --evtx C:\Windows\System32\winevt\Logs\ --output timeline.csv
+<span class="output"># Quick pass — volatile data + registry only</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">quick-scan</span>
 
-<span class="output"># Recover deleted files</span>
-<span class="cmd">winforensics</span> <span class="flag">recover</span> --volume C: --output recovered/ --signatures jpg,png,pdf,docx
+<span class="output"># Activate your license on this machine</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">activate</span> WFP-XXXX-XXXX-XXXX
 
-<span class="output"># Parse MFT for file system analysis</span>
-<span class="cmd">winforensics</span> <span class="flag">mft</span> --input C:\$MFT --output mft_analysis.json
+<span class="output"># Review and roll back quarantine</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">quarantine-list</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">quarantine-restore</span>
 
-<span class="output"># Create forensic image with verification</span>
-<span class="cmd">winforensics</span> <span class="flag">image</span> --source \\.\PhysicalDrive0 --output evidence.dd --verify</code></pre>
+<span class="output"># Android: enumerate and acquire over ADB</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">android-devices</span>
+<span class="cmd">winforensics-pro.exe</span> <span class="flag">android-acquire</span> --output .\evidence
+
+<span class="output"># Or just launch the GUI</span>
+<span class="cmd">winforensics-pro-gui.exe</span></code></pre>
             </div>
         </div>
     </section>
@@ -471,12 +488,14 @@
     <section id="download">
         <span class="section-label">Download</span>
         <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows</h2>
-        <p class="section-desc" style="text-align: center; margin: 0 auto 2rem;">Purchase a license, then download the CLI tool.</p>
-        
+        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">The download is license-gated: your WFP- key unlocks the installer and the updater.</p>
+
+        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 2rem;padding:0.85rem 1.1rem;border:1px solid #333;border-left:3px solid var(--accent-primary);border-radius:8px;font-size:0.9rem;"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The $2 price is real &mdash; ask us and we&rsquo;ll send a direct checkout link, usually the same day. Existing keys keep working.</p>
+
         <div style="text-align: center;">
-            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Buy License - $2</button>
+            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Request license link - $2</button>
             <br>
-            <a href="/download/winforensics/windows/winforensics.exe" class="btn btn-secondary btn-large">Download CLI (Windows)</a>
+            <span style="color: var(--text-tertiary); font-size: 0.85rem;">Already licensed? Your download link is in your original receipt email, or <a href="/contact">ask us to resend it</a>.</span>
         </div>
     </section>
 
@@ -484,7 +503,7 @@
         <h2>Professional forensics &mdash; $2 forever</h2>
         <p>No subscriptions and no cloud dependencies, just the tools you need.</p>
         <div class="cta-buttons">
-            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Buy Now - $2</button>
+            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Request license link - $2</button>
         </div>
     </section>
 
@@ -502,5 +521,26 @@
     </footer>
 
     <script src="checkout.js"></script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "SoftwareApplication",
+ "name": "WinForensics-Pro",
+ "applicationCategory": "SecurityApplication",
+ "operatingSystem": "Windows 10/11 x64",
+ "softwareVersion": "0.5.2",
+ "description": "Windows incident-response toolkit in Rust: integrity and ADS scanning, Prefetch/Amcache/ShimCache, registry and SAM analysis, EVTX and beaconing detection, quarantine, and JSON/HTML/STIX 2.1 reports.",
+ "url": "https://sassyconsultingllc.com/winforensics",
+ "offers": {
+  "@type": "Offer",
+  "price": "2",
+  "priceCurrency": "USD",
+  "availability": "https://schema.org/LimitedAvailability"
+ },
+ "publisher": {
+  "@id": "https://sassyconsultingllc.com/#organization"
+ }
+}
+</script>
 </body>
 </html>

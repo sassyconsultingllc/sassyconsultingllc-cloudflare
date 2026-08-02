@@ -8,9 +8,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sassy Browser — Coming Soon | Build Status &amp; Feature Roadmap</title>
+<title>Sassy Browser Build Status — Done, Partial, Planned</title>
 <link rel="canonical" href="https://sassyconsultingllc.com/coming-soon">
-<meta name="description" content="Sassy Browser is in active development. Live codebase statistics from the ACE repository and a transparent feature-by-feature status of what is complete, in progress, and planned.">
+<meta name="description" content="The honest state of Sassy Browser v0.13.2: feature matrix, real-site smoke scoreboard, and codebase metrics. No polish, no marketing gloss.">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sassyconsultingllc.com/coming-soon">
@@ -169,7 +169,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         </a>
         <div class="nav-links">
             <a href="/browser">Overview</a>
-            <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+            <a href="/store">Store</a>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-cta">Dev build</a>
         </div>
     </div>
@@ -179,7 +179,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
 
     <div class="head-row">
         <span class="pill pill-gold"><span class="pill-dot"></span>In Active Development</span>
-        <span class="pill pill-green">Open Source &middot; Pure Rust</span>
+        <span class="pill pill-green">Pure Rust &middot; Source-Proprietary</span>
     </div>
 
     <h1>Sassy Browser is still being built.</h1>
@@ -192,7 +192,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         directly from the <strong>ACE</strong> repository &mdash; followed by a
         feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Truth layer v0.13.1 · 200,424 LOC · sourced from ACE <code>docs/status/</code> (not GitHub API guesses).</div>
+    <div class="lead-meta" id="lead-meta">Truth layer v0.13.2 · 200,424 LOC · sourced from ACE <code>docs/status/</code> (not GitHub API guesses).</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
@@ -203,7 +203,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         <div class="stats-grid">
             <div class="stat-cell" data-stat="version">
                 <div class="stat-lbl">Product version</div>
-                <div class="stat-val gold" id="stat-version">0.13.1</div>
+                <div class="stat-val gold" id="stat-version">0.13.2</div>
                 <div class="stat-sub">Cargo.toml</div>
             </div>
             <div class="stat-cell" data-stat="lines">
@@ -236,20 +236,20 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
                 <div class="stat-val dim" id="stat-download">Dev</div>
                 <div class="stat-sub">Unsigned Windows exe on R2</div>
             </div>
-            <div class="stat-cell loading" data-stat="stars">
-                <div class="stat-lbl">GitHub stars</div>
-                <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Optional live fetch&hellip;</div>
+            <div class="stat-cell">
+                <div class="stat-lbl">Repository</div>
+                <div class="stat-val dim">Private</div>
+                <div class="stat-sub">Proprietary source &mdash; no public repo</div>
             </div>
-            <div class="stat-cell loading" data-stat="commit">
-                <div class="stat-lbl">Last public commit</div>
-                <div class="stat-val dim">&mdash;</div>
-                <div class="stat-sub">Optional live fetch&hellip;</div>
+            <div class="stat-cell">
+                <div class="stat-lbl">Signed installer</div>
+                <div class="stat-val dim">None</div>
+                <div class="stat-sub">Update manifest still 404</div>
             </div>
-            <div class="stat-cell loading" data-stat="releases">
-                <div class="stat-lbl">Public releases</div>
-                <div class="stat-val">&mdash;</div>
-                <div class="stat-sub">Optional live fetch&hellip;</div>
+            <div class="stat-cell">
+                <div class="stat-lbl">Price</div>
+                <div class="stat-val">Free</div>
+                <div class="stat-sub">Funded by donations</div>
             </div>
         </div>
     </section>
@@ -298,10 +298,10 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
     <!-- CTA -->
     <div class="cta-block">
         <h3>Try the Windows dev build</h3>
-        <p>Unsigned clean v0.13.1 Windows x64 exe (~44&nbsp;MB) on R2 — build <code>274877db</code>. Expect SmartScreen warnings and rough edges (DuckDuckGo / heavy SPAs still fail smoke). This is not a signed stable installer. Watch GitHub for the real release channel.</p>
+        <p>Unsigned clean v0.13.2 Windows x64 exe (~45&nbsp;MB) on R2 — build <code>05a28c3d</code>. Expect SmartScreen warnings and rough edges (DuckDuckGo / heavy SPAs still fail smoke). This is not a signed stable installer. The signed update channel is where the real release will land &mdash; it is still 404 today.</p>
         <div class="cta-row">
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green">Download Windows dev build (clean)</a>
-            <a href="https://github.com/sassyconsultingllc/ACE" class="btn btn-outline" target="_blank" rel="noopener">Watch on GitHub</a>
+            <a href="/donate" class="btn btn-outline" target="_blank" rel="noopener">Fund development</a>
             <a href="/browser" class="btn btn-outline">Back to overview</a>
         </div>
     </div>
@@ -314,7 +314,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         &copy; 2025&ndash;2026 Sassy Consulting LLC. All rights reserved.
     </div>
     <div class="footer-links">
-        <a href="https://github.com/sassyconsultingllc/ACE" target="_blank" rel="noopener">GitHub</a>
+        <a href="/store">Store</a>
         <a href="/privacy">Privacy</a>
         <a href="/terms">Terms</a>
         <a href="/contact">Contact</a>
@@ -339,7 +339,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
     function applyMetrics(status) {
         const m = status.metrics || {};
         const set = (id, text) => { const n = document.getElementById(id); if (n) n.textContent = text; };
-        set('stat-version', status.version || '0.13.1');
+        set('stat-version', status.version || '0.13.2');
         set('stat-lines', fmt(m.loc_rust_src));
         set('stat-files', fmt(m.source_files_rs));
         set('stat-tests', fmt(m.test_attributes));
@@ -362,7 +362,7 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         }
         const meta = document.getElementById('lead-meta');
         if (meta) {
-            meta.textContent = 'Truth layer v' + (status.version || '0.13.1')
+            meta.textContent = 'Truth layer v' + (status.version || '0.13.2')
                 + ' · as of ' + (status.as_of || '—')
                 + ' · ' + fmt(m.loc_rust_src) + ' LOC · source /status/product-status.json';
         }
@@ -479,7 +479,13 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
         root.appendChild(table);
     }
 
+    // The ACE repository is private, so there are no public GitHub stats to
+    // fetch and the three cells that displayed them have been replaced with
+    // static truth (repo private / no signed installer / price). Kept as a
+    // no-op so the call sites stay intact for the day the repo goes public.
     function optionalGithub() {
+        return;
+        /* eslint-disable no-unreachable */
         const REPO = 'sassyconsultingllc/ACE';
         const setCell = (key, value, sub) => {
             const cell = document.querySelector('[data-stat="' + key + '"]');

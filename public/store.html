@@ -8,8 +8,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Store — SassyMCP, Sassy-Talk, WinForensics-Pro & more | Sassy Consulting LLC</title>
-<meta name="description" content="The Sassy Consulting store. SassyMCP is all-or-nothing (every tool free; optional supporter license), plus Sassy-Talk and WinForensics-Pro — one-time payments, own forever, secure checkout via Lemon Squeezy.">
+<title>Store — Every Sassy Consulting Product and Its Price</title>
+<meta name="description" content="Every product we ship and what it costs. SassyMCP free (274 tools), optional $25 supporter, Sassy-Talk $3.99, WinForensics $2. One-time, own forever.">
 <link rel="canonical" href="https://sassyconsultingllc.com/store">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
@@ -73,6 +73,18 @@ img{max-width:100%}
 .section-head h2{font-family:var(--serif);font-weight:400;font-size:1.7rem;display:flex;align-items:center;gap:0.6rem}
 .section-head h2 i{color:var(--accent);font-size:1.3rem}
 .section-head p{color:var(--text-dim);font-size:0.95rem;margin-top:0.3rem}
+
+/* Complete price table */
+.pricetable{width:100%;border-collapse:collapse;font-size:0.9rem;min-width:640px}
+.pricetable th{text-align:left;padding:0.8rem 1rem;border-bottom:1px solid var(--border-active);color:var(--text-dim);font-size:0.76rem;text-transform:uppercase;letter-spacing:0.07em}
+.pricetable td{padding:0.85rem 1rem;border-bottom:1px solid var(--border);vertical-align:top;color:var(--text-dim)}
+.pricetable td:first-child{color:var(--text);font-weight:600;white-space:nowrap}
+.pricetable td strong{color:var(--accent);font-weight:700}
+.pricetable td em{color:var(--text-muted);font-style:normal}
+.pricetable tr:last-child td{border-bottom:none}
+
+/* Checkout-unavailable note on a live-priced card */
+.note{background:var(--surface2);border:1px solid var(--border-active);border-left:3px solid var(--accent);border-radius:var(--radius);padding:0.8rem 1rem;font-size:0.82rem;color:var(--text-dim);margin-bottom:1rem}
 
 /* Grid + cards */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
@@ -154,8 +166,36 @@ footer a{color:var(--text-dim)}
 <header class="hero">
   <span class="eyebrow"><i class="fa-solid fa-infinity"></i> Buy once. Own forever. No subscriptions.</span>
   <h1>The Sassy Store</h1>
-  <p>Every paid tool we ship, in one place. One-time payments, lifetime licenses, secure checkout. No accounts, no telemetry, no recurring charges.</p>
+  <p>Every product we ship and exactly what it costs — paid, free, and not-yet-for-sale. One-time payments, lifetime licenses, no accounts, no telemetry, no recurring charges.</p>
 </header>
+
+<!-- Complete price list. If a product exists, it is in this table with a real
+     status. Keep in sync with PRODUCTS in src/worker.js and the cards below. -->
+<div class="wrap">
+  <section class="section" id="pricing" style="margin-top:3rem">
+    <div class="section-head">
+      <h2><i class="fa-solid fa-tags"></i> Everything we ship, and what it costs</h2>
+      <p>No hidden tiers and nothing omitted. &ldquo;Not on sale yet&rdquo; means exactly that — we will not take money for something we cannot deliver today.</p>
+    </div>
+    <div style="overflow-x:auto">
+      <table class="pricetable">
+        <thead><tr><th>Product</th><th>Price</th><th>Status today</th></tr></thead>
+        <tbody>
+          <tr><td><a href="#sassymcp">SassyMCP</a></td><td><strong>Free</strong> &mdash; all 274 tools</td><td>v1.14.2 shipping. Optional <strong>$25</strong> supporter license (badge + 2 seats, unlocks nothing).</td></tr>
+          <tr><td><a href="#apps">Sassy-Talk</a></td><td><strong>$3.99</strong> one-time</td><td>Android live on Google Play (free install, in-app unlock). Direct license key by request &mdash; card checkout is being re-wired. Windows build not released.</td></tr>
+          <tr><td><a href="#apps">WinForensics-Pro</a></td><td><strong>$2</strong> one-time</td><td>Windows GUI v0.5.2 shipping. Direct license key by request &mdash; card checkout is being re-wired.</td></tr>
+          <tr><td><a href="/browser">Sassy Browser</a></td><td><strong>Free</strong> &mdash; donations fund it</td><td>v0.13.2, in active development. Unsigned Windows dev build only; no signed installer yet.</td></tr>
+          <tr><td><a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe">Sassy Brain</a></td><td><strong>Free</strong></td><td>v0.2.1 Windows installer, direct download.</td></tr>
+          <tr><td>Foodie Finder</td><td><strong>Free</strong></td><td>Live on Google Play. No ads, no in-app purchases.</td></tr>
+          <tr><td>Rebel Tuner</td><td><strong>Free</strong> + in-app unlock</td><td>Open testing on Google Play.</td></tr>
+          <tr><td>Cloudflare Admin</td><td><em>Not on sale yet</em></td><td>In development, targeting Google Play.</td></tr>
+          <tr><td><a href="/website-creator">Website Creator</a></td><td><em>$2 when it ships</em></td><td>No shippable plugin yet, so checkout is deliberately closed.</td></tr>
+          <tr><td><a href="https://mybestsites.online" target="_blank" rel="noopener">My Best Sites</a></td><td><strong>Free / $10 / $29</strong></td><td>Separate site, live.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
 
 <main class="wrap">
 
@@ -163,7 +203,7 @@ footer a{color:var(--text-dim)}
   <section class="section" id="sassymcp">
     <div class="section-head">
       <h2><i class="fa-solid fa-layer-group"></i> SassyMCP</h2>
-      <p>One MCP server replacing 75+. Every tool group ships unlocked for everyone — no free/pro split, no gated add-ons. Download free on <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">GitHub</a>; the optional supporter license funds development and shows a supporter badge (it does not unlock tools).</p>
+      <p>One MCP server replacing 75+. All <strong>274 tools</strong> across 18 groups ship unlocked for everyone — no free/pro split, no gated add-ons. Current release <strong>v1.14.2</strong>, free on <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">GitHub</a>; the optional supporter license funds development and shows a supporter badge (it does not unlock tools).</p>
     </div>
     <div class="grid">
 
@@ -174,7 +214,7 @@ footer a{color:var(--text-dim)}
         <div class="price"><span class="amount">$25</span><span class="period">one-time</span></div>
         <p class="desc">Thank-you license for the full suite you already get free. Registers up to 2 machines as supporter seats; refunds revoke the badge automatically.</p>
         <ul class="feature-list">
-          <li>~270 tools already unlocked with no key</li>
+          <li>All 274 tools already unlocked with no key</li>
           <li>Supporter badge in banner, control panel, and VS Code cockpit</li>
           <li>Activates on 2 machines you own</li>
           <li>Same story as directories (CuratedMCP &amp; friends): free product, paid support optional</li>
@@ -190,22 +230,25 @@ footer a{color:var(--text-dim)}
   <section class="section" id="apps">
     <div class="section-head">
       <h2><i class="fa-solid fa-toolbox"></i> Apps &amp; Tools</h2>
-      <p>Standalone software. One-time purchase, lifetime license, instant download after checkout.</p>
+      <p>Standalone software. One-time purchase, lifetime license. Both of these are shipping products — only their card checkout is mid-rebuild, so the last step runs through us for a few days.</p>
     </div>
     <div class="grid">
 
       <article class="product">
-        <span class="tag">Encrypted comms</span>
+        <span class="tag">Encrypted comms · Android</span>
         <h3>Sassy-Talk</h3>
-        <p class="desc">Encrypted push-to-talk walkie-talkie for Android and Windows. No servers you don't control.</p>
+        <p class="desc">Encrypted push-to-talk walkie-talkie. Works over WiFi multicast, Bluetooth, or cellular via our Cloudflare relay.</p>
         <div class="price"><span class="amount">$3.99</span><span class="period">one-time</span></div>
+        <div class="note"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day. The Android app itself is free to install on Google Play.</div>
         <ul class="feature-list">
-          <li>End-to-end encrypted voice channels</li>
-          <li>Android client (Windows in development)</li>
-          <li>No tracking, no accounts</li>
-          <li>Lifetime license</li>
+          <li>End-to-end encrypted voice channels (AES-256-GCM)</li>
+          <li>WiFi multicast, Bluetooth, and cellular relay transports</li>
+          <li>Android 8.0+ — live on Google Play, free install</li>
+          <li>Windows client not released yet</li>
+          <li>No tracking, no accounts, lifetime license</li>
         </ul>
-        <button class="btn btn-primary" data-buy="sassy-talk">Buy Sassy-Talk — $3.99</button>
+        <a class="btn btn-primary" href="/contact?product=sassy-talk">Request checkout link — $3.99</a>
+        <a class="btn btn-ghost" style="margin-top:0.75rem" href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener">Install free on Google Play</a>
       </article>
 
       <article class="product">
@@ -213,27 +256,28 @@ footer a{color:var(--text-dim)}
         <h3>WinForensics-Pro</h3>
         <p class="desc">Scans your Windows system for compromise, hidden files and suspicious activity, then writes a readable report.</p>
         <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <div class="note"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day.</div>
         <ul class="feature-list">
+          <li>Windows GUI build v0.5.2</li>
           <li>Integrity, ADS, Prefetch, Amcache, MFT walk</li>
           <li>VirusTotal lookup, quarantine &amp; restore</li>
-          <li>STIX2 + HTML reports</li>
-          <li>Lifetime license</li>
+          <li>STIX2 + HTML reports, lifetime license</li>
         </ul>
-        <button class="btn btn-primary" data-buy="winforensics">Buy WinForensics — $2</button>
+        <a class="btn btn-primary" href="/contact?product=winforensics">Request checkout link — $2</a>
       </article>
 
       <article class="product" style="opacity:0.75">
         <span class="tag">WordPress builder</span>
         <h3>Website Creator</h3>
         <p class="desc">AI-powered WordPress builder with security hardening, automated backups and monitoring built in.</p>
-        <div class="price"><span class="amount">$2</span><span class="period">one-time</span></div>
+        <div class="price"><span class="amount">$2</span><span class="period">one-time, when it ships</span></div>
         <ul class="feature-list">
           <li>AI content + layout generation</li>
           <li>Security hardening baked in</li>
           <li>Automated backups + monitoring</li>
-          <li>Lifetime license</li>
+          <li>No plugin artifact exists yet — checkout stays closed</li>
         </ul>
-        <span class="btn btn-ghost" style="cursor:default" aria-disabled="true">Coming soon</span>
+        <span class="btn btn-ghost" style="cursor:default" aria-disabled="true">Not on sale yet</span>
       </article>
 
     </div>
@@ -248,8 +292,23 @@ footer a{color:var(--text-dim)}
     <div class="mini-grid">
       <a class="mini" href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">
         <span class="pill">Free · full suite</span>
-        <h4><i class="fa-solid fa-bolt"></i> SassyMCP</h4>
-        <p>All tool groups unlocked — GitHub, Android, forensics, Linux, memory, and more. No key.</p>
+        <h4><i class="fa-solid fa-bolt"></i> SassyMCP v1.14.2</h4>
+        <p>All 274 tools unlocked — GitHub, Android, forensics, Linux, memory, and more. No key.</p>
+      </a>
+      <a class="mini" href="/browser">
+        <span class="pill">Free · in development</span>
+        <h4><i class="fa-solid fa-compass"></i> Sassy Browser</h4>
+        <p>Pure-Rust browser and file viewer, v0.13.2. Unsigned Windows dev build; no signed installer yet.</p>
+      </a>
+      <a class="mini" href="https://play.google.com/store/apps/details?id=com.sassyconsultingllc.foodiefinder" target="_blank" rel="noopener">
+        <span class="pill">Free · Google Play</span>
+        <h4><i class="fa-solid fa-utensils"></i> Foodie Finder</h4>
+        <p>Local restaurant discovery with community tips. No ads, no in-app purchases.</p>
+      </a>
+      <a class="mini" href="https://play.google.com/apps/testing/com.sassyconsultingllc.tuner" target="_blank" rel="noopener">
+        <span class="pill">Free · open testing</span>
+        <h4><i class="fa-solid fa-guitar"></i> Rebel Tuner</h4>
+        <p>Chromatic instrument tuner, real-time pitch detection. Free install with an in-app unlock.</p>
       </a>
       <a class="mini" href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe">
         <span class="pill">Free</span>
@@ -288,6 +347,10 @@ footer a{color:var(--text-dim)}
       <details>
         <summary>How does checkout work?</summary>
         <p>Pick a product, enter your email, and you're handed to Lemon Squeezy to pay. The moment payment clears, your license key is generated and emailed to you, and shown on the confirmation page. Card details never touch our servers.</p>
+      </details>
+      <details>
+        <summary>Why can't I card-checkout Sassy-Talk or WinForensics right now?</summary>
+        <p>Honest answer: their payment-processor wiring is mid-rebuild, so the automated checkout would fail if we left the button up. Rather than show a button that errors, we ask you to <a href="/contact">email us</a> — we send a direct checkout link, usually the same day, at the price listed here. SassyMCP's supporter checkout is unaffected and works normally.</p>
       </details>
       <details>
         <summary>Is this really one-time? No subscription?</summary>
@@ -343,9 +406,13 @@ footer a{color:var(--text-dim)}
   "@type":"ItemList",
   "name":"Sassy Consulting LLC Store",
   "itemListElement":[
-    {"@type":"Product","name":"SassyMCP Supporter","offers":{"@type":"Offer","price":"25","priceCurrency":"USD"}},
-    {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD"}},
-    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD"}}
+    {"@type":"Product","name":"SassyMCP","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+    {"@type":"Product","name":"SassyMCP Supporter","offers":{"@type":"Offer","price":"25","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+    {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
+    {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"2","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
+    {"@type":"Product","name":"Sassy Browser","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/PreOrder"}},
+    {"@type":"Product","name":"Sassy Brain","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+    {"@type":"Product","name":"Website Creator","offers":{"@type":"Offer","price":"2","priceCurrency":"USD","availability":"https://schema.org/PreOrder"}}
   ]
 }
 </script>
@@ -354,10 +421,14 @@ footer a{color:var(--text-dim)}
 (function () {
   // Canonical catalog — keep slugs in sync with PRODUCTS in src/worker.js.
   // mcp-pro slug kept for deep links / entitlement maps; UI name is Supporter.
+  // Only slugs with a live Lemon Squeezy variant belong here. sassy-talk and
+  // winforensics are priced and shipping but have no variant wired (the worker
+  // answers /api/checkout with 503 for them), so they route to /contact instead
+  // of opening a modal that is guaranteed to fail. Re-add them here the same
+  // day LS_VARIANT_SASSY_TALK / LS_VARIANT_WINFORENSICS are set — see
+  // docs/PRICING-STATUS.md.
   var CATALOG = {
-    "mcp-pro":         { name: "SassyMCP Supporter",    price: "$25"  },
-    "sassy-talk":      { name: "Sassy-Talk",            price: "$3.99"   },
-    "winforensics":    { name: "WinForensics-Pro",      price: "$2"   }
+    "mcp-pro":         { name: "SassyMCP Supporter",    price: "$25"  }
     // mcp-forensics / mcp-team retired (all-or-nothing). website-creator: no artifact yet.
   };
 
@@ -451,6 +522,70 @@ footer a{color:var(--text-dim)}
     if (q && CATALOG[q]) openModal(q);
   } catch (_) {}
 })();
+</script>
+<script type="application/ld+json">
+{
+ "@context": "https://schema.org",
+ "@type": "FAQPage",
+ "mainEntity": [
+  {
+   "@type": "Question",
+   "name": "How does checkout work?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Pick a product, enter your email, and you're handed to Lemon Squeezy to pay. The moment payment clears, your license key is generated and emailed to you, and shown on the confirmation page. Card details never touch our servers."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Why can't I card-checkout Sassy-Talk or WinForensics right now?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Honest answer: their payment-processor wiring is mid-rebuild, so the automated checkout would fail if we left the button up. Rather than show a button that errors, we ask you to email us — we send a direct checkout link, usually the same day, at the price listed here. SassyMCP's supporter checkout is unaffected and works normally."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Is this really one-time? No subscription?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. You buy once and own that product plus every future update forever. Nothing recurs and nothing expires."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Does a SassyMCP purchase unlock tools?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "No. As of v1.13.0 SassyMCP is all-or-nothing: every tool group ships unlocked with no key. The store SKU is an optional supporter license — it registers seats and shows a supporter badge. Download the full product free on GitHub."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Where's my license after I pay?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "On the confirmation page and in your email. For Sassy-Talk and WinForensics, the download link carries your key automatically. For SassyMCP, activate with sassy_setup_license or the setup wizard. Lost it? Contact us."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Do you have promo codes for friends & family?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "Yes. Share your promo code — the recipient enters it on the Sassy-Talk activation screen in the app (same field as a license key). Promo codes are device-bound and capped; they unlock the app without checkout."
+   }
+  },
+  {
+   "@type": "Question",
+   "name": "Can I get a refund?",
+   "acceptedAnswer": {
+    "@type": "Answer",
+    "text": "14 days, no questions asked, handled through Lemon Squeezy."
+   }
+  }
+ ]
+}
 </script>
 </body>
 </html>
