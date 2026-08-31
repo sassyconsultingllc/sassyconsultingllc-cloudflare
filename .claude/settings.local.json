@@ -19,7 +19,8 @@
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://github.com/sassyconsultingllc)",
       "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://github.com/sassyconsultingllc/oneSASSYBROWSER)",
       "Bash(npx wrangler:*)",
-      "mcp__7d180cb0-ccb3-49ea-bd2e-fb25aae40cfd__create_product"
+      "mcp__7d180cb0-ccb3-49ea-bd2e-fb25aae40cfd__create_product",
+      "mcp__Claude_Code_Remote__send_later"
     ]
   }
 }
