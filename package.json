@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "wrangler dev",
     "audit:links": "node scripts/audit-links.mjs",
+    "smoke:store": "node scripts/smoke-store.mjs",
     "sitemap": "node scripts/build-sitemap.mjs",
     "predeploy": "node scripts/build-sitemap.mjs",
     "deploy": "wrangler deploy",
