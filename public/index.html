@@ -1353,6 +1353,19 @@ Sassy Consulting LLC
             </div>
             <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Send Message &rarr;</button>
         </form>
+
+        <!-- vCard QR: scanning with an iPhone or Android camera offers "Add to Contacts"
+             (phone, email, website). Served as a same-origin SVG asset; the .vcf link is
+             the desktop fallback. -->
+        <div style="margin-top: 2rem; background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 2rem; text-align: center;">
+            <span class="section-label">Save My Contact</span>
+            <h3 style="margin: 0.25rem 0 0.5rem; font-size: 1.25rem;">Point your camera here</h3>
+            <p style="color: var(--text-secondary); font-size: 0.9rem; margin: 0 auto 1.5rem; max-width: 360px;">Scan with your phone (iPhone or Android) to save Shane's phone, email, and website straight to your contacts.</p>
+            <img src="/shane-contact-qr.svg" alt="QR code that adds Shane Smith (Sassy Consulting LLC) to your phone contacts" width="220" height="220" style="width: 220px; height: 220px; max-width: 100%; background: #fff; padding: 12px; border-radius: 12px;">
+            <p style="margin-top: 1.25rem; font-size: 0.85rem;">
+                On a computer? <a href="/shane-smith.vcf" download style="color: var(--accent-primary);">Download the contact card (.vcf)</a>
+            </p>
+        </div>
     </section>
 
     <footer>
