@@ -2,9 +2,9 @@
   "$schema_note": "Canonical marketing/product truth for Sassy Browser. Copy to sassyconsultingllc-cloudflare/public/status/ on deploy. Do not invent a second narrative elsewhere.",
   "product": "Sassy Browser",
   "repo": "https://github.com/sassyconsultingllc/ACE",
-  "version": "0.13.2",
-  "as_of": "2026-07-31",
-  "cargo_toml_version": "0.13.2",
+  "version": "0.15.2",
+  "as_of": "2026-09-24",
+  "cargo_toml_version": "0.15.2",
   "download": {
     "public_binaries_available": false,
     "signed_manifest_url": "https://sassyconsultingllc.com/browser/dists/stable/manifest.json",
@@ -17,15 +17,15 @@
       "label": "Windows x64 dev build (unsigned)",
       "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
       "filename": "sassy-browser.exe",
-      "approx_size_mb": 44.38,
-      "version": "0.13.2",
-      "build_sha": "05a28c3d",
-      "dirty": false,
+      "approx_size_mb": 56.99,
+      "version": "0.15.2",
+      "build_sha": "70cda9aa-dirty",
+      "dirty": true,
       "channel": "dev",
       "signed": false,
-      "sha256": "1C7FB01E2B0B8DF690477E753DFF3F44BF21D8D5EE93E0C8A435474569C19C8B",
-      "uploaded_at": "2026-07-28T22:18:12Z",
-      "notes": "Clean (non-dirty) unsigned Windows exe on public R2 from git HEAD 05a28c3d. Not Authenticode-signed; signed update-channel manifest still 404."
+      "sha256": "6F9E2AA73E960106ADE9B49B1BA654AD962CB25997CA7A2C049419DF4BFDCD26",
+      "uploaded_at": "2026-09-24T11:32:03Z",
+      "notes": "Unsigned Windows exe on public R2. Source is origin/main 70cda9aa with the package version stamped to 0.15.2 (Cargo.toml and Cargo.lock only; that stamp is not its own commit, so the embedded build SHA is dirty). Not Authenticode-signed; signed update-channel manifest still 404."
     },
     "notes": "Signed stable channel still 404. Public CTAs may link the unsigned Windows dev build on R2; do not claim signed stable."
   },
@@ -37,7 +37,7 @@
     "wpt_subset_passing_recorded": 82,
     "compiler_warnings_release": 0,
     "direct_crate_deps": 119,
-    "release_binary_windows_x64_mb": 44.38,
+    "release_binary_windows_x64_mb": 56.99,
     "loc_source": "DataROOM/03-CODEBASE-METRICS.md (2026-07-07 refresh)",
     "notes": "LOC is src/ Rust only. Test count is #[test] attributes, not a fresh full-suite pass/fail run. WPT subset numbers are the dated, command-attributed figures from smoke-scoreboard.json (cargo test --release wpt_subset, 2026-07-07) — this file previously carried an unsourced 89/89 that contradicted it. Re-run the command and update both files together."
   },
@@ -117,7 +117,7 @@
     {
       "cat": "Platforms & distribution",
       "items": [
-        { "name": "Windows x64 release build", "status": "done", "detail": "v0.13.2 clean build 05a28c3d (~44.57 MB) on public R2 as a labeled Dev build. Signed stable channel still 404.", "meta": "windows" },
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.15.2 dev build 70cda9aa-dirty (~57.0 MB) on public R2. Signed stable channel still 404.", "meta": "windows" },
         { "name": "Linux packages", "status": "partial", "detail": "Builds from source; distro packages not published.", "meta": "linux" },
         { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
         { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },
