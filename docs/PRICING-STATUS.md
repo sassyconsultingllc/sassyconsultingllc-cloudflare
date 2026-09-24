@@ -1,10 +1,17 @@
 <!--
    Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+   CodeMark: SCLLC1-Projects-NWFPCEXXEU67
+-->
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 -->
 # Pricing & checkout status
 
-Last verified: 2026-07-31 (live probes against production).
+Last verified: 2026-08-18 (live probes against production). Unchanged since
+2026-07-31 — `sassy-talk` and `winforensics` have now been unbuyable by card for
+**18 days**. Everything below still describes the live state.
 
 This is the single place that records **what is priced, what can actually be
 bought today, and what it takes to close the gap.** Keep it in sync with
@@ -17,7 +24,8 @@ bought today, and what it takes to close the gap.** Keep it in sync with
 |---|---|---|---|---|
 | `mcp-pro` | $25 one-time | `1753676` via `LS_VARIANT_MCP_PRO` | **200** — works | Live buy button |
 | `sassy-talk` | $3.99 one-time | none | **503** | Routes to `/contact` |
-| `winforensics` | $2 one-time | none | **503** | Routes to `/contact` |
+| `winforensics` | $9.99 one-time | none | **503** | Routes to `/contact` |
+| `sector-scope` | $9.99 when it ships | `1874036` (published, unused) | **409** (`available:false`) | "Not on sale yet" |
 | `website-creator` | $2 when it ships | n/a | **409** (`available:false`) | "Not on sale yet" |
 | `mcp-forensics`, `mcp-team` | retired | n/a | **409** | Not shown |
 
@@ -42,46 +50,56 @@ Note that **license delivery for both of these does not depend on Lemon Squeezy
 at all** — Sassy-Talk keys are minted by the PTT relay and WinForensics keys by
 `winforensics-license-api`. The only thing missing is a variant to charge against.
 
-## Two ways to close it
+## What can and cannot be automated
 
-**Option A — dedicated LS products (preferred, ~10 min in the dashboard).**
-Create a real product + variant for each in Lemon Squeezy, then:
+**Variant creation cannot.** The Lemon Squeezy REST API has POST endpoints for
+customers, discounts, checkouts, webhooks and usage records only. Products,
+variants and prices are read-only — confirmed against the live API reference on
+2026-08-18. The feature request for it
+([nolt #279](https://lemonsqueezy.nolt.io/279)) is three years old with no
+official response. Creating the product is dashboard work, roughly five minutes
+per SKU, and there is no supported way around it.
 
-```bash
-npx wrangler secret put LS_VARIANT_SASSY_TALK
-npx wrangler secret put LS_VARIANT_WINFORENSICS
+**Everything after that is automated.** `scripts/wire-variant.ps1` takes the ID
+the dashboard hands you and does the rest:
+
+```powershell
+.\scripts\wire-variant.ps1 -Product winforensics -VariantId <id>
+.\scripts\wire-variant.ps1 -Product sassy-talk   -VariantId <id>
 ```
 
-Buyers see the correct product name on the LS receipt, and pricing lives in the
-dashboard where it belongs.
+It validates the variant against the LS API (published? right price? minting
+license keys we don't want?), sets `LS_VARIANT_<PRODUCT>`, flips the schema.org
+availability on `/store`, deploys, then probes production and prints a live
+checkout URL. Turn **Generate license keys OFF** on both new variants — relay
+and `winforensics-license-api` mint the real keys, and an LS key on top of that
+is a second, useless key in the buyer's inbox.
 
-**Option B — restore the shared fallback (one command, less tidy).**
+## The site no longer needs reverting
+
+There used to be three hand edits to undo "the same day" a variant was wired.
+That step is deleted, and it is why this page sat stale for 18 days while two
+shipping products pointed at a contact form.
+
+`GET /api/catalog` now derives purchasability from the same variant resolution
+`/api/checkout` performs. `public/store.html` and `public/checkout.js` read it at
+load and reconcile themselves: buy button and no notice when a SKU is sellable,
+`/contact` route and the honest notice when it is not. Set a secret, deploy, and
+the storefront corrects itself. There is no longer a window where the site can
+claim something the worker will refuse.
+
+The markup ships in the honest "request a link" state, so a failed `/api/catalog`
+fetch degrades to truthful copy rather than to a buy button that 503s.
+
+**Fallback option, still available.** `npx wrangler secret put LS_FALLBACK_VARIANT`
+set to `1753676` turns every `lsFallbackOk` SKU on at once via `custom_price`.
+One command, no dashboard. Downside is unchanged: the underlying LS product is
+still "SassyMCP" and that variant generates license keys, so buyers get an unused
+key alongside their real one. Reasonable as a stopgap for a day, not as the
+permanent answer.
+
+Re-probe any time:
 
 ```bash
-npx wrangler secret put LS_FALLBACK_VARIANT
+curl -s https://sassyconsultingllc.com/api/catalog | jq '.products | map_values(.purchasable)'
 ```
-
-Set it to `1753676`. The worker then charges `priceCents` from `PRODUCTS` via
-`custom_price` and overrides the displayed name and description. Downside: the
-underlying LS product is still "SassyMCP", and that variant has license-key
-generation on, so buyers get an unused LS key alongside their real one.
-
-## After either option, revert the site guards
-
-These three edits made the site honest while checkout is down. Undo them the
-same day a variant is wired, or the buttons stay pointed at `/contact`:
-
-1. `public/store.html` — re-add `sassy-talk` and `winforensics` to `CATALOG`,
-   drop the two `.note` blocks, restore the `data-buy` buttons.
-2. `public/checkout.js` — empty the `UNWIRED` array.
-3. `public/store.html`, `public/sassy-talk.html`, `public/winforensics.html`,
-   `public/index.html` — remove the "card checkout is temporarily offline"
-   copy and the "Request … link" button labels.
-
-Then re-probe:
-
-```bash
-curl -s -o /dev/null -w "%{http_code}\n" -X POST https://sassyconsultingllc.com/api/checkout -H "Content-Type: application/json" -H "Origin: https://sassyconsultingllc.com" -d '{"product":"sassy-talk","email":"you@example.com"}'
-```
-
-200 with a `checkout_url` means it is live.

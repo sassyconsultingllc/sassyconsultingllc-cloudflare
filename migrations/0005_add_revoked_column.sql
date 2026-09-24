@@ -1,5 +1,8 @@
 -- Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
 -- Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+-- CodeMark: SCLLC1-Projects-LLJITEGIYZVR
+-- Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+-- Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 -- 0005: the deployed licenses table (contact-submissions D1) never got the
 -- `revoked` column the worker's validation + gated-download paths reference.
 -- Discovered 2026-07-15: /api/validate 500'd with "no such column: revoked".

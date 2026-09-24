@@ -142,15 +142,34 @@ function isRateLimited(key, limit = 10, windowMs = 60_000) {
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
+  // NOTE: Cloudflare's edge HSTS setting (SSL/TLS > Edge Certificates) currently
+  // overrides this with `max-age=15552000; preload`. 180 days is below the
+  // 1-year floor hstspreload.org requires, so that `preload` directive is inert
+  // and the domain cannot be submitted. Raise the dashboard setting to 12 months.
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
   "X-Frame-Options": "DENY",
+  // No page uses camera/mic/geolocation/payment-request APIs. Deny the lot so an
+  // injected script or third-party frame cannot prompt on our behalf.
+  "Permissions-Policy":
+    "accelerometer=(), autoplay=(), camera=(), display-capture=(), encrypted-media=(), " +
+    "fullscreen=(self), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), " +
+    "midi=(), payment=(), picture-in-picture=(), publickey-credentials-get=(), " +
+    "screen-wake-lock=(), usb=(), xr-spatial-tracking=()",
+  // Cross-origin isolation posture. same-origin-allow-popups keeps the Lemon
+  // Squeezy overlay and redirect flow working while severing window.opener.
+  "Cross-Origin-Opener-Policy": "same-origin-allow-popups",
+  "Cross-Origin-Resource-Policy": "same-site",
+  "X-Permitted-Cross-Domain-Policies": "none",
 };
 
 // CSP applied to HTML asset responses. Inline scripts/styles are pervasive in
 // public/*.html, so 'unsafe-inline' stays for now; the rest is locked down.
 // Payment processor: Lemon Squeezy (Stripe was suspended -- do not re-add Stripe origins).
 const HTML_CSP = "default-src 'self'; " +
-  "script-src 'self' 'unsafe-inline' https://app.lemonsqueezy.com https://assets.lemonsqueezy.com https://cdn.tailwindcss.com https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://challenges.cloudflare.com; " +
+  // cdn.tailwindcss.com and cdn.jsdelivr.net dropped 2026-08-18: nothing under
+  // public/ references either, and an unused script-src origin is a standing
+  // injection target. Re-add only together with the markup that needs it.
+  "script-src 'self' 'unsafe-inline' https://app.lemonsqueezy.com https://assets.lemonsqueezy.com https://cdnjs.cloudflare.com https://challenges.cloudflare.com; " +
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdnjs.cloudflare.com; " +
   "font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com data:; " +
   "img-src 'self' data: https:; " +
@@ -159,6 +178,31 @@ const HTML_CSP = "default-src 'self'; " +
   "object-src 'none'; " +
   "base-uri 'self'; " +
   "form-action 'self' https://app.lemonsqueezy.com";
+
+// Server-side conversion funnel (Cloudflare Analytics Engine).
+//
+// The store promises "no telemetry, ever" and that stays true: this runs in the
+// Worker, sets no cookie, ships no client JS, and records no PII -- only the
+// product slug and the outcome. It exists because without it there is no way to
+// answer "how many people tried to buy and failed", which is the one number a
+// one-person storefront actually needs.
+//
+// Query it with SQL: https://api.cloudflare.com/client/v4/accounts/<id>/analytics_engine/sql
+//   SELECT blob1 AS event, blob2 AS product, blob3 AS reason, sum(_sample_interval) AS n
+//   FROM sassy_funnel WHERE timestamp > now() - INTERVAL '7' DAY GROUP BY 1,2,3
+//
+// No binding = silent no-op, so the Worker deploys unchanged before the dataset
+// exists. Analytics must never be able to break a checkout: everything is caught.
+function trackFunnel(env, event, product, reason) {
+  if (!env || !env.FUNNEL) return;
+  try {
+    env.FUNNEL.writeDataPoint({
+      blobs: [String(event), String(product || "none"), String(reason || "")],
+      doubles: [1],
+      indexes: [String(product || "none")],
+    });
+  } catch (_) { /* never throw out of instrumentation */ }
+}
 
 export default {
   async fetch(request, env, ctx) {
@@ -214,6 +258,19 @@ export default {
       if (path === "/api/license/validate" && (method === "GET" || method === "POST")) {
         return await handleValidateLicense(request, env, corsHeaders);
       }
+      // Public, non-sensitive, and cheap: safe to cache briefly at the edge so
+      // a store page load doesn't cost a Worker invocation per visitor.
+      if (path === "/api/catalog" && (method === "GET" || method === "HEAD")) {
+        return new Response(JSON.stringify({ products: buildCatalog(env) }), {
+          status: 200,
+          headers: {
+            ...corsHeaders,
+            ...SECURITY_HEADERS,
+            "Content-Type": "application/json",
+            "Cache-Control": "public, max-age=60",
+          },
+        });
+      }
       if (path === "/api/vpn-recommendations") {
         return await handleVPNRecommendations(corsHeaders);
       }
@@ -235,9 +292,9 @@ export default {
       if (path === "/api/nda/download" && method === "POST") {
         return await handleNdaDownload(request, env, corsHeaders);
       }
-      // PTT relay moved to relay.sassy-consults.com (sassytalk-relay worker)
+      // PTT relay lives at relay.sassyconsultingllc.com (sassytalk-relay worker)
       if (path === "/api/ptt/ws" || path === "/api/ptt/room-info") {
-        return Response.redirect("https://relay.sassy-consults.com/ws" + url.search, 301);
+        return Response.redirect("https://relay.sassyconsultingllc.com/ws" + url.search, 301);
       }
 
       // File-serving routes are GET/HEAD only — anything else gets a 405.
@@ -327,7 +384,9 @@ async function handleAnalyze(request, env, corsHeaders) {
 
   // Log to D1 if available
   if (env.DB) {
-    const hashedIP = await hashIP(ip, env.LICENSE_SALT || "default-salt");
+    const hashedIP = await hashIP(ip, env.LICENSE_SALT || "");
+    // Empty salt when unset: connection log still writes but hashing is weaker;
+    // NDA/license paths fail closed separately. Do not use a hardcoded fallback.
     try {
       await env.DB.prepare(
         "INSERT INTO connection_logs (ip_hash, zip_code, country, region, asn, is_vpn, created_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'))"
@@ -667,6 +726,45 @@ function lsHeaders(env) {
 }
 
 // Resolve a (product, billing) pair to a Lemon Squeezy variant ID via env vars.
+// What the storefront can actually sell right now, derived from exactly the
+// inputs handleCheckout uses. No Lemon Squeezy call — pure local resolution.
+//
+// This exists because `public/store.html` (CATALOG) and `public/checkout.js`
+// (UNWIRED) used to hardcode the same facts, so wiring a variant required three
+// hand edits "the same day" per docs/PRICING-STATUS.md. That reconciliation has
+// been overdue since 2026-07-31, which is why two shipping products spent 18
+// days routed to a contact form. Derived state cannot drift: set
+// LS_VARIANT_<PRODUCT>, deploy, and the buy buttons come back on their own.
+//
+// Deliberately does not expose variant IDs — only whether a sale can complete.
+function buildCatalog(env) {
+  const out = {};
+  for (const [slug, p] of Object.entries(PRODUCTS)) {
+    let purchasable = true;
+    let reason = "";
+    if (p.available === false) {
+      purchasable = false;
+      reason = "not_available";
+    } else {
+      const variantId =
+        resolveVariantId(env, slug, p.mode === "subscription", null) ||
+        (p.lsFallbackOk && p.priceCents && env.LS_FALLBACK_VARIANT ? env.LS_FALLBACK_VARIANT : null);
+      if (!variantId) {
+        purchasable = false;
+        reason = "no_variant";
+      }
+    }
+    out[slug] = {
+      name: p.name,
+      price_cents: p.priceCents != null ? p.priceCents : null,
+      price: p.priceCents != null ? `$${(p.priceCents / 100).toFixed(2)}` : null,
+      purchasable,
+      reason,
+    };
+  }
+  return out;
+}
+
 function resolveVariantId(env, product, isSubscription, billing) {
   const base = `LS_VARIANT_${product.toUpperCase().replace(/-/g, "_")}`;
   if (isSubscription) {
@@ -682,11 +780,19 @@ async function handleCheckout(request, env, corsHeaders) {
   }
   const body = await request.json();
   const { product, email, billing, success_url, cancel_url } = body;
-  if (!product || !PRODUCTS[product]) return jsonResponse({ error: "Invalid product" }, 400, corsHeaders);
+  trackFunnel(env, "checkout_requested", product);
+  if (!product || !PRODUCTS[product]) {
+    trackFunnel(env, "checkout_refused", product, "invalid_product");
+    return jsonResponse({ error: "Invalid product" }, 400, corsHeaders);
+  }
   if (PRODUCTS[product].available === false) {
+    trackFunnel(env, "checkout_refused", product, "not_available");
     return jsonResponse({ error: `${PRODUCTS[product].name} isn't available for purchase yet. Check back soon.` }, 409, corsHeaders);
   }
-  if (!email) return jsonResponse({ error: "Email required" }, 400, corsHeaders);
+  if (!email) {
+    trackFunnel(env, "checkout_refused", product, "no_email");
+    return jsonResponse({ error: "Email required" }, 400, corsHeaders);
+  }
   if (!env.LEMONSQUEEZY_API_KEY || !env.LEMONSQUEEZY_STORE_ID) {
     return jsonResponse({ error: "Payment processor not configured" }, 500, corsHeaders);
   }
@@ -705,6 +811,9 @@ async function handleCheckout(request, env, corsHeaders) {
     customPriceCents = productInfo.priceCents;
   }
   if (!variantId) {
+    // This is the expensive failure: a buyer with intent, turned away. It is the
+    // single most important number on the site while any SKU is unwired.
+    trackFunnel(env, "checkout_refused", product, "no_variant");
     return jsonResponse({
       error: `${productInfo.name} checkout is briefly offline while payment wiring is finished. ` +
              `Email info@sassyconsultingllc.com and we'll send you a direct checkout link.`,
@@ -765,10 +874,15 @@ async function handleCheckout(request, env, corsHeaders) {
   const session = await lsResponse.json();
   if (!lsResponse.ok) {
     const msg = session?.errors?.[0]?.detail || session?.errors?.[0]?.title || "Lemon Squeezy error";
+    trackFunnel(env, "checkout_refused", product, `ls_${lsResponse.status}`);
     return jsonResponse({ error: msg }, 400, corsHeaders);
   }
   const checkoutUrl = session?.data?.attributes?.url;
-  if (!checkoutUrl) return jsonResponse({ error: "Checkout URL missing in response" }, 500, corsHeaders);
+  if (!checkoutUrl) {
+    trackFunnel(env, "checkout_refused", product, "ls_no_url");
+    return jsonResponse({ error: "Checkout URL missing in response" }, 500, corsHeaders);
+  }
+  trackFunnel(env, "checkout_created", product);
 
   // Stash the pending intent so /api/verify has something to look up even if
   // the webhook is delayed; the license_key column stays NULL until then.
@@ -905,6 +1019,7 @@ async function handleWebhook(request, env, corsHeaders) {
   }
 
   const total = attrs.total_formatted || (attrs.total != null ? `$${(attrs.total / 100).toFixed(2)}` : "n/a");
+  trackFunnel(env, "order_paid", product);
   await sendBuyerLicenseEmail(env, { email, product, licenseKey });
   await sendNotification(env,
     `Payment Confirmed: ${PRODUCTS[product]?.name || product}`,
@@ -1223,7 +1338,11 @@ async function handleNdaVerifyCode(request, env, corsHeaders) {
   const body = await request.json();
   const { code } = body;
   if (!code) return jsonResponse({ valid: false, error: "Access code required." }, 400, corsHeaders);
-  const expectedCode = env.NDA_ACCESS_CODE || "sassy-nda-2026";
+  if (!env.NDA_ACCESS_CODE) {
+    console.error("NDA_ACCESS_CODE unset — refusing NDA verify");
+    return jsonResponse({ valid: false, error: "NDA verification unavailable." }, 503, corsHeaders);
+  }
+  const expectedCode = env.NDA_ACCESS_CODE;
   const valid = code === expectedCode;
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   if (env.DB) { try { await env.DB.prepare("INSERT INTO nda_access_log (ip, action, success, created_at) VALUES (?, 'verify_code', ?, datetime('now'))").bind(ip, valid ? 1 : 0).run(); } catch(e) {} }
@@ -1253,7 +1372,11 @@ async function handleNdaSign(request, env, corsHeaders) {
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const country = request.headers.get("CF-IPCountry") || "XX";
   const signedAt = now.toISOString();
-  const tokenHash = await sha256(`${agreementNo}:${body.email}:${signedAt}:${env.LICENSE_SALT || "nda-salt"}`);
+  if (!env.LICENSE_SALT) {
+    console.error("LICENSE_SALT unset — refusing NDA sign");
+    return jsonResponse({ success: false, error: "NDA signing unavailable." }, 503, corsHeaders);
+  }
+  const tokenHash = await sha256(`${agreementNo}:${body.email}:${signedAt}:${env.LICENSE_SALT}`);
   const downloadToken = tokenHash.substring(0, 32);
   const docHash = NDA_DOC_HASH !== "TO_BE_COMPUTED_ON_DEPLOY" ? NDA_DOC_HASH : await sha256(`nda-sassy-browser-mutual-v1-${agreementNo}`);
   if (env.DB) {

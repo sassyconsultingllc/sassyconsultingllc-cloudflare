@@ -438,7 +438,11 @@
            a misaligned card. Clipping is on <body>, not the section — clip on
            the section would just crop the bleed back off again. */
         :root { --bleed: clamp(0rem, 6vw, 5.5rem); }
-        body { overflow-x: clip; }
+        /* Both elements: overflow-x on <body> alone does not stop the viewport
+           itself from scrolling, so the bleed still bought a ~12px sideways
+           drag on desktop. clip (not hidden) keeps the bleed painting past the
+           edge without creating a scroll container. */
+        html, body { overflow-x: clip; }
 
         /* .product-card sets width:100%. With an explicit width the box is
            over-constrained in LTR and a negative margin-right is discarded —
@@ -558,8 +562,12 @@
 
         .dashboard-section { background: var(--bg-secondary); padding: 6rem 2rem; }
         .dashboard-container { max-width: 1200px; margin: 0 auto; }
-        .search-form { display: flex; gap: 1rem; max-width: 500px; margin: 0 auto 3rem; }
-        .search-form input { flex: 1; padding: 1rem 1.5rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem; font-family: inherit; }
+        /* Wraps: unwrapped, the input's content-based minimum plus the Analyze
+           button exceeded the row at ~320px and pushed the button off-screen,
+           where body{overflow-x:clip} made it unreachable. */
+        .search-form { display: flex; flex-wrap: wrap; gap: 1rem; max-width: 500px; margin: 0 auto 3rem; }
+        .search-form input { flex: 1 1 12rem; min-width: 0; padding: 1rem 1.5rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem; font-family: inherit; }
+        .search-form .btn { flex: 0 1 auto; }
         .search-form input:focus { outline: none; border-color: var(--accent-primary); }
 
         .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
@@ -603,7 +611,10 @@
         footer { border-top: 1px solid var(--border-subtle); padding: 3rem 2rem; }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
         .footer-left { color: var(--text-tertiary); font-size: 0.9rem; }
-        .footer-links { display: flex; gap: 2rem; }
+        /* Wraps because there are eight of these: unwrapped they measure ~653px
+           and the tail of the list (My Best Sites, GitHub) sat off the right
+           edge of every phone, unreachable behind body{overflow-x:clip}. */
+        .footer-links { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; }
         .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
         .footer-links a:hover { color: var(--text-primary); }
 
@@ -702,8 +713,13 @@
         }
 
         .app-icon-img {
-            width: clamp(96px, 18vw, 168px);
-            height: clamp(96px, 18vw, 168px);
+            /* The 96px floor is wider than a tile's content box once the grid is
+               2-up below ~340px (tile inner width lands at 90px), and the tile's
+               overflow:hidden clipped the icon's sides. Cap against the tile as
+               well as the viewport so it can never outgrow its own card. */
+            width: min(clamp(96px, 18vw, 168px), 100%);
+            height: auto;
+            aspect-ratio: 1 / 1;
             border-radius: 28px;
             object-fit: cover;
             margin-bottom: 1.25rem;
@@ -875,8 +891,14 @@
         }
 
         @media (max-width: 720px) {
-            .apps-band { padding: 6rem 1rem 2rem; }
-            .apps-grid { gap: 0.75rem; }
+            /* Keep the same 2rem gutter as nav/hero/footer/products so the
+               left/right edges line up as you scroll — this band used to
+               drop to 1rem here, which shifted its content ~16px closer to
+               the screen edge than everything above and below it. Going to
+               2 columns (instead of shrinking the padding) is what actually
+               buys the tiles room, since each icon has a 96px floor. */
+            .apps-band { padding: 6rem 2rem 2rem; }
+            .apps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
             .app-tile p { display: none; }
             .tester-cta a { font-size: 0.88rem; padding: 0.75rem 1.25rem; }
         }
@@ -886,9 +908,33 @@
             .app-tile h3 { font-size: 0.95rem; }
         }
 
+        /* Turnstile renders a fixed 300px-wide widget that cannot reflow. The
+           gate's content box is narrower than that on any viewport under about
+           420px, so the widget escaped the card on both sides. Scaling is the
+           only lever here — the iframe ignores CSS width — and it leaves the
+           challenge itself fully functional. */
+        @media (max-width: 440px) {
+            .captcha-gate { padding: 1.25rem 1rem; }
+            .captcha-gate .cf-turnstile { transform: scale(0.88); transform-origin: center top; }
+        }
+        @media (max-width: 380px) {
+            .captcha-gate .cf-turnstile { transform: scale(0.72); }
+        }
+
         @media (max-width: 768px) {
             .nav-links { display: none; }
             .products-grid { grid-template-columns: 1fr; }
+            /* The spans from the 1080px block have to be cleared too, not just
+               the track list. A tile left on `grid-column: span 2` inside a
+               single-column grid makes the grid generate an *implicit* second
+               column, which is auto-sized: the flagship then ate a 224px track
+               and left every other card in a 74px sliver with text clipped
+               mid-word. Pinning each tile to 1 / -1 means no span can invent a
+               track no matter what the wider breakpoints set. */
+            .tile-hero, .tile-quad, .tile-rail, .tile-duo, .tile-half {
+                grid-column: 1 / -1;
+                grid-row: auto;
+            }
             .results-grid { grid-template-columns: repeat(2, 1fr); }
             .about-grid { grid-template-columns: 1fr; }
         }

@@ -98,7 +98,11 @@ h2 { font-size: clamp(1.4rem, 2.6vw, 1.9rem); font-weight: 800; letter-spacing: 
 .cat { margin-bottom: 2.25rem; }
 .cat-h { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text2); margin-bottom: 0.8rem; padding-bottom: 0.5rem; border-bottom: 1px solid var(--border); }
 
-.feat-table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+/* Wide tables scroll inside their own box rather than being clipped by the
+   page. The radius/border live on the scroller so the rounded corners stay
+   put while the table slides underneath them. */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--border); border-radius: var(--r); background: var(--card); }
+.feat-table { width: 100%; border-collapse: collapse; background: var(--card); border: none; border-radius: 0; overflow: hidden; }
 .feat-table th { text-align: left; padding: 0.7rem 1rem; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text3); font-weight: 700; background: var(--bg3); border-bottom: 1px solid var(--border); }
 .feat-table td { padding: 0.7rem 1rem; border-bottom: 1px solid var(--border); font-size: 0.88rem; vertical-align: top; }
 .feat-table tr:last-child td { border-bottom: none; }
@@ -416,7 +420,14 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
                 tbody.appendChild(row);
             }
             table.appendChild(tbody);
-            wrap.appendChild(table);
+            // width:100% is only a *minimum* for a table: these run 374-822px
+            // wide once the Detail column has real text in it, and the page
+            // clips (body{overflow-x:hidden}) rather than scrolls, so anything
+            // past the viewport was silently unreachable on a phone. Let the
+            // table scroll inside its own box instead.
+            const scroller = el('div', 'table-scroll');
+            scroller.appendChild(table);
+            wrap.appendChild(scroller);
             root.appendChild(wrap);
         }
 
@@ -476,7 +487,9 @@ footer { border-top: 1px solid var(--border); padding: 2.5rem 2rem; max-width: 1
             tbody.appendChild(row);
         }
         table.appendChild(tbody);
-        root.appendChild(table);
+        const scroller = el('div', 'table-scroll');
+        scroller.appendChild(table);
+        root.appendChild(scroller);
     }
 
     // The ACE repository is private, so there are no public GitHub stats to

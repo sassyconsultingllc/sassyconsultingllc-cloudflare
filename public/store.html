@@ -151,7 +151,10 @@ footer a{color:var(--text-dim)}
 
 @media(max-width:640px){
   .topbar{padding:1.25rem}
+  /* footer included: it kept the desktop 2rem gutter while everything above it
+     dropped to 1.25rem, so the page edge shifted by 12px at the footer. */
   .wrap,.hero{padding-left:1.25rem;padding-right:1.25rem}
+  footer{padding-left:1.25rem;padding-right:1.25rem}
   .product{padding:1.6rem}
 }
 </style>
@@ -208,7 +211,7 @@ footer a{color:var(--text-dim)}
     </div>
     <div class="grid">
 
-      <article class="product featured">
+      <article class="product featured" data-product="mcp-pro">
         <span class="ribbon">ALL OR NOTHING</span>
         <span class="tag">Optional · does not unlock tools</span>
         <h3>SassyMCP Supporter</h3>
@@ -220,7 +223,7 @@ footer a{color:var(--text-dim)}
           <li>Activates on 2 machines you own</li>
           <li>Same story as directories (CuratedMCP &amp; friends): free product, paid support optional</li>
         </ul>
-        <button class="btn btn-primary" data-buy="mcp-pro">Buy supporter license — $25</button>
+        <button class="btn btn-primary" data-buy="mcp-pro" data-cta data-label-buy="Buy supporter license — $25">Buy supporter license — $25</button>
         <a class="btn btn-ghost" style="margin-top:0.75rem" href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">Download free — no key needed</a>
       </article>
 
@@ -235,12 +238,12 @@ footer a{color:var(--text-dim)}
     </div>
     <div class="grid">
 
-      <article class="product">
+      <article class="product" data-product="sassy-talk">
         <span class="tag">Encrypted comms · Android</span>
         <h3>Sassy-Talk</h3>
         <p class="desc">Encrypted push-to-talk walkie-talkie. Works over WiFi multicast, Bluetooth, or cellular via our Cloudflare relay.</p>
         <div class="price"><span class="amount">$3.99</span><span class="period">one-time</span></div>
-        <div class="note"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day. The Android app itself is free to install on Google Play.</div>
+        <div class="note" data-offline-note><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day. The Android app itself is free to install on Google Play.</div>
         <ul class="feature-list">
           <li>End-to-end encrypted voice channels (AES-256-GCM)</li>
           <li>WiFi multicast, Bluetooth, and cellular relay transports</li>
@@ -248,23 +251,23 @@ footer a{color:var(--text-dim)}
           <li>Windows client not released yet</li>
           <li>No tracking, no accounts, lifetime license</li>
         </ul>
-        <a class="btn btn-primary" href="/contact?product=sassy-talk">Request checkout link — $3.99</a>
+        <a class="btn btn-primary" href="/contact?product=sassy-talk" data-cta data-label-buy="Buy Sassy-Talk — $3.99">Request checkout link — $3.99</a>
         <a class="btn btn-ghost" style="margin-top:0.75rem" href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener">Install free on Google Play</a>
       </article>
 
-      <article class="product">
+      <article class="product" data-product="winforensics">
         <span class="tag">Windows forensics</span>
         <h3>WinForensics-Pro</h3>
         <p class="desc">Scans your Windows system for compromise, hidden files and suspicious activity, then writes a readable report.</p>
         <div class="price"><span class="amount">$9.99</span><span class="period">one-time</span></div>
-        <div class="note"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day.</div>
+        <div class="note" data-offline-note><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day.</div>
         <ul class="feature-list">
           <li>Windows GUI build v0.5.2</li>
           <li>Integrity, ADS, Prefetch, Amcache, MFT walk</li>
           <li>VirusTotal lookup, quarantine &amp; restore</li>
           <li>STIX2 + HTML reports, lifetime license</li>
         </ul>
-        <a class="btn btn-primary" href="/contact?product=winforensics">Request checkout link — $9.99</a>
+        <a class="btn btn-primary" href="/contact?product=winforensics" data-cta data-label-buy="Buy WinForensics-Pro — $9.99">Request checkout link — $9.99</a>
       </article>
 
       <article class="product">
@@ -436,18 +439,40 @@ footer a{color:var(--text-dim)}
 
 <script>
 (function () {
-  // Canonical catalog — keep slugs in sync with PRODUCTS in src/worker.js.
-  // mcp-pro slug kept for deep links / entitlement maps; UI name is Supporter.
-  // Only slugs with a live Lemon Squeezy variant belong here. sassy-talk and
-  // winforensics are priced and shipping but have no variant wired (the worker
-  // answers /api/checkout with 503 for them), so they route to /contact instead
-  // of opening a modal that is guaranteed to fail. Re-add them here the same
-  // day LS_VARIANT_SASSY_TALK / LS_VARIANT_WINFORENSICS are set — see
-  // docs/PRICING-STATUS.md.
-  var CATALOG = {
-    "mcp-pro":         { name: "SassyMCP Supporter",    price: "$25"  }
-    // mcp-forensics / mcp-team retired (all-or-nothing). website-creator: no artifact yet.
-  };
+  // Catalog is fetched from /api/catalog, which derives purchasability from the
+  // same variant resolution /api/checkout performs. Nothing about which SKUs are
+  // buyable is hardcoded here any more — set an LS_VARIANT_* secret, deploy, and
+  // this page corrects itself on the next load. The markup ships in its honest
+  // "request a link" state, so a failed fetch degrades to the truthful copy
+  // rather than to a buy button that 503s.
+  var CATALOG = {};
+
+  function applyCatalog(products) {
+    document.querySelectorAll("[data-product]").forEach(function (card) {
+      var slug  = card.getAttribute("data-product");
+      var entry = products[slug];
+      if (!entry) return;
+      var cta  = card.querySelector("[data-cta]");
+      var note = card.querySelector("[data-offline-note]");
+      if (entry.purchasable) {
+        CATALOG[slug] = { name: entry.name, price: entry.price || "" };
+        if (note) note.style.display = "none";
+        if (cta) {
+          cta.setAttribute("data-buy", slug);
+          cta.textContent = cta.getAttribute("data-label-buy") || ("Buy " + entry.name);
+          if (cta.tagName === "A") cta.removeAttribute("href");
+          cta.style.cursor = "pointer";
+        }
+      } else {
+        delete CATALOG[slug];
+        if (note) note.style.display = "";
+        if (cta) {
+          cta.removeAttribute("data-buy");
+          if (cta.tagName === "A") cta.setAttribute("href", "/contact?product=" + encodeURIComponent(slug));
+        }
+      }
+    });
+  }
 
   var modal    = document.getElementById("modal");
   var form     = document.getElementById("checkout-form");
@@ -481,9 +506,14 @@ footer a{color:var(--text-dim)}
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
 
-  // Wire every buy button.
-  document.querySelectorAll("[data-buy]").forEach(function (btn) {
-    btn.addEventListener("click", function () { openModal(btn.getAttribute("data-buy")); });
+  // Delegated so buttons promoted to buy-state by applyCatalog() are live too,
+  // without rebinding. A [data-cta] that never gained data-buy stays a plain
+  // link to /contact and is not intercepted here.
+  document.addEventListener("click", function (e) {
+    var btn = e.target.closest ? e.target.closest("[data-buy]") : null;
+    if (!btn) return;
+    e.preventDefault();
+    openModal(btn.getAttribute("data-buy"));
   });
 
   document.getElementById("modal-close").addEventListener("click", closeModal);
@@ -532,12 +562,28 @@ footer a{color:var(--text-dim)}
       });
   });
 
-  // Deep link: /store?buy=<product> opens the modal pre-selected. This is how
-  // legacy buyProduct() buttons on the product pages now reach checkout.
-  try {
-    var q = new URLSearchParams(window.location.search).get("buy");
-    if (q && CATALOG[q]) openModal(q);
-  } catch (_) {}
+  // Load the live catalog, reconcile the cards, then honour the deep link.
+  // /store?buy=<product> opens the modal pre-selected — this is how legacy
+  // buyProduct() buttons on the product pages reach checkout. The deep link is
+  // resolved only after applyCatalog() so it cannot open a modal for a SKU that
+  // would 503, and a buyer who deep-linked to an unwired SKU is handed the
+  // contact route instead of a dead form.
+  function deepLink() {
+    try {
+      var q = new URLSearchParams(window.location.search).get("buy");
+      if (!q) return;
+      if (CATALOG[q]) openModal(q);
+      else if (document.querySelector('[data-product="' + q.replace(/"/g, "") + '"]')) {
+        window.location.replace("/contact?product=" + encodeURIComponent(q));
+      }
+    } catch (_) {}
+  }
+
+  fetch("/api/catalog", { credentials: "omit" })
+    .then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (d) { if (d && d.products) applyCatalog(d.products); })
+    .catch(function () { /* keep the shipped honest state */ })
+    .then(deepLink);
 })();
 </script>
 <script type="application/ld+json">
