@@ -176,7 +176,7 @@
             --bg-card: #141414;
             --text-primary: #ffffff;
             --text-secondary: #a0a0a0;
-            --text-tertiary: #606060;
+            --text-tertiary: #8a8a8a;
             --accent-primary: #22c55e;
             --accent-secondary: #16a34a;
             --accent-glow: rgba(34, 197, 94, 0.15);
@@ -308,7 +308,7 @@
 
         .btn-secondary:hover {
             background: var(--bg-tertiary);
-            border-color: var(--text-tertiary);
+            border-color: #606060;
         }
 
         .hero {
@@ -899,7 +899,7 @@
                buys the tiles room, since each icon has a 96px floor. */
             .apps-band { padding: 6rem 2rem 2rem; }
             .apps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
-            .app-tile p { display: none; }
+            .app-tile p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.85rem; }
             .tester-cta a { font-size: 0.88rem; padding: 0.75rem 1.25rem; }
         }
 
@@ -1086,9 +1086,20 @@
                 animation: none !important;
             }
         }
+
+        .mobile-menu-btn { display: none; background: transparent; border: 1px solid var(--border-medium); color: var(--text-primary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; }
+        .mobile-menu { display: none; flex-direction: column; padding: 16px 24px; background: var(--bg-tertiary); border-top: 1px solid var(--border-subtle); }
+        .mobile-menu.open { display: flex; position: fixed; top: 4.5rem; left: 0; right: 0; z-index: 1000; max-height: calc(100dvh - 4.5rem); overflow-y: auto; }
+        .mobile-menu a { padding: 12px 0; color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid var(--border-subtle); }
+        .mobile-menu a:hover { color: var(--text-primary); }
+        @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } }
+
+        .skip-link { position: absolute; left: -9999px; top: 0; background: #22c55e; color: #000; padding: 8px 16px; z-index: 1100; border-radius: 0 0 6px 0; font-weight: 600; text-decoration: none; }
+        .skip-link:focus { left: 0; }
     </style>
 </head>
 <body>
+    <a class="skip-link" href="#main">Skip to content</a>
 
     <!-- NAV -->
     <nav>
@@ -1105,8 +1116,19 @@ Sassy Consulting LLC
                 <a href="https://github.com/sassyconsultingllc/sassyconsultingllc-cloudflare">Audit My Code</a>
                 <a href="/store#sassymcp" class="btn btn-primary">Get SassyMCP</a>
             </div>
+            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">☰</button>
         </div>
     </nav>
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#products">Products</a>
+        <a href="/store">Store</a>
+        <a href="#apps">Android Apps</a>
+        <a href="#tools">Free Tools</a>
+        <a href="#about">About</a>
+        <a href="https://github.com/sassyconsultingllc/sassyconsultingllc-cloudflare">Audit My Code</a>
+        <a href="/store#sassymcp">Get SassyMCP</a>
+    </div>
+    <main id="main" tabindex="-1">
 
     <!-- ANDROID APPS TOP BAND -->
     <section id="apps" class="apps-band">
@@ -1350,7 +1372,7 @@ Sassy Consulting LLC
 
             <a href="/browser" class="product-card tile-half tile-lift tile-break-left" aria-labelledby="sassy-browser-title" role="article">
                 <span class="product-badge featured">Featured</span>
-                <h3 id="sassy-browser-title">Sassy Browser (v0.13.2)</h3>
+                <h3 id="sassy-browser-title">Sassy Browser (v0.15.2)</h3>
                 <p>Privacy-first universal file viewer &amp; secure browser in active development. Honest build status on /coming-soon.</p>
                 <div class="price">In Development &mdash; Needs Funding</div>
                 <div class="product-tags">
@@ -1374,7 +1396,7 @@ Sassy Consulting LLC
 
             <!-- SectorScope — priced, not yet sellable (no activation, no build). -->
             <a href="/store#apps" class="product-card tile-duo">
-                <span class="product-badge" style="background: var(--text-tertiary); color: #000;">Not yet</span>
+                <span class="product-badge" style="background: #606060; color: #000;">Not yet</span>
                 <h3>SectorScope</h3>
                 <p>Real-time disk activity monitor with a defrag-style cluster map, live per-IO capture, and a 3-layer decode HUD. Console and GUI over one Rust engine.</p>
                 <div class="price">$9.99 <span style="color: var(--text-tertiary); font-size: 0.6em;">when it ships</span></div>
@@ -1386,7 +1408,7 @@ Sassy Consulting LLC
             </a>
 
             <a href="/website-creator" class="product-card tile-duo tile-drop">
-                <span class="product-badge" style="background: var(--text-tertiary); color: #000;">Not yet</span>
+                <span class="product-badge" style="background: #606060; color: #000;">Not yet</span>
                 <h3>Website Creator</h3>
                 <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in. Still in development — there is no plugin to download yet, so we are not taking money for it.</p>
                 <div class="price">$2 <span style="color: var(--text-tertiary); font-size: 0.6em;">when it ships</span></div>
@@ -1558,6 +1580,7 @@ Sassy Consulting LLC
             </div>
         </div>
     </footer>
+    </main>
 
     <script>
         document.getElementById('analyze-btn').addEventListener('click', analyze);
@@ -1697,6 +1720,25 @@ Sassy Consulting LLC
             errEl.textContent = msg;
             errEl.style.display = 'block';
         }
+    </script>
+    <script>
+    (function () {
+      var btn = document.getElementById('mobileMenuBtn');
+      var menu = document.getElementById('mobileMenu');
+      if (!btn || !menu) return;
+      btn.addEventListener('click', function () {
+        var open = menu.classList.toggle('open');
+        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        btn.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+      });
+      menu.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () {
+          menu.classList.remove('open');
+          btn.setAttribute('aria-expanded', 'false');
+          btn.setAttribute('aria-label', 'Open menu');
+        });
+      });
+    })();
     </script>
 </body>
 </html>
