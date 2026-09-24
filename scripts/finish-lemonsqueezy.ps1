@@ -11,7 +11,7 @@
     SassyMCP Supporter      $25    Generate license keys: ON, activation limit 2
                                    (name may be "SassyMCP" — slug maps either)
     Sassy-Talk              $3.99  license keys OFF (relay worker mints keys)
-    WinForensics-Pro        $2     license keys OFF (winforensics-license-api mints WFP- keys)
+    WinForensics-Pro        $9.99  license keys OFF (winforensics-license-api mints WFP- keys)
     Website Creator         $2     DO NOT create until an artifact ships (no deliverable exists)
 
   DO NOT create "SassyMCP Forensics" or "SassyMCP Team" — those tiers are retired.
@@ -116,8 +116,25 @@ foreach ($p in $products) {
         continue
     }
     if ($assigned.Contains($slug)) { Write-Warning "'$name' also matched '$slug' (already taken) — skipped"; continue }
-    $variant = $variants | Where-Object { "$($_.attributes.product_id)" -eq "$($p.id)" } | Select-Object -First 1
-    if (-not $variant) { Write-Warning "product '$name' has no variant — skipped"; continue }
+    $candidates = @($variants | Where-Object { "$($_.attributes.product_id)" -eq "$($p.id)" })
+    if (-not $candidates.Count) { Write-Warning "product '$name' has no variant — skipped"; continue }
+    # Prefer a published variant. The API lists pending duplicates first, and
+    # picking one (SassyMCP 1958269 vs published 1753676) sells a key the app
+    # does not activate.
+    $published = @($candidates | Where-Object { $_.attributes.status -eq 'published' })
+    $pool = if ($published.Count) { $published } else { $candidates }
+    if ($slug -eq 'mcp-pro') {
+        $withKeys = @($pool | Where-Object { $_.attributes.has_license_keys -eq $true })
+        if ($withKeys.Count) { $pool = $withKeys }
+    }
+    if ($slug -in @('sassy-talk', 'winforensics')) {
+        $noKeys = @($pool | Where-Object { $_.attributes.has_license_keys -ne $true })
+        if ($noKeys.Count) { $pool = $noKeys }
+    }
+    $variant = $pool | Select-Object -First 1
+    if ($variant.attributes.status -ne 'published') {
+        Write-Warning "variant $($variant.id) for '$name' is '$($variant.attributes.status)', not published. Custom checkouts may still open; publish it in the dashboard."
+    }
     $assigned[$slug] = $variant.id
     $envName = 'LS_VARIANT_' + $slug.ToUpper().Replace('-', '_')
     Write-Host "  $name -> $slug (variant $($variant.id))"
