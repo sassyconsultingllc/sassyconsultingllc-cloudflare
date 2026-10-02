@@ -120,11 +120,15 @@ wrangler deploy
 
 ## Products
 
-All products are $2.00 one-time purchase:
+All paid products are one-time purchases with lifetime licences. `PRODUCTS` in
+`src/worker.js` is authoritative; `docs/PRICING-STATUS.md` records what can
+actually be bought today.
 
-- **Sassy-Talk**: Encrypted walkie-talkie (Android/Windows)
-- **WinForensics**: Digital forensics toolkit (Windows)
-- **Website Creator**: AI WordPress builder
+- **SassyMCP Supporter** (`mcp-pro`): $25 — optional, unlocks nothing
+- **Sassy-Talk**: $3.99 — encrypted walkie-talkie (Android)
+- **WinForensics-Pro**: $9.99 — digital forensics toolkit (Windows)
+- **SectorScope**: $9.99 — disk activity monitor (not on sale yet)
+- **Website Creator**: $2 — AI WordPress builder (not on sale yet)
 
 ## License Key Format
 

@@ -26,7 +26,15 @@ const EXCLUDE = new Set([
   "success.html",
   "checkout/",           // transactional funnel pages
   "browser-v2.html",     // historical, no file exists
+  "_DELETE_/",           // pre-edit snapshots written by the SassyMCP edit tools
+  "browser-info.html",   // meta-refresh redirect stub, noindexed
+  "privacy-policy.html", // meta-refresh redirect stub, noindexed
 ]);
+
+// Belt and braces: anything that noindexes itself must never be advertised in
+// the sitemap, whatever EXCLUDE says. Submitting a noindexed URL is a
+// Search Console error ("Submitted URL marked noindex").
+const NOINDEX_RE = /<meta\s+name=["']robots["'][^>]*content=["'][^"']*noindex/i;
 
 // Prefix-based priority + changefreq. First matching prefix wins.
 // Path is the public-relative POSIX path WITHOUT .html, no leading slash.
@@ -104,6 +112,7 @@ function main() {
     const fileRel = relative(PUBLIC_DIR, f).split(sep).join(posix.sep);
     const relPath = toPath(f);
     if (isExcluded(relPath, fileRel)) continue;
+    if (NOINDEX_RE.test(readFileSync(f, "utf8"))) continue;
     if (seen.has(relPath)) continue;
     seen.add(relPath);
     const rule = ruleFor(relPath);

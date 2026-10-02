@@ -1,0 +1,16 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "//": "npm run dev is `wrangler dev`, which binds 8787 by default and takes a port ONLY via --port. Wrangler does not read the PORT environment variable, so autoPort must stay false — an assigned port would simply be ignored and the preview would point at the wrong place. The old value here was 3000, which never matched anything this project serves.",
+      "name": "dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
+      "port": 8787,
+      "autoPort": false
+    }
+  ]
+}

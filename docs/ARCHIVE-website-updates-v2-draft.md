@@ -3,7 +3,25 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-J6DXHUPLTLLQ
 -->
-# Sassy Browser v2.0.0 - Website Update Content
+> **SUPERSEDED — do not copy anything from this file onto the site.**
+>
+> This is an early-2026 marketing draft for a "v2.0.0" that never shipped. It
+> contradicts the product on almost every material point: the real version is
+> **0.13.1**, the source is **proprietary and the repository is private** (this
+> file says MIT / open source / free forever), there is **no signed installer**
+> for any platform (this file lists .msi / .AppImage / .dmg filenames), and the
+> format-support and "100+ formats, no plugins" claims outrun what actually
+> works — see the Done / Partial / Planned matrix.
+>
+> Canonical sources of truth, in this order:
+> 1. `public/status/product-status.json` — feature matrix and metrics
+> 2. `public/status/smoke-scoreboard.json` — real-site pass/partial/fail
+> 3. `/coming-soon` — the page that renders both
+> 4. `docs/PRICING-STATUS.md` — what can actually be bought
+>
+> Kept only as a record of the messaging experiments. Last reviewed 2026-07-31.
+
+# Sassy Browser v2.0.0 - Website Update Content (ARCHIVED DRAFT)
 
 ## HEADLINE OPTIONS
 
