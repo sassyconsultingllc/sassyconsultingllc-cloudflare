@@ -4,10 +4,12 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-public-NDZIHUW3OKSH
 -->
-<html lang="en">
+<html lang="en" data-page="refund">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/theme/seasonal.js"></script>
+<link rel="stylesheet" href="/theme/tokens.css">
 <title>Refund Policy | Sassy Consulting LLC</title>
 <meta name="description" content="14-day, no-questions-asked refunds on every paid product from Sassy Consulting LLC. How refunds work, how long they take, and how to request one.">
 <link rel="canonical" href="https://sassyconsultingllc.com/refund-policy.html">
@@ -18,28 +20,22 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#0a0c10;--surface:#111318;--border:#2a2e3a;
-  --text:#e8eaf0;--text-dim:#8b90a0;--text-muted:#5c6070;
-  --accent:#10b981;
-  --serif:'DM Serif Display',Georgia,serif;
-  --sans:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
-}
-body{font-family:var(--sans);background:var(--bg);color:var(--text);line-height:1.7;-webkit-font-smoothing:antialiased;padding:2rem 1.25rem 4rem}
-a{color:var(--accent);text-decoration:none}
+body{font-family:var(--sc-font-sans);background:var(--sc-bg);color:var(--sc-text);line-height:1.7;-webkit-font-smoothing:antialiased;padding:2rem var(--sc-gutter, 1.25rem) 4rem}
+a{color:var(--sc-accent);text-decoration:none}
 a:hover{text-decoration:underline}
 .wrap{max-width:760px;margin:0 auto}
-h1{font-family:var(--serif);font-weight:400;font-size:clamp(2rem,5vw,2.8rem);margin:1.5rem 0 0.4rem}
-.updated{color:var(--text-muted);font-size:0.85rem;margin-bottom:2rem}
+h1{font-family:var(--sc-font-display);font-weight:400;font-size:clamp(2rem,5vw,2.8rem);margin:1.5rem 0 0.4rem}
+.updated{color:var(--sc-text-3);font-size:0.85rem;margin-bottom:2rem}
 h2{font-size:1.15rem;margin:2rem 0 0.6rem}
-p,ul{color:var(--text-dim);margin-bottom:1rem;font-size:0.97rem}
+p,ul{color:var(--sc-text-2);margin-bottom:1rem;font-size:0.97rem}
 ul{padding-left:1.3rem}
 li{margin-bottom:0.4rem}
-.card{background:var(--surface);border:1px solid var(--accent);border-radius:14px;padding:1.4rem 1.6rem;margin:1.5rem 0}
-.card strong{color:var(--text)}
-footer{max-width:760px;margin:3.5rem auto 0;border-top:1px solid var(--border);padding-top:1.5rem;text-align:center;color:var(--text-muted);font-size:0.85rem}
-footer a{color:var(--text-dim)}
+.card{background:var(--sc-surface);border:1px solid var(--sc-accent);border-radius:var(--sc-radius-card, 14px);padding:1.4rem 1.6rem;margin:1.5rem 0;box-shadow:var(--sc-shadow-card, none)}
+.card strong{color:var(--sc-text)}
+footer{max-width:760px;margin:3.5rem auto 0;border-top:1px solid var(--sc-border);padding-top:1.5rem;text-align:center;color:var(--sc-text-3);font-size:0.85rem}
+footer a{color:var(--sc-text-2)}
 </style>
+<link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
 <main class="wrap">
@@ -74,7 +70,7 @@ footer a{color:var(--text-dim)}
   <p>Donations are gifts and aren't refundable, except where required by law or in the case of an obvious mistake (wrong amount, duplicate charge) — contact us and we'll sort it out.</p>
 </main>
 <footer>
-  &copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made<br>
+  <span data-theme-toggle>&copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made</span><br>
   <a href="/">Home</a> &nbsp;&bull;&nbsp; <a href="/store">Store</a> &nbsp;&bull;&nbsp; <a href="/terms.html">Terms</a> &nbsp;&bull;&nbsp; <a href="/eula.html">EULA</a> &nbsp;&bull;&nbsp; <a href="/privacy.html">Privacy</a>
 </footer>
 </body>

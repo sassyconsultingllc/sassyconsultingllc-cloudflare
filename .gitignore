@@ -98,3 +98,6 @@ htmlcov/
 
 # Snapshot dir written by SassyMCP edit tools — never deploy or commit
 _DELETE_/
+
+# theme verification snapshots (npm run theme:snap)
+.snap/

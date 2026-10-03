@@ -4,10 +4,12 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-UK3RSZLWJZGT
 -->
-<html lang="en">
+<html lang="en" data-page="winforensics">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
     <title>WinForensics-Pro — Windows Forensics Toolkit in Rust</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/winforensics">
     <meta property="og:type" content="website">
@@ -25,45 +27,29 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-tertiary: #1a1a1a;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-tertiary: #606060;
-            --accent-primary: #f97316;
-            --accent-secondary: #ea580c;
-            --accent-glow: rgba(249, 115, 22, 0.15);
-            --accent-green: #22c55e;
-            --border-subtle: #222222;
-            --border-medium: #333333;
-            --gradient-brand: linear-gradient(90deg, #f97316, #eab308);
-        }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
         html { scroll-behavior: smooth; }
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: var(--sc-font-sans);
+            background: var(--sc-bg);
+            color: var(--sc-text);
             line-height: 1.65;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
         }
-        @keyframes loopBorder { 0% { border-color: rgba(249,115,22,0.3); } 33% { border-color: rgba(234,179,8,0.3); } 66% { border-color: rgba(34,197,94,0.3); } 100% { border-color: rgba(249,115,22,0.3); } }
-        .feature-card:hover, .product-card:hover, .code-demo:hover { animation: loopBorder 3s linear infinite; box-shadow: 0 0 20px rgba(249,115,22,0.1); }
+        @keyframes loopBorder { 0% { border-color: color-mix(in srgb, var(--sc-accent) 30%, transparent); } 33% { border-color: color-mix(in srgb, var(--sc-accent-3) 30%, transparent); } 66% { border-color: color-mix(in srgb, var(--sc-hue-4) 30%, transparent); } 100% { border-color: color-mix(in srgb, var(--sc-accent) 30%, transparent); } }
+        .feature-card:hover, .product-card:hover, .code-demo:hover { animation: loopBorder 3s linear infinite; box-shadow: 0 0 20px color-mix(in srgb, var(--sc-accent) 10%, transparent); }
 
-        .mono { font-family: 'JetBrains Mono', monospace; }
+        .mono { font-family: var(--sc-font-mono); }
 
         nav {
             position: fixed;
             top: 0; left: 0; right: 0;
             z-index: 1000;
-            padding: 1rem 2rem;
-            background: rgba(10, 10, 10, 0.8);
+            padding: 1rem var(--sc-gutter, 2rem);
+            background: var(--sc-nav-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--sc-border);
         }
 
         nav .container {
@@ -77,7 +63,7 @@
         .logo {
             font-weight: 700;
             font-size: 1.25rem;
-            color: var(--text-primary);
+            color: var(--sc-text);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -87,14 +73,14 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: var(--accent-primary);
+            background: var(--sc-accent);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: 700;
-            color: #000;
+            color: var(--sc-accent-ink);
         }
 
         .nav-links {
@@ -104,20 +90,20 @@
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.2s;
         }
 
-        .nav-links a:hover { color: var(--text-primary); }
+        .nav-links a:hover { color: var(--sc-text); }
 
         .btn {
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
             padding: 0.625rem 1.25rem;
-            border-radius: 8px;
+            border-radius: var(--sc-radius-btn, 8px);
             font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
@@ -126,10 +112,10 @@
             border: none;
         }
 
-        .btn-primary { background: var(--accent-primary); color: #000; }
-        .btn-primary:hover { background: var(--accent-secondary); transform: translateY(-1px); }
-        .btn-secondary { background: transparent; color: var(--text-primary); border: 1px solid var(--border-medium); }
-        .btn-secondary:hover { background: var(--bg-tertiary); }
+        .btn-primary { background: var(--sc-accent); color: var(--sc-accent-ink); }
+        .btn-primary:hover { background: var(--sc-accent-2); transform: translateY(-1px); }
+        .btn-secondary { background: transparent; color: var(--sc-text); border: 1px solid var(--sc-border-2); }
+        .btn-secondary:hover { background: var(--sc-bg-3); }
         .btn-large { padding: 1rem 2rem; font-size: 1rem; }
 
         .hero {
@@ -139,7 +125,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 8rem 2rem 4rem;
+            padding: 8rem var(--sc-gutter, 2rem) 4rem;
             position: relative;
         }
 
@@ -149,7 +135,7 @@
             top: 0; left: 50%;
             transform: translateX(-50%);
             width: 800px; height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--sc-accent) 15%, transparent) 0%, transparent 70%);
             pointer-events: none;
         }
 
@@ -158,24 +144,24 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
+            background: var(--sc-bg-3);
+            border: 1px solid var(--sc-border);
             border-radius: 100px;
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             margin-bottom: 2rem;
         }
 
         .hero-badge .dot {
             width: 8px; height: 8px;
-            background: var(--accent-primary);
+            background: var(--sc-accent);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
 
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
 
-        .hero h1 { font-family: 'DM Serif Display', Georgia, serif;
+        .hero h1 { font-family: var(--sc-font-display);
             font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 700;
             line-height: 1.1;
@@ -183,7 +169,7 @@
         }
 
         .hero h1 .gradient {
-            background: var(--gradient-brand);
+            background: var(--sc-gradient-brand);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -191,7 +177,7 @@
 
         .hero-sub {
             font-size: 1.25rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             max-width: 600px;
             margin-bottom: 3rem;
         }
@@ -199,29 +185,30 @@
         .hero-cta { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center; }
 
         .price-hero {
-            background: var(--bg-secondary);
-            border: 1px solid var(--accent-primary);
-            border-radius: 16px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-accent);
+            border-radius: var(--sc-radius-card, 16px);
             padding: 2.5rem 4rem;
             margin-top: 3rem;
+            box-shadow: var(--sc-shadow-card, none);
         }
 
-        .price-hero .price { font-size: 4rem; font-weight: 700; color: var(--accent-primary); }
-        .price-hero .price-sub { color: var(--text-tertiary); }
+        .price-hero .price { font-size: 4rem; font-weight: 700; color: var(--sc-accent); }
+        .price-hero .price-sub { color: var(--sc-text-3); }
 
         .hero-stats {
             display: flex;
             gap: 3rem;
             margin-top: 4rem;
             padding-top: 3rem;
-            border-top: 1px solid var(--border-subtle);
+            border-top: 1px solid var(--sc-border);
         }
 
         .stat { text-align: center; }
-        .stat-value { font-size: 2rem; font-weight: 700; color: var(--accent-primary); }
-        .stat-label { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.25rem; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: var(--sc-accent); }
+        .stat-label { font-size: 0.85rem; color: var(--sc-text-3); margin-top: 0.25rem; }
 
-        section { padding: 6rem 2rem; max-width: 1200px; margin: 0 auto; }
+        section { padding: 6rem var(--sc-gutter, 2rem); max-width: 1200px; margin: 0 auto; }
 
         .section-label {
             display: block;
@@ -229,32 +216,33 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--accent-primary);
+            color: var(--sc-accent);
             margin-bottom: 1rem;
         }
 
-        .section-title { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 400; margin-bottom: 1rem; }
-        .section-desc { font-size: 1.1rem; color: var(--text-secondary); max-width: 600px; margin-bottom: 3rem; }
+        .section-title { font-family: var(--sc-font-display); font-size: clamp(1.75rem, 4vw, 2.5rem); font-weight: 400; margin-bottom: 1rem; }
+        .section-desc { font-size: 1.1rem; color: var(--sc-text-2); max-width: 600px; margin-bottom: 3rem; }
 
         .features-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(min(350px, 100%), 1fr));
             gap: 1.5rem;
         }
 
         .feature-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 12px);
             padding: 2rem;
             transition: all 0.3s;
+            box-shadow: var(--sc-shadow-card, none);
         }
 
-        .feature-card:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        .feature-card:hover { border-color: var(--sc-accent); transform: translateY(-2px); }
 
         .feature-icon {
             width: 48px; height: 48px;
-            background: var(--bg-tertiary);
+            background: var(--sc-bg-3);
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -262,26 +250,27 @@
             font-size: 1rem;
             font-weight: 700;
             margin-bottom: 1.25rem;
-            color: var(--accent-primary);
+            color: var(--sc-accent);
         }
 
         .feature-card h3 { font-size: 1.125rem; margin-bottom: 0.75rem; }
-        .feature-card p { color: var(--text-secondary); font-size: 0.95rem; }
+        .feature-card p { color: var(--sc-text-2); font-size: 0.95rem; }
 
         .code-demo {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 12px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 12px);
             overflow: hidden;
             margin-top: 3rem;
+            box-shadow: var(--sc-shadow-card, none);
         }
 
         .code-header {
             display: flex;
             gap: 8px;
             padding: 1rem;
-            background: var(--bg-tertiary);
-            border-bottom: 1px solid var(--border-subtle);
+            background: var(--sc-bg-3);
+            border-bottom: 1px solid var(--sc-border);
         }
 
         .code-dot { width: 12px; height: 12px; border-radius: 50%; }
@@ -291,20 +280,20 @@
 
         .code-demo pre {
             padding: 1.5rem;
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--sc-font-mono);
             font-size: 0.85rem;
             line-height: 1.7;
             overflow-x: auto;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
         }
 
-        .code-demo .cmd { color: var(--accent-primary); }
-        .code-demo .flag { color: var(--accent-green); }
-        .code-demo .output { color: var(--text-tertiary); }
+        .code-demo .cmd { color: var(--sc-accent); }
+        .code-demo .flag { color: var(--sc-hue-4); }
+        .code-demo .output { color: var(--sc-text-3); }
 
         .cta {
             text-align: center;
-            padding: 8rem 2rem;
+            padding: 8rem var(--sc-gutter, 2rem);
             position: relative;
         }
 
@@ -314,17 +303,17 @@
             top: 0; left: 50%;
             transform: translateX(-50%);
             width: 600px; height: 600px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            background: radial-gradient(circle, color-mix(in srgb, var(--sc-accent) 15%, transparent) 0%, transparent 70%);
             pointer-events: none;
         }
 
-        .cta h2 { font-family: 'DM Serif Display', Georgia, serif; font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 1rem; }
-        .cta p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .cta h2 { font-family: var(--sc-font-display); font-size: clamp(2rem, 5vw, 3rem); font-weight: 400; margin-bottom: 1rem; }
+        .cta p { font-size: 1.25rem; color: var(--sc-text-2); margin-bottom: 2rem; }
         .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
         footer {
-            border-top: 1px solid var(--border-subtle);
-            padding: 3rem 2rem;
+            border-top: 1px solid var(--sc-border);
+            padding: 3rem var(--sc-gutter, 2rem);
         }
 
         .footer-content {
@@ -337,10 +326,10 @@
             gap: 2rem;
         }
 
-        .footer-left { color: var(--text-tertiary); font-size: 0.9rem; }
+        .footer-left { color: var(--sc-text-3); font-size: 0.9rem; }
         .footer-links { display: flex; gap: 2rem; }
-        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-        .footer-links a:hover { color: var(--text-primary); }
+        .footer-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--sc-text); }
 
         @media (max-width: 768px) {
             .nav-links { display: none; }
@@ -348,6 +337,7 @@
             .features-grid { grid-template-columns: 1fr; }
         }
     </style>
+    <link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
     <nav>
@@ -450,7 +440,7 @@
         </div>
     </section>
 
-    <section id="usage" style="background: var(--bg-secondary); padding: 6rem 2rem;">
+    <section id="usage" style="background: var(--sc-bg-2); padding: 6rem var(--sc-gutter, 2rem);">
         <div style="max-width: 1000px; margin: 0 auto;">
             <span class="section-label">Usage</span>
             <h2 class="section-title">Point and click, or drive it from a shell</h2>
@@ -490,12 +480,12 @@
         <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows</h2>
         <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">The download is license-gated: your WFP- key unlocks the installer and the updater.</p>
 
-        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 2rem;padding:0.85rem 1.1rem;border:1px solid #333;border-left:3px solid var(--accent-primary);border-radius:8px;font-size:0.9rem;"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The $9.99 price is real &mdash; ask us and we&rsquo;ll send a direct checkout link, usually the same day. Existing keys keep working.</p>
+        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 2rem;padding:0.85rem 1.1rem;border:1px solid var(--sc-border-2);border-left:3px solid var(--sc-accent);border-radius:var(--sc-radius-card, 8px);font-size:0.9rem;"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The $9.99 price is real &mdash; ask us and we&rsquo;ll send a direct checkout link, usually the same day. Existing keys keep working.</p>
 
         <div style="text-align: center;">
             <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Request license link - $9.99</button>
             <br>
-            <span style="color: var(--text-tertiary); font-size: 0.85rem;">Already licensed? Your download link is in your original receipt email, or <a href="/contact">ask us to resend it</a>.</span>
+            <span style="color: var(--sc-text-3); font-size: 0.85rem;">Already licensed? Your download link is in your original receipt email, or <a href="/contact">ask us to resend it</a>.</span>
         </div>
     </section>
 
@@ -510,8 +500,8 @@
     <footer>
         <div class="footer-content">
             <div class="footer-left">
-                <strong>WinForensics</strong> by <a href="/" style="color: var(--accent-primary);">Sassy Consulting LLC</a><br>
-                <span style="font-size: 0.8rem;">Veteran-Owned. Wisconsin-Made.</span>
+                <strong>WinForensics</strong> by <a href="/" style="color: var(--sc-accent);">Sassy Consulting LLC</a><br>
+                <span style="font-size: 0.8rem;" data-theme-toggle>&copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned. Wisconsin-Made.</span>
             </div>
             <div class="footer-links">
                 <a href="/">Home</a>

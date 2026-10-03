@@ -10,7 +10,12 @@
     "predeploy": "node scripts/build-sitemap.mjs",
     "deploy": "wrangler deploy",
     "db:migrate": "wrangler d1 execute sassy-db --file=./migrations/0001_init.sql",
-    "db:migrate:local": "wrangler d1 execute sassy-db --local --file=./migrations/0001_init.sql"
+    "db:migrate:local": "wrangler d1 execute sassy-db --local --file=./migrations/0001_init.sql",
+    "theme:contrast": "node scripts/theme/contrast.mjs fall",
+    "theme:check": "node scripts/theme/check.mjs",
+    "theme:snap": "node scripts/theme/snap.mjs",
+    "theme:diff": "node scripts/theme/diff.mjs",
+    "theme:toggle": "node scripts/theme/toggle.mjs"
   },
   "keywords": [
     "cloudflare",
@@ -21,6 +26,7 @@
   "author": "Sassy Consulting LLC",
   "license": "UNLICENSED",
   "devDependencies": {
+    "puppeteer-core": "^25.12.0",
     "wrangler": "^4.138.0"
   }
 }

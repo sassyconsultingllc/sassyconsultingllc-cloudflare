@@ -12,14 +12,12 @@
     --bg-primary: #0a0a0a;
     --bg-secondary: #111111;
     --bg-card: #1a1a1a;
-    --bg-card-hover: #222222;
     
     --text-primary: #ffffff;
     --text-secondary: #a0a0a0;
     --text-muted: #666666;
     
     --accent-green: #22c55e;
-    --accent-green-dark: #16a34a;
     --accent-red: #ef4444;
     --accent-orange: #f97316;
     --accent-blue: #3b82f6;
@@ -35,8 +33,6 @@
     --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
     --shadow-lg: 0 8px 24px rgba(0,0,0,0.5);
-    
-    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 * {
@@ -46,16 +42,16 @@
 }
 
 body {
-    font-family: var(--font-sans);
-    background: var(--bg-primary);
-    color: var(--text-primary);
+    font-family: var(--sc-font-sans);
+    background: var(--sc-bg);
+    color: var(--sc-text);
     line-height: 1.6;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 24px;
+    padding: 0 var(--sc-gutter, 24px);
 }
 
 /* Navigation */
@@ -78,7 +74,7 @@ body {
 .logo {
     font-weight: 700;
     font-size: 1.1rem;
-    color: var(--text-primary);
+    color: var(--sc-text);
     text-decoration: none;
 }
 
@@ -89,14 +85,14 @@ body {
 }
 
 .nav-links a {
-    color: var(--text-secondary);
+    color: var(--sc-text-2);
     text-decoration: none;
     font-size: 0.9rem;
     transition: color 0.2s;
 }
 
 .nav-links a:hover {
-    color: var(--text-primary);
+    color: var(--sc-text);
 }
 
 /* Dropdown Navigation */
@@ -252,7 +248,7 @@ body {
 .btn {
     display: inline-block;
     padding: 10px 20px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--sc-radius-btn, 6px);
     font-weight: 600;
     font-size: 0.9rem;
     text-decoration: none;
@@ -262,12 +258,12 @@ body {
 }
 
 .btn-primary {
-    background: var(--accent-green);
-    color: #000;
+    background: var(--sc-accent);
+    color: var(--sc-accent-ink);
 }
 
 .btn-primary:hover {
-    background: var(--accent-green-dark);
+    background: var(--sc-accent-2);
 }
 
 .btn-outline {
@@ -445,7 +441,7 @@ body {
 
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr));
     gap: 24px;
 }
 
@@ -569,7 +565,7 @@ body {
 
 .features-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
     gap: 24px;
 }
 
@@ -612,7 +608,7 @@ body {
 
 .download-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(min(250px, 100%), 1fr));
     gap: 24px;
     max-width: 600px;
     margin: 0 auto;

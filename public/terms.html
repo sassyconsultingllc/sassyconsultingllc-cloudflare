@@ -4,10 +4,12 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-PDR7N7HHX6ID
 -->
-<html lang="en">
+<html lang="en" data-page="terms">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
     <title>Terms | Sassy Consulting LLC</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/terms">
     <meta name="description" content="Terms and policy links for Sassy Consulting LLC products and services.">
@@ -15,42 +17,34 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg: #09090b;
-            --panel: #111114;
-            --text: #ffffff;
-            --muted: #a1a1aa;
-            --border: #27272a;
-            --accent: #f59e0b;
-            --accent-2: #d97706;
-        }
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'DM Sans', sans-serif;
-            background: radial-gradient(circle at top right, rgba(245, 158, 11, 0.12), transparent 40%), var(--bg);
-            color: var(--text);
+            font-family: var(--sc-font-sans);
+            background: radial-gradient(circle at top right, color-mix(in srgb, var(--sc-accent) 12%, transparent), transparent 40%), var(--sc-bg);
+            color: var(--sc-text);
             line-height: 1.65;
             min-height: 100vh;
-            padding: 2rem 1rem 3rem;
+            padding: 2rem var(--sc-gutter, 1rem) 3rem;
         }
         .wrap {
             max-width: 840px;
             margin: 0 auto;
         }
         h1 {
-            font-family: 'DM Serif Display', serif;
+            font-family: var(--sc-font-display);
             font-size: clamp(2rem, 6vw, 2.8rem);
             font-weight: 400;
             margin-bottom: 0.7rem;
         }
         .sub {
-            color: var(--muted);
+            color: var(--sc-text-2);
             margin-bottom: 2rem;
         }
         .item {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 14px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 14px);
+            box-shadow: var(--sc-shadow-card, none);
             padding: 1.2rem;
             margin-bottom: 0.9rem;
         }
@@ -59,29 +53,30 @@
             margin-bottom: 0.45rem;
         }
         .item p {
-            color: var(--muted);
+            color: var(--sc-text-2);
             margin-bottom: 0.75rem;
             font-size: 0.95rem;
         }
         .item a {
-            color: var(--accent);
+            color: var(--sc-accent);
             text-decoration: none;
             font-weight: 600;
         }
-        .item a:hover { color: var(--accent-2); }
+        .item a:hover { color: var(--sc-accent-2); }
         .note {
             margin-top: 1.4rem;
-            color: var(--muted);
+            color: var(--sc-text-3);
             font-size: 0.9rem;
         }
         .back {
             display: inline-flex;
             margin-top: 1.1rem;
-            color: var(--muted);
+            color: var(--sc-text-3);
             text-decoration: none;
         }
-        .back:hover { color: var(--text); }
+        .back:hover { color: var(--sc-text); }
     </style>
+    <link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
     <main class="wrap">
@@ -139,5 +134,6 @@
         <p class="note">Questions about product agreements, refunds, or billing terms can be sent to info@sassyconsultingllc.com.</p>
         <a class="back" href="/">← Back to Home</a>
     </main>
+    <footer class="wrap note"><span data-theme-toggle>&copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made</span></footer>
 </body>
 </html>
