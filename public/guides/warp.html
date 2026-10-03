@@ -4,15 +4,18 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-ZPTIE7GLVYR3
 -->
-<html lang="en">
+<html lang="en" data-page="guide-warp">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
     <title>Cloudflare WARP Setup Guide | Sassy Consulting LLC</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/guides/warp">
     <meta name="description" content="Step-by-step Cloudflare WARP setup — install, configure, and confirm your traffic is encrypted. Free guide from a veteran-owned security studio.">
     <link rel="stylesheet" href="../styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
     <nav><div class="container"><a href="/" class="logo"><span class="logo-icon">🛡️</span> Sassy Consulting LLC</a><div class="nav-links"><a href="/">Home</a><a href="/#tools">Dashboard</a></div></div></nav>
@@ -61,22 +64,22 @@
         </div>
     </section>
 
-    <footer><div class="container"><div class="footer-content"><p>© 2026 Sassy Consulting LLC</p></div></div></footer>
+    <footer><div class="container"><div class="footer-content"><p data-theme-toggle>© 2026 Sassy Consulting LLC</p></div></div></footer>
 
     <style>
         .guide-content { padding: 10rem 0 4rem; }
         .guide-content h1 { margin-bottom: 1rem; }
-        .guide-intro { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 3rem; }
+        .guide-intro { color: var(--sc-text-2); font-size: 1.1rem; margin-bottom: 3rem; }
         .guide-steps { margin-bottom: 3rem; }
-        .step { display: flex; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background: var(--bg-secondary); border-radius: 12px; }
-        .step-number { width: 40px; height: 40px; background: var(--accent-primary); color: #000; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+        .step { display: flex; gap: 1.5rem; margin-bottom: 2rem; padding: 1.5rem; background: var(--sc-surface); border-radius: var(--sc-radius-card, 12px); box-shadow: var(--sc-shadow-card, none); }
+        .step-number { width: 40px; height: 40px; background: transparent; color: var(--sc-accent-ink); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
         .step-content h3 { margin-bottom: 0.5rem; }
-        .step-content p { color: var(--text-secondary); }
-        .step-content a { color: var(--accent-primary); }
-        .guide-features { background: var(--bg-secondary); padding: 2rem; border-radius: 12px; margin-bottom: 2rem; }
+        .step-content p { color: var(--sc-text-2); }
+        .step-content a { color: inherit; }
+        .guide-features { background: var(--sc-surface); padding: 2rem; border-radius: var(--sc-radius-card, 12px); margin-bottom: 2rem; box-shadow: var(--sc-shadow-card, none); }
         .guide-features h3 { margin-bottom: 1rem; }
         .guide-features ul { list-style: none; }
-        .guide-features li { padding: 0.5rem 0; color: var(--text-secondary); }
+        .guide-features li { padding: 0.5rem 0; color: var(--sc-text-2); }
     </style>
 </body>
 </html>

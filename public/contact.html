@@ -4,10 +4,12 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-DYZ4YCIOFSME
 -->
-<html lang="en">
+<html lang="en" data-page="contact">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
     <title>Contact | Sassy Consulting LLC</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/contact">
     <meta property="og:type" content="website">
@@ -25,28 +27,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-tertiary: #1a1a1a;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --accent-primary: #22c55e;
-            --accent-secondary: #16a34a;
-            --border-subtle: #222222;
-        }
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: var(--sc-font-sans);
+            background: var(--sc-bg);
+            color: var(--sc-text);
             line-height: 1.65;
             -webkit-font-smoothing: antialiased;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 2rem;
+            padding: 2rem var(--sc-gutter, 2rem);
         }
         .container {
             width: 100%;
@@ -57,14 +49,15 @@
             margin-bottom: 0.5rem;
         }
         .subtitle {
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             margin-bottom: 2rem;
         }
         form {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px);
             padding: 2rem;
+            box-shadow: var(--sc-shadow-card, none);
         }
         .field {
             margin-bottom: 1.5rem;
@@ -72,22 +65,22 @@
         label {
             display: block;
             margin-bottom: 0.5rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-3);
             font-size: 0.9rem;
         }
         input, textarea {
             width: 100%;
             padding: 0.75rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
+            background: var(--sc-bg-3);
+            border: 1px solid var(--sc-border);
             border-radius: 8px;
-            color: var(--text-primary);
+            color: var(--sc-text);
             font-size: 1rem;
             font-family: inherit;
         }
         input:focus, textarea:focus {
             outline: none;
-            border-color: var(--accent-primary);
+            border-color: var(--sc-accent);
         }
         textarea {
             resize: vertical;
@@ -96,30 +89,32 @@
         button {
             width: 100%;
             padding: 1rem 2rem;
-            background: var(--accent-primary);
-            color: #000;
+            background: var(--sc-accent);
+            color: var(--sc-accent-ink);
             border: none;
-            border-radius: 8px;
+            border-radius: var(--sc-radius-btn, 8px);
             font-size: 1rem;
             font-weight: 500;
             cursor: pointer;
             transition: background 0.2s;
         }
         button:hover {
-            background: var(--accent-secondary);
+            background: var(--sc-accent-2);
         }
         .back-link {
             display: block;
             text-align: center;
             margin-top: 1.5rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-3);
             text-decoration: none;
             font-size: 0.9rem;
         }
         .back-link:hover {
-            color: var(--text-primary);
+            color: var(--sc-text);
         }
+        .copyright { text-align: center; margin-top: 1rem; color: var(--sc-text-3); font-size: 0.8rem; }
     </style>
+    <link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
     <div class="container">
@@ -128,7 +123,7 @@
 
         <!-- Shown when arriving from a "request checkout link" button while a
              SKU has no Lemon Squeezy variant wired. See docs/PRICING-STATUS.md. -->
-        <div id="product-notice" style="display:none;background:rgba(34,197,94,0.08);border:1px solid var(--accent-primary);border-radius:8px;padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.9rem;color:var(--text-secondary);"></div>
+        <div id="product-notice" style="display:none;background:color-mix(in srgb, var(--sc-accent) 8%, transparent);border:1px solid var(--sc-accent);border-radius:var(--sc-radius-card, 8px);padding:1rem 1.25rem;margin-bottom:1.5rem;font-size:0.9rem;color:var(--sc-text-2);"></div>
 
         <form action="/api/contact" method="POST">
             <div class="field">
@@ -147,6 +142,7 @@
         </form>
         
         <a href="/" class="back-link">← Back to Home</a>
+        <p class="copyright" data-theme-toggle>&copy; 2026 Sassy Consulting LLC &bull; Veteran-Owned, Wisconsin-Made</p>
     </div>
 
     <script>

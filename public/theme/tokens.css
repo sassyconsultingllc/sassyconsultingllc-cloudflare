@@ -1,0 +1,610 @@
+/*
+ * Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+ * Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+ *
+ * DESIGN TOKENS — the single source of truth for every colour and font on
+ * sassyconsultingllc.com. Pages reference roles (var(--sc-accent)); themes give
+ * the roles values. Role definitions and the rules for adding a theme or a page
+ * are in docs/THEMING.md.
+ *
+ *   html[data-theme]   fall (default) | original     set by /theme/seasonal.js
+ *   html[data-page]    which page this is, so a theme can give each product its accent
+ *
+ * Layout knobs (--sc-gutter, --sc-radius-card, --sc-radius-btn, --sc-shadow-card)
+ * are deliberately absent from ORIGINAL: pages carry the original value as the
+ * var() fallback, so only a theme that changes layout defines them.
+ */
+/* ===== ORIGINAL ==========================================================
+   The site exactly as it looked before this token system existed. Each page
+   had its own palette, so the original theme is recorded per page. Do not
+   "tidy" these values: a computed-style diff against the pre-token build
+   proves them. Applies when data-theme is "original" or absent (no JS). */
+
+:root {
+    --sc-bg: #0a0a0a;
+    --sc-bg-2: #111111;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-surface-2: #1a1a1a;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-overlay: rgba(0, 0, 0, 0.7);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #8a8a8a;
+    --sc-text-4: #606060;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-3: #06b6d4;
+    --sc-accent-ink: #000;
+    --sc-ok: #22c55e;
+    --sc-warn: #f97316;
+    --sc-bad: #ef4444;
+    --sc-info: #3b82f6;
+    --sc-neutral: #606060;
+    --sc-hue-1: #ff0000;
+    --sc-hue-2: #f97316;
+    --sc-hue-3: #eab308;
+    --sc-hue-4: #22c55e;
+    --sc-hue-5: #06b6d4;
+    --sc-hue-6: #3b82f6;
+    --sc-hue-7: #a855f7;
+    --sc-hue-8: #ec4899;
+    --sc-gradient-brand: linear-gradient(90deg, #22c55e, #06b6d4);
+    --sc-gradient-glow: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="about"] {
+    --sc-bg: #0a1628;
+    --sc-surface: #0f1d32;
+    --sc-surface-2: #132440;
+    --sc-nav-bg: rgba(10, 22, 40, 0.9);
+    --sc-border: #1e3050;
+    --sc-border-2: #2a4a6e;
+    --sc-text: #e8edf5;
+    --sc-text-2: #94a3b8;
+    --sc-text-3: #64748b;
+    --sc-accent: #3b82f6;
+    --sc-accent-2: #60a5fa;
+    --sc-accent-3: #93bbfd;
+    --sc-accent-ink: #fff;
+    --sc-hue-4: #22c55e;
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html[data-page="app-testers"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-surface-2: #141414;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #a0a0a0;
+    --sc-text-4: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-3: #06b6d4;
+    --sc-accent-ink: #000;
+    --sc-ok: #22c55e;
+    --sc-bad: #ef4444;
+    --sc-info: #22d3ee;
+    --sc-hue-5: #22d3ee;
+    --sc-hue-6: #3b82f6;
+    --sc-gradient-brand: linear-gradient(90deg, #22c55e, #06b6d4);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="browser"] {
+    --sc-bg: #03040a;
+    --sc-bg-2: #0d0e1c;
+    --sc-bg-3: #13142a;
+    --sc-surface: #0f1020;
+    --sc-surface-2: #151628;
+    --sc-nav-bg: rgba(7,8,16,0.88);
+    --sc-border: rgba(255,255,255,0.055);
+    --sc-border-2: rgba(255,255,255,0.1);
+    --sc-text: #eeeef8;
+    --sc-text-2: #7878a0;
+    --sc-text-3: #45455c;
+    --sc-accent: #00e676;
+    --sc-accent-2: #18ffff;
+    --sc-accent-3: #ffc947;
+    --sc-accent-ink: #000;
+    --sc-ok: #00e676;
+    --sc-warn: #ffc947;
+    --sc-bad: #ff5252;
+    --sc-hue-3: #ffc947;
+    --sc-hue-4: #00e676;
+    --sc-hue-5: #18ffff;
+    --sc-hue-6: #448aff;
+    --sc-hue-7: #b388ff;
+    --sc-font-sans: 'Sora', -apple-system, sans-serif;
+    --sc-font-display: 'Lora', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="cfadmin-eula"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #141414;
+    --sc-border: #222;
+    --sc-text: #fff;
+    --sc-text-2: #e0e0e0;
+    --sc-text-3: #a0a0a0;
+    --sc-accent: #f6821f;
+    --sc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html[data-page="cfadmin-privacy"],
+html[data-page="cfadmin-terms"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #141414;
+    --sc-border: #222;
+    --sc-text: #fff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #ccc;
+    --sc-text-4: #e0e0e0;
+    --sc-accent: #f6821f;
+    --sc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html[data-page="coming-soon"] {
+    --sc-bg: #03040a;
+    --sc-bg-3: #13142a;
+    --sc-surface: #0f1020;
+    --sc-nav-bg: rgba(7,8,16,0.88);
+    --sc-border: rgba(255,255,255,0.055);
+    --sc-border-2: rgba(255,255,255,0.1);
+    --sc-text: #eeeef8;
+    --sc-text-2: #7878a0;
+    --sc-text-3: #45455c;
+    --sc-accent: #00e676;
+    --sc-accent-2: #18ffff;
+    --sc-accent-ink: #000;
+    --sc-ok: #00e676;
+    --sc-warn: #ffc947;
+    --sc-bad: #ff5252;
+    --sc-neutral: #45455c;
+    --sc-hue-3: #ffc947;
+    --sc-font-sans: 'Sora', -apple-system, sans-serif;
+    --sc-font-display: 'Sora', -apple-system, sans-serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="contact"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-border: #222222;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-ink: #000;
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html[data-page="contact-success"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #111;
+    --sc-border: #222;
+    --sc-text: #fff;
+    --sc-text-2: #888;
+    --sc-text-3: #888;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-ink: #000;
+    --sc-font-sans: 'DM Sans', sans-serif;
+}
+
+html[data-page="eula"] {
+    --sc-bg: #0a0c10;
+    --sc-bg-3: #111318;
+    --sc-border: #2a2e3a;
+    --sc-text: #e8eaf0;
+    --sc-text-2: #8b90a0;
+    --sc-text-3: #5c6070;
+    --sc-accent: #10b981;
+    --sc-font-sans: 'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --sc-font-display: 'DM Serif Display',Georgia,serif;
+}
+
+html[data-page="foodie-privacy"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #141414;
+    --sc-border: #222;
+    --sc-text: #fff;
+    --sc-text-2: #e0e0e0;
+    --sc-text-3: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --sc-font-display: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html[data-page="foodie-terms"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #141414;
+    --sc-border: #222;
+    --sc-text: #fff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #e0e0e0;
+    --sc-text-4: #ccc;
+    --sc-accent: #22c55e;
+    --sc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html[data-page="guide-protonvpn"],
+html[data-page="guide-warp"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #111111;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-ink: #000;
+    --sc-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html[data-page="home"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-2: #111111;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-surface-2: #1a1a1a;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #8a8a8a;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-ink: #000;
+    --sc-ok: #22c55e;
+    --sc-warn: #f97316;
+    --sc-bad: #ef4444;
+    --sc-info: #3b82f6;
+    --sc-neutral: #606060;
+    --sc-hue-1: #ff0000;
+    --sc-hue-2: #f97316;
+    --sc-hue-3: #eab308;
+    --sc-hue-4: #22c55e;
+    --sc-hue-5: #06b6d4;
+    --sc-hue-6: #3b82f6;
+    --sc-hue-7: #a855f7;
+    --sc-gradient-brand: linear-gradient(90deg, #22c55e, #06b6d4);
+    --sc-gradient-glow: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, transparent 70%);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="nda"] {
+    --sc-bg: #0a0c10;
+    --sc-bg-3: #181b22;
+    --sc-surface: #111318;
+    --sc-surface-2: #1f2330;
+    --sc-nav-bg: rgba(10, 12, 16, 0.92);
+    --sc-border: #2a2e3a;
+    --sc-border-2: #8b90a0;
+    --sc-text: #e8eaf0;
+    --sc-text-2: #8b90a0;
+    --sc-text-3: #5c6070;
+    --sc-text-4: #5c6070;
+    --sc-accent: #6c8aff;
+    --sc-accent-2: #4a6adf;
+    --sc-accent-3: #d4a853;
+    --sc-accent-ink: #fff;
+    --sc-ok: #4ae0a0;
+    --sc-warn: #d4a853;
+    --sc-bad: #ff5c5c;
+    --sc-gradient-brand: linear-gradient(135deg, #d4a853, #b8912f);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="privacy"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #121212;
+    --sc-border: #252525;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-font-sans: 'DM Sans', sans-serif;
+    --sc-font-display: 'DM Serif Display', serif;
+}
+
+html[data-page="refund"] {
+    --sc-bg: #0a0c10;
+    --sc-surface: #111318;
+    --sc-border: #2a2e3a;
+    --sc-text: #e8eaf0;
+    --sc-text-2: #8b90a0;
+    --sc-text-3: #5c6070;
+    --sc-accent: #10b981;
+    --sc-font-sans: 'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --sc-font-display: 'DM Serif Display',Georgia,serif;
+}
+
+html[data-page="sassy-talk"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-2: #111111;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-surface-2: #1a1a1a;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #606060;
+    --sc-accent: #06b6d4;
+    --sc-accent-2: #0891b2;
+    --sc-accent-ink: #000;
+    --sc-warn: #22c55e;
+    --sc-bad: #ff6b6b;
+    --sc-hue-5: #06b6d4;
+    --sc-hue-6: #3b82f6;
+    --sc-hue-7: #a855f7;
+    --sc-gradient-brand: linear-gradient(90deg, #a855f7, #3b82f6);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="sassytalk-privacy"] {
+    --sc-bg: #0a0a0a;
+    --sc-surface: #141414;
+    --sc-border: #222;
+    --sc-text: #e0e0e0;
+    --sc-text-3: #888;
+    --sc-accent: #00e5ff;
+    --sc-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+html[data-page="store"] {
+    --sc-bg: #0a0c10;
+    --sc-bg-3: #181b22;
+    --sc-surface: #111318;
+    --sc-surface-2: #181b22;
+    --sc-overlay: rgba(4,6,10,0.78);
+    --sc-border: #2a2e3a;
+    --sc-border-2: #3d4258;
+    --sc-text: #e8eaf0;
+    --sc-text-2: #8b90a0;
+    --sc-text-3: #5c6070;
+    --sc-accent: #10b981;
+    --sc-accent-ink: #04130d;
+    --sc-bad: #ff5c5c;
+    --sc-font-sans: 'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
+    --sc-font-display: 'DM Serif Display',Georgia,serif;
+}
+
+html[data-page="success"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-border: #222222;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-accent: #22c55e;
+    --sc-accent-2: #16a34a;
+    --sc-accent-ink: #000;
+    --sc-ok: #22c55e;
+    --sc-font-sans: 'DM Sans', sans-serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+html[data-page="terms"] {
+    --sc-bg: #09090b;
+    --sc-surface: #111114;
+    --sc-border: #27272a;
+    --sc-text: #ffffff;
+    --sc-text-2: #a1a1aa;
+    --sc-text-3: #a1a1aa;
+    --sc-accent: #f59e0b;
+    --sc-accent-2: #d97706;
+    --sc-font-sans: 'DM Sans', sans-serif;
+    --sc-font-display: 'DM Serif Display', serif;
+}
+
+html[data-page="website-creator"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-2: #111111;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-surface-2: #1a1a1a;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #606060;
+    --sc-accent: #8b5cf6;
+    --sc-accent-2: #7c3aed;
+    --sc-accent-3: #ec4899;
+    --sc-accent-ink: #fff;
+    --sc-hue-4: #22c55e;
+    --sc-gradient-brand: linear-gradient(90deg, #8b5cf6, #ec4899);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+}
+
+html[data-page="winforensics"] {
+    --sc-bg: #0a0a0a;
+    --sc-bg-2: #111111;
+    --sc-bg-3: #1a1a1a;
+    --sc-surface: #111111;
+    --sc-nav-bg: rgba(10, 10, 10, 0.8);
+    --sc-border: #222222;
+    --sc-border-2: #333333;
+    --sc-text: #ffffff;
+    --sc-text-2: #a0a0a0;
+    --sc-text-3: #606060;
+    --sc-accent: #f97316;
+    --sc-accent-2: #ea580c;
+    --sc-accent-3: #eab308;
+    --sc-accent-ink: #000;
+    --sc-hue-4: #22c55e;
+    --sc-gradient-brand: linear-gradient(90deg, #f97316, #eab308);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, serif;
+    --sc-font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ===== FALL ===============================================================
+   Ember & Bark with golden-hour light: espresso canvas, cream type, warm
+   Fraunces display. One palette for every page; each product is a different
+   leaf through the per-page accent blocks below.
+   Verified (scratchpad palette.mjs, 137 checks): every text role >= 4.5:1 on
+   every surface role, including --sc-text-4 so nothing mapped there goes
+   faint; every accent >= 4.5:1 as link text; ink on every accent fill >= 7:1;
+   status colours >= 4.5:1 on every surface; ok/bad differ in lightness. */
+
+html[data-theme="fall"] {
+    --sc-bg: #17100b;
+    --sc-bg-2: #1d150f;
+    --sc-bg-3: #2b2017;
+    --sc-surface: #221912;
+    --sc-surface-2: #2d2118;
+    --sc-nav-bg: rgba(23, 16, 11, 0.86);
+    --sc-overlay: rgba(12, 8, 5, 0.8);
+    --sc-border: #3d2d20;
+    --sc-border-2: #6a5039;
+    --sc-text: #f8eddd;
+    --sc-text-2: #e1cdb4;
+    --sc-text-3: #c9b090;
+    --sc-text-4: #b49779;
+    /* default accent: pumpkin (the Sassy Consulting brand leaf) */
+    --sc-accent: #f28c3f;
+    --sc-accent-2: #ffa863;
+    --sc-accent-3: #f2c14e;
+    --sc-accent-ink: #1d0f04;
+    --sc-ok: #a3c96e;
+    --sc-warn: #f2b84b;
+    --sc-bad: #f0694f;
+    --sc-info: #93b8de;
+    --sc-neutral: #a08b75;
+    /* spectrum, warm to cool: maple, pumpkin, birch gold, late green, spruce, dusk, plum, cranberry */
+    --sc-hue-1: #ef5f45;
+    --sc-hue-2: #f28c3f;
+    --sc-hue-3: #f2c14e;
+    --sc-hue-4: #a3c96e;
+    --sc-hue-5: #5ec4ae;
+    --sc-hue-6: #93b8de;
+    --sc-hue-7: #c993d6;
+    --sc-hue-8: #ec8097;
+    /* leaves turning: gold to pumpkin to maple */
+    --sc-gradient-brand: linear-gradient(90deg, #f2c14e, #f28c3f 48%, #ef5f45);
+    --sc-gradient-glow: radial-gradient(circle, color-mix(in srgb, var(--sc-accent) 16%, transparent) 0%, transparent 70%);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --sc-font-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+    --sc-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+    --sc-leaf-1: #e2553b;
+    --sc-leaf-2: #f28c3f;
+    --sc-leaf-3: #f2c14e;
+    --sc-leaf-4: #c4762f;
+    --sc-leaf-5: #a9b45a;
+    --sc-leaf-6: #b5482f;
+    /* layout knobs: one gutter site-wide, leaf-shaped cards and buttons */
+    --sc-gutter: clamp(1.5rem, 5vw, 2.5rem);
+    --sc-radius-card: 22px 6px;
+    --sc-radius-btn: 14px 4px;
+    --sc-shadow-card: inset 0 1px 0 rgba(255, 220, 180, 0.05), 0 18px 40px -26px rgba(0, 0, 0, 0.75);
+    color-scheme: dark;
+}
+
+/* Maple — WinForensics-Pro */
+html[data-theme="fall"][data-page="winforensics"] {
+    --sc-accent: #f47b5d;
+    --sc-accent-2: #ff9a80;
+    --sc-accent-3: #f2b84b;
+    --sc-accent-ink: #1a0603;
+    --sc-gradient-brand: linear-gradient(90deg, #f47b5d, #f2b84b);
+}
+
+/* Spruce — Sassy-Talk (some trees stay green) */
+html[data-theme="fall"][data-page="sassy-talk"],
+html[data-theme="fall"][data-page="sassytalk-privacy"] {
+    --sc-accent: #5ec4ae;
+    --sc-accent-2: #84d8c4;
+    --sc-accent-3: #93b8de;
+    --sc-accent-ink: #04140f;
+    --sc-gradient-brand: linear-gradient(90deg, #5ec4ae, #93b8de);
+}
+
+/* Plum — Website Creator */
+html[data-theme="fall"][data-page="website-creator"] {
+    --sc-accent: #c993d6;
+    --sc-accent-2: #dcb0e6;
+    --sc-accent-3: #ea8aa3;
+    --sc-accent-ink: #1b0b1f;
+    --sc-gradient-brand: linear-gradient(90deg, #c993d6, #ec8097);
+}
+
+/* Birch gold — the founder's page, in his birthday season */
+html[data-theme="fall"][data-page="about"] {
+    --sc-accent: #f2c14e;
+    --sc-accent-2: #ffd679;
+    --sc-accent-3: #f28c3f;
+    --sc-accent-ink: #1d1404;
+    --sc-gradient-brand: linear-gradient(90deg, #f2c14e, #f28c3f);
+}
+
+/* Ginkgo — Sassy Browser (ginkgo leaves turn gold-green before they drop) */
+html[data-theme="fall"][data-page="browser"],
+html[data-theme="fall"][data-page="coming-soon"] {
+    --sc-accent: #cfd96d;
+    --sc-accent-2: #e2ea8f;
+    --sc-accent-3: #f2b84b;
+    --sc-accent-ink: #141606;
+    --sc-gradient-brand: linear-gradient(90deg, #cfd96d, #f2b84b);
+}
+
+/* Dusk — NDA */
+html[data-theme="fall"][data-page="nda"] {
+    --sc-accent: #93b8de;
+    --sc-accent-2: #b4cfea;
+    --sc-accent-3: #f2c14e;
+    --sc-accent-ink: #0b1420;
+    --sc-gradient-brand: linear-gradient(135deg, #f2c14e, #f28c3f);
+}
+
+/* Harvest — Terms */
+html[data-theme="fall"][data-page="terms"] {
+    --sc-accent: #f2b84b;
+    --sc-accent-2: #ffcd73;
+    --sc-accent-3: #f28c3f;
+    --sc-accent-ink: #1d1304;
+}
+
+/* Cloudflare orange is already an autumn colour — Cloudflare Admin keeps it */
+html[data-theme="fall"][data-page="cfadmin-eula"],
+html[data-theme="fall"][data-page="cfadmin-privacy"],
+html[data-theme="fall"][data-page="cfadmin-terms"] {
+    --sc-accent: #f6821f;
+    --sc-accent-2: #ff9d4d;
+    --sc-accent-3: #f2c14e;
+    --sc-accent-ink: #1c0d02;
+}
+
+/* Cranberry — Foodie Finder */
+html[data-theme="fall"][data-page="foodie-privacy"],
+html[data-theme="fall"][data-page="foodie-terms"] {
+    --sc-accent: #ec8097;
+    --sc-accent-2: #f6a1b3;
+    --sc-accent-3: #f2c14e;
+    --sc-accent-ink: #1e0a10;
+}

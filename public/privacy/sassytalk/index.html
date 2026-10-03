@@ -4,53 +4,49 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-QXIC6BBGVUOR
 -->
-<html lang="en">
+<html lang="en" data-page="sassytalk-privacy">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<script src="/theme/seasonal.js"></script>
+<link rel="stylesheet" href="/theme/tokens.css">
 <title>Sassy-Talk Privacy Policy | Sassy Consulting LLC</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/privacy/sassytalk">
     <meta name="description" content="Privacy policy for Sassy-Talk. Encrypted push-to-talk with no accounts and no analytics — what stays on your device and what the relay can never read.">
 <style>
-  :root {
-    --bg: #0a0a0a;
-    --fg: #e0e0e0;
-    --accent: #00e5ff;
-    --muted: #888;
-    --card-bg: #141414;
-    --border: #222;
-  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--fg);
+    font-family: var(--sc-font-sans);
+    background: var(--sc-bg);
+    color: var(--sc-text);
     line-height: 1.7;
-    padding: 2rem 1rem;
+    padding: 2rem var(--sc-gutter, 1rem);
     max-width: 800px;
     margin: 0 auto;
   }
-  h1 { color: var(--accent); font-size: 1.8rem; margin-bottom: 0.5rem; }
-  h2 { color: var(--accent); font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--border); padding-bottom: 0.25rem; }
-  h3 { color: var(--fg); font-size: 1.1rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
+  h1 { color: var(--sc-accent); font-size: 1.8rem; margin-bottom: 0.5rem; }
+  h2 { color: var(--sc-accent); font-size: 1.3rem; margin-top: 2rem; margin-bottom: 0.75rem; border-bottom: 1px solid var(--sc-border); padding-bottom: 0.25rem; }
+  h3 { color: var(--sc-text); font-size: 1.1rem; margin-top: 1.25rem; margin-bottom: 0.5rem; }
   p, li { margin-bottom: 0.75rem; }
   ul { padding-left: 1.5rem; }
-  a { color: var(--accent); text-decoration: none; }
+  a { color: var(--sc-accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
-  .meta { color: var(--muted); font-size: 0.9rem; margin-bottom: 2rem; }
-  .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0; }
-  .highlight { color: var(--accent); font-weight: 600; }
+  .meta { color: var(--sc-text-3); font-size: 0.9rem; margin-bottom: 2rem; }
+  .card { background: var(--sc-surface); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 8px); box-shadow: var(--sc-shadow-card, none); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .highlight { color: var(--sc-accent); font-weight: 600; }
   table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); font-size: 0.95rem; }
-  th { color: var(--accent); font-weight: 600; }
-  .jurisdiction { background: var(--card-bg); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; margin: 0.5rem 0; }
-  .jurisdiction strong { color: var(--accent); }
+  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--sc-border); font-size: 0.95rem; }
+  th { color: var(--sc-accent); font-weight: 600; }
+  .jurisdiction { background: var(--sc-surface); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 6px); box-shadow: var(--sc-shadow-card, none); padding: 0.75rem 1rem; margin: 0.5rem 0; }
+  .jurisdiction strong { color: var(--sc-accent); }
+  footer { text-align: center; margin-top: 2rem; color: var(--sc-text-3); font-size: 0.85rem; }
   @media (max-width: 600px) {
-    body { padding: 1rem 0.75rem; }
+    body { padding: 1rem var(--sc-gutter, 0.75rem); }
     h1 { font-size: 1.4rem; }
     table { font-size: 0.85rem; }
   }
 </style>
+<link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
 
@@ -215,6 +211,7 @@
   Encryption: Yes (AES-256-GCM end-to-end).<br>
   Data deletion: No user data stored to delete. Clear app data to remove local keys and profile.
 </div>
+<footer data-theme-toggle>&copy; 2026 Sassy Consulting LLC &mdash; A Veteran Owned Company</footer>
 
 </body>
 </html>

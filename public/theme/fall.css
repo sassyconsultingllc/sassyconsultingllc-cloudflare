@@ -1,0 +1,217 @@
+/*
+ * Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+ * Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+ *
+ * Fall layout + ornament layer. Every rule is scoped to html[data-theme="fall"];
+ * colours are NOT set here (they live in tokens.css). Remove the <link> to this
+ * file and the fall layout disappears while fall colours still apply.
+ * See docs/THEMING.md.
+ */
+
+/* ===== Shared ornaments =================================================== */
+/* Maple silhouette used as a mask, so it takes whatever colour sits behind it. */
+html[data-theme="fall"] {
+    --sc-leaf-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 170' fill='none' stroke='%23000' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M60 8C92 34 108 70 98 104C90 132 72 146 60 150C48 146 30 132 22 104C12 70 28 34 60 8Z'/%3E%3Cpath d='M60 18V150C60 156 61 162 64 168'/%3E%3Cpath d='M60 46C70 40 80 38 88 40M60 46C50 40 40 38 32 40M60 70C72 62 84 60 94 62M60 70C48 62 36 60 26 62M60 94C72 86 84 84 94 86M60 94C48 86 36 84 26 86M60 118C70 112 80 110 86 112M60 118C50 112 40 110 34 112'/%3E%3C/svg%3E");
+    --sc-leaf-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.6l1.5 3.4 3-1.3-.7 3.7 3.4.4-2.2 2.7 3.1 1.5-3.4 1.1.9 3.4-3.4-1.5-1.3 3.2-.4 3.8h-1l-.4-3.8-1.3-3.2-3.4 1.5.9-3.4-3.4-1.1 3.1-1.5-2.2-2.7 3.4-.4-.7-3.7 3 1.3z'/%3E%3C/svg%3E");
+}
+
+/* ===== Site-wide ========================================================== */
+/* Golden-hour light pooling at the top of every page. Painted on the canvas
+   (html), so it scrolls away with the top of the page instead of following. */
+html[data-theme="fall"] {
+    background-image:
+        radial-gradient(110% 55% at 50% -12%, color-mix(in srgb, var(--sc-accent) 14%, transparent), transparent 62%),
+        radial-gradient(60% 40% at 100% 0%, color-mix(in srgb, var(--sc-hue-1) 9%, transparent), transparent 70%);
+    background-repeat: no-repeat;
+    scrollbar-color: var(--sc-border-2) var(--sc-bg);
+    accent-color: var(--sc-accent);
+}
+html[data-theme="fall"] ::selection {
+    background: color-mix(in srgb, var(--sc-accent) 38%, transparent);
+    color: var(--sc-text);
+}
+html[data-theme="fall"] :focus-visible {
+    outline: 2px solid var(--sc-accent);
+    outline-offset: 3px;
+}
+
+/* Fraunces display: soft terminals and its "wonky" autumn italics-in-roman.
+   Harmless on elements that are not set in Fraunces. */
+html[data-theme="fall"] :is(h1, h2, h3) {
+    font-variation-settings: "SOFT" 60, "WONK" 1;
+}
+html[data-theme="fall"] :is(h1, h2) { letter-spacing: -0.012em; }
+
+/* A warm hairline under the fixed nav instead of a grey one. */
+html[data-theme="fall"] body > nav {
+    border-bottom-color: color-mix(in srgb, var(--sc-accent) 24%, var(--sc-border));
+}
+
+/* The (c) line that switches themes gets a small leaf in front of it — the one
+   visual hint that it is more than a copyright notice. */
+html[data-theme="fall"] [data-theme-toggle]::before {
+    content: "";
+    display: inline-block;
+    width: 0.85em;
+    height: 0.85em;
+    margin-right: 0.4em;
+    vertical-align: -0.08em;
+    background: var(--sc-accent);
+    -webkit-mask: var(--sc-leaf-mask) center / contain no-repeat;
+    mask: var(--sc-leaf-mask) center / contain no-repeat;
+    transform: rotate(-14deg);
+}
+
+/* Section eyebrows lead with a leaf; section titles close on a turning-leaf rule.
+   (.section-label / .section-title: home, WinForensics, Sassy-Talk, Website Creator) */
+html[data-theme="fall"] .section-label::before {
+    content: "";
+    display: inline-block;
+    width: 0.95em;
+    height: 0.95em;
+    margin-right: 0.45em;
+    vertical-align: -0.12em;
+    background: currentColor;
+    -webkit-mask: var(--sc-leaf-mask) center / contain no-repeat;
+    mask: var(--sc-leaf-mask) center / contain no-repeat;
+    transform: rotate(-14deg);
+}
+html[data-theme="fall"] .section-title { line-height: 1.12; }
+html[data-theme="fall"] .section-title::after {
+    content: "";
+    display: block;
+    width: 3.5rem;
+    height: 3px;
+    margin-top: 0.9rem;
+    border-radius: 3px;
+    background: var(--sc-gradient-brand);
+}
+/* Centred section heads keep their rule centred. */
+html[data-theme="fall"] [style*="text-align: center"] > .section-title::after,
+html[data-theme="fall"] [style*="text-align:center"] > .section-title::after {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Fall type sets wider than some pages' original system fonts, so on narrow
+   screens a table cell may break a long word rather than push the table past
+   the gutter. Tables that already scroll inside a container keep scrolling. */
+@media (max-width: 600px) {
+    html[data-theme="fall"] :not(.table-scroll) > table :is(td, th) { overflow-wrap: anywhere; }
+}
+
+/* Nav call-to-action buttons inherit the nav link colour on some pages, which
+   puts body-grey text on an accent fill (1.6:1). Fall draws them in ink. */
+html[data-theme="fall"] nav a.btn-primary,
+html[data-theme="fall"] nav a.btn-primary:hover { color: var(--sc-accent-ink); }
+
+/* ===== Homepage =========================================================== */
+/* Literals the token migration kept so original stays byte-exact; fall gives
+   them fall values. (!important only where the original is an inline style.) */
+html[data-theme="fall"][data-page="home"] .price span[style*="#34d399"] { color: var(--sc-accent-3) !important; }
+html[data-theme="fall"][data-page="home"] .product-badge.free { color: var(--sc-accent-ink); }
+html[data-theme="fall"][data-page="home"] .btn-secondary:hover { border-color: var(--sc-accent); }
+/* Hovered cards cycle through the leaf colours instead of the original rainbow. */
+html[data-theme="fall"][data-page="home"] :is(.product-card, .code-window, .result-card, .status-banner, .app-tile):hover {
+    animation-name: sc-leaf-border;
+}
+@keyframes sc-leaf-border {
+    0%, 100% { border-color: color-mix(in srgb, var(--sc-leaf-1) 60%, transparent); }
+    25%      { border-color: color-mix(in srgb, var(--sc-leaf-2) 60%, transparent); }
+    50%      { border-color: color-mix(in srgb, var(--sc-leaf-3) 60%, transparent); }
+    75%      { border-color: color-mix(in srgb, var(--sc-leaf-5) 60%, transparent); }
+}
+
+/* Editorial hero: left-aligned on the same edge as the product grid below it,
+   instead of a centred splash. A large maple watermark drifts behind the copy
+   on wider screens. */
+html[data-theme="fall"][data-page="home"] .hero {
+    align-items: flex-start;
+    text-align: left;
+}
+html[data-theme="fall"][data-page="home"] .hero h1 {
+    font-size: clamp(2.6rem, 8.5vw, 5.6rem);
+    line-height: 1.02;
+    max-width: 14ch;
+}
+html[data-theme="fall"][data-page="home"] .hero-sub { max-width: 46ch; }
+html[data-theme="fall"][data-page="home"] .hero-cta { justify-content: flex-start; }
+/* The page canvas already carries the golden-hour light; the hero's own glow
+   would be clipped by the hero box into a visible hard-edged panel. */
+html[data-theme="fall"][data-page="home"] .hero::before { display: none; }
+/* Line-art leaf (outline, midrib, veins) drawn in the brand gradient. Line art
+   keeps reading as a leaf at 400px where a filled silhouette turns into a blot. */
+html[data-theme="fall"][data-page="home"] .hero::after {
+    content: "";
+    position: absolute;
+    right: 2%;
+    top: 6%;
+    width: min(30vw, 380px);
+    aspect-ratio: 120 / 170;
+    background: var(--sc-gradient-brand);
+    -webkit-mask: var(--sc-leaf-art) center / contain no-repeat;
+    mask: var(--sc-leaf-art) center / contain no-repeat;
+    opacity: 0.32;
+    transform: rotate(-24deg);
+    pointer-events: none;
+}
+@media (max-width: 767px) {
+    html[data-theme="fall"][data-page="home"] .hero::after { display: none; }
+}
+/* Section heads on the homepage read left, matching the hero. */
+html[data-theme="fall"][data-page="home"] #products > .section-title { max-width: 18ch; }
+
+/* Each product tile is a different leaf on the same branch. */
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card { border-top-width: 3px; }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+1) { border-top-color: var(--sc-hue-2); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+2) { border-top-color: var(--sc-hue-1); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+3) { border-top-color: var(--sc-hue-5); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+4) { border-top-color: var(--sc-hue-3); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+5) { border-top-color: var(--sc-hue-4); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+6) { border-top-color: var(--sc-hue-8); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+7) { border-top-color: var(--sc-hue-7); }
+html[data-theme="fall"][data-page="home"] .products-grid > .product-card:nth-child(8n+8) { border-top-color: var(--sc-hue-6); }
+
+/* ===== Falling leaves ===================================================== */
+/* The canvas colour moves from <body> to <html> in fall so the leaf layer can
+   sit at z-index -1: above the canvas, beneath every in-flow box. Leaves then
+   drift behind copy and disappear behind cards instead of crossing text. */
+html[data-theme="fall"] { background-color: var(--sc-bg); }
+html[data-theme="fall"] body { background-color: transparent; }
+
+html[data-theme="fall"] .sc-leaves {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+}
+html[data-theme="fall"] .sc-leaf {
+    position: absolute;
+    top: -48px;
+    left: var(--x);
+    opacity: var(--o);
+    animation: sc-fall var(--dur) linear var(--delay) infinite;
+    will-change: transform;
+}
+html[data-theme="fall"] .sc-leaf-sway {
+    display: block;
+    animation: sc-sway var(--sway) ease-in-out infinite alternate;
+    will-change: transform;
+}
+html[data-theme="fall"] .sc-leaf svg { display: block; }
+html[data-theme="fall"] .sc-leaves.sc-paused .sc-leaf,
+html[data-theme="fall"] .sc-leaves.sc-paused .sc-leaf-sway { animation-play-state: paused; }
+
+@keyframes sc-fall {
+    from { transform: translate3d(0, -6vh, 0) rotate(0deg); }
+    to   { transform: translate3d(var(--drift), 112vh, 0) rotate(var(--spin)); }
+}
+@keyframes sc-sway {
+    from { transform: translateX(-16px) rotate(-14deg); }
+    to   { transform: translateX(16px) rotate(14deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme="fall"] .sc-leaves { display: none; }
+}

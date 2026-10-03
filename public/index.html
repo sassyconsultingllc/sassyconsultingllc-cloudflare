@@ -4,10 +4,12 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-sassyconsultingllc_cloudflare-GM6VUO74XGGR
 -->
-<html lang="en">
+<html lang="en" data-page="home">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
     <title>Sassy Consulting LLC | Veteran-Owned Security Software</title>
     <meta name="description" content="U.S. Army veteran-led company building privacy-focused tools. Zero tracking, zero telemetry, and real protection.">
     <link rel="canonical" href="https://sassyconsultingllc.com/">
@@ -169,27 +171,6 @@
     }
     </script>
     <style>
-        :root {
-            --bg-primary: #0a0a0a;
-            --bg-secondary: #111111;
-            --bg-tertiary: #1a1a1a;
-            --bg-card: #141414;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0a0;
-            --text-tertiary: #8a8a8a;
-            --accent-primary: #22c55e;
-            --accent-secondary: #16a34a;
-            --accent-glow: rgba(34, 197, 94, 0.15);
-            --accent-red: #ef4444;
-            --accent-orange: #f97316;
-            --accent-yellow: #eab308;
-            --accent-blue: #3b82f6;
-            --accent-cyan: #06b6d4;
-            --border-subtle: #222222;
-            --border-medium: #333333;
-            --gradient-brand: linear-gradient(90deg, #22c55e, #06b6d4);
-        }
-
         * {
             margin: 0;
             padding: 0;
@@ -201,9 +182,9 @@
         }
 
         body {
-            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
+            font-family: var(--sc-font-sans);
+            background: var(--sc-bg);
+            color: var(--sc-text);
             line-height: 1.65;
             overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
@@ -211,7 +192,7 @@
         }
 
         .mono {
-            font-family: 'JetBrains Mono', monospace;
+            font-family: var(--sc-font-mono);
         }
 
         nav {
@@ -220,10 +201,10 @@
             left: 0;
             right: 0;
             z-index: 1000;
-            padding: 1rem 2rem;
-            background: rgba(10, 10, 10, 0.8);
+            padding: 1rem var(--sc-gutter, 2rem);
+            background: var(--sc-nav-bg);
             backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--border-subtle);
+            border-bottom: 1px solid var(--sc-border);
         }
 
         nav .container {
@@ -235,11 +216,11 @@
         }
 
         .logo {
-            font-family: 'DM Serif Display', Georgia, serif;
+            font-family: var(--sc-font-display);
             font-weight: 400;
             font-size: 1.15rem;
             letter-spacing: -0.02em;
-            color: var(--text-primary);
+            color: var(--sc-text);
             text-decoration: none;
             display: flex;
             align-items: center;
@@ -249,14 +230,14 @@
         .logo-icon {
             width: 32px;
             height: 32px;
-            background: var(--accent-primary);
+            background: var(--sc-accent);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 14px;
             font-weight: 700;
-            color: #000;
+            color: var(--sc-accent-ink);
         }
 
         .nav-links {
@@ -266,14 +247,14 @@
         }
 
         .nav-links a {
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             text-decoration: none;
             font-size: 0.9rem;
             transition: color 0.2s;
         }
 
         .nav-links a:hover {
-            color: var(--text-primary);
+            color: var(--sc-text);
         }
 
         .btn {
@@ -281,7 +262,7 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.625rem 1.25rem;
-            border-radius: 8px;
+            border-radius: var(--sc-radius-btn, 8px);
             font-size: 0.9rem;
             font-weight: 500;
             text-decoration: none;
@@ -291,23 +272,23 @@
         }
 
         .btn-primary {
-            background: var(--accent-primary);
-            color: #000;
+            background: var(--sc-accent);
+            color: var(--sc-accent-ink);
         }
 
         .btn-primary:hover {
-            background: var(--accent-secondary);
+            background: var(--sc-accent-2);
             transform: translateY(-1px);
         }
 
         .btn-secondary {
             background: transparent;
-            color: var(--text-primary);
-            border: 1px solid var(--border-medium);
+            color: var(--sc-text);
+            border: 1px solid var(--sc-border-2);
         }
 
         .btn-secondary:hover {
-            background: var(--bg-tertiary);
+            background: var(--sc-surface-2);
             border-color: #606060;
         }
 
@@ -317,7 +298,7 @@
             justify-content: center;
             align-items: center;
             text-align: center;
-            padding: 3rem 2rem 5rem;
+            padding: 3rem var(--sc-gutter, 2rem) 5rem;
             position: relative;
             overflow: hidden;
         }
@@ -330,7 +311,7 @@
             transform: translateX(-50%);
             width: 800px;
             height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+            background: var(--sc-gradient-glow);
             pointer-events: none;
         }
 
@@ -339,18 +320,18 @@
             align-items: center;
             gap: 0.5rem;
             padding: 0.5rem 1rem;
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border-subtle);
+            background: var(--sc-bg-3);
+            border: 1px solid var(--sc-border);
             border-radius: 100px;
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             margin-bottom: 2rem;
         }
 
         .hero-badge .dot {
             width: 8px;
             height: 8px;
-            background: var(--accent-primary);
+            background: var(--sc-accent);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
@@ -361,7 +342,7 @@
         }
 
         .hero h1 {
-            font-family: 'DM Serif Display', Georgia, serif;
+            font-family: var(--sc-font-display);
             font-size: clamp(2.5rem, 8vw, 5rem);
             font-weight: 400;
             line-height: 1.15;
@@ -370,7 +351,7 @@
         }
 
         .hero h1 .gradient {
-            background: var(--gradient-brand);
+            background: var(--sc-gradient-brand);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -378,7 +359,7 @@
 
         .hero-sub {
             font-size: 1.25rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             max-width: 600px;
             margin-bottom: 3rem;
         }
@@ -497,15 +478,16 @@
             .product-card.tile-hero.tile-break-left, .product-card.tile-hero.tile-break-right {
                 margin-right: 0; margin-left: 0;
                 padding-left: 1.75rem; padding-right: 1.75rem;
-                border-radius: 16px;
-                border-color: var(--border-subtle);
+                border-radius: var(--sc-radius-card, 16px);
+                border-color: var(--sc-border);
             }
         }
 
         .product-card {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px);
+            box-shadow: var(--sc-shadow-card, none);
             padding: 2.25rem; /* slightly increased padding */
             text-decoration: none;
             color: inherit;
@@ -517,9 +499,9 @@
         }
 
         .product-card:hover {
-            border-color: var(--accent-primary);
+            border-color: var(--sc-accent);
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgba(34, 197, 94, 0.15);
+            box-shadow: 0 20px 40px -12px color-mix(in srgb, var(--sc-accent) 15%, transparent);
         }
 
         .product-badge {
@@ -527,22 +509,22 @@
             top: 1rem;
             right: 1rem;
             padding: 0.25rem 0.75rem;
-            background: var(--accent-primary);
-            color: #000;
+            background: var(--sc-accent);
+            color: var(--sc-accent-ink);
             font-size: 0.7rem;
             font-weight: 600;
             border-radius: 100px;
             text-transform: uppercase;
         }
 
-        .product-badge.featured { background: var(--accent-orange); }
-        .product-badge.new { background: var(--accent-cyan); }
-        .product-badge.free { background: var(--accent-blue); color: #fff; }
+        .product-badge.featured { background: var(--sc-hue-2); }
+        .product-badge.new { background: var(--sc-hue-5); }
+        .product-badge.free { background: var(--sc-hue-6); color: #fff; }
 
         .product-icon {
             width: 56px;
             height: 56px;
-            background: var(--bg-tertiary);
+            background: var(--sc-bg-3);
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -550,76 +532,76 @@
             font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            color: var(--accent-primary);
+            color: var(--sc-accent);
         }
 
         .product-card h3 { font-size: 1.25rem; margin-bottom: 0.75rem; }
-        .product-card p { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
-        .product-card .price { font-size: 1.5rem; font-weight: 700; color: var(--accent-primary); margin-bottom: 1rem; }
+        .product-card p { color: var(--sc-text-2); font-size: 0.95rem; margin-bottom: 1.5rem; line-height: 1.6; }
+        .product-card .price { font-size: 1.5rem; font-weight: 700; color: var(--sc-accent); margin-bottom: 1rem; }
         .product-tags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-        .product-tag { padding: 0.25rem 0.75rem; background: var(--bg-tertiary); border-radius: 100px; font-size: 0.75rem; color: var(--text-tertiary); }
+        .product-tag { padding: 0.25rem 0.75rem; background: var(--sc-bg-3); border-radius: 100px; font-size: 0.75rem; color: var(--sc-text-3); }
         .product-cta { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 1.25rem; }
 
-        .dashboard-section { background: var(--bg-secondary); padding: 6rem 2rem; }
+        .dashboard-section { background: var(--sc-bg-2); padding: 6rem var(--sc-gutter, 2rem); }
         .dashboard-container { max-width: 1200px; margin: 0 auto; }
         /* Wraps: unwrapped, the input's content-based minimum plus the Analyze
            button exceeded the row at ~320px and pushed the button off-screen,
            where body{overflow-x:clip} made it unreachable. */
         .search-form { display: flex; flex-wrap: wrap; gap: 1rem; max-width: 500px; margin: 0 auto 3rem; }
-        .search-form input { flex: 1 1 12rem; min-width: 0; padding: 1rem 1.5rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem; font-family: inherit; }
+        .search-form input { flex: 1 1 12rem; min-width: 0; padding: 1rem 1.5rem; background: var(--sc-bg-3); border: 1px solid var(--sc-border); border-radius: 8px; color: var(--sc-text); font-size: 1rem; font-family: inherit; }
         .search-form .btn { flex: 0 1 auto; }
-        .search-form input:focus { outline: none; border-color: var(--accent-primary); }
+        .search-form input:focus { outline: none; border-color: var(--sc-accent); }
 
         .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-bottom: 2rem; }
-        .result-card { background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 1.5rem; }
-        .result-card .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 0.5rem; }
+        .result-card { background: var(--sc-surface-2); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 12px); padding: 1.5rem; box-shadow: var(--sc-shadow-card, none); }
+        .result-card .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--sc-text-3); margin-bottom: 0.5rem; }
         .result-card .value { font-size: 1.25rem; font-weight: 600; }
-        .result-card .sub { font-size: 0.85rem; color: var(--text-tertiary); margin-top: 0.25rem; }
+        .result-card .sub { font-size: 0.85rem; color: var(--sc-text-3); margin-top: 0.25rem; }
 
-        .status-banner { padding: 1.5rem; border-radius: 12px; margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); }
-        .status-banner.safe { background: rgba(34, 197, 94, 0.1); border-color: var(--accent-primary); }
-        .status-banner.warning { background: rgba(249, 115, 22, 0.1); border-color: var(--accent-orange); }
-        .status-banner.protected { background: rgba(59, 130, 246, 0.1); border-color: var(--accent-blue); }
+        .status-banner { padding: 1.5rem; border-radius: var(--sc-radius-card, 12px); margin-bottom: 2rem; display: flex; align-items: center; gap: 1rem; background: var(--sc-surface-2); border: 1px solid var(--sc-border); box-shadow: var(--sc-shadow-card, none); }
+        .status-banner.safe { background: color-mix(in srgb, var(--sc-ok) 10%, transparent); border-color: var(--sc-ok); }
+        .status-banner.warning { background: color-mix(in srgb, var(--sc-warn) 10%, transparent); border-color: var(--sc-warn); }
+        .status-banner.protected { background: color-mix(in srgb, var(--sc-info) 10%, transparent); border-color: var(--sc-info); }
 
         .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
         .values-list { margin-top: 2rem; }
         .value-item { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
-        .value-icon { width: 40px; height: 40px; background: var(--bg-tertiary); border: 1px solid var(--accent-primary); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--accent-primary); font-size: 0.9rem; font-weight: 600; }
+        .value-icon { width: 40px; height: 40px; background: var(--sc-bg-3); border: 1px solid var(--sc-accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: var(--sc-accent); font-size: 0.9rem; font-weight: 600; }
         .value-text h4 { font-size: 1rem; margin-bottom: 0.25rem; }
-        .value-text p { color: var(--text-secondary); font-size: 0.9rem; }
+        .value-text p { color: var(--sc-text-2); font-size: 0.9rem; }
 
-        @keyframes rainbowBorder { 0% { border-color: rgba(255,0,0,0.3); } 16% { border-color: rgba(255,136,0,0.3); } 33% { border-color: rgba(255,255,0,0.3); } 50% { border-color: rgba(34,197,94,0.3); } 66% { border-color: rgba(59,130,246,0.3); } 83% { border-color: rgba(168,85,247,0.3); } 100% { border-color: rgba(255,0,0,0.3); } }
-        .code-window { background: var(--bg-secondary); border: 2px solid var(--border-subtle); border-radius: 12px; overflow: hidden; transition: border-color 0.3s; }
-        .product-card:hover, .code-window:hover, .result-card:hover, .status-banner:hover { animation: rainbowBorder 3s linear infinite; box-shadow: 0 0 20px rgba(168, 85, 247, 0.1); }
-        .code-header { display: flex; gap: 8px; padding: 1rem; background: var(--bg-tertiary); border-bottom: 1px solid var(--border-subtle); }
+        @keyframes rainbowBorder { 0% { border-color: color-mix(in srgb, var(--sc-hue-1) 30%, transparent); } 16% { border-color: rgba(255,136,0,0.3); } 33% { border-color: rgba(255,255,0,0.3); } 50% { border-color: color-mix(in srgb, var(--sc-hue-4) 30%, transparent); } 66% { border-color: color-mix(in srgb, var(--sc-hue-6) 30%, transparent); } 83% { border-color: color-mix(in srgb, var(--sc-hue-7) 30%, transparent); } 100% { border-color: color-mix(in srgb, var(--sc-hue-1) 30%, transparent); } }
+        .code-window { background: var(--sc-surface); border: 2px solid var(--sc-border); border-radius: var(--sc-radius-card, 12px); overflow: hidden; transition: border-color 0.3s; box-shadow: var(--sc-shadow-card, none); }
+        .product-card:hover, .code-window:hover, .result-card:hover, .status-banner:hover { animation: rainbowBorder 3s linear infinite; box-shadow: 0 0 20px color-mix(in srgb, var(--sc-hue-7) 10%, transparent); }
+        .code-header { display: flex; gap: 8px; padding: 1rem; background: var(--sc-bg-3); border-bottom: 1px solid var(--sc-border); }
         .code-dot { width: 12px; height: 12px; border-radius: 50%; }
         .code-dot.red { background: #ff5f56; }
         .code-dot.yellow { background: #ffbd2e; }
         .code-dot.green { background: #27ca40; }
-        .code-window pre { padding: 1.5rem; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; line-height: 1.7; overflow-x: auto; color: var(--text-secondary); }
-        .code-window .kw { color: var(--accent-blue); }
-        .code-window .ty { color: var(--accent-cyan); }
-        .code-window .lit { color: var(--accent-primary); }
-        .code-window .str { color: var(--accent-yellow); }
+        .code-window pre { padding: 1.5rem; font-family: var(--sc-font-mono); font-size: 0.85rem; line-height: 1.7; overflow-x: auto; color: var(--sc-text-2); }
+        .code-window .kw { color: var(--sc-hue-6); }
+        .code-window .ty { color: var(--sc-hue-5); }
+        .code-window .lit { color: var(--sc-hue-4); }
+        .code-window .str { color: var(--sc-hue-3); }
 
-        .cta { text-align: center; padding: 8rem 2rem; position: relative; }
-        .cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%); pointer-events: none; }
+        .cta { text-align: center; padding: 8rem var(--sc-gutter, 2rem); position: relative; }
+        .cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 600px; height: 600px; background: var(--sc-gradient-glow); pointer-events: none; }
         .cta h2 { font-size: clamp(2rem, 5vw, 3rem); margin-bottom: 1rem; }
-        .cta p { font-size: 1.25rem; color: var(--text-secondary); margin-bottom: 2rem; }
+        .cta p { font-size: 1.25rem; color: var(--sc-text-2); margin-bottom: 2rem; }
         .cta-buttons { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
 
-        footer { border-top: 1px solid var(--border-subtle); padding: 3rem 2rem; }
+        footer { border-top: 1px solid var(--sc-border); padding: 3rem var(--sc-gutter, 2rem); }
         .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 2rem; }
-        .footer-left { color: var(--text-tertiary); font-size: 0.9rem; }
+        .footer-left { color: var(--sc-text-3); font-size: 0.9rem; }
         /* Wraps because there are eight of these: unwrapped they measure ~653px
            and the tail of the list (My Best Sites, GitHub) sat off the right
            edge of every phone, unreachable behind body{overflow-x:clip}. */
         .footer-links { display: flex; flex-wrap: wrap; gap: 0.75rem 2rem; }
-        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; }
-        .footer-links a:hover { color: var(--text-primary); }
+        .footer-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--sc-text); }
 
         section {
-            padding: 6rem 2rem;
+            padding: 6rem var(--sc-gutter, 2rem);
             max-width: 1200px;
             margin: 0 auto;
         }
@@ -630,12 +612,12 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.1em;
-            color: var(--accent-primary);
+            color: var(--sc-accent);
             margin-bottom: 1rem;
         }
 
         .section-title {
-            font-family: 'DM Serif Display', Georgia, serif;
+            font-family: var(--sc-font-display);
             font-size: clamp(1.75rem, 4vw, 2.5rem);
             font-weight: 400;
             margin-bottom: 1rem;
@@ -644,7 +626,7 @@
 
         .section-desc {
             font-size: 1.1rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             max-width: 600px;
             margin-bottom: 3rem;
         }
@@ -656,7 +638,7 @@
 
         /* Android Apps Top Band */
         .apps-band {
-            padding: 7rem 2rem 3rem;
+            padding: 7rem var(--sc-gutter, 2rem) 3rem;
             max-width: 1400px;
             margin: 0 auto;
             text-align: center;
@@ -669,7 +651,7 @@
         .apps-band-header .section-label { margin-bottom: 0.75rem; }
 
         .apps-band-title {
-            font-family: 'DM Serif Display', Georgia, serif;
+            font-family: var(--sc-font-display);
             font-size: clamp(1.75rem, 4vw, 2.5rem);
             font-weight: 400;
             margin-bottom: 0.75rem;
@@ -677,7 +659,7 @@
 
         .apps-band-desc {
             font-size: 1.05rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             max-width: 640px;
             margin: 0 auto;
         }
@@ -690,9 +672,10 @@
         }
 
         .app-tile {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px);
+            box-shadow: var(--sc-shadow-card, none);
             padding: clamp(1.25rem, 2.5vw, 2rem);
             transition: all 0.3s;
             position: relative;
@@ -706,9 +689,9 @@
         }
 
         .app-tile:hover {
-            border-color: var(--accent-primary);
+            border-color: var(--sc-accent);
             transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgba(34, 197, 94, 0.15);
+            box-shadow: 0 20px 40px -12px color-mix(in srgb, var(--sc-accent) 15%, transparent);
             animation: rainbowBorder 3s linear infinite;
         }
 
@@ -724,18 +707,18 @@
             object-fit: cover;
             margin-bottom: 1.25rem;
             box-shadow: 0 12px 32px -10px rgba(0,0,0,0.5);
-            background: var(--bg-tertiary);
+            background: var(--sc-bg-3);
         }
 
         .app-tile h3 {
-            font-family: 'DM Serif Display', Georgia, serif;
+            font-family: var(--sc-font-display);
             font-weight: 400;
             font-size: clamp(1.2rem, 2vw, 1.5rem);
             margin-bottom: 0.5rem;
         }
 
         .app-tile p {
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             font-size: 0.92rem;
             margin-bottom: 1.25rem;
             line-height: 1.55;
@@ -750,21 +733,22 @@
             gap: 0.75rem;
             margin: 0 auto 2.5rem;
             padding: 1.5rem 1.75rem;
-            background: var(--bg-secondary);
-            border: 1px solid var(--border-subtle);
-            border-radius: 16px;
+            background: var(--sc-surface);
+            border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px);
+            box-shadow: var(--sc-shadow-card, none);
             max-width: 380px;
             transition: border-color 0.3s, background 0.3s;
         }
 
         .captcha-gate.verified {
-            border-color: var(--accent-primary);
-            background: rgba(34, 197, 94, 0.08);
+            border-color: var(--sc-ok);
+            background: color-mix(in srgb, var(--sc-ok) 8%, transparent);
         }
 
         .captcha-gate.shake {
             animation: gateShake 0.5s ease;
-            border-color: var(--accent-orange);
+            border-color: var(--sc-warn);
         }
 
         @keyframes gateShake {
@@ -777,12 +761,12 @@
 
         .captcha-hint {
             font-size: 0.85rem;
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
             text-align: center;
         }
 
         .captcha-gate.verified .captcha-hint {
-            color: var(--accent-primary);
+            color: var(--sc-ok);
         }
 
         .apps-grid[data-locked="true"] .app-tile {
@@ -794,7 +778,7 @@
 
         .apps-grid[data-locked="true"] .app-tile:hover {
             transform: none;
-            border-color: var(--border-subtle);
+            border-color: var(--sc-border);
             box-shadow: none;
             animation: none;
         }
@@ -810,9 +794,9 @@
             align-items: center;
             gap: 0.4rem;
             padding: 0.3rem 0.85rem;
-            background: rgba(34, 197, 94, 0.12);
-            border: 1px solid rgba(34, 197, 94, 0.4);
-            color: var(--accent-primary);
+            background: color-mix(in srgb, var(--sc-ok) 12%, transparent);
+            border: 1px solid color-mix(in srgb, var(--sc-ok) 40%, transparent);
+            color: var(--sc-ok);
             font-size: 0.72rem;
             font-weight: 600;
             border-radius: 100px;
@@ -823,7 +807,7 @@
 
         .open-testing-pill .dot {
             width: 7px; height: 7px;
-            background: var(--accent-primary);
+            background: var(--sc-ok);
             border-radius: 50%;
             animation: pulse 2s infinite;
         }
@@ -831,11 +815,11 @@
         .open-testing-pill.coming-soon {
             background: rgba(148, 163, 184, 0.12);
             border-color: rgba(148, 163, 184, 0.4);
-            color: var(--text-secondary);
+            color: var(--sc-text-2);
         }
 
         .open-testing-pill.coming-soon .dot {
-            background: var(--text-secondary);
+            background: var(--sc-text-2);
             animation: none;
         }
 
@@ -848,7 +832,7 @@
 
         .play-badge:hover {
             transform: scale(1.05);
-            filter: drop-shadow(0 6px 16px rgba(34, 197, 94, 0.25));
+            filter: drop-shadow(0 6px 16px color-mix(in srgb, var(--sc-accent) 25%, transparent));
         }
 
         .play-badge img {
@@ -868,21 +852,21 @@
             align-items: center;
             gap: 0.6rem;
             padding: 0.85rem 1.5rem;
-            background: rgba(34, 197, 94, 0.08);
-            border: 1px solid rgba(34, 197, 94, 0.35);
-            color: var(--accent-primary);
+            background: color-mix(in srgb, var(--sc-accent) 8%, transparent);
+            border: 1px solid color-mix(in srgb, var(--sc-accent) 35%, transparent);
+            color: var(--sc-accent);
             text-decoration: none;
-            border-radius: 100px;
+            border-radius: var(--sc-radius-btn, 100px);
             font-size: 0.95rem;
             font-weight: 600;
             letter-spacing: 0.01em;
             transition: all 0.2s;
         }
         .tester-cta a:hover {
-            background: rgba(34, 197, 94, 0.14);
-            border-color: var(--accent-primary);
+            background: color-mix(in srgb, var(--sc-accent) 14%, transparent);
+            border-color: var(--sc-accent);
             transform: translateY(-1px);
-            box-shadow: 0 8px 22px -10px rgba(34, 197, 94, 0.45);
+            box-shadow: 0 8px 22px -10px color-mix(in srgb, var(--sc-accent) 45%, transparent);
         }
         .tester-cta a svg {
             width: 16px;
@@ -897,7 +881,7 @@
                the screen edge than everything above and below it. Going to
                2 columns (instead of shrinking the padding) is what actually
                buys the tiles room, since each icon has a 96px floor. */
-            .apps-band { padding: 6rem 2rem 2rem; }
+            .apps-band { padding: 6rem var(--sc-gutter, 2rem) 2rem; }
             .apps-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.75rem; }
             .app-tile p { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 0.85rem; }
             .tester-cta a { font-size: 0.88rem; padding: 0.75rem 1.25rem; }
@@ -1087,16 +1071,17 @@
             }
         }
 
-        .mobile-menu-btn { display: none; background: transparent; border: 1px solid var(--border-medium); color: var(--text-primary); padding: 8px 16px; border-radius: 6px; cursor: pointer; font-size: 1.1rem; }
-        .mobile-menu { display: none; flex-direction: column; padding: 16px 24px; background: var(--bg-tertiary); border-top: 1px solid var(--border-subtle); }
+        .mobile-menu-btn { display: none; background: transparent; border: 1px solid var(--sc-border-2); color: var(--sc-text); padding: 8px 16px; border-radius: var(--sc-radius-btn, 6px); cursor: pointer; font-size: 1.1rem; }
+        .mobile-menu { display: none; flex-direction: column; padding: 16px var(--sc-gutter, 24px); background: var(--sc-surface-2); border-top: 1px solid var(--sc-border); }
         .mobile-menu.open { display: flex; position: fixed; top: 4.5rem; left: 0; right: 0; z-index: 1000; max-height: calc(100dvh - 4.5rem); overflow-y: auto; }
-        .mobile-menu a { padding: 12px 0; color: var(--text-secondary); text-decoration: none; border-bottom: 1px solid var(--border-subtle); }
-        .mobile-menu a:hover { color: var(--text-primary); }
+        .mobile-menu a { padding: 12px 0; color: var(--sc-text-2); text-decoration: none; border-bottom: 1px solid var(--sc-border); }
+        .mobile-menu a:hover { color: var(--sc-text); }
         @media (max-width: 768px) { .nav-links { display: none; } .mobile-menu-btn { display: block; } }
 
-        .skip-link { position: absolute; left: -9999px; top: 0; background: #22c55e; color: #000; padding: 8px 16px; z-index: 1100; border-radius: 0 0 6px 0; font-weight: 600; text-decoration: none; }
+        .skip-link { position: absolute; left: -9999px; top: 0; background: var(--sc-accent); color: var(--sc-accent-ink); padding: 8px 16px; z-index: 1100; border-radius: 0 0 6px 0; font-weight: 600; text-decoration: none; }
         .skip-link:focus { left: 0; }
     </style>
+    <link rel="stylesheet" href="/theme/fall.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1336,7 +1321,7 @@ Sassy Consulting LLC
                 <span class="product-badge featured">Forensics</span>
                 <h3>WinForensics-Pro</h3>
                 <p>Scans your entire Windows system for signs of compromise, hidden files, suspicious activity, and malware — then generates a detailed report you can actually read. Windows GUI build v0.5.2.</p>
-                <div class="price">$9.99 one-time <span style="color: var(--text-tertiary); font-size: 0.6em;">card checkout offline — email for a link</span></div>
+                <div class="price">$9.99 one-time <span style="color: var(--sc-text-3); font-size: 0.6em;">card checkout offline — email for a link</span></div>
                 <div class="product-tags">
                     <span class="product-tag">Security</span>
                     <span class="product-tag">Windows</span>
@@ -1349,7 +1334,7 @@ Sassy Consulting LLC
                 <span class="product-badge">Android</span>
                 <h3>Sassy-Talk</h3>
                 <p>Encrypted push-to-talk walkie-talkie. AES-256-GCM across three transports — WiFi multicast on a LAN, Bluetooth, and cellular through our Cloudflare relay — so range is not limited to one network. Live on Google Play, free to install, with a lifetime license key sold here.</p>
-                <div class="price">$3.99 one-time <span style="color: var(--text-tertiary); font-size: 0.6em;">card checkout offline — email for a link</span></div>
+                <div class="price">$3.99 one-time <span style="color: var(--sc-text-3); font-size: 0.6em;">card checkout offline — email for a link</span></div>
                 <div class="product-tags">
                     <span class="product-tag">Encrypted</span>
                     <span class="product-tag">Android</span>
@@ -1362,7 +1347,7 @@ Sassy Consulting LLC
                 <span class="product-badge new">New</span>
                 <h3>Sassy Brain</h3>
                 <p>Multi-AI consensus engine. 5 providers (Claude, Grok, Gemini, Mistral, HuggingFace) debate and refine, then synthesize one answer. Async steering, encrypted local keys, no telemetry.</p>
-                <div class="price" style="color: var(--accent-yellow);">Free</div>
+                <div class="price" style="color: var(--sc-hue-3);">Free</div>
                 <div class="product-tags">
                     <span class="product-tag">AI</span>
                     <span class="product-tag">Electron</span>
@@ -1386,7 +1371,7 @@ Sassy Consulting LLC
                 <span class="product-badge new">New</span>
                 <h3>My Best Sites</h3>
                 <p>Create professional websites in 5 minutes. AI-powered content, free hosting, own everything forever.</p>
-                <div class="price" style="color: var(--accent-cyan);">Free / $10 / $29</div>
+                <div class="price" style="color: var(--sc-hue-5);">Free / $10 / $29</div>
                 <div class="product-tags">
                     <span class="product-tag">AI</span>
                     <span class="product-tag">Cloudflare</span>
@@ -1396,10 +1381,10 @@ Sassy Consulting LLC
 
             <!-- SectorScope — priced, not yet sellable (no activation, no build). -->
             <a href="/store#apps" class="product-card tile-duo">
-                <span class="product-badge" style="background: #606060; color: #000;">Not yet</span>
+                <span class="product-badge" style="background: var(--sc-neutral); color: var(--sc-accent-ink);">Not yet</span>
                 <h3>SectorScope</h3>
                 <p>Real-time disk activity monitor with a defrag-style cluster map, live per-IO capture, and a 3-layer decode HUD. Console and GUI over one Rust engine.</p>
-                <div class="price">$9.99 <span style="color: var(--text-tertiary); font-size: 0.6em;">when it ships</span></div>
+                <div class="price">$9.99 <span style="color: var(--sc-text-3); font-size: 0.6em;">when it ships</span></div>
                 <div class="product-tags">
                     <span class="product-tag">Rust</span>
                     <span class="product-tag">Windows + macOS</span>
@@ -1408,10 +1393,10 @@ Sassy Consulting LLC
             </a>
 
             <a href="/website-creator" class="product-card tile-duo tile-drop">
-                <span class="product-badge" style="background: #606060; color: #000;">Not yet</span>
+                <span class="product-badge" style="background: var(--sc-neutral); color: var(--sc-accent-ink);">Not yet</span>
                 <h3>Website Creator</h3>
                 <p>AI-powered WordPress builder with security hardening, automated backups, and monitoring built in. Still in development — there is no plugin to download yet, so we are not taking money for it.</p>
-                <div class="price">$2 <span style="color: var(--text-tertiary); font-size: 0.6em;">when it ships</span></div>
+                <div class="price">$2 <span style="color: var(--sc-text-3); font-size: 0.6em;">when it ships</span></div>
                 <div class="product-tags">
                     <span class="product-tag">WordPress</span>
                     <span class="product-tag">MCP</span>
@@ -1423,7 +1408,7 @@ Sassy Consulting LLC
                 <span class="product-badge free">Free Tool</span>
                 <h3>Network Analysis</h3>
                 <p>Check your connection security, detect VPNs, and get privacy recommendations. Instant results.</p>
-                <div class="price" style="color: var(--accent-yellow);">Free</div>
+                <div class="price" style="color: var(--sc-hue-3);">Free</div>
                 <div class="product-tags">
                     <span class="product-tag">Free</span>
                     <span class="product-tag">Instant</span>
@@ -1450,7 +1435,7 @@ Sassy Consulting LLC
                     <span id="status-icon" style="font-size: 1.5rem;"></span>
                     <div>
                         <strong id="status-title"></strong>
-                        <p id="status-message" style="color: var(--text-secondary); margin: 0;"></p>
+                        <p id="status-message" style="color: var(--sc-text-2); margin: 0;"></p>
                     </div>
                 </div>
 
@@ -1463,11 +1448,11 @@ Sassy Consulting LLC
 
                 <div id="verify-banner" class="status-banner" style="margin-top: 1rem;">
                     <span style="font-size: 1.5rem;" id="verify-icon"></span>
-                    <div><strong id="verify-title">ZIP Verification</strong><p id="verify-message" style="color: var(--text-secondary); margin: 0;"></p></div>
+                    <div><strong id="verify-title">ZIP Verification</strong><p id="verify-message" style="color: var(--sc-text-2); margin: 0;"></p></div>
                 </div>
                 <div id="vpn-status" class="status-banner" style="margin-top: 0.5rem;">
                     <span style="font-size: 1.5rem;" id="vpn-icon"></span>
-                    <div><strong id="vpn-title">VPN Detection</strong><p id="vpn-message" style="color: var(--text-secondary); margin: 0;"></p></div>
+                    <div><strong id="vpn-title">VPN Detection</strong><p id="vpn-message" style="color: var(--sc-text-2); margin: 0;"></p></div>
                 </div>
                 <div id="cf-details" style="margin-top: 1rem; display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.5rem;">
                     <div class="result-card" style="padding: 0.75rem;"><div class="label" style="font-size: 0.7rem;">CF Edge</div><div class="value" style="font-size: 0.9rem;" id="cf-colo">--</div></div>
@@ -1477,17 +1462,17 @@ Sassy Consulting LLC
             </div>
             
             <div id="loading-state" style="display: none; text-align: center; padding: 3rem;">
-                <div style="width: 40px; height: 40px; border: 3px solid var(--border-subtle); border-top-color: var(--accent-primary); border-radius: 50%; margin: 0 auto 1rem; animation: spin 1s linear infinite;"></div>
-                <p style="color: var(--text-secondary);">Analyzing your connection...</p>
+                <div style="width: 40px; height: 40px; border: 3px solid var(--sc-border); border-top-color: var(--sc-accent); border-radius: 50%; margin: 0 auto 1rem; animation: spin 1s linear infinite;"></div>
+                <p style="color: var(--sc-text-2);">Analyzing your connection...</p>
             </div>
 
             <!-- Setup guides. These lived in the sitemap but were linked from
                  nowhere on the site — orphan pages collect no internal link
                  equity and rarely get crawled. They belong here, next to the
                  tool that tells you whether you need a VPN in the first place. -->
-            <div style="margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--border-subtle);">
+            <div style="margin-top: 3rem; padding-top: 2.5rem; border-top: 1px solid var(--sc-border);">
                 <h3 style="font-size: 1.1rem; margin-bottom: 0.5rem; text-align: center;">No VPN detected? Set one up free.</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem; text-align: center; margin-bottom: 1.5rem;">Step-by-step guides, no signup, no affiliate links.</p>
+                <p style="color: var(--sc-text-2); font-size: 0.95rem; text-align: center; margin-bottom: 1.5rem;">Step-by-step guides, no signup, no affiliate links.</p>
                 <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
                     <a href="/guides/protonvpn" class="btn btn-secondary">ProtonVPN setup guide &rarr;</a>
                     <a href="/guides/warp" class="btn btn-secondary">Cloudflare WARP setup guide &rarr;</a>
@@ -1540,23 +1525,23 @@ Sassy Consulting LLC
         </div>
     </section>
 
-    <section id="contact" style="padding: 6rem 2rem; max-width: 600px; margin: 0 auto;">
+    <section id="contact" style="padding: 6rem var(--sc-gutter, 2rem); max-width: 600px; margin: 0 auto;">
         <span class="section-label">Contact Us</span>
         <h2 class="section-title">Get in Touch</h2>
         <p class="section-desc">Have questions? We'd love to hear from you.</p>
         
-        <form action="/api/contact" method="POST" style="background: var(--bg-secondary); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 2rem;">
+        <form action="/api/contact" method="POST" style="background: var(--sc-surface); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 16px); padding: 2rem; box-shadow: var(--sc-shadow-card, none);">
             <div style="margin-bottom: 1.5rem;">
-                <label for="name" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Name</label>
-                <input type="text" id="name" name="name" required minlength="2" maxlength="100" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem;" placeholder="Your name">
+                <label for="name" style="display: block; margin-bottom: 0.5rem; color: var(--sc-text-2); font-size: 0.9rem;">Name</label>
+                <input type="text" id="name" name="name" required minlength="2" maxlength="100" style="width: 100%; padding: 0.75rem 1rem; background: var(--sc-bg-3); border: 1px solid var(--sc-border); border-radius: 8px; color: var(--sc-text); font-size: 1rem;" placeholder="Your name">
             </div>
             <div style="margin-bottom: 1.5rem;">
-                <label for="email" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Email</label>
-                <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem;" placeholder="you@example.com">
+                <label for="email" style="display: block; margin-bottom: 0.5rem; color: var(--sc-text-2); font-size: 0.9rem;">Email</label>
+                <input type="email" id="email" name="email" required style="width: 100%; padding: 0.75rem 1rem; background: var(--sc-bg-3); border: 1px solid var(--sc-border); border-radius: 8px; color: var(--sc-text); font-size: 1rem;" placeholder="you@example.com">
             </div>
             <div style="margin-bottom: 1.5rem;">
-                <label for="message" style="display: block; margin-bottom: 0.5rem; color: var(--text-secondary); font-size: 0.9rem;">Message</label>
-                <textarea id="message" name="message" required minlength="10" maxlength="1000" rows="5" style="width: 100%; padding: 0.75rem 1rem; background: var(--bg-tertiary); border: 1px solid var(--border-subtle); border-radius: 8px; color: var(--text-primary); font-size: 1rem; resize: vertical;" placeholder="How can we help?"></textarea>
+                <label for="message" style="display: block; margin-bottom: 0.5rem; color: var(--sc-text-2); font-size: 0.9rem;">Message</label>
+                <textarea id="message" name="message" required minlength="10" maxlength="1000" rows="5" style="width: 100%; padding: 0.75rem 1rem; background: var(--sc-bg-3); border: 1px solid var(--sc-border); border-radius: 8px; color: var(--sc-text); font-size: 1rem; resize: vertical;" placeholder="How can we help?"></textarea>
             </div>
             <button type="submit" class="btn btn-primary btn-large" style="width: 100%;">Send Message &rarr;</button>
         </form>
@@ -1578,7 +1563,7 @@ Sassy Consulting LLC
     <footer>
         <div class="footer-content">
             <div class="footer-left">
-                <strong>Sassy Consulting LLC</strong> - Veteran-Owned, Wisconsin-Made<br>
+                <span data-theme-toggle>&copy; 2026 <strong>Sassy Consulting LLC</strong> - Veteran-Owned, Wisconsin-Made</span><br>
                 <span style="font-size: 0.8rem;">Still serving. Different uniform.</span>
             </div>
             <div class="footer-links">
@@ -1727,7 +1712,7 @@ Sassy Consulting LLC
             if (!errEl) {
                 errEl = document.createElement('div');
                 errEl.id = 'analyze-error';
-                errEl.style.cssText = 'max-width:500px;margin:1rem auto;padding:1rem 1.5rem;background:rgba(239,68,68,0.1);border:1px solid var(--accent-red);border-radius:8px;color:var(--accent-red);font-size:0.9rem;text-align:center;';
+                errEl.style.cssText = 'max-width:500px;margin:1rem auto;padding:1rem 1.5rem;background:color-mix(in srgb, var(--sc-bad) 10%, transparent);border:1px solid var(--sc-bad);border-radius:var(--sc-radius-card, 8px);color:var(--sc-bad);font-size:0.9rem;text-align:center;';
                 document.querySelector('.search-form').after(errEl);
             }
             errEl.textContent = msg;
