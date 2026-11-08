@@ -280,6 +280,14 @@ export default {
         const target = env.LEMONSQUEEZY_DONATE_URL || "https://sassyconsultingllc.lemonsqueezy.com";
         return Response.redirect(target, 302);
       }
+      // Marketing aliases. The SassyMCP GitHub repo's homepage field points at
+      // /sassymcp and older launch copy links /pricing.html — both 404'd. Send
+      // them to the SassyMCP section of the store. 302 (not 301) so a future
+      // dedicated /sassymcp landing page can take the path over without
+      // fighting cached permanent redirects.
+      if (path === "/sassymcp" || path === "/sassymcp/" || path === "/pricing" || path === "/pricing.html") {
+        return Response.redirect(`${url.origin}/store#sassymcp`, 302);
+      }
       if (path === "/api/downloads") {
         return await handleDownloadsList(env, corsHeaders);
       }
