@@ -17,7 +17,7 @@ Last updated: 2026-11-08
 - **CuratedMCP** (curatedmcp.com) is an external directory listing, not a product brand. List as **Free**; do not use their paid Stripe rev-share tiers. (As of 2026-09-20 we were not actually listed there; see SassyMCP `docs/launch/07-directories.md`.)
 - Do **not** create LS products named Forensics or Team.
 
-## Turning on the commercial SKU (do once)
+## Turning on the commercial SKU (done 2026-11-08; kept for reference)
 
 The worker, store card, and buyer email are already wired (`mcp-commercial`). Until the variant secret exists, `/api/catalog` reports it unpurchasable and the store card shows "email us for a checkout link or invoice."
 
@@ -35,7 +35,7 @@ The worker, store card, and buyer email are already wired (`mcp-commercial`). Un
 
 | Store slug | Checkout | Notes |
 |---|---|---|
-| `mcp-commercial` | **not yet**: needs `LS_VARIANT_MCP_COMMERCIAL` (steps above) | LS product **SassyMCP Commercial License** $99; license keys ON; activation limit 2. No fallback path, because the key must belong to this product. |
+| `mcp-commercial` | **200** via dedicated variant `LS_VARIANT_MCP_COMMERCIAL` (**`2352600`**, set 2026-11-08) | Variant **SassyMCP Commercial License** under LS product **SassyMCP**: $99, single payment, license keys ON, activation limit 2, unlimited length. No fallback path, because the key must belong to this product. Mapped to `{tier:"commercial"}` in SassyMCP `DEFAULT_VARIANT_MAP` (SassyMCP PR #47); ships to users in the next tagged release. |
 | `mcp-pro` | **200** via dedicated variant `LS_VARIANT_MCP_PRO` (**`1753676`**) | LS product **SassyMCP** $25; Generate license keys ON; activation limit 2; unlimited length. App activates against LS's own license API, so the LS-native key is required. |
 | `sassy-talk` | **200** via dedicated variant `LS_VARIANT_SASSY_TALK` | Relay worker mints the key (`issueRelayLicense`); LS key generation is OFF for this product. |
 | `winforensics` | **200** via dedicated variant `LS_VARIANT_WINFORENSICS` | winforensics-license-api mints WFP- keys (`issueWinforensicsLicense`); LS key generation OFF. |
