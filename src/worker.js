@@ -68,9 +68,23 @@ const PRODUCTS = {
   "mcp-pro": {
     name: "SassyMCP Supporter",
     mode: "payment",
-    description: "Optional one-time supporter license — all tools already unlocked; badge + 2 seats",
+    description: "Optional one-time supporter tip for personal use — all tools already unlocked; badge on 2 machines; no commercial rights",
     priceCents: 2500,
     lsFallbackOk: true
+  },
+  // SassyMCP commercial-use license (LICENSE v2.0, 2026-11-08): free for
+  // personal use; work use needs one seat per person. Tools are never gated —
+  // this buys the right to use it commercially. Needs its own LS product with
+  // Generate license keys ON (activation limit 2), because keys activate
+  // through LS's license API like mcp-pro. No lsFallbackOk on purpose: a
+  // fallback-variant key would belong to another product. Until
+  // LS_VARIANT_MCP_COMMERCIAL is set, /api/catalog reports it unpurchasable
+  // and the store card shows its request-a-link state.
+  "mcp-commercial": {
+    name: "SassyMCP Commercial License",
+    mode: "payment",
+    description: "Commercial-use license, one seat — the right to use SassyMCP for work (all tools are free for personal use)",
+    priceCents: 9900
   },
   // Retired SKUs (all-or-nothing). Kept available:false so old deep links /
   // webhooks get a clear refusal instead of a 404.
@@ -1059,6 +1073,15 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
     "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
     "mcp-pro":      mcpActivate("2 machines you own"),
+    "mcp-commercial":
+      `Download SassyMCP (Windows, macOS, or Linux):\n` +
+      `https://github.com/sassyconsultingllc/SassyMCP/releases/latest\n\n` +
+      `This is a commercial license for one person: it covers using SassyMCP for\n` +
+      `work (your job, client projects, or your team) on up to 2 of your machines.\n` +
+      `Every tool is already unlocked; activating the key registers your seat.\n` +
+      `Run the setup wizard or sassy_setup_license in any MCP client and paste your\n` +
+      `key when prompted. Terms: https://github.com/sassyconsultingllc/SassyMCP/blob/main/LICENSING.md\n` +
+      `Need more seats or an invoice? Email info@sassyconsultingllc.com.`,
     "mcp-forensics":mcpActivate("2 machines you own"),
     "mcp-team":     mcpActivate("up to 10 machines"),
     "website-creator": `Getting started: ${env.SITE_URL}/website-creator.html`,

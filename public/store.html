@@ -11,7 +11,7 @@
 <script src="/theme/seasonal.js"></script>
 <link rel="stylesheet" href="/theme/tokens.css">
 <title>Store — Every Sassy Consulting Product and Its Price</title>
-<meta name="description" content="Every product we ship and what it costs. SassyMCP free (274 tools), optional $25 supporter, Sassy-Talk $3.99, WinForensics $9.99. One-time, own forever.">
+<meta name="description" content="Every product we ship and what it costs. SassyMCP free for personal use (278 tools), $99 commercial seat for work, Sassy-Talk $3.99, WinForensics $9.99. One-time, own forever.">
 <link rel="canonical" href="https://sassyconsultingllc.com/store">
 <meta name="robots" content="index, follow, max-image-preview:large">
 <meta property="og:type" content="website">
@@ -179,9 +179,9 @@ footer a{color:var(--sc-text-2)}
       <table class="pricetable">
         <thead><tr><th>Product</th><th>Price</th><th>Status today</th></tr></thead>
         <tbody>
-          <tr><td><a href="#sassymcp">SassyMCP</a></td><td><strong>Free</strong> &mdash; all 274 tools</td><td>v1.14.2 shipping. Optional <strong>$25</strong> supporter license (badge + 2 seats, unlocks nothing).</td></tr>
-          <tr><td><a href="#apps">Sassy-Talk</a></td><td><strong>$3.99</strong> one-time</td><td>Android live on Google Play (free install, in-app unlock). Direct license key by request &mdash; card checkout is being re-wired. Windows build not released.</td></tr>
-          <tr><td><a href="#apps">WinForensics-Pro</a></td><td><strong>$9.99</strong> one-time</td><td>Windows GUI v0.5.2 shipping. Direct license key by request &mdash; card checkout is being re-wired.</td></tr>
+          <tr><td><a href="#sassymcp">SassyMCP</a></td><td><strong>Free</strong> for personal use &mdash; all 278 tools<br><strong>$99</strong> per seat for work use</td><td>Shipping on Windows, macOS, and Linux. Work use needs a one-time commercial seat; personal use never does. Optional <strong>$25</strong> supporter tip (badge only, unlocks nothing).</td></tr>
+          <tr><td><a href="#apps">Sassy-Talk</a></td><td><strong>$3.99</strong> one-time</td><td>Android live on Google Play (free install, in-app unlock). Card checkout here; license key emailed on purchase. Windows build not released.</td></tr>
+          <tr><td><a href="#apps">WinForensics-Pro</a></td><td><strong>$9.99</strong> one-time</td><td>Windows GUI v0.5.2 shipping. Card checkout here; license key emailed on purchase.</td></tr>
           <tr><td><a href="#apps">SectorScope</a></td><td><strong>$9.99</strong> one-time</td><td>v0.2.0, Windows + macOS. Built and priced, but not on sale yet &mdash; it has no activation and no published build, so we will not take money for it.</td></tr>
           <tr><td><a href="/browser">Sassy Browser</a></td><td><strong>Free</strong> &mdash; donations fund it</td><td>v0.15.2, in active development. Unsigned Windows dev build only; no signed installer yet.</td></tr>
           <tr><td><a href="/download/sassy-brain/windows/SassyBrain_Installer-v0.2.1.exe">Sassy Brain</a></td><td><strong>Free</strong></td><td>v0.2.1 Windows installer, direct download.</td></tr>
@@ -202,21 +202,37 @@ footer a{color:var(--sc-text-2)}
   <section class="section" id="sassymcp">
     <div class="section-head">
       <h2><i class="fa-solid fa-layer-group"></i> SassyMCP</h2>
-      <p>One MCP server replacing 75+. All <strong>274 tools</strong> across 18 groups ship unlocked for everyone — no free/pro split, no gated add-ons. Current release <strong>v1.14.2</strong>, free on <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">GitHub</a>; the optional supporter license funds development and shows a supporter badge (it does not unlock tools).</p>
+      <p>One MCP server replacing 75+. All <strong>278 tools</strong> across 18 groups ship unlocked for everyone — no free/pro split, no gated add-ons. <strong>Free for personal use</strong>; using it for work needs a commercial license, one seat per person, with a 30-day free evaluation. Download from <a href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">GitHub</a> for Windows, macOS, or Linux.</p>
     </div>
     <div class="grid">
 
-      <article class="product featured" data-product="mcp-pro">
-        <span class="ribbon">ALL OR NOTHING</span>
-        <span class="tag">Optional · does not unlock tools</span>
+      <article class="product featured" data-product="mcp-commercial">
+        <span class="ribbon">FOR WORK USE</span>
+        <span class="tag">Commercial license · one seat</span>
+        <h3>SassyMCP Commercial</h3>
+        <div class="price"><span class="amount">$99</span><span class="period">one-time, per seat</span></div>
+        <p class="desc">Free for personal use. Using it in your job, on client work, or across a team needs one commercial seat per person. Same build, same 278 tools; this buys the right to use it at work.</p>
+        <div class="note" data-offline-note><strong>Card checkout for commercial seats is not open yet.</strong> Email us and we'll send a direct checkout link or an invoice the same day. Teams and volume: same address.</div>
+        <ul class="feature-list">
+          <li>Covers one person, on 2 of their machines</li>
+          <li>Perpetual: buy once, every future update included</li>
+          <li>Evaluate it at work free for 30 days first</li>
+          <li>Invoices and volume pricing: info@sassyconsultingllc.com</li>
+        </ul>
+        <a class="btn btn-primary" href="/contact?product=mcp-commercial" data-cta data-label-buy="Buy commercial seat — $99">Request commercial license — $99</a>
+        <a class="btn btn-ghost" style="margin-top:0.75rem" href="https://github.com/sassyconsultingllc/SassyMCP/blob/main/LICENSING.md">What counts as commercial use?</a>
+      </article>
+
+      <article class="product" data-product="mcp-pro">
+        <span class="tag">Optional tip · personal use</span>
         <h3>SassyMCP Supporter</h3>
         <div class="price"><span class="amount">$25</span><span class="period">one-time</span></div>
-        <p class="desc">Thank-you license for the full suite you already get free. Registers up to 2 machines as supporter seats; refunds revoke the badge automatically.</p>
+        <p class="desc">Thank-you license for the full suite you already get free. Shows a supporter badge on up to 2 machines; refunds revoke it automatically. Does not cover work use.</p>
         <ul class="feature-list">
-          <li>All 274 tools already unlocked with no key</li>
+          <li>All 278 tools already unlocked with no key</li>
           <li>Supporter badge in banner, control panel, and VS Code cockpit</li>
           <li>Activates on 2 machines you own</li>
-          <li>Same story as directories (CuratedMCP &amp; friends): free product, paid support optional</li>
+          <li>Personal use only: work use needs a commercial seat</li>
         </ul>
         <button class="btn btn-primary" data-buy="mcp-pro" data-cta data-label-buy="Buy supporter license — $25">Buy supporter license — $25</button>
         <a class="btn btn-ghost" style="margin-top:0.75rem" href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">Download free — no key needed</a>
@@ -229,7 +245,7 @@ footer a{color:var(--sc-text-2)}
   <section class="section" id="apps">
     <div class="section-head">
       <h2><i class="fa-solid fa-toolbox"></i> Apps &amp; Tools</h2>
-      <p>Standalone software. One-time purchase, lifetime license. Both of these are shipping products — only their card checkout is mid-rebuild, so the last step runs through us for a few days.</p>
+      <p>Standalone software. One-time purchase, lifetime license, and your license key is emailed the moment payment clears.</p>
     </div>
     <div class="grid">
 
@@ -238,7 +254,7 @@ footer a{color:var(--sc-text-2)}
         <h3>Sassy-Talk</h3>
         <p class="desc">Encrypted push-to-talk walkie-talkie. Works over WiFi multicast, Bluetooth, or cellular via our Cloudflare relay.</p>
         <div class="price"><span class="amount">$3.99</span><span class="period">one-time</span></div>
-        <div class="note" data-offline-note><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day. The Android app itself is free to install on Google Play.</div>
+        <div class="note" data-offline-note><strong>Live checkout didn't load.</strong> The price is real — email us and we'll send a direct checkout link the same day. The Android app itself is free to install on Google Play.</div>
         <ul class="feature-list">
           <li>End-to-end encrypted voice channels (AES-256-GCM)</li>
           <li>WiFi multicast, Bluetooth, and cellular relay transports</li>
@@ -255,7 +271,7 @@ footer a{color:var(--sc-text-2)}
         <h3>WinForensics-Pro</h3>
         <p class="desc">Scans your Windows system for compromise, hidden files and suspicious activity, then writes a readable report.</p>
         <div class="price"><span class="amount">$9.99</span><span class="period">one-time</span></div>
-        <div class="note" data-offline-note><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The price is real — email us and we'll send a direct checkout link the same day.</div>
+        <div class="note" data-offline-note><strong>Live checkout didn't load.</strong> The price is real — email us and we'll send a direct checkout link the same day.</div>
         <ul class="feature-list">
           <li>Windows GUI build v0.5.2</li>
           <li>Integrity, ADS, Prefetch, Amcache, MFT walk</li>
@@ -306,8 +322,8 @@ footer a{color:var(--sc-text-2)}
     <div class="mini-grid">
       <a class="mini" href="https://github.com/sassyconsultingllc/SassyMCP/releases/latest">
         <span class="pill">Free · full suite</span>
-        <h4><i class="fa-solid fa-bolt"></i> SassyMCP v1.14.2</h4>
-        <p>All 274 tools unlocked — GitHub, Android, forensics, Linux, memory, and more. No key.</p>
+        <h4><i class="fa-solid fa-bolt"></i> SassyMCP</h4>
+        <p>All 278 tools, free for personal use — GitHub, Android, forensics, Linux, memory, and more. No key.</p>
       </a>
       <a class="mini" href="/browser">
         <span class="pill">Free · in development</span>
@@ -363,8 +379,8 @@ footer a{color:var(--sc-text-2)}
         <p>Pick a product, enter your email, and you're handed to Lemon Squeezy to pay. The moment payment clears, your license key is generated and emailed to you, and shown on the confirmation page. Card details never touch our servers.</p>
       </details>
       <details>
-        <summary>Why can't I card-checkout Sassy-Talk or WinForensics right now?</summary>
-        <p>Honest answer: their payment-processor wiring is mid-rebuild, so the automated checkout would fail if we left the button up. Rather than show a button that errors, we ask you to <a href="/contact">email us</a> — we send a direct checkout link, usually the same day, at the price listed here. SassyMCP's supporter checkout is unaffected and works normally.</p>
+        <summary>Do I need a SassyMCP commercial license?</summary>
+        <p>Only if you use it for work. Personal projects, learning, and hobby use are free with every tool. If you use SassyMCP in your job, on client work, or across a team, you need one <strong>$99</strong> commercial seat per person (one-time, perpetual). You can evaluate it at work free for 30 days first. Full plain-English terms are in <a href="https://github.com/sassyconsultingllc/SassyMCP/blob/main/LICENSING.md">LICENSING.md</a>.</p>
       </details>
       <details>
         <summary>Is this really one-time? No subscription?</summary>
@@ -372,7 +388,7 @@ footer a{color:var(--sc-text-2)}
       </details>
       <details>
         <summary>Does a SassyMCP purchase unlock tools?</summary>
-        <p>No. As of v1.13.0 SassyMCP is all-or-nothing: every tool group ships unlocked with no key. The store SKU is an optional supporter license — it registers seats and shows a supporter badge. Download the full product free on GitHub.</p>
+        <p>No. Every tool group ships unlocked for everyone, with no key. A commercial license buys the right to use SassyMCP for work; the supporter license is a tip that shows a badge. Neither changes which tools you get. Download the full product free on GitHub.</p>
       </details>
       <details>
         <summary>Where's my license after I pay?</summary>
@@ -421,6 +437,7 @@ footer a{color:var(--sc-text-2)}
   "name":"Sassy Consulting LLC Store",
   "itemListElement":[
     {"@type":"Product","name":"SassyMCP","offers":{"@type":"Offer","price":"0","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
+    {"@type":"Product","name":"SassyMCP Commercial License","offers":{"@type":"Offer","price":"99","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
     {"@type":"Product","name":"SassyMCP Supporter","offers":{"@type":"Offer","price":"25","priceCurrency":"USD","availability":"https://schema.org/InStock"}},
     {"@type":"Product","name":"Sassy-Talk","offers":{"@type":"Offer","price":"3.99","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
     {"@type":"Product","name":"WinForensics-Pro","offers":{"@type":"Offer","price":"9.99","priceCurrency":"USD","availability":"https://schema.org/LimitedAvailability"}},
@@ -596,10 +613,10 @@ footer a{color:var(--sc-text-2)}
   },
   {
    "@type": "Question",
-   "name": "Why can't I card-checkout Sassy-Talk or WinForensics right now?",
+   "name": "Do I need a SassyMCP commercial license?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "Honest answer: their payment-processor wiring is mid-rebuild, so the automated checkout would fail if we left the button up. Rather than show a button that errors, we ask you to email us — we send a direct checkout link, usually the same day, at the price listed here. SassyMCP's supporter checkout is unaffected and works normally."
+    "text": "Only if you use it for work. Personal projects, learning, and hobby use are free with every tool. If you use SassyMCP in your job, on client work, or across a team, you need one $99 commercial seat per person (one-time, perpetual). You can evaluate it at work free for 30 days first."
    }
   },
   {
@@ -615,7 +632,7 @@ footer a{color:var(--sc-text-2)}
    "name": "Does a SassyMCP purchase unlock tools?",
    "acceptedAnswer": {
     "@type": "Answer",
-    "text": "No. As of v1.13.0 SassyMCP is all-or-nothing: every tool group ships unlocked with no key. The store SKU is an optional supporter license — it registers seats and shows a supporter badge. Download the full product free on GitHub."
+    "text": "No. Every tool group ships unlocked for everyone, with no key. A commercial license buys the right to use SassyMCP for work; the supporter license is a tip that shows a badge. Neither changes which tools you get. Download the full product free on GitHub."
    }
   },
   {
