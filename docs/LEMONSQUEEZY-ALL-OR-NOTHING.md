@@ -5,7 +5,7 @@
 -->
 # Lemon Squeezy — SassyMCP licensing (live)
 
-Last updated: 2026-11-08
+Last updated: 2026-11-09
 
 ## Commercial truth (do not re-fragment)
 
@@ -38,7 +38,8 @@ The worker, store card, and buyer email are already wired (`mcp-commercial`). Un
 | `mcp-commercial` | **200** via dedicated variant `LS_VARIANT_MCP_COMMERCIAL` (**`2352600`**, set 2026-11-08) | Variant **SassyMCP Commercial License** under LS product **SassyMCP**: $99, single payment, license keys ON, activation limit 2, unlimited length. No fallback path, because the key must belong to this product. Mapped to `{tier:"commercial"}` in SassyMCP `DEFAULT_VARIANT_MAP` (SassyMCP PR #47); ships to users in the next tagged release. |
 | `mcp-pro` | **200** via dedicated variant `LS_VARIANT_MCP_PRO` (**`1753676`**) | LS product **SassyMCP** $25; Generate license keys ON; activation limit 2; unlimited length. App activates against LS's own license API, so the LS-native key is required. |
 | `sassy-talk` | **200** via dedicated variant `LS_VARIANT_SASSY_TALK` | Relay worker mints the key (`issueRelayLicense`); LS key generation is OFF for this product. |
-| `winforensics` | **200** via dedicated variant `LS_VARIANT_WINFORENSICS` | winforensics-license-api mints WFP- keys (`issueWinforensicsLicense`); LS key generation OFF. |
+| `winforensics` | **200** via dedicated variant `LS_VARIANT_WINFORENSICS` | **Home, $29** (since 2026-11-09). The worker sends `custom_price` (`enforcePrice`), so the LS variant's own price doesn't matter. winforensics-license-api mints WFP- keys on tier `standard` (2 activations); LS key generation OFF. |
+| `winforensics-tech` | **200** via `LS_VARIANT_WINFORENSICS_TECH`, else it borrows `LS_VARIANT_WINFORENSICS` with a name and price override | **Technician, $149.** License-api tier `professional` (5 activations). Commercial and client use. A dedicated LS variant is optional; it only gives LS reports a separate product line. |
 
 `LS_FALLBACK_VARIANT` is deleted and no live product uses it. The fallback path in `resolveVariantId`/`handleCheckout` stays as a safety net for future SKUs marked `lsFallbackOk`.
 

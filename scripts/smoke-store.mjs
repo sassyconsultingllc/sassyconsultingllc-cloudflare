@@ -25,7 +25,7 @@ function opt(name, fallback) {
 
 const BASE = opt("base", "https://sassyconsultingllc.com").replace(/\/$/, "");
 const EMAIL = opt("email", "smoke-test@sassyconsultingllc.com");
-const PRODUCTS = opt("products", "mcp-commercial,mcp-pro,sassy-talk,winforensics")
+const PRODUCTS = opt("products", "mcp-commercial,mcp-pro,sassy-talk,winforensics,winforensics-tech")
   .split(",")
   .map((s) => s.trim())
   .filter(Boolean);

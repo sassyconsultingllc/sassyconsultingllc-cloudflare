@@ -31,12 +31,31 @@ const PRODUCTS = {
     priceCents: 399,
     lsFallbackOk: true
   },
+  // WinForensics-Pro: two one-time licenses, same full app. The difference is
+  // machines and use rights, enforced by winforensics-license-api's
+  // max_activations for `licenseTier` (standard = 2, professional = 5); the app
+  // does not gate scanners on tier. `enforcePrice` sends priceCents as the LS
+  // custom_price, so this file is the price of record and an LS variant left at
+  // an old price cannot undercharge. Keys come from the license-api, not LS, so
+  // Technician may borrow the Home variant (`variantOf`) until
+  // LS_VARIANT_WINFORENSICS_TECH exists; checkout then overrides name + price.
   "winforensics": {
-    name: "WinForensics",
+    name: "WinForensics-Pro Home",
     mode: "payment",
-    description: "Digital forensics toolkit for Windows",
-    priceCents: 999,
+    description: "Windows forensics toolkit, every scanner included: personal use on 2 PCs you own",
+    priceCents: 2900,
+    enforcePrice: true,
+    licenseTier: "standard",
     lsFallbackOk: true
+  },
+  "winforensics-tech": {
+    name: "WinForensics-Pro Technician",
+    mode: "payment",
+    description: "Windows forensics toolkit, every scanner included: commercial and client use by one technician on up to 5 machines",
+    priceCents: 14900,
+    enforcePrice: true,
+    licenseTier: "professional",
+    variantOf: "winforensics"
   },
   "website-creator": {
     name: "Website Creator",
@@ -770,6 +789,7 @@ function buildCatalog(env) {
     } else {
       const variantId =
         resolveVariantId(env, slug, p.mode === "subscription", null) ||
+        (p.variantOf ? resolveVariantId(env, p.variantOf, p.mode === "subscription", null) : null) ||
         (p.lsFallbackOk && p.priceCents && env.LS_FALLBACK_VARIANT ? env.LS_FALLBACK_VARIANT : null);
       if (!variantId) {
         purchasable = false;
@@ -828,8 +848,18 @@ async function handleCheckout(request, env, corsHeaders) {
   // custom_price + display-name override. A dedicated LS_VARIANT_* secret
   // always wins once the real product exists in the LS dashboard.
   let customPriceCents = null;
+  // True when the LS variant belongs to another product, so the buyer must
+  // see this product's name instead of the variant's.
+  let borrowedVariant = false;
+  if (!variantId && productInfo.variantOf) {
+    variantId = resolveVariantId(env, productInfo.variantOf, isSubscription, billing);
+    borrowedVariant = !!variantId;
+  }
   if (!variantId && productInfo.lsFallbackOk && productInfo.priceCents && env.LS_FALLBACK_VARIANT) {
     variantId = env.LS_FALLBACK_VARIANT;
+    borrowedVariant = true;
+  }
+  if (variantId && productInfo.priceCents && (borrowedVariant || productInfo.enforcePrice)) {
     customPriceCents = productInfo.priceCents;
   }
   if (!variantId) {
@@ -877,7 +907,7 @@ async function handleCheckout(request, env, corsHeaders) {
           receipt_link_url: successUrl,
           // On fallback checkouts the underlying variant belongs to a
           // different product, so override what the buyer sees.
-          ...(customPriceCents ? { name: productInfo.name, description: productInfo.description } : {}),
+          ...(borrowedVariant || productInfo.enforcePrice ? { name: productInfo.name, description: productInfo.description } : {}),
         },
         ...(customPriceCents ? { custom_price: customPriceCents } : {}),
       },
@@ -1015,10 +1045,11 @@ async function handleWebhook(request, env, corsHeaders) {
       email,
       note: `lemonsqueezy:${orderId || ref}`,
     });
-  } else if (product === "winforensics") {
+  } else if (product === "winforensics" || product === "winforensics-tech") {
     licenseKey = await issueWinforensicsLicense(env, {
       email,
       note: `lemonsqueezy:${orderId || ref}`,
+      tier: PRODUCTS[product].licenseTier,
     });
   } else if (product.startsWith("mcp-") && orderId) {
     licenseKey = await fetchLsLicenseKey(env, orderId);
@@ -1069,8 +1100,13 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
     `Your key is an optional supporter license. Activate it to show the supporter\n` +
     `badge (it does not unlock tools): run the setup wizard or sassy_setup_license\n` +
     `in any MCP client, paste your key when prompted. Works on ${seats}.`;
+  const winfDownload = (terms) =>
+    `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\n` +
+    `Activate: Settings > License Management > paste your key > Activate.\n` +
+    `Updates: Settings > Updates — checks are gated by this same key.\n\n${terms}`;
   const downloadLines = {
-    "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
+    "winforensics": winfDownload("Home license: personal use on up to 2 PCs you own. Running it for\nclients or for work needs the Technician license (upgrade: email us)."),
+    "winforensics-tech": winfDownload("Technician license: one technician, commercial and client use, up to 5\nmachines (your bench, laptop, and USB kit). Need more machines or an invoice?\nEmail info@sassyconsultingllc.com."),
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
     "mcp-pro":      mcpActivate("2 machines you own"),
     "mcp-commercial":
@@ -1611,7 +1647,7 @@ async function fetchLsLicenseKey(env, orderId) {
   return null;
 }
 
-async function issueWinforensicsLicense(env, { email, note }) {
+async function issueWinforensicsLicense(env, { email, note, tier = "professional" }) {
   const base = (env.WINF_LICENSE_URL || "https://winforensics-license-api.sassyconsultingllc.workers.dev").replace(/\/$/, "");
   const token = env.WINF_LICENSE_ADMIN_TOKEN;
   if (!token) {
@@ -1625,7 +1661,7 @@ async function issueWinforensicsLicense(env, { email, note }) {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ email, note, tier: "professional", billing_type: "lifetime" }),
+      body: JSON.stringify({ email, note, tier, billing_type: "lifetime" }),
     });
     const data = await resp.json();
     if (!resp.ok || !data.ok || !data.key) {
