@@ -151,7 +151,9 @@
     (function () {
         var PRODUCTS = {
             'sassy-talk':   { name: 'Sassy-Talk',      price: '$3.99' },
-            'winforensics': { name: 'WinForensics-Pro', price: '$9.99' }
+            'winforensics':      { name: 'WinForensics-Pro Home',       price: '$29' },
+            'winforensics-tech': { name: 'WinForensics-Pro Technician', price: '$149' },
+            'mcp-commercial':    { name: 'SassyMCP Commercial License', price: '$99 per seat' }
         };
         var slug;
         try { slug = new URLSearchParams(window.location.search).get('product'); } catch (e) { return; }

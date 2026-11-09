@@ -129,7 +129,7 @@
                 secondary.style.display = 'none';
                 document.getElementById('download-note').textContent = 'Install the APK, then paste your license key on the activation screen.';
                 document.getElementById('download-links').style.display = 'block';
-            } else if (data.product === 'winforensics') {
+            } else if (data.product === 'winforensics' || data.product === 'winforensics-tech') {
                 const key = encodeURIComponent(data.license_key);
                 primary.textContent = 'Download WinForensics-Pro (Windows)';
                 primary.href = '/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=' + key;
