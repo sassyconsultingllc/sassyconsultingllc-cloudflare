@@ -10,19 +10,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/theme/seasonal.js"></script>
     <link rel="stylesheet" href="/theme/tokens.css">
-    <title>Sassy Browser — Pure-Rust Browser & File Viewer (v0.15.2)</title>
+    <title>Sassy Browser — Pure-Rust Browser & File Viewer (v0.16.0)</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/browser">
     <meta name="description" content="A privacy-first desktop browser written in pure Rust, in active development. 200+ file formats, built-in ad blocker, no Chromium. Unsigned dev build.">
     <meta name="keywords" content="PDF editor free, image editor free, DOCX editor free, PDB viewer, molecular viewer, Chrome alternative, Adobe alternative, Microsoft 365 alternative, secure browser, Rust browser, ad blocker built-in, tampermonkey alternative, ublock alternative, web3 browser, RAW photo editor, DICOM viewer, CAD viewer, privacy browser, rust browser engine">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sassyconsultingllc.com/browser">
     <meta property="og:title" content="Sassy Browser — A Pure-Rust Browser &amp; File Viewer, Built in the Open About Its Gaps">
-    <meta property="og:description" content="Opens 200+ file formats — PDF, image, document and molecular viewers, built-in ad blocker, no subscriptions, no Chromium. v0.15.2, in active development: unsigned Windows dev build, honest Done/Partial/Planned matrix on /coming-soon.">
+    <meta property="og:description" content="Opens 200+ file formats — PDF, image, document and molecular viewers, built-in ad blocker, no subscriptions, no Chromium. v0.16.0, in active development: unsigned Windows and Linux dev builds, honest Done/Partial/Planned matrix on /coming-soon.">
     <meta property="og:image" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
     <meta property="og:site_name" content="Sassy Consulting LLC">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Sassy Browser — Pure Rust, In Development, Honest About It">
-    <meta name="twitter:description" content="200+ file formats. Built-in ad blocker. No subscriptions. Pure Rust. v0.15.2 dev build — see the real feature matrix before you download.">
+    <meta name="twitter:description" content="200+ file formats. Built-in ad blocker. No subscriptions. Pure Rust. v0.16.0 dev builds for Windows and Linux — see the real feature matrix before you download.">
     <script type="application/ld+json">
     {
         "@context": "https://schema.org", "@type": "SoftwareApplication",
@@ -30,7 +30,7 @@
         "applicationCategory": "BrowserApplication", "operatingSystem": "Windows, Linux",
         "url": "https://sassyconsultingllc.com/browser",
         "downloadUrl": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
-        "softwareVersion": "0.15.2",
+        "softwareVersion": "0.16.0",
         "author": {"@type": "Organization", "name": "Sassy Consulting LLC"},
         "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/OnlineOnly"}
     }
@@ -269,8 +269,9 @@
             <a href="#savings">Savings</a>
             <a href="#features">Features</a>
             <a href="#security">Security</a>
+            <a href="/research/sassy-browser-engine-audit-2026">Engine Audit</a>
             <a href="/coming-soon">Build status</a>
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-dl">Dev build</a>
+            <a href="#download" class="nav-dl">Dev builds</a>
         </div>
         <button class="hamburger" onclick="document.getElementById('nav-links').classList.toggle('open')" aria-label="Menu">☰</button>
     </div>
@@ -296,15 +297,18 @@
         </p>
         <div class="hero-actions">
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">
-                Download Windows dev build — v0.15.2
+                Download for Windows — v0.16.0
+            </a>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" class="btn btn-green btn-lg">
+                Download for Linux — v0.16.0
             </a>
             <a href="/coming-soon" class="btn btn-outline btn-lg">See the honest build status</a>
         </div>
-        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--sc-text-2);">Unsigned Windows <strong>dev</strong> exe (~57&nbsp;MB) on R2 — not Authenticode-signed, not the stable update channel. Signed stable manifest is still 404. See <a href="/coming-soon" style="color:var(--sc-accent);">/coming-soon</a> for the honest feature matrix.</p>
+        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--sc-text-2);">Unsigned <strong>dev</strong> builds on R2: Windows x64 exe (~86&nbsp;MB) and Linux x86_64 tarball (~42&nbsp;MB, glibc 2.35+) — not code-signed, not the stable update channel. <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt" style="color:var(--sc-accent);">SHA-256 checksums</a>. Signed stable manifest is still 404. See <a href="/coming-soon" style="color:var(--sc-accent);">/coming-soon</a> for the honest feature matrix.</p>
         <div class="stat-bar">
             <div class="stat-item"><div class="stat-val">200,424</div><div class="stat-lbl">Lines of Rust</div></div>
             <div class="stat-item"><div class="stat-val">230</div><div class="stat-lbl">Source Files</div></div>
-            <div class="stat-item"><div class="stat-val">0.15.2</div><div class="stat-lbl">Product version</div></div>
+            <div class="stat-item"><div class="stat-val">0.16.0</div><div class="stat-lbl">Product version</div></div>
             <div class="stat-item"><div class="stat-val">Dev</div><div class="stat-lbl">Public download</div></div>
         </div>
     </div>
@@ -714,6 +718,14 @@
         <p>230 source files across viewers, engine, security, networking, AI integration, and UI. Compiles clean. Runs fast. No garbage collection pauses, no memory leaks, no undefined behavior. This is what it looks like when a security professional builds a browser from scratch.</p>
         <div class="rust-badge">🦀 Built in Rust</div>
     </div>
+    <div style="margin-top: 2rem; background: var(--sc-surface); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 16px); padding: 1.75rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
+        <div>
+            <span style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--sc-accent);">Independent Security Review</span>
+            <h3 style="font-size: 1.2rem; margin: 0.25rem 0 0.5rem;">Sassy Browser Engine Security Audit (June 2026)</h3>
+            <p style="color: var(--sc-text-2); font-size: 0.92rem; margin: 0; max-width: 620px;">240 confirmed findings across W3C conformance, layout, and JS execution. Read the full write-up on the 12 security-impact defects found and patched in v0.11.0.</p>
+        </div>
+        <a href="/research/sassy-browser-engine-audit-2026" class="btn btn-outline" style="white-space: nowrap;">Read Audit Report &rarr;</a>
+    </div>
 </div>
 
 <hr class="divider">
@@ -736,8 +748,18 @@
 <!-- DOWNLOAD (dev build on R2; signed stable still gated) -->
 <div class="wrap" id="download">
     <div class="section-eyebrow">Get started</div>
-    <h2 class="sh">Windows dev build available</h2>
-    <p class="sd">Grab the unsigned v0.15.2 Windows x64 exe from R2 (~57&nbsp;MB). This is a <strong>dev</strong> build — not Authenticode-signed and not published on the signed update channel (<code>/browser/dists/stable/manifest.json</code> is still 404).</p>
+    <h2 class="sh">Windows and Linux dev builds available</h2>
+    <p class="sd">Grab the unsigned v0.16.0 Windows x64 exe (~86&nbsp;MB) or Linux x86_64 tarball (~42&nbsp;MB) from R2. These are <strong>dev</strong> builds — not code-signed and not published on the signed update channel (<code>/browser/dists/stable/manifest.json</code> is still 404). Verify downloads against the <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt">SHA-256 checksums</a>.</p>
+
+    <div class="dl-card" style="margin-bottom:1.5rem;">
+        <h4>New in v0.16.0</h4>
+        <ul style="margin:0.5rem 0 0 1.1rem; line-height:1.7;">
+            <li><strong>Network (SMB) storage in the file explorer.</strong> Add a share as <code>\\server\share</code> or <code>smb://server/share</code>, connect with a username and password or as guest, and browse it like any local folder. <em>Browse…</em> lists a server's shares, and typing an SMB address in the explorer's path bar connects too. Shares the system already mounted show up automatically.</li>
+            <li><strong>Passwords stay off disk in plain text.</strong> They are never passed on a command line, and "Remember password" keeps them encrypted at rest &mdash; never in the settings file.</li>
+            <li><strong>Native on each OS.</strong> Windows uses its own SMB client (the same session <code>net use</code> creates); Linux uses GVfs, so no root and no <code>mount.cifs</code> setup is needed.</li>
+            <li><strong>Linux dev build.</strong> A prebuilt x86_64 tarball for glibc 2.35+ distros (Ubuntu 22.04+, Debian 12+, Fedora 36+). Needs fontconfig and ALSA, which desktop installs already have; SMB needs <code>gvfs-backends</code>.</li>
+        </ul>
+    </div>
 
     <div class="dl-card" style="margin-bottom:1.5rem;">
         <h4>Included since v0.13.2</h4>
@@ -756,14 +778,14 @@
         <div class="dl-card main-dl">
             <div class="dl-os">🪟</div>
             <h4>Windows (dev)</h4>
-            <p>v0.15.2 unsigned exe (~57 MB) on R2.</p>
+            <p>v0.16.0 unsigned x64 exe (~86 MB) on R2.</p>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🐧</div>
-            <h4>Linux</h4>
-            <p>Builds from source internally. No distro packages published.</p>
-            <a href="/coming-soon">View build status</a>
+            <h4>Linux (dev)</h4>
+            <p>v0.16.0 x86_64 tarball (~42 MB), glibc 2.35+. Unpack and run <code>./sassy-browser</code>.</p>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🍎</div>
@@ -783,9 +805,10 @@
 <!-- FINAL CTA -->
 <section class="final-cta">
     <h2>A pure-Rust browser<br><span style="color:var(--sc-accent);">still being built honestly</span>.</h2>
-    <p class="sub">No Chromium. No Google telemetry. Dev build available; signed stable still pending.</p>
+    <p class="sub">No Chromium. No Google telemetry. Windows and Linux dev builds available; signed stable still pending.</p>
     <div class="cta-row">
-        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">Download Windows dev build</a>
+        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">Download for Windows</a>
+        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" class="btn btn-green btn-lg">Download for Linux</a>
         <a href="/coming-soon" class="btn btn-outline btn-lg">Build status</a>
     </div>
     <a href="/donate" class="support-link" target="_blank" rel="noopener">Support development with a donation</a>
@@ -799,6 +822,8 @@
     </div>
     <div class="footer-links">
         <a href="/coming-soon">Build status</a>
+        <a href="/research/sassy-browser-engine-audit-2026">Engine Audit</a>
+        <a href="/research">Research &amp; Devlog</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/donate" target="_blank" rel="noopener">Donate</a>

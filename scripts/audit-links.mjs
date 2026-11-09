@@ -4,8 +4,9 @@
 // CodeMark: SCLLC1-sassyconsultingllc_cloudflare-U6PBTSWBN7GQ
 import { readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = "v:/Projects/sassyconsultingllc-cloudflare";
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const PUBLIC_DIR = join(ROOT, "public");
 
 function walk(dir) {

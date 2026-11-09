@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+-->
+<html lang="en" data-page="research">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
+    <title>Sassy Browser Engine Security Audit | Sassy Consulting LLC</title>
+    <link rel="canonical" href="https://sassyconsultingllc.com/research/sassy-browser-engine-audit-2026">
+    <meta name="description" content="Findings and fixes from Sassy Consulting LLC's June 2026 security and W3C conformance audit of the Sassy Browser rendering and JavaScript engine.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sassyconsultingllc.com/research/sassy-browser-engine-audit-2026">
+    <meta property="og:title" content="Sassy Browser Engine Security Audit (June 2026)">
+    <meta property="og:description" content="Twelve page- and file-reachable defects in a from-scratch browser engine: what they were, how they were found, and how they were fixed.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta property="og:site_name" content="Sassy Consulting LLC">
+    <meta property="article:published_time" content="2026-11-09">
+    <meta property="article:author" content="Shane Smith">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--sc-font-sans);
+            background: var(--sc-bg);
+            color: var(--sc-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 0 var(--sc-gutter, 2rem); height: 64px;
+            background: var(--sc-nav-bg); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--sc-border);
+            display: flex; align-items: center;
+        }
+        nav .container { max-width: 900px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.15rem; color: var(--sc-text); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--sc-text); }
+
+        article { max-width: 760px; margin: 0 auto; padding: 8rem var(--sc-gutter, 2rem) 5rem; }
+        .kicker {
+            display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--sc-accent-2);
+            background: color-mix(in srgb, var(--sc-accent) 15%, transparent);
+            padding: 0.25rem 0.75rem; border-radius: 6px; margin-bottom: 1rem;
+        }
+        h1 { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .meta { color: var(--sc-text-3); font-size: 0.9rem; margin-bottom: 2.5rem; }
+        h2 { font-size: 1.4rem; font-weight: 700; margin: 2.75rem 0 0.75rem; }
+        h3 { font-size: 1.05rem; font-weight: 700; margin: 1.75rem 0 0.4rem; }
+        p, li { color: var(--sc-text-2); font-size: 1rem; }
+        p { margin-bottom: 1rem; }
+        ul { margin: 0 0 1rem 1.25rem; }
+        li { margin-bottom: 0.4rem; }
+        strong { color: var(--sc-text); }
+        code {
+            font-family: var(--sc-font-mono, 'JetBrains Mono', monospace); font-size: 0.88em;
+            background: var(--sc-surface-2); border: 1px solid var(--sc-border);
+            border-radius: 4px; padding: 0.05em 0.35em; overflow-wrap: anywhere;
+        }
+        .summary {
+            background: var(--sc-surface); border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px); padding: 1.5rem 1.75rem; margin-bottom: 2rem;
+        }
+        .summary p:last-child { margin-bottom: 0; }
+        .table-wrap { overflow-x: auto; margin: 1rem 0 1.5rem; border: 1px solid var(--sc-border); border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--sc-border); vertical-align: top; }
+        th { color: var(--sc-text); background: var(--sc-surface); font-weight: 600; white-space: nowrap; }
+        td { color: var(--sc-text-2); }
+        tr:last-child td { border-bottom: none; }
+        .sev { font-weight: 600; white-space: nowrap; }
+        .sev.high { color: var(--sc-warn); }
+        .sev.med { color: var(--sc-info); }
+        .note { border-left: 3px solid var(--sc-accent); padding: 0.25rem 0 0.25rem 1rem; margin: 1.5rem 0; }
+        a { color: var(--sc-accent-2); }
+
+        footer { border-top: 1px solid var(--sc-border); padding: 3rem var(--sc-gutter, 2rem); }
+        .footer-content { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .footer-left { color: var(--sc-text-3); font-size: 0.9rem; }
+        .footer-left strong { color: var(--sc-text-2); }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            article { padding: 6.5rem var(--sc-gutter, 1rem) 4rem; }
+            footer { padding-left: var(--sc-gutter, 1rem); padding-right: var(--sc-gutter, 1rem); }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+    <link rel="stylesheet" href="/theme/fall.css">
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">Sassy Consulting</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/#products">Products</a>
+                <a href="/browser">Sassy Browser</a>
+                <a href="/research">Research</a>
+            </div>
+        </div>
+    </nav>
+
+    <article>
+        <span class="kicker">Security research</span>
+        <h1>Sassy Browser engine audit: twelve page- and file-reachable defects, found and fixed</h1>
+        <p class="meta">Sassy Consulting LLC &middot; Shane Smith &middot; Audit run 2026-06-10, fixes shipped in v0.11.0 (2026-06-20), published 2026-11-09</p>
+
+        <div class="summary">
+            <p><strong>Summary.</strong> In June 2026 we audited Sassy Browser, our own browser with a from-scratch HTML/CSS layout engine and JavaScript interpreter written in Rust. The audit confirmed 240 findings across correctness, W3C conformance and efficiency. This write-up covers the twelve with a security impact: inputs that a web page or an opened file controls and that could crash the browser, exhaust memory, inject markup, or weaken how secrets and agent permissions are protected.</p>
+            <p>All twelve are fixed, each with a regression test, and the fixes shipped in <strong>v0.11.0</strong>. Anyone running v0.11.0 or later is not affected.</p>
+        </div>
+
+        <h2>Scope and method</h2>
+        <p>The target was the Sassy Browser source tree as of 2026-06-10. Sassy Browser is our own product, so this was first-party work; no third-party systems were tested.</p>
+        <ul>
+            <li><strong>Subsystem review.</strong> Nineteen AI-driven auditors each reviewed one subsystem (JS interpreter, parser and lexer, DOM, CSS cascade, layout, paint, networking and cookies, file viewers, authentication, the MCP agent interface and the Foreman policy engine), looking through four lenses: correctness, W3C conformance, efficiency and novelty.</li>
+            <li><strong>Adversarial verification.</strong> Every high and critical finding was re-checked by a separate verifier that read the cited code and tried to disprove the finding. Findings that did not survive were dropped, and severities were corrected where the verifier disagreed.</li>
+            <li><strong>Fix discipline.</strong> Each fix was re-verified against the current code first, then written test-first: a failing test that feeds the malicious or malformed input, then the fix, then the test passing.</li>
+        </ul>
+        <p>Result: <strong>240 confirmed findings</strong> (12 critical, 68 high, 113 medium, 47 low), of which 59 were W3C conformance gaps. Most of the critical items were correctness bugs, such as object equality and <code>try/finally</code> semantics, rather than security issues. They are not covered here.</p>
+
+        <h2>Findings with security impact</h2>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Area</th><th>Defect</th><th>Severity</th><th>Reachable from</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td>JS strings</td><td><code>startsWith</code>/<code>endsWith</code> sliced by byte offset and panicked on multi-byte UTF-8</td><td class="sev high">High</td><td>Any page script</td></tr>
+                    <tr><td>JS arrays</td><td><code>map</code>/<code>filter</code> held a borrow across the callback; mutating the array panicked</td><td class="sev high">High</td><td>Any page script</td></tr>
+                    <tr><td>JSON</td><td><code>JSON.stringify</code> on a cyclic object overflowed the stack instead of throwing <code>TypeError</code></td><td class="sev high">High</td><td>Any page script</td></tr>
+                    <tr><td>JS arrays</td><td><code>a[1e9] = 1</code> eagerly allocated a dense array of that length</td><td class="sev high">High</td><td>Any page script</td></tr>
+                    <tr><td>Promises</td><td><code>Promise.any</code> used <code>Vec::insert</code> at the input index and panicked on out-of-order rejections</td><td class="sev high">High</td><td>Any page script</td></tr>
+                    <tr><td>DOM</td><td><code>innerHTML</code>/<code>outerHTML</code> serializers emitted text and attribute values unescaped</td><td class="sev high">High</td><td>Page script and content</td></tr>
+                    <tr><td>DICOM viewer</td><td>Parser allocated the declared element length before reading it</td><td class="sev high">High</td><td>Opening a crafted file</td></tr>
+                    <tr><td>DICOM viewer</td><td>Tag browser byte-sliced string values and panicked on multi-byte UTF-8</td><td class="sev high">High</td><td>Opening a crafted file</td></tr>
+                    <tr><td>JPEG-Lossless</td><td>Sample buffer sized from unvalidated SOF3 dimensions</td><td class="sev high">High</td><td>Opening a crafted file</td></tr>
+                    <tr><td>Spreadsheet viewer</td><td><code>MIN</code>/<code>MAX</code> unwrapped <code>partial_cmp</code>; a NaN cell crashed the app</td><td class="sev high">High</td><td>Opening a crafted file</td></tr>
+                    <tr><td>Identity</td><td>Device master key was wrapped with a key derived only from hostname and home path</td><td class="sev high">High</td><td>Local file access</td></tr>
+                    <tr><td>Agent policy</td><td>Foreman policy loaded from a working-directory path and fell back to allow-all when missing</td><td class="sev high">High</td><td>MCP agent sessions</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>1. Page-controlled crashes in the JavaScript interpreter</h3>
+        <p>Five defects let one line of page script abort the renderer thread. <code>"caf&eacute;".startsWith("c", 3)</code> indexed a Rust string at a byte that is not a character boundary. <code>arr.map(x =&gt; arr.push(x))</code> asked for a mutable borrow while an immutable one was still held. <code>let a = {}; a.self = a; JSON.stringify(a)</code> recursed without a visited set until the stack overflowed. <code>Promise.any</code> inserted rejection reasons at their input index into a vector that was shorter than that index.</p>
+        <p>The fifth was a memory-exhaustion bug: assigning <code>a[1e9] = 1</code> grew a dense backing vector one element at a time to a billion entries, tens of gigabytes. A negative index also wrote silently to element zero.</p>
+        <p><strong>Fix.</strong> String operations now slice on character boundaries. <code>map</code> and <code>filter</code> iterate over a snapshot, the same way <code>forEach</code> and <code>reduce</code> already did. <code>JSON.stringify</code> tracks visited objects and throws the spec <code>TypeError</code> on a cycle. <code>Promise.any</code> pre-sizes its error list. Dense array growth is capped at 16M elements and throws a catchable <code>RangeError</code> past that, as does <code>new Array(n)</code>. (Commits <code>00a3638d</code>, <code>c20f24d3</code>.)</p>
+
+        <h3>2. Markup injection through the DOM serializers</h3>
+        <p>The interpreter's <code>innerHTML</code> and <code>outerHTML</code> serializers emitted text and attribute values raw. A value containing <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code> or <code>"</code>, set through <code>textContent</code> or <code>setAttribute</code>, came back out of <code>innerHTML</code> as live markup and could break out of the attribute or tag. That is an XSS-class bug for any page that round-trips user text through these properties.</p>
+        <p><strong>Fix.</strong> Text nodes are escaped for <code>&amp; &lt; &gt;</code> and attribute values for <code>&amp; &lt; &gt; " '</code>, using the same helpers as the document serializer. <code>&lt;script&gt;</code> and <code>&lt;style&gt;</code> content is still emitted literally, as the HTML serialization spec requires. Six tests reproduce the injection and check that normal markup round-trips. (Commit <code>630d22ec</code>.)</p>
+
+        <h3>3. Untrusted-file denial of service in the document viewers</h3>
+        <p>Sassy Browser opens local files as well as web pages, including medical imaging and office formats, so a crafted file is an attack surface. A 20-byte DICOM file declaring an element length of <code>0xFFFFFFFE</code> forced a 4 GB allocation before the read failed. A JPEG-Lossless frame declaring 65535 &times; 65535 &times; 4 components requested about 68 GB. The DICOM tag browser byte-sliced string values and panicked on accented characters and emoji. The spreadsheet viewer's <code>MIN</code> and <code>MAX</code> called <code>partial_cmp().unwrap()</code>, so a single <code>NaN</code> cell, typed in or imported from an .xlsx, crashed the app.</p>
+        <p><strong>Fix.</strong> Declared lengths are checked against the bytes actually remaining before anything is allocated. SOF3 dimensions go through a checked multiply with a cap. String values are truncated on a character boundary. <code>MIN</code> and <code>MAX</code> skip <code>NaN</code>. Each fix has a test that feeds the malformed input and asserts an error, not a panic or an oversized allocation. (Commit <code>f83068e3</code>.)</p>
+
+        <h3>4. Device key protection and agent policy fail-open</h3>
+        <p>The device master key signs the user's identity and derives the sync and data keys. At rest it was encrypted under a SHA-256 of the hostname, the home directory path and a fixed constant. Any local process could recompute all of those, so the encryption added no real protection.</p>
+        <p>Separately, Foreman is the policy engine that limits what MCP-connected AI agents may do inside the browser. It loaded its rules from <code>config/foreman-policy.toml</code> relative to the current working directory. When the browser was launched from anywhere other than the repository root, which covers every installed build, the file was not found and Foreman silently fell back to an empty rule set that allowed everything.</p>
+        <p><strong>Fix.</strong> The wrapping key is now derived with Argon2id from a random per-install secret, kept in the OS keyring with a restrictive-permission file fallback. Foreman resolves its policy from the install location and fails closed, denying gated actions, when the policy is missing or unreadable. (Commit <code>899bac8d</code>.)</p>
+
+        <div class="note">
+            <p><strong>Not covered here.</strong> The audit also found weaknesses in cookie handling: Set-Cookie <code>Domain</code> validation, host-only and path matching, and <code>__Host-</code>/<code>__Secure-</code> prefix enforcement. Those fixes are still in progress, and we will add them to this page once a release containing them ships.</p>
+        </div>
+
+        <h2>Lessons</h2>
+        <ul>
+            <li><strong>Byte offsets are not character offsets.</strong> Three of the twelve findings were one Rust mistake: slicing a <code>str</code> at an index computed in characters. We now ban raw slicing of page-supplied strings in the interpreter and viewers.</li>
+            <li><strong>Never allocate a size the input declares.</strong> All three file-format DoS bugs trusted a length field. Check every declared size against the data actually present, or against a hard cap, before allocating.</li>
+            <li><strong>Fail closed by default.</strong> A security policy that silently becomes allow-all when its file is missing gives no protection in exactly the deployments where nobody is watching.</li>
+            <li><strong>Verify AI findings adversarially.</strong> Running a second, independent pass that tries to disprove each high-severity finding removed false positives and corrected severities before any engineering time was spent.</li>
+        </ul>
+
+        <h2>Contact</h2>
+        <p>To report a security issue in any Sassy Consulting product, use the <a href="/contact">contact form</a> and put "Security" in the subject.</p>
+    </article>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left" data-theme-toggle>
+                &copy; 2026 <strong>Sassy Consulting LLC</strong> &mdash; Veteran-Owned, Wisconsin-Made
+            </div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/#products">Products</a>
+                <a href="/browser">Sassy Browser</a>
+                <a href="/research">Research</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

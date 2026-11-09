@@ -42,6 +42,8 @@ const NOINDEX_RE = /<meta\s+name=["']robots["'][^>]*content=["'][^"']*noindex/i;
 const RULES = [
   { match: "",                    priority: "1.0", changefreq: "weekly" },
   { match: "browser",             priority: "0.9", changefreq: "weekly" },
+  { match: "research",            priority: "0.8", changefreq: "weekly" },
+  { match: "research/",           priority: "0.8", changefreq: "monthly" },
   { match: "sassy-talk",          priority: "0.8", changefreq: "monthly" },
   { match: "winforensics",        priority: "0.8", changefreq: "monthly" },
   { match: "website-creator",     priority: "0.8", changefreq: "monthly" },
