@@ -51,12 +51,8 @@ const PRODUCTS = {
     mode: "payment",
     description: "Real-time disk activity monitor with a defrag-style cluster map",
     priceCents: 999,
-    // Priced and published in Lemon Squeezy (variant 1874036), but not
-    // sellable from here yet: the crates carry no licensing/activation code,
-    // there is no GitHub release, and no artifact under any R2 download alias.
-    // A purchase today would mint a key nothing validates and hand the buyer
-    // no binary. Flip to available:true once activation + a hosted build exist.
-    available: false
+    // Dedicated LS variant 1874036 with Generate license keys ON. The app
+    // activates via POST /v1/licenses/activate; set LS_VARIANT_SECTOR_SCOPE.
   },
   // SassyMCP — all-or-nothing as of v1.13.0. The only commercial SKU is an
   // optional supporter license (slug kept as mcp-pro for deep-link / entitlement
@@ -983,10 +979,10 @@ async function handleWebhook(request, env, corsHeaders) {
   // Sassy-Talk keys must exist in the relay license DB so the direct APK can
   // activate via /license/activate. WinForensics keys must exist in the
   // winforensics-license-api D1 (WFP- format) — the desktop app validates
-  // against that worker, not this one. SassyMCP activates against Lemon
-  // Squeezy's own license API (sassymcp/_lemonsqueezy.py), so mcp-* buyers
-  // need the LS-issued key — a SASSY- key cannot activate the app. Other
-  // products keep the legacy website key.
+  // against that worker, not this one. SassyMCP and SectorScope activate
+  // against Lemon Squeezy's own license API, so those buyers need the
+  // LS-issued key — a SASSY- key cannot activate the app. Other products
+  // keep the legacy website key.
   let licenseKey = null;
   if (product === "sassy-talk") {
     licenseKey = await issueRelayLicense(env, {
@@ -998,7 +994,7 @@ async function handleWebhook(request, env, corsHeaders) {
       email,
       note: `lemonsqueezy:${orderId || ref}`,
     });
-  } else if (product.startsWith("mcp-") && orderId) {
+  } else if ((product.startsWith("mcp-") || product === "sector-scope") && orderId) {
     licenseKey = await fetchLsLicenseKey(env, orderId);
   }
   if (!licenseKey) {
@@ -1050,6 +1046,7 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
   const downloadLines = {
     "winforensics": `Download (Windows):\n${env.SITE_URL}/download/winforensics/windows/WinForensicsPro-GUI-latest.exe?key=${keyParam}\n\nActivate: Settings > License Management > paste your key > Activate.\nUpdates: Settings > Updates — checks are gated by this same key.`,
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
+    "sector-scope": `Download (Windows):\n${env.SITE_URL}/download/sector-scope/windows/SectorScope-GUI-latest.exe?key=${keyParam}\n\nActivate: paste the UUID key from this email on the first-run screen. Console: sectorscope-tui.exe --license-key <key>`,
     "mcp-pro":      mcpActivate("2 machines you own"),
     "mcp-forensics":mcpActivate("2 machines you own"),
     "mcp-team":     mcpActivate("up to 10 machines"),
@@ -1109,6 +1106,47 @@ async function validateWinfKey(env, key) {
   }
 }
 
+// SectorScope buyers get a Lemon Squeezy UUID. Prefer the row the webhook
+// wrote into D1; if that miss (webhook race, email-only buyer), ask LS.
+async function validateSectorScopeKey(env, key) {
+  if (!key || typeof key !== "string") return false;
+  const trimmed = key.trim();
+  if (!trimmed || trimmed.startsWith("SASSY-") || trimmed.startsWith("WFP-")) return false;
+  if (env.DB) {
+    try {
+      const row = await env.DB.prepare("SELECT * FROM licenses WHERE license_key = ?").bind(trimmed).first();
+      if (row && !row.revoked) {
+        const norm = (s) => String(s || "").toLowerCase().replace(/[-_\s]/g, "");
+        if (norm(row.product) === "sectorscope") return true;
+      }
+    } catch (e) {
+      console.error("SectorScope D1 key lookup error:", e);
+    }
+  }
+  if (!env.LEMONSQUEEZY_API_KEY) return false;
+  try {
+    const resp = await fetch(`${LS_API}/licenses/validate`, {
+      method: "POST",
+      headers: { ...lsHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ license_key: trimmed }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    // LS returns { valid, error, license_key, meta, ... }. meta.variant_id
+    // lets us refuse keys from other products when the secret is set.
+    if (data?.valid !== true) return false;
+    const want = env.LS_VARIANT_SECTOR_SCOPE;
+    if (want && data?.meta?.variant_id != null && String(data.meta.variant_id) !== String(want)) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("SectorScope LS key validation error:", e);
+    return false;
+  }
+}
+
 // Compare secrets by SHA-256 digest so string-compare timing reveals nothing.
 async function secretsMatch(a, b) {
   const enc = new TextEncoder();
@@ -1134,9 +1172,9 @@ async function handleGatedUpload(request, url, env, corsHeaders) {
   }
   const key = url.searchParams.get("path") || "";
   const segments = key.split("/");
-  const UPLOAD_PREFIXES = new Set(["winforensics", "sassymcp", "website-creator"]);
+  const UPLOAD_PREFIXES = new Set(["winforensics", "sassymcp", "website-creator", "sector-scope"]);
   if (!UPLOAD_PREFIXES.has(segments[0]) || segments.length < 2 || !segments.every(isSafeSegment)) {
-    return jsonResponse({ error: "path must be <winforensics|sassymcp|website-creator>/<safe segments>" }, 400, corsHeaders);
+    return jsonResponse({ error: "path must be <winforensics|sassymcp|website-creator|sector-scope>/<safe segments>" }, 400, corsHeaders);
   }
   if (!env.GATED) return jsonResponse({ error: "GATED bucket unavailable" }, 500, corsHeaders);
   const contentType = request.headers.get("Content-Type") || "application/octet-stream";
@@ -1189,8 +1227,7 @@ async function handleVPNRecommendations(corsHeaders) {
 
 async function handleDownloadsList(env, corsHeaders) {
   return jsonResponse([
-    { product: "sassy-talk", name: "Sassy-Talk", platforms: [{ platform: "android", filename: "sassytalkie.apk", size: "15MB" }, { platform: "windows", filename: "sassy-talk-setup.msi", size: "25MB" }] },
-    { product: "sassy-brain", name: "Sassy Brain", platforms: [{ platform: "windows", filename: "SassyBrain_Installer-v0.2.1.exe", size: "92MB" }, { platform: "windows", filename: "SassyBrain_Portable-v0.2.1.exe", size: "92MB" }] }
+    { product: "sassy-talk", name: "Sassy-Talk", platforms: [{ platform: "android", filename: "sassytalkie.apk", size: "15MB" }, { platform: "windows", filename: "sassy-talk-setup.msi", size: "25MB" }] }
   ], 200, corsHeaders);
 }
 
@@ -1251,6 +1288,7 @@ async function handleDownload(path, url, env, corsHeaders) {
     sassytalk: "/sassy-talk.html",
     sassymcp:  "/store",
     winforensics: "/store",
+    "sector-scope": "/store",
   };
   const isGated = GATED_PRODUCTS[product] && platform !== "demo";
   if (isGated && product === "winforensics") {
@@ -1260,6 +1298,13 @@ async function handleDownload(path, url, env, corsHeaders) {
     // (update.json + versioned exe live under the winforensics/ prefix).
     const licenseKey = url.searchParams.get("key");
     if (!(await validateWinfKey(env, licenseKey))) {
+      return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
+    }
+  } else if (isGated && product === "sector-scope") {
+    // SectorScope keys are Lemon Squeezy UUIDs (not SASSY-). Accept the key
+    // the webhook stored in D1, or fall back to LS /v1/licenses/validate.
+    const licenseKey = url.searchParams.get("key");
+    if (!(await validateSectorScopeKey(env, licenseKey))) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
     }
   } else if (isGated) {
@@ -1551,8 +1596,8 @@ async function issueRelayLicense(env, { email, note }) {
 
 /**
  * Fetch the Lemon Squeezy-generated license key for an order. Used for
- * SassyMCP SKUs, whose variants have "Generate license keys" enabled —
- * the app's activation flow calls LS /v1/licenses/activate, so only the
+ * SassyMCP and SectorScope, whose variants have "Generate license keys"
+ * enabled — those apps activate via LS /v1/licenses/activate, so only the
  * LS-native key works. Keys are minted with the order, but give LS a
  * short grace window in case the webhook races key creation.
  */
