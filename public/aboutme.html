@@ -111,6 +111,8 @@
             text-align: center;
             padding: 10rem var(--sc-gutter, 2rem) 4rem;
             position: relative;
+            overflow: hidden;
+            overflow: clip; /* oversized ::before glow must not widen phone viewports */
         }
 
         .hero::before {

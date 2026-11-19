@@ -141,7 +141,7 @@
         .nav-dl { background: var(--sc-accent) !important; color: var(--sc-accent-ink) !important; padding: 7px 16px; border-radius: var(--sc-radius-btn, 7px); font-weight: 700 !important; font-size: 0.82rem; transition: all 0.2s; }
         .nav-dl:hover { background: var(--sc-accent-2) !important; transform: translateY(-1px); }
         .hamburger { display: none; background: none; border: none; color: var(--sc-text); font-size: 1.4rem; cursor: pointer; }
-        #donate-splash { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem var(--sc-gutter, 2rem); position: relative; overflow: hidden; }
+        #donate-splash { min-height: 0; padding-top: 6rem !important; padding-bottom: 6rem !important; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 2rem var(--sc-gutter, 2rem); position: relative; overflow: hidden; }
         #donate-splash::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 900px; height: 900px; background: radial-gradient(ellipse, color-mix(in srgb, var(--sc-accent-3) 7%, transparent) 0%, transparent 65%); pointer-events: none; }
         .splash-inner { position: relative; z-index: 1; max-width: 600px; }
         .splash-heart { font-size: 3.5rem; margin-bottom: 1.5rem; animation: heartbeat 2s ease-in-out infinite; }
@@ -150,11 +150,7 @@
         #donate-splash p { color: var(--sc-text-2); font-size: 1.1rem; margin-bottom: 2.5rem; line-height: 1.75; }
         .donate-btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 34px; border-radius: var(--sc-radius-btn, 10px); background: var(--sc-accent-3); color: var(--sc-accent-ink); font-weight: 700; font-size: 1rem; text-decoration: none; transition: all 0.25s; box-shadow: 0 0 40px color-mix(in srgb, var(--sc-accent-3) 25%, transparent); }
         .donate-btn:hover { background: #ffe082; transform: translateY(-2px); box-shadow: 0 8px 40px color-mix(in srgb, var(--sc-accent-3) 40%, transparent); }
-        .splash-skip { margin-top: 2.5rem; color: var(--sc-text-3); font-size: 0.8rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-        .splash-skip svg { opacity: 0.5; animation: bounce 1.5s ease-in-out infinite; }
-        @keyframes bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(4px); } }
-        #countdown { color: var(--sc-accent-3); font-weight: 700; }
-        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem var(--sc-gutter, 2rem) 5rem; position: relative; }
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem var(--sc-gutter, 2rem) 5rem; position: relative; overflow: hidden; overflow: clip; /* the 1100px glow must not widen phone viewports */ }
         .hero-glow { position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 1100px; height: 1100px; background: radial-gradient(ellipse, color-mix(in srgb, var(--sc-accent) 6%, transparent) 0%, color-mix(in srgb, var(--sc-hue-6) 4%, transparent) 35%, transparent 65%); pointer-events: none; }
         .hero-grid-bg { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px); background-size: 48px 48px; mask-image: radial-gradient(ellipse 80% 60% at 50% 50%, black 20%, transparent 80%); pointer-events: none; }
         .hero-content { position: relative; z-index: 1; max-width: 920px; }
@@ -283,7 +279,7 @@
         .story-block h2 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 1rem; }
         .story-block p { color: var(--sc-text-2); margin-bottom: 1rem; max-width: 700px; line-height: 1.8; font-size: 0.98rem; }
         .story-block .quiet { color: var(--sc-text-3); font-size: 0.85rem; margin-top: 1.5rem; font-style: italic; }
-        .final-cta { text-align: center; padding: 8rem var(--sc-gutter, 2rem); background: linear-gradient(180deg, var(--sc-bg) 0%, var(--sc-bg-2) 50%, var(--sc-bg) 100%); position: relative; }
+        .final-cta { text-align: center; padding: 8rem var(--sc-gutter, 2rem); background: linear-gradient(180deg, var(--sc-bg) 0%, var(--sc-bg-2) 50%, var(--sc-bg) 100%); position: relative; overflow: hidden; overflow: clip; /* 800px ::before glow */ }
         .final-cta::before { content: ''; position: absolute; top: 0; left: 50%; transform: translateX(-50%); width: 800px; height: 400px; background: radial-gradient(ellipse, color-mix(in srgb, var(--sc-accent) 6%, transparent) 0%, transparent 70%); pointer-events: none; }
         .final-cta h2 { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.03em; margin-bottom: 1rem; position: relative; }
         .final-cta .sub { font-size: 1.1rem; color: var(--sc-text-2); margin: 0 auto 2.5rem; max-width: 560px; line-height: 1.75; position: relative; }
@@ -319,27 +315,6 @@
     <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
-
-<!-- DONATE SPLASH -->
-<section id="donate-splash">
-    <div class="splash-inner">
-        <div class="splash-heart">💚</div>
-        <h2>Know someone who hates<br>using the internet?</h2>
-        <p>Send them here. Donate to the cause.<br><span style="font-size:0.95rem;opacity:0.6;">Every dollar funds a browser that protects everyone — built by a veteran, for all of us.</span></p>
-        <a href="/donate" target="_blank" rel="noopener" class="donate-btn">❤️ Donate via Lemon Squeezy</a>
-        <div class="splash-skip">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-            scrolling to browser in <span id="countdown">4</span>s
-        </div>
-    </div>
-</section>
-<script>
-(function(){
-    var c=4,el=document.getElementById('countdown');
-    var t=setInterval(function(){ c--;if(el)el.textContent=c; if(c<=0){clearInterval(t);document.getElementById('top').scrollIntoView({behavior:'smooth'});} },1000);
-    document.getElementById('donate-splash').addEventListener('click',function(e){ if(e.target.closest('a'))return; clearInterval(t); document.getElementById('top').scrollIntoView({behavior:'smooth'}); });
-})();
-</script>
 
 <!-- NAV -->
 <nav>
@@ -382,10 +357,10 @@
         </p>
         <div class="hero-actions">
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" data-sb-href="windows" class="btn btn-green btn-lg">
-                Download for Windows — v<span data-sb-version="windows">0.16.2</span>
+                <span>Download for Windows — v<span data-sb-version="windows">0.16.2</span></span>
             </a>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" data-sb-href="linux" class="btn btn-green btn-lg">
-                Download for Linux — v<span data-sb-version="linux">0.16.1</span>
+                <span>Download for Linux — v<span data-sb-version="linux">0.16.1</span></span>
             </a>
             <a href="/coming-soon" class="btn btn-outline btn-lg">See the honest build status</a>
         </div>
@@ -798,9 +773,9 @@
         <div class="sec-card"><h4>📜 Scripts stay in their box</h4><p>Website-tweaking scripts run walled off inside the browser. They can&rsquo;t reach your files or the rest of your computer.</p></div>
     </div>
     <div class="rust-block">
-        <div class="rust-big">200,424</div>
+        <div class="rust-big">322,386</div>
         <div class="rust-lbl">Lines of pure Rust. Zero C/C++ in the core.</div>
-        <p>230 code files covering everything from the file viewers to the security, networking and AI features. No stutters while it cleans up after itself, no slowly creeping memory use. This is what it looks like when a security professional builds a browser from scratch.</p>
+        <p>291 code files covering everything from the file viewers to the security, networking and AI features. No stutters while it cleans up after itself, no slowly creeping memory use. This is what it looks like when a security professional builds a browser from scratch.</p>
         <div class="rust-badge">🦀 Built in Rust</div>
     </div>
     <div style="margin-top: 2rem; background: var(--sc-surface); border: 1px solid var(--sc-border); border-radius: var(--sc-radius-card, 16px); padding: 1.75rem 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.25rem;">
@@ -878,11 +853,21 @@
         <div class="dl-card">
             <div class="dl-os">📦</div>
             <h4>Source Code</h4>
-            <p>200,424 lines of code across 230 files. Private for now.</p>
+            <p>322,386 lines of code across 291 files. Private for now.</p>
             <a href="/coming-soon">See build status &amp; metrics</a>
         </div>
     </div>
 </div>
+
+<!-- DONATE: kept, but after the product instead of in front of it (no auto-scroll) -->
+<section id="donate-splash">
+    <div class="splash-inner">
+        <div class="splash-heart">💚</div>
+        <h2>Know someone who hates<br>using the internet?</h2>
+        <p>Send them here. Donate to the cause.<br><span style="font-size:0.95rem;opacity:0.6;">Every dollar funds a browser that protects everyone — built by a veteran, for all of us.</span></p>
+        <a href="/donate" target="_blank" rel="noopener" class="donate-btn">❤️ Donate via Lemon Squeezy</a>
+    </div>
+</section>
 
 <!-- FINAL CTA -->
 <section class="final-cta">
