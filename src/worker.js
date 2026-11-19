@@ -352,7 +352,7 @@ export default {
       }
 
       if (path.startsWith("/download/")) {
-        return await handleDownload(path, url, env, corsHeaders);
+        return await handleDownload(path, url, env, corsHeaders, request);
       }
 
       if (path.startsWith("/scrub/")) {
@@ -1220,7 +1220,11 @@ async function validateSectorScopeKey(env, key) {
       console.error("SectorScope D1 key lookup error:", e);
     }
   }
-  if (!env.LEMONSQUEEZY_API_KEY) return false;
+  // The LS fallback can only prove "this is a SectorScope key" by variant, so
+  // without the variant secret it fails closed: any LS-issued key (SassyMCP,
+  // future SKUs) is also "valid" to LS. D1 rows from the webhook still work.
+  const want = env.LS_VARIANT_SECTOR_SCOPE;
+  if (!env.LEMONSQUEEZY_API_KEY || !want) return false;
   try {
     const resp = await fetch(`${LS_API}/licenses/validate`, {
       method: "POST",
@@ -1230,14 +1234,10 @@ async function validateSectorScopeKey(env, key) {
     });
     if (!resp.ok) return false;
     const data = await resp.json();
-    // LS returns { valid, error, license_key, meta, ... }. meta.variant_id
-    // lets us refuse keys from other products when the secret is set.
+    // LS returns { valid, error, license_key, meta, ... }. Require the key's
+    // variant to be SectorScope's; a missing variant_id is not proof.
     if (data?.valid !== true) return false;
-    const want = env.LS_VARIANT_SECTOR_SCOPE;
-    if (want && data?.meta?.variant_id != null && String(data.meta.variant_id) !== String(want)) {
-      return false;
-    }
-    return true;
+    return data?.meta?.variant_id != null && String(data.meta.variant_id) === String(want);
   } catch (e) {
     console.error("SectorScope LS key validation error:", e);
     return false;
@@ -1366,7 +1366,7 @@ async function handlePrivacy(path, env) {
   });
 }
 
-async function handleDownload(path, url, env, corsHeaders) {
+async function handleDownload(path, url, env, corsHeaders, request) {
   const parts = path.replace("/download/", "").split("/");
   if (parts.length < 3) return new Response("Not found", { status: 404 });
   const [product, platform, filename] = parts;
@@ -1400,6 +1400,12 @@ async function handleDownload(path, url, env, corsHeaders) {
   } else if (isGated && product === "sector-scope") {
     // SectorScope keys are Lemon Squeezy UUIDs (not SASSY-). Accept the key
     // the webhook stored in D1, or fall back to LS /v1/licenses/validate.
+    // Rate-limited like /api/validate: each guess would otherwise cost a D1
+    // query plus an LS API call, and LS's quota is shared with real buyers.
+    const ip = (request && request.headers.get("CF-Connecting-IP")) || "unknown";
+    if (isRateLimited(`download-key:${ip}`)) {
+      return jsonResponse({ error: "Too many attempts. Try again in a minute." }, 429, corsHeaders);
+    }
     const licenseKey = url.searchParams.get("key");
     if (!(await validateSectorScopeKey(env, licenseKey))) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);

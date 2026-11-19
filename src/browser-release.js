@@ -29,10 +29,12 @@ const CHECKSUMS_KEY = "sassy-browser-SHA256SUMS.txt";
 const PUBLIC_BASE = "https://sassycreates.sassyconsultingllc.com/";
 const DEFAULT_REPO = "sassyconsultingllc/ACE";
 const CACHE_TTL = 300;
-const CACHE_KEY = "https://sassyconsultingllc.com/__internal/browser-release/v2";
+const FAIL_TTL = 60;          // back-off after a failed lookup
+const GITHUB_TIMEOUT_MS = 4000;
+const CACHE_KEY = "https://sassyconsultingllc.com/__internal/browser-release/v3";
 const SEMVER = /^\d+\.\d+\.\d+$/;
 
-let memo = null; // { at, data }
+const memo = {}; // variant -> { at, data }
 
 export function cmpSemver(a, b) {
   const pa = String(a).split(".").map(Number), pb = String(b).split(".").map(Number);
@@ -145,32 +147,35 @@ async function gh(env, path, accept = "application/vnd.github+json") {
       "User-Agent": "sassyconsultingllc-worker",
     },
     cf: { cacheTtl: 0 },
+    signal: AbortSignal.timeout(GITHUB_TIMEOUT_MS),
   });
   if (!res.ok) throw new Error(`GitHub ${path.split("?")[0]} -> ${res.status}`);
   return accept.endsWith("raw") ? res.text() : res.json();
 }
 
+// Each call stands alone: a repo with no published release (404 on
+// releases/latest) still reports its main HEAD and Cargo version.
 async function probeRepo(env) {
   if (!env.GITHUB_TOKEN) return { available: false, reason: "GITHUB_TOKEN secret not set" };
   const repo = env.BROWSER_REPO || DEFAULT_REPO;
-  try {
-    const [rel, head, cargo] = await Promise.all([
-      gh(env, `/repos/${repo}/releases/latest`),
-      gh(env, `/repos/${repo}/commits/main`),
-      gh(env, `/repos/${repo}/contents/Cargo.toml?ref=main`, "application/vnd.github.raw"),
-    ]);
-    const cargoVersion = ((cargo.match(/^\s*version\s*=\s*"([^"]+)"/m) || [])[1]) || null;
-    return {
-      available: true,
-      latest_release: bare(rel.tag_name),
-      released_at: rel.published_at || null,
-      main_sha: head.sha ? head.sha.slice(0, 8) : null,
-      main_committed_at: head.commit && head.commit.committer ? head.commit.committer.date : null,
-      main_cargo_version: cargoVersion,
-    };
-  } catch (e) {
-    return { available: false, reason: String(e.message || e) };
-  }
+  const [rel, head, cargo] = await Promise.allSettled([
+    gh(env, `/repos/${repo}/releases/latest`),
+    gh(env, `/repos/${repo}/commits/main`),
+    gh(env, `/repos/${repo}/contents/Cargo.toml?ref=main`, "application/vnd.github.raw"),
+  ]);
+  const ok = (r) => (r.status === "fulfilled" ? r.value : null);
+  const failures = [rel, head, cargo].filter((r) => r.status === "rejected").map((r) => String((r.reason && r.reason.message) || r.reason));
+  const R = ok(rel), H = ok(head), C = ok(cargo);
+  const out = {
+    available: !!(R || H || C),
+    latest_release: R ? bare(R.tag_name) : null,
+    released_at: R ? R.published_at || null : null,
+    main_sha: H && H.sha ? H.sha.slice(0, 8) : null,
+    main_committed_at: H && H.commit && H.commit.committer ? H.commit.committer.date : null,
+    main_cargo_version: C ? ((C.match(/^\s*version\s*=\s*"([^"]+)"/m) || [])[1]) || null : null,
+  };
+  if (failures.length) out.reason = failures.join("; ");
+  return out;
 }
 
 // ---- Assembly ---------------------------------------------------------------
@@ -215,14 +220,16 @@ async function checksumState(bucket, builds) {
   return { href: PUBLIC_BASE + CHECKSUMS_KEY, uploaded_at: obj.uploaded ? obj.uploaded.toISOString() : null, missing };
 }
 
-async function build(env) {
+// withRepo=false is the page-rendering path: it never waits on GitHub, so a
+// slow or failing API can't hold up HTML. Only /api/browser/release probes it.
+async function build(env, withRepo) {
   const bucket = env.DOWNLOADS;
   if (!bucket) return null;
   const siblings = await listVersioned(bucket);
   const [windows, linux, repo] = await Promise.all([
     resolvePlatform(bucket, "windows", PLATFORMS.windows, siblings),
     resolvePlatform(bucket, "linux", PLATFORMS.linux, siblings),
-    probeRepo(env),
+    withRepo ? probeRepo(env) : Promise.resolve({ available: false, reason: "not probed on the page path" }),
   ]);
   let checksums = { href: null, uploaded_at: null, missing: [] };
   try { checksums = await checksumState(bucket, { windows, linux }); } catch (e) { /* soft */ }
@@ -240,26 +247,30 @@ async function build(env) {
 }
 
 // Cached release state. Never throws; returns null if nothing could be read.
-export async function getBrowserRelease(env, ctx, { fresh = false } = {}) {
+// Two cache entries: builds only (pages) and builds + repo (the API). A failed
+// lookup is remembered for FAIL_TTL so an R2 outage doesn't re-run the whole
+// probe on every page view.
+export async function getBrowserRelease(env, ctx, { withRepo = false } = {}) {
+  const variant = withRepo ? "full" : "builds";
   const now = Date.now();
-  if (!fresh && memo && now - memo.at < CACHE_TTL * 1000) return memo.data;
+  const m = memo[variant];
+  if (m && now - m.at < (m.data ? CACHE_TTL : FAIL_TTL) * 1000) return m.data;
+  const key = `${CACHE_KEY}/${variant}`;
   const cache = typeof caches !== "undefined" ? caches.default : null;
-  if (!fresh && cache) {
+  if (cache) {
     try {
-      const hit = await cache.match(CACHE_KEY);
-      if (hit) { const data = await hit.json(); memo = { at: now, data }; return data; }
+      const hit = await cache.match(key);
+      if (hit) { const data = await hit.json(); memo[variant] = { at: now, data }; return data; }
     } catch (e) { /* cache miss */ }
   }
   let data = null;
-  try { data = await build(env); } catch (e) { data = null; }
-  if (data) {
-    memo = { at: now, data };
-    if (cache) {
-      const put = cache.put(CACHE_KEY, new Response(JSON.stringify(data), {
-        headers: { "Content-Type": "application/json", "Cache-Control": `public, max-age=${CACHE_TTL}` },
-      })).catch(() => {});
-      if (ctx && ctx.waitUntil) ctx.waitUntil(put);
-    }
+  try { data = await build(env, withRepo); } catch (e) { data = null; }
+  memo[variant] = { at: now, data };
+  if (data && cache) {
+    const put = cache.put(key, new Response(JSON.stringify(data), {
+      headers: { "Content-Type": "application/json", "Cache-Control": `public, max-age=${CACHE_TTL}` },
+    })).catch(() => {});
+    if (ctx && ctx.waitUntil) ctx.waitUntil(put);
   }
   return data;
 }
@@ -331,7 +342,7 @@ export function rewriteBrowserRelease(response, env, ctx) {
 // Public and cache-backed: at most one R2 + GitHub probe per CACHE_TTL per
 // colo, whatever the request rate. There is deliberately no public bypass.
 export async function handleBrowserRelease(request, env, ctx, headers) {
-  const data = await getBrowserRelease(env, ctx);
+  const data = await getBrowserRelease(env, ctx, { withRepo: true });
   return new Response(JSON.stringify(data || { error: "release state unavailable" }, null, 2), {
     status: data ? 200 : 503,
     headers: { ...headers, "Content-Type": "application/json", "Cache-Control": `public, max-age=${data ? 60 : 0}` },
