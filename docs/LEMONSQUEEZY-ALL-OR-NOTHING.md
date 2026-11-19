@@ -5,7 +5,7 @@
 -->
 # Lemon Squeezy — all-or-nothing MCP (live)
 
-Last updated: 2026-07-28
+Last updated: 2026-10-06
 
 ## Commercial truth (do not re-fragment)
 
@@ -14,17 +14,17 @@ Last updated: 2026-07-28
 - **CuratedMCP** (curatedmcp.com) is an external directory listing, not a product brand. List as **Free**; do not use their paid Stripe rev-share tiers.
 - Do **not** create LS products named Forensics or Team.
 
-## Live wiring (2026-07-28)
+## Live wiring (2026-10-06)
 
 | Store slug | Checkout | Notes |
 |---|---|---|
-| `mcp-pro` | **200** via dedicated variant **`1753676`** | LS product **SassyMCP** $25; Generate license keys ON; activation limit 2; unlimited length. `LS_VARIANT_MCP_PRO=1753676`. `LS_FALLBACK_VARIANT` **deleted**. |
-| `sassy-talk` | fallback OK while dedicated variant unset | Relay mints keys |
-| `winforensics` | fallback OK while dedicated variant unset | WFP- keys from winforensics-license-api |
+| `mcp-pro` | **200** via dedicated variant **`1753676`** | LS product **SassyMCP** $25; Generate license keys ON; activation limit 2; unlimited length. `LS_VARIANT_MCP_PRO=1753676`. `LS_FALLBACK_VARIANT` deleted. |
+| `sassy-talk` | **200** via `LS_VARIANT_SASSY_TALK` | License keys OFF; relay mints keys |
+| `winforensics` | **200** via `LS_VARIANT_WINFORENSICS` | License keys OFF; winforensics-license-api mints WFP- keys |
 
 SassyMCP `DEFAULT_VARIANT_MAP` / `~/.sassymcp/lemonsqueezy.json` map `1753676` → `{tier:"pro",addons:[]}`.
 
-**Cleanup (optional):** duplicate pending LS variant `1958269` (same product/settings) — API cannot DELETE; remove in LS dashboard if desired. Product name in LS UI is still **SassyMCP** (API cannot rename to “Supporter”).
+Duplicate pending variant `1958269` was **deleted** in the LS dashboard (2026-10-07). Product name in LS UI is still **SassyMCP** (API cannot rename to “Supporter”).
 
 ## CuratedMCP
 
