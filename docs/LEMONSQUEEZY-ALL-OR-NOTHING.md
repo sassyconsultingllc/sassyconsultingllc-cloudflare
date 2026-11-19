@@ -47,7 +47,7 @@ Secrets present (2026-09-14 `wrangler secret list`): `LEMONSQUEEZY_API_KEY`, `LE
 
 SassyMCP `DEFAULT_VARIANT_MAP` / `~/.sassymcp/lemonsqueezy.json` map `1753676` → `{tier:"pro",addons:[]}`.
 
-**Cleanup (optional):** duplicate pending LS variant `1958269` (same product/settings). The API can't DELETE it; remove it in the LS dashboard if desired. The product name in the LS UI is still **SassyMCP** (the API can't rename it to "Supporter").
+Duplicate pending variant `1958269` was **deleted** in the LS dashboard (2026-10-07). Product name in LS UI is still **SassyMCP** (API cannot rename to “Supporter”).
 
 ## Deploys
 

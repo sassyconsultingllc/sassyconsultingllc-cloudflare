@@ -80,6 +80,7 @@
         .btn-secondary { background: transparent; color: var(--sc-text); border: 1px solid var(--sc-border); margin-left: 1rem; }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
     <div class="container">
@@ -169,8 +170,8 @@
                     keyEl.style.fontSize = '1rem';
                     keyEl.style.wordBreak = 'normal';
                     keyEl.innerHTML = 'Your payment is confirmed. Your license key has been emailed to you.<br>' +
-                        'It can take a minute to arrive — <a href="javascript:location.reload()" style="color:var(--accent-primary)">refresh this page</a> ' +
-                        'or check your inbox (and spam). Still stuck? <a href="/contact" style="color:var(--accent-primary)">contact us</a>.';
+                        'It can take a minute to arrive — <a href="javascript:location.reload()" style="color:var(--sc-accent)">refresh this page</a> ' +
+                        'or check your inbox (and spam). Still stuck? <a href="/contact" style="color:var(--sc-accent)">contact us</a>.';
                     document.querySelector('.license-box .btn-primary').style.display = 'none';
                 }
             })
@@ -181,8 +182,8 @@
                     keyEl.style.fontSize = '1rem';
                     keyEl.style.wordBreak = 'normal';
                     keyEl.innerHTML = 'We could not load your key here, but your purchase is complete and the key was emailed to you.<br>' +
-                        '<a href="javascript:location.reload()" style="color:var(--accent-primary)">Try again</a> or ' +
-                        '<a href="/contact" style="color:var(--accent-primary)">contact us</a>.';
+                        '<a href="javascript:location.reload()" style="color:var(--sc-accent)">Try again</a> or ' +
+                        '<a href="/contact" style="color:var(--sc-accent)">contact us</a>.';
                     document.querySelector('.license-box .btn-primary').style.display = 'none';
                 }
             });
@@ -197,7 +198,7 @@
             keyEl.style.fontSize = '1rem';
             keyEl.style.wordBreak = 'normal';
             keyEl.innerHTML = 'Your license key was emailed to you. Check your inbox (and spam).<br>' +
-                'Lost it? <a href="/contact" style="color:var(--accent-primary)">Contact us</a> and we\'ll resend it.';
+                'Lost it? <a href="/contact" style="color:var(--sc-accent)">Contact us</a> and we\'ll resend it.';
             document.querySelector('.license-box .btn-primary').style.display = 'none';
         }
 

@@ -3,100 +3,63 @@
    Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
    CodeMark: SCLLC1-Projects-NWFPCEXXEU67
 -->
-<!--
-   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
-   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
--->
 # Pricing & checkout status
 
-Last verified: 2026-08-18 (live probes against production). Unchanged since
-2026-07-31 — `sassy-talk` and `winforensics` have now been unbuyable by card for
-**18 days**. Everything below still describes the live state.
+Last verified: 2026-10-07 (live probes against production + Lemon Squeezy API).
 
 This is the single place that records **what is priced, what can actually be
 bought today, and what it takes to close the gap.** Keep it in sync with
-`PRODUCTS` in `src/worker.js`, the `CATALOG` map in `public/store.html`, the
-`UNWIRED` list in `public/checkout.js`, and the price table on `/store`.
+`PRODUCTS` in `src/worker.js`, the storefront on `/store`, and the Lemon
+Squeezy dashboard for store **Sassy Consulting LLC Apps** (store id `377151`).
 
 ## Current state
 
 | Slug | Price | LS variant | `/api/checkout` today | Site behaviour |
 |---|---|---|---|---|
-| `mcp-pro` | $25 one-time | `1753676` via `LS_VARIANT_MCP_PRO` | **200** — works | Live buy button |
-| `sassy-talk` | $3.99 one-time | none | **503** | Routes to `/contact` |
-| `winforensics` | $9.99 one-time | none | **503** | Routes to `/contact` |
-| `sector-scope` | $9.99 when it ships | `1874036` (published, unused) | **409** (`available:false`) | "Not on sale yet" |
+| `mcp-pro` | $25 one-time | `1753676` via `LS_VARIANT_MCP_PRO` (published; keys ON, 2 seats) | **200** | Live buy button |
+| `sassy-talk` | $3.99 one-time | via `LS_VARIANT_SASSY_TALK` (keys OFF; relay mints) | **200** | Live buy button |
+| `winforensics` | $29 Home one-time (`winforensics-tech`: $149 Technician) | via `LS_VARIANT_WINFORENSICS` (keys OFF; WFP- API mints) | **200** | Live buy button |
+| `sector-scope` | $9.99 one-time | `1874036` via `LS_VARIANT_SECTOR_SCOPE` (keys ON, 2 seats, unlimited length) | **200** | Live buy button |
 | `website-creator` | $2 when it ships | n/a | **409** (`available:false`) | "Not on sale yet" |
 | `mcp-forensics`, `mcp-team` | retired | n/a | **409** | Not shown |
 
-Everything else we ship is free: SassyMCP itself (all 274 tools), Sassy Browser
-(donation-funded), Sassy Brain, Foodie Finder, Rebel Tuner.
+Everything else we ship is free: SassyMCP itself (all tools unlocked), Sassy
+Browser (donation-funded), Sassy Brain, Foodie Finder (Play Store), Rebel Tuner.
 
-## Why sassy-talk and winforensics 503
+## Lemon Squeezy hygiene (2026-10-06)
 
-`handleCheckout` resolves a variant in this order:
+| Item | Status |
+|---|---|
+| Webhook `https://sassyconsultingllc.com/api/webhook` | Live, `order_created` + `subscription_created`, not test mode |
+| Donate (`/donate` → Donation through website) | Pay-what-you-want, **min $1**, suggested $5 |
+| Foodie Finder LS product | **Draft** — public buy link 404s (Play Store app is free) |
+| SassyMCP duplicate variant `1958269` | **Deleted** in LS dashboard (2026-10-07). Only published `1753676` remains. |
+| Sector Scope LS product | Still published — site refuses purchase until a build + activation exist |
 
-1. `LS_VARIANT_<PRODUCT>` secret, else
-2. `LS_FALLBACK_VARIANT` + `custom_price` when `lsFallbackOk` is set, else
-3. 503 with the "briefly offline … email us" message.
+`LS_FALLBACK_VARIANT` is not set. Dedicated `LS_VARIANT_*` secrets cover the
+three live SKUs.
 
-`LS_FALLBACK_VARIANT` was **deleted** when `mcp-pro` got its own dedicated
-variant (see `LEMONSQUEEZY-ALL-OR-NOTHING.md`), and neither
-`LS_VARIANT_SASSY_TALK` nor `LS_VARIANT_WINFORENSICS` was ever set. So both SKUs
-fall straight through to step 3. `wrangler secret list` confirms only
-`LS_VARIANT_MCP_PRO` exists.
+## Wiring a new variant
 
-Note that **license delivery for both of these does not depend on Lemon Squeezy
-at all** — Sassy-Talk keys are minted by the PTT relay and WinForensics keys by
-`winforensics-license-api`. The only thing missing is a variant to charge against.
-
-## What can and cannot be automated
-
-**Variant creation cannot.** The Lemon Squeezy REST API has POST endpoints for
-customers, discounts, checkouts, webhooks and usage records only. Products,
-variants and prices are read-only — confirmed against the live API reference on
-2026-08-18. The feature request for it
-([nolt #279](https://lemonsqueezy.nolt.io/279)) is three years old with no
-official response. Creating the product is dashboard work, roughly five minutes
-per SKU, and there is no supported way around it.
-
-**Everything after that is automated.** `scripts/wire-variant.ps1` takes the ID
-the dashboard hands you and does the rest:
+Lemon Squeezy's REST API cannot create or update products/variants/prices
+(GET/HEAD only). Create the product in the dashboard, then:
 
 ```powershell
-.\scripts\wire-variant.ps1 -Product winforensics -VariantId <id>
-.\scripts\wire-variant.ps1 -Product sassy-talk   -VariantId <id>
+.\scripts\wire-variant.ps1 -Product <slug> -VariantId <id>
 ```
 
-It validates the variant against the LS API (published? right price? minting
-license keys we don't want?), sets `LS_VARIANT_<PRODUCT>`, flips the schema.org
-availability on `/store`, deploys, then probes production and prints a live
-checkout URL. Turn **Generate license keys OFF** on both new variants — relay
-and `winforensics-license-api` mint the real keys, and an LS key on top of that
-is a second, useless key in the buyer's inbox.
+Turn **Generate license keys OFF** on `sassy-talk` and `winforensics` — relay
+and `winforensics-license-api` mint the real keys. Keep keys **ON** for
+`mcp-pro` (SassyMCP activates against Lemon Squeezy's license API).
 
-## The site no longer needs reverting
+`scripts/finish-lemonsqueezy.ps1` prefers a **published** variant when mapping
+products (guards against re-pointing at a pending duplicate if one appears again).
 
-There used to be three hand edits to undo "the same day" a variant was wired.
-That step is deleted, and it is why this page sat stale for 18 days while two
-shipping products pointed at a contact form.
+## Storefront reconciliation
 
-`GET /api/catalog` now derives purchasability from the same variant resolution
-`/api/checkout` performs. `public/store.html` and `public/checkout.js` read it at
-load and reconcile themselves: buy button and no notice when a SKU is sellable,
-`/contact` route and the honest notice when it is not. Set a secret, deploy, and
-the storefront corrects itself. There is no longer a window where the site can
-claim something the worker will refuse.
-
-The markup ships in the honest "request a link" state, so a failed `/api/catalog`
-fetch degrades to truthful copy rather than to a buy button that 503s.
-
-**Fallback option, still available.** `npx wrangler secret put LS_FALLBACK_VARIANT`
-set to `1753676` turns every `lsFallbackOk` SKU on at once via `custom_price`.
-One command, no dashboard. Downside is unchanged: the underlying LS product is
-still "SassyMCP" and that variant generates license keys, so buyers get an unused
-key alongside their real one. Reasonable as a stopgap for a day, not as the
-permanent answer.
+`GET /api/catalog` derives purchasability from the same variant resolution
+`/api/checkout` performs. The storefront reads it at load: buy button when a
+SKU is sellable, honest offline/contact copy when it is not.
 
 Re-probe any time:
 

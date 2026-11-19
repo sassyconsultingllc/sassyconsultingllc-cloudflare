@@ -115,6 +115,7 @@
         .copyright { text-align: center; margin-top: 1rem; color: var(--sc-text-3); font-size: 0.8rem; }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
     <div class="container">
@@ -162,7 +163,7 @@
 
         var notice = document.getElementById('product-notice');
         notice.innerHTML = '<strong>' + p.name + ' &mdash; ' + p.price + ' one-time.</strong><br>' +
-            'Card checkout is temporarily offline while payment wiring is rebuilt. Send this and we&rsquo;ll reply with a direct checkout link, usually the same day.';
+            'You can <a href="/store?buy=' + encodeURIComponent(slug) + '">buy it directly by card</a> right now, or send this and we&rsquo;ll reply with a direct checkout link.';
         notice.style.display = 'block';
 
         var msg = document.getElementById('message');

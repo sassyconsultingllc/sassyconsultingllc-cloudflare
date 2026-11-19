@@ -77,6 +77,7 @@ Write-Step "Validating variant $VariantId against the Lemon Squeezy API"
 # Key comes from the environment or .env — never echoed, never passed on a
 # command line where it would land in the shell history or process table.
 $lsKey = $env:LEMONSQUEEZY_API_KEY
+if (-not $lsKey) { $lsKey = $env:LEMON_SQUEEZY_API_KEY }
 if (-not $lsKey -and (Test-Path '.env')) {
     $line = Select-String -Path '.env' -Pattern '^\s*LEMONSQUEEZY_API_KEY\s*=' -ErrorAction SilentlyContinue |
             Select-Object -First 1
@@ -111,6 +112,10 @@ if (-not $lsKey) {
     if ($a.has_license_keys -eq $true -and $Product -in @('sassy-talk', 'winforensics')) {
         Write-Warn2 "This variant generates LS license keys, but $Product keys are minted elsewhere."
         Write-Warn2 "Buyers will receive two keys, one of which activates nothing. Turn 'Generate license keys' OFF in the LS dashboard."
+    }
+    if ($a.has_license_keys -ne $true -and $Product -in @('mcp-pro', 'sector-scope')) {
+        Write-Warn2 "This variant does NOT generate LS license keys, but $Product activates against the LS license API."
+        Write-Warn2 "Turn 'Generate license keys' ON in the LS dashboard or buyers cannot activate."
     }
 
     if ($null -ne $a.price -and $a.price -ne 0) {

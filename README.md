@@ -75,6 +75,7 @@ wrangler secret put LEMONSQUEEZY_DONATE_URL          # full URL e.g. https://sas
 wrangler secret put LS_VARIANT_SASSY_TALK
 wrangler secret put LS_VARIANT_WINFORENSICS
 wrangler secret put LS_VARIANT_WEBSITE_CREATOR
+wrangler secret put LS_VARIANT_SECTOR_SCOPE     # 1874036; Generate license keys ON
 wrangler secret put LS_VARIANT_MCP_PRO          # one-time; catalog moved off subscriptions
 wrangler secret put LS_VARIANT_MCP_FORENSICS
 wrangler secret put LS_VARIANT_MCP_TEAM
@@ -126,8 +127,8 @@ actually be bought today.
 
 - **SassyMCP Supporter** (`mcp-pro`): $25 — optional, unlocks nothing
 - **Sassy-Talk**: $3.99 — encrypted walkie-talkie (Android)
-- **WinForensics-Pro**: $9.99 — digital forensics toolkit (Windows)
-- **SectorScope**: $9.99 — disk activity monitor (not on sale yet)
+- **WinForensics-Pro**: $29 Home / $149 Technician — digital forensics toolkit (Windows)
+- **SectorScope**: $9.99 — disk activity monitor (Windows; LS license activate)
 - **Website Creator**: $2 — AI WordPress builder (not on sale yet)
 
 ## License Key Format

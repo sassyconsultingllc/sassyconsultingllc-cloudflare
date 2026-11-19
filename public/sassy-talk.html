@@ -148,6 +148,8 @@
             text-align: center;
             padding: 8rem var(--sc-gutter, 2rem) 4rem;
             position: relative;
+            overflow: hidden;
+            overflow: clip; /* oversized ::before glow must not widen phone viewports */
         }
 
         .hero::before {
@@ -424,6 +426,8 @@
             text-align: center;
             padding: 8rem var(--sc-gutter, 2rem);
             position: relative;
+            overflow: hidden;
+            overflow: clip; /* wide ::before glow */
         }
 
         .cta::before {
@@ -499,6 +503,7 @@
         }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
     <nav>
@@ -517,13 +522,13 @@
 
     <section class="hero">
         <h1>
-            Encrypted voice chat.<br>
-            <span class="gradient">No strings attached.</span>
+            A private walkie-talkie.<br>
+            <span class="gradient">Right on your phone.</span>
         </h1>
         
         <p class="hero-sub">
-            Military-grade AES-256-GCM encryption across WiFi, Bluetooth and cellular.
-            No accounts, no data collection. Just secure communication.
+            Hold the button, talk, let go. Sassy-Talk works over WiFi, Bluetooth or your cell signal,
+            and scrambles every word so only your group can hear it. No account to make, and we don&rsquo;t collect anything about you.
         </p>
         
         <div class="hero-cta">
@@ -539,13 +544,13 @@
         
         <div class="price-hero">
             <div class="price">$3.99</div>
-            <div class="price-sub">One-time purchase. Lifetime license. Up to 3 devices.<br><span style="opacity:0.75;font-size:0.92em">The Android app is also free to install on Google Play with an in-app unlock.</span></div>
+            <div class="price-sub">Pay once, keep it forever. Use it on up to 3 phones.<br><span style="opacity:0.75;font-size:0.92em">You can also install it free from Google Play and unlock it inside the app.</span></div>
         </div>
         
         <div class="hero-stats">
             <div class="stat">
-                <div class="stat-value">AES-256</div>
-                <div class="stat-label">Encryption</div>
+                <div class="stat-value">Scrambled</div>
+                <div class="stat-label">Every word</div>
             </div>
             <div class="stat">
                 <div class="stat-value">99</div>
@@ -553,7 +558,7 @@
             </div>
             <div class="stat">
                 <div class="stat-value">3</div>
-                <div class="stat-label">Transports</div>
+                <div class="stat-label">Ways to connect</div>
             </div>
             <div class="stat">
                 <div class="stat-value">0</div>
@@ -565,38 +570,38 @@
     <section id="features">
         <span class="section-label">Features</span>
         <h2 class="section-title">Everything you need, nothing you don't</h2>
-        <p class="section-desc">Built for teams that need secure, local communication without the complexity.</p>
+        <p class="section-desc">For families, crews, hunting parties, event staff &mdash; anyone who wants to talk privately without fiddling with settings.</p>
         
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">ENC</div>
-                <h3>AES-256-GCM Encryption</h3>
-                <p>Military-grade encryption for all voice transmissions. Your conversations stay private, even on shared networks.</p>
+                <h3>Nobody can listen in</h3>
+                <p>Your voice is scrambled before it leaves your phone and only unscrambled on your group&rsquo;s phones &mdash; even on public WiFi. Uses AES-256, the same standard banks and governments rely on.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">LAN</div>
-                <h3>Three Ways to Stay Connected</h3>
-                <p>WiFi multicast when you share a network, Bluetooth when you don&rsquo;t, and cellular through our Cloudflare relay when you&rsquo;re apart. On a LAN or over Bluetooth nothing leaves the room; the relay only carries traffic it cannot read.</p>
+                <h3>Three ways to stay connected</h3>
+                <p>Same WiFi? It talks over that. No WiFi? Bluetooth. Miles apart? Your cell signal, passed through our server. On WiFi or Bluetooth nothing leaves the room, and even when it goes through our server, we can&rsquo;t understand a word of it.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">CH</div>
-                <h3>99 Encrypted Channels</h3>
-                <p>Create separate encrypted channels for different teams. Each channel has its own encryption key.</p>
+                <h3>99 private channels</h3>
+                <p>Give each group its own channel &mdash; family on one, work crew on another. Each channel has its own lock, so one group can&rsquo;t hear another.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">0</div>
-                <h3>Zero Data Collection</h3>
-                <p>No accounts, no tracking, no analytics. Keys are exchanged device-to-device, so even when a call is relayed over cellular we are passing ciphertext we have no way to open.</p>
+                <h3>We collect nothing</h3>
+                <p>No account, no tracking, no usage stats. The keys that unlock your conversations are swapped directly between phones, so we never have them &mdash; and couldn&rsquo;t listen in even if we wanted to.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">KEY</div>
-                <h3>ECDH Key Exchange</h3>
-                <p>Secure key exchange using X25519 elliptic curve. Same algorithm used by Signal, WhatsApp, and WireGuard.</p>
+                <h3>Pair by scanning a code</h3>
+                <p>Phones join a channel by scanning a QR code, which hands over the key safely. Under the hood it uses the same method (X25519) as Signal and WhatsApp.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">PTT</div>
-                <h3>Push-to-Talk</h3>
-                <p>Simple, familiar interface. Hold to talk, release to listen. Works exactly like a traditional walkie-talkie.</p>
+                <h3>Push to talk</h3>
+                <p>Hold to talk, let go to listen. If you&rsquo;ve ever used a walkie-talkie, you already know how it works.</p>
             </div>
         </div>
     </section>
@@ -604,18 +609,18 @@
     <section class="specs-section" id="specs">
         <div class="specs-container">
             <span class="section-label">Technical Specifications</span>
-            <h2 class="section-title">Built with security-first engineering</h2>
+            <h2 class="section-title">The details, for the curious</h2>
             
             <div class="table-wrapper" style="margin-top: 2rem;">
                 <table>
                     <tbody>
-                        <tr><td>Encryption</td><td>AES-256-GCM (Galois/Counter Mode)</td></tr>
-                        <tr><td>Key Exchange</td><td>QR-based pre-shared key + ECDH X25519</td></tr>
-                        <tr><td>Audio Codec</td><td>IMA ADPCM (4:1 compression, low latency)</td></tr>
-                        <tr><td>Network</td><td>WiFi multicast (LAN) · Bluetooth · cellular via Cloudflare relay</td></tr>
-                        <tr><td>Language</td><td>Rust (memory-safe)</td></tr>
-                        <tr><td>Platforms</td><td>Android 8.0+ (shipping). Windows client still in development &mdash; no build released.</td></tr>
-                        <tr><td>Install Size</td><td>~18 MB (Android APK)</td></tr>
+                        <tr><td>Scrambling (encryption)</td><td>AES-256-GCM &mdash; the standard banks and governments use</td></tr>
+                        <tr><td>How phones share keys</td><td>Scan a QR code; secured with X25519 (as used by Signal)</td></tr>
+                        <tr><td>Audio</td><td>Compressed 4-to-1 for almost no delay (IMA ADPCM)</td></tr>
+                        <tr><td>Connects over</td><td>WiFi · Bluetooth · cell signal (through our Cloudflare server)</td></tr>
+                        <tr><td>Written in</td><td>Rust, a language that blocks many common security bugs</td></tr>
+                        <tr><td>Works on</td><td>Android 8 or newer. Windows version still being built &mdash; not out yet.</td></tr>
+                        <tr><td>Download size</td><td>About 18 MB</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -624,18 +629,16 @@
 
     <section id="download">
         <span class="section-label">Download</span>
-        <h2 class="section-title" style="text-align: center;">Get Sassy-Talk for your platform</h2>
-        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Install free from Google Play, buy a $3.99 lifetime license key, or enter a promo code in the app for friends &amp; family access.</p>
-
-        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 1.5rem;padding:0.85rem 1.1rem;border:1px solid var(--sc-border-2);border-left:3px solid var(--sc-warn);border-radius:var(--sc-radius-card, 8px);font-size:0.9rem;"><strong>Card checkout is temporarily offline</strong> while payment wiring is rebuilt. The $3.99 price is real &mdash; ask us and we&rsquo;ll send a direct checkout link, usually the same day.</p>
+        <h2 class="section-title" style="text-align: center;">Get Sassy-Talk</h2>
+        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Install it free from Google Play, then unlock it for $3.99 once. Got a promo code from a friend? Type it into the app where it asks for a license key.</p>
 
         <div style="text-align: center; margin-bottom: 2rem; display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
             <a href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" class="btn btn-primary btn-large">Install free on Google Play</a>
-            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Request license link — $3.99</button>
+            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Buy license — $3.99</button>
         </div>
         
         <div id="license-gate" style="text-align: center; margin-top: 1.5rem;">
-            <p class="section-desc" style="margin-bottom: 1rem;">Already have a license key? Enter it below to download.</p>
+            <p class="section-desc" style="margin-bottom: 1rem;">Already bought a license? Type your key below to download the app directly instead of using Google Play.</p>
             <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; max-width: 500px; margin: 0 auto;">
                 <input type="text" id="license-input" placeholder="SASSY-XXXX-XXXX-XXXX"
                     style="flex: 1 1 12rem; min-width: 0; padding: 0.75rem 1rem; border-radius: 8px; border: 1px solid var(--sc-border-2); background: var(--sc-surface); color: var(--sc-text); font-family: var(--sc-font-mono); font-size: 0.9rem;">
@@ -649,7 +652,7 @@
                 <div class="download-card">
                     <div class="platform-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-4.97-5.84l1.3-1.3c.2-.2.2-.51 0-.71-.2-.2-.51-.2-.71 0l-1.48 1.48A5.84 5.84 0 0012 1c-.96 0-1.86.23-2.66.63L7.85.15c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.31 1.31A5.983 5.983 0 006 7h12c0-2.12-1.1-3.98-2.77-5.04h.3zM10 5H9V4h1v1zm5 0h-1V4h1v1z"/></svg></div>
                     <h3 id="android">Android</h3>
-                    <p>APK for Android 8.0+</p>
+                    <p>Direct download for Android 8 or newer</p>
                     <a id="apk-download" href="#" class="btn btn-primary">Download APK</a>
                 </div>
                 <div class="download-card">
@@ -663,11 +666,11 @@
     </section>
 
     <section class="cta">
-        <h2>Secure communication &mdash; $3.99 forever</h2>
-        <p>No subscriptions and no hidden fees, just privacy you can count on.</p>
+        <h2>Private conversations &mdash; $3.99, once</h2>
+        <p>No subscription, no hidden fees. Just a walkie-talkie nobody else can listen to.</p>
         <div class="cta-buttons">
             <a href="https://play.google.com/store/apps/details?id=com.sassyconsulting.sassytalkie" target="_blank" rel="noopener" class="btn btn-primary btn-large">Install free on Google Play</a>
-            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Request license link — $3.99</button>
+            <button onclick="buyProduct('sassy-talk')" class="btn btn-secondary btn-large">Buy license — $3.99</button>
         </div>
     </section>
 

@@ -2,6 +2,7 @@
 // Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 // CodeMark: SCLLC1-sassyconsultingllc_cloudflare-XZBSPDS6DWRR
 import { EmailMessage } from "cloudflare:email";
+import { handleBrowserRelease, rewriteBrowserRelease } from "./browser-release.js";
 
 const DATACENTER_ASNS = new Set([
   13335, 14618, 15169, 8075, 16509, 14061, 20473, 46606, 63949, 54825,
@@ -70,12 +71,8 @@ const PRODUCTS = {
     mode: "payment",
     description: "Real-time disk activity monitor with a defrag-style cluster map",
     priceCents: 999,
-    // Priced and published in Lemon Squeezy (variant 1874036), but not
-    // sellable from here yet: the crates carry no licensing/activation code,
-    // there is no GitHub release, and no artifact under any R2 download alias.
-    // A purchase today would mint a key nothing validates and hand the buyer
-    // no binary. Flip to available:true once activation + a hosted build exist.
-    available: false
+    // Dedicated LS variant 1874036 with Generate license keys ON. The app
+    // activates via POST /v1/licenses/activate; set LS_VARIANT_SECTOR_SCOPE.
   },
   // SassyMCP — all-or-nothing as of v1.13.0. The only commercial SKU is an
   // optional supporter license (slug kept as mcp-pro for deep-link / entitlement
@@ -172,6 +169,9 @@ function isRateLimited(key, limit = 10, windowMs = 60_000) {
 }
 
 // Headers applied to every dynamic response (JSON + redirect) for defense in depth.
+// Asset path served at the site root. null = the company homepage (index.html).
+const ROOT_PAGE = "/browser";
+
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -293,6 +293,11 @@ export default {
       }
       // Public, non-sensitive, and cheap: safe to cache briefly at the edge so
       // a store page load doesn't cost a Worker invocation per visitor.
+      // Live Sassy Browser release state: the version of each uploaded build, read
+      // from R2, plus the ACE repo's release/main state and any drift between them.
+      if (path === "/api/browser/release" && (method === "GET" || method === "HEAD")) {
+        return await handleBrowserRelease(request, env, ctx, { ...corsHeaders, ...SECURITY_HEADERS });
+      }
       if (path === "/api/catalog" && (method === "GET" || method === "HEAD")) {
         return new Response(JSON.stringify({ products: buildCatalog(env) }), {
           status: 200,
@@ -359,10 +364,31 @@ export default {
         if (r2Response) return r2Response;
       }
 
+      // Front door. For now the site root IS the Sassy Browser page, so crawlers
+      // and visitors land on one URL with one canonical. The old /browser URLs
+      // 301 to the root, and the company homepage (public/index.html) moves to
+      // /company. To undo: set ROOT_PAGE to null, point the canonical/og:url
+      // tags in browser.html back to /browser and in index.html back to /, and
+      // drop PATH_ALIASES in scripts/build-sitemap.mjs.
+      if (ROOT_PAGE && isRead) {
+        if (path === "/browser" || path === "/browser/" || path === "/browser.html") {
+          return withSecurityHeaders(new Response(null, {
+            status: 301,
+            headers: { "Location": "/" + url.search, "Cache-Control": "public, max-age=3600" },
+          }));
+        }
+        if (path === "/") {
+          return servePage(await env.ASSETS.fetch(new Request(new URL(ROOT_PAGE, url), request)), env, ctx);
+        }
+        if (path === "/company" || path === "/company/") {
+          return servePage(await env.ASSETS.fetch(new Request(new URL("/", url), request)), env, ctx);
+        }
+      }
+
       // Static assets are served automatically by Cloudflare [assets] config
       // If we reach here, no API route matched and no static asset exists
       const assetResponse = await env.ASSETS.fetch(request);
-      return withSecurityHeaders(assetResponse);
+      return servePage(assetResponse, env, ctx);
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
@@ -1035,10 +1061,10 @@ async function handleWebhook(request, env, corsHeaders) {
   // Sassy-Talk keys must exist in the relay license DB so the direct APK can
   // activate via /license/activate. WinForensics keys must exist in the
   // winforensics-license-api D1 (WFP- format) — the desktop app validates
-  // against that worker, not this one. SassyMCP activates against Lemon
-  // Squeezy's own license API (sassymcp/_lemonsqueezy.py), so mcp-* buyers
-  // need the LS-issued key — a SASSY- key cannot activate the app. Other
-  // products keep the legacy website key.
+  // against that worker, not this one. SassyMCP and SectorScope activate
+  // against Lemon Squeezy's own license API, so those buyers need the
+  // LS-issued key — a SASSY- key cannot activate the app. Other products
+  // keep the legacy website key.
   let licenseKey = null;
   if (product === "sassy-talk") {
     licenseKey = await issueRelayLicense(env, {
@@ -1051,7 +1077,7 @@ async function handleWebhook(request, env, corsHeaders) {
       note: `lemonsqueezy:${orderId || ref}`,
       tier: PRODUCTS[product].licenseTier,
     });
-  } else if (product.startsWith("mcp-") && orderId) {
+  } else if ((product.startsWith("mcp-") || product === "sector-scope") && orderId) {
     licenseKey = await fetchLsLicenseKey(env, orderId);
   }
   if (!licenseKey) {
@@ -1108,6 +1134,7 @@ async function sendBuyerLicenseEmail(env, { email, product, licenseKey }) {
     "winforensics": winfDownload("Home license: personal use on up to 2 PCs you own. Running it for\nclients or for work needs the Technician license (upgrade: email us)."),
     "winforensics-tech": winfDownload("Technician license: one technician, commercial and client use, up to 5\nmachines (your bench, laptop, and USB kit). Need more machines or an invoice?\nEmail info@sassyconsultingllc.com."),
     "sassy-talk":   `Download (Android):\n${env.SITE_URL}/download/sassy-talk/android/sassytalkie.apk\n\nActivate in-app with your key.`,
+    "sector-scope": `Download (Windows):\n${env.SITE_URL}/download/sector-scope/windows/SectorScope-GUI-latest.exe?key=${keyParam}\n\nActivate: paste the UUID key from this email on the first-run screen. Console: sectorscope-tui.exe --license-key <key>`,
     "mcp-pro":      mcpActivate("2 machines you own"),
     "mcp-commercial":
       `Download SassyMCP (Windows, macOS, or Linux):\n` +
@@ -1176,6 +1203,47 @@ async function validateWinfKey(env, key) {
   }
 }
 
+// SectorScope buyers get a Lemon Squeezy UUID. Prefer the row the webhook
+// wrote into D1; if that miss (webhook race, email-only buyer), ask LS.
+async function validateSectorScopeKey(env, key) {
+  if (!key || typeof key !== "string") return false;
+  const trimmed = key.trim();
+  if (!trimmed || trimmed.startsWith("SASSY-") || trimmed.startsWith("WFP-")) return false;
+  if (env.DB) {
+    try {
+      const row = await env.DB.prepare("SELECT * FROM licenses WHERE license_key = ?").bind(trimmed).first();
+      if (row && !row.revoked) {
+        const norm = (s) => String(s || "").toLowerCase().replace(/[-_\s]/g, "");
+        if (norm(row.product) === "sectorscope") return true;
+      }
+    } catch (e) {
+      console.error("SectorScope D1 key lookup error:", e);
+    }
+  }
+  if (!env.LEMONSQUEEZY_API_KEY) return false;
+  try {
+    const resp = await fetch(`${LS_API}/licenses/validate`, {
+      method: "POST",
+      headers: { ...lsHeaders(env), "Content-Type": "application/json" },
+      body: JSON.stringify({ license_key: trimmed }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) return false;
+    const data = await resp.json();
+    // LS returns { valid, error, license_key, meta, ... }. meta.variant_id
+    // lets us refuse keys from other products when the secret is set.
+    if (data?.valid !== true) return false;
+    const want = env.LS_VARIANT_SECTOR_SCOPE;
+    if (want && data?.meta?.variant_id != null && String(data.meta.variant_id) !== String(want)) {
+      return false;
+    }
+    return true;
+  } catch (e) {
+    console.error("SectorScope LS key validation error:", e);
+    return false;
+  }
+}
+
 // Compare secrets by SHA-256 digest so string-compare timing reveals nothing.
 async function secretsMatch(a, b) {
   const enc = new TextEncoder();
@@ -1201,9 +1269,9 @@ async function handleGatedUpload(request, url, env, corsHeaders) {
   }
   const key = url.searchParams.get("path") || "";
   const segments = key.split("/");
-  const UPLOAD_PREFIXES = new Set(["winforensics", "sassymcp", "website-creator"]);
+  const UPLOAD_PREFIXES = new Set(["winforensics", "sassymcp", "website-creator", "sector-scope"]);
   if (!UPLOAD_PREFIXES.has(segments[0]) || segments.length < 2 || !segments.every(isSafeSegment)) {
-    return jsonResponse({ error: "path must be <winforensics|sassymcp|website-creator>/<safe segments>" }, 400, corsHeaders);
+    return jsonResponse({ error: "path must be <winforensics|sassymcp|website-creator|sector-scope>/<safe segments>" }, 400, corsHeaders);
   }
   if (!env.GATED) return jsonResponse({ error: "GATED bucket unavailable" }, 500, corsHeaders);
   const contentType = request.headers.get("Content-Type") || "application/octet-stream";
@@ -1256,8 +1324,7 @@ async function handleVPNRecommendations(corsHeaders) {
 
 async function handleDownloadsList(env, corsHeaders) {
   return jsonResponse([
-    { product: "sassy-talk", name: "Sassy-Talk", platforms: [{ platform: "android", filename: "sassytalkie.apk", size: "15MB" }, { platform: "windows", filename: "sassy-talk-setup.msi", size: "25MB" }] },
-    { product: "sassy-brain", name: "Sassy Brain", platforms: [{ platform: "windows", filename: "SassyBrain_Installer-v0.2.1.exe", size: "92MB" }, { platform: "windows", filename: "SassyBrain_Portable-v0.2.1.exe", size: "92MB" }] }
+    { product: "sassy-talk", name: "Sassy-Talk", platforms: [{ platform: "android", filename: "sassytalkie.apk", size: "15MB" }, { platform: "windows", filename: "sassy-talk-setup.msi", size: "25MB" }] }
   ], 200, corsHeaders);
 }
 
@@ -1318,6 +1385,7 @@ async function handleDownload(path, url, env, corsHeaders) {
     sassytalk: "/sassy-talk.html",
     sassymcp:  "/store",
     winforensics: "/store",
+    "sector-scope": "/store",
   };
   const isGated = GATED_PRODUCTS[product] && platform !== "demo";
   if (isGated && product === "winforensics") {
@@ -1327,6 +1395,13 @@ async function handleDownload(path, url, env, corsHeaders) {
     // (update.json + versioned exe live under the winforensics/ prefix).
     const licenseKey = url.searchParams.get("key");
     if (!(await validateWinfKey(env, licenseKey))) {
+      return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
+    }
+  } else if (isGated && product === "sector-scope") {
+    // SectorScope keys are Lemon Squeezy UUIDs (not SASSY-). Accept the key
+    // the webhook stored in D1, or fall back to LS /v1/licenses/validate.
+    const licenseKey = url.searchParams.get("key");
+    if (!(await validateSectorScopeKey(env, licenseKey))) {
       return jsonResponse({ error: `Valid license key required. Purchase at ${GATED_PRODUCTS[product]}` }, 403, corsHeaders);
     }
   } else if (isGated) {
@@ -1548,6 +1623,20 @@ function jsonResponse(data, status, corsHeaders) {
 
 // Wrap a static-asset response with security headers. Adds CSP to HTML pages
 // and no-sniff/HSTS/Referrer-Policy/X-Frame-Options to everything.
+// Static asset out the door: HTML pages get the live Sassy Browser version
+// stamped into [data-sb-*] markup (see src/browser-release.js) so crawlers and
+// visitors read the same, current value; everything gets security headers.
+function servePage(response, env, ctx) {
+  const type = response.headers.get("Content-Type") || "";
+  if (response.status !== 200 || !type.includes("text/html")) return withSecurityHeaders(response);
+  const rewritten = rewriteBrowserRelease(response, env, ctx);
+  // The asset ETag describes the file, not the stamped page: a 304 against it
+  // would keep serving a stale version to anyone holding a cached copy.
+  const headers = new Headers(rewritten.headers);
+  headers.delete("ETag");
+  return withSecurityHeaders(new Response(rewritten.body, { status: rewritten.status, statusText: rewritten.statusText, headers }));
+}
+
 function withSecurityHeaders(response) {
   const headers = new Headers(response.headers);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) {
@@ -1618,8 +1707,8 @@ async function issueRelayLicense(env, { email, note }) {
 
 /**
  * Fetch the Lemon Squeezy-generated license key for an order. Used for
- * SassyMCP SKUs, whose variants have "Generate license keys" enabled —
- * the app's activation flow calls LS /v1/licenses/activate, so only the
+ * SassyMCP and SectorScope, whose variants have "Generate license keys"
+ * enabled — those apps activate via LS /v1/licenses/activate, so only the
  * LS-native key works. Keys are minted with the order, but give LS a
  * short grace window in case the webhook races key creation.
  */

@@ -1,7 +1,7 @@
 // Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
 // Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 // Visual-parity + audit snapshotter.
-//   node snap.mjs --out <dir> [--theme none|original|fall] [--widths 390,1280]
+//   node snap.mjs --out <dir> [--theme none|original|fall|winter] [--widths 390,1280]
 //                 [--pages /,/store.html] [--shots] [--base http://localhost:8787]
 // Writes <out>/<width>__<slug>.json (and .png with --shots).
 import puppeteer from 'puppeteer-core';
@@ -17,7 +17,7 @@ const WIDTHS = String(arg('widths', '390,1280')).split(',').map(Number);
 const SHOTS = has('shots');
 const LIVE = has('live');          // do not freeze animations (for screenshots of leaves)
 const REPO = arg('repo', process.cwd());
-const CHROME = arg('chrome', process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe');
+const CHROME = arg('chrome', process.env.CHROME_PATH || ['C:/Program Files/Google/Chrome/Application/chrome.exe', '/usr/bin/chromium', '/usr/bin/google-chrome'].find(p => fs.existsSync(p)));
 if (!OUT) { console.error('--out required'); process.exit(2); }
 fs.mkdirSync(OUT, { recursive: true });
 

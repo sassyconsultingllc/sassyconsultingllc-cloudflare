@@ -1,0 +1,3 @@
+# Never uploaded as public static assets (wrangler .assetsignore, gitignore syntax).
+# Investor data room: due-diligence material, shared privately, not served from the site.
+dataroom/

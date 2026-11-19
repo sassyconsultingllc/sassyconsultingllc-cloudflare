@@ -719,6 +719,7 @@
         }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
     <nav>
@@ -735,15 +736,15 @@
 
     <main>
         <h1><span class="gradient">App Tester</span> Feedback</h1>
-        <p class="subtitle">You're testing an app — tell me how it works in your real use case. Anyone can join the open testing on Google Play; this page is just for feedback. Email is only needed if you want a reply.</p>
+        <p class="subtitle">You're testing an app — tell me how it works in your real use case. Anyone can join the public test on Google Play; this page is just for telling us how it went. You only need to give an email if you want a reply.</p>
 
         <!-- FILE SCRUBBER — drop any text-ish file, get printable ASCII back.
              Pure client-side. The file is never uploaded; only the scrubbed
              output (which the tester can copy/insert/download) ever leaves
              this page, and only if they choose to send it. -->
         <div class="form-card scrub-card" data-scrub-card>
-            <p class="section-heading">File Scrubber <span style="color: var(--sc-text-3); font-weight: 400; text-transform: none; letter-spacing: 0;">— strip any file to printable ASCII</span></p>
-            <p class="form-intro">Got a log, crash dump, or stack trace? Drop it here. Everything is processed in your browser — nothing uploads. The output keeps only printable ASCII (plus newlines and tabs) <strong>and</strong> defangs shell / batch command syntax — backticks, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">$(...)</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">${...}</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">%VAR%</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">&amp;&amp;</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">||</code>, and lines starting with <code style="font-family:var(--sc-font-mono);font-size:0.85em;">rm</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">del</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">curl</code>, <code style="font-family:var(--sc-font-mono);font-size:0.85em;">powershell</code>, etc. So even pasted into a shell, nothing runs.</p>
+            <p class="section-heading">File Scrubber <span style="color: var(--sc-text-3); font-weight: 400; text-transform: none; letter-spacing: 0;">— clean up a log file before you send it</span></p>
+            <p class="form-intro">Got an error log or crash report you want to send along? Drop it here first. It&rsquo;s cleaned up right in your browser &mdash; nothing is uploaded. Strange characters are stripped out and anything that looks like a computer command is disarmed, so the text is safe to paste anywhere and can&rsquo;t run by accident.</p>
 
             <div id="scrub-error" class="scrub-error"></div>
 
@@ -751,13 +752,13 @@
                 <input type="file" data-scrub-input id="scrub-input" hidden>
                 <strong>Drop a file here</strong>
                 <span style="color: var(--sc-text-2); font-size: 0.9rem;">or click to pick one</span>
-                <span class="scrub-hint">Max 5 MB &middot; stays in your browser &middot; output is plain ASCII text</span>
+                <span class="scrub-hint">Up to 5 MB &middot; never leaves your browser &middot; you get plain text back</span>
             </div>
 
             <div class="scrub-stats" data-scrub-stats hidden></div>
 
             <div class="field">
-                <label for="scrub-output">Scrubbed output (ASCII only)</label>
+                <label for="scrub-output">Cleaned-up text</label>
                 <textarea id="scrub-output" class="scrub-output" data-scrub-output readonly placeholder="Output appears here after you drop a file."></textarea>
             </div>
 
@@ -853,7 +854,7 @@
                         <option value="1-2w">1–2 weeks</option>
                         <option value="2w+">2 weeks or more</option>
                     </select>
-                    <p class="rating-help">Google Play counts real usage at <strong>7+ days</strong>. The Advanced Review unlocks at that threshold.</p>
+                    <p class="rating-help">Google Play counts it as real use after <strong>7 days</strong>. The detailed review opens up then.</p>
                 </div>
 
                 <div class="field">
@@ -874,24 +875,24 @@
                 <div class="field advanced-toggle-row">
                     <label class="checkbox-item" data-advanced-label>
                         <input type="checkbox" name="advanced_review" value="yes" data-advanced-toggle disabled>
-                        <span>Advanced Review <span class="app-badge">QA Rubric</span></span>
+                        <span>Detailed Review <span class="app-badge">Report Card</span></span>
                     </label>
-                    <p class="rating-help" data-advanced-gate>Unlocks after <strong>7+ days</strong> of installed use. Patterned after Bethesda Game Studios' internal QA scorecard.</p>
+                    <p class="rating-help" data-advanced-gate>Unlocks after <strong>7+ days</strong> of installed use. Modeled on the report card professional game testers use.</p>
                 </div>
 
                 <div class="advanced-section" data-advanced-section hidden>
-                    <p class="section-heading">QA Rubric <span style="color: var(--sc-text-3); font-weight: 400; text-transform: none; letter-spacing: 0;">— score 1 (broken) to 5 (excellent)</span></p>
+                    <p class="section-heading">Report Card <span style="color: var(--sc-text-3); font-weight: 400; text-transform: none; letter-spacing: 0;">— score 1 (broken) to 5 (excellent)</span></p>
 
                     <div class="rubric-grid">
                         <div class="rubric-row">
-                            <div class="rubric-meta"><strong>Stability</strong><span>Crashes, ANRs, freezes, frozen UI</span></div>
+                            <div class="rubric-meta"><strong>Stability</strong><span>Crashes, freezes, &ldquo;app isn&rsquo;t responding&rdquo; messages</span></div>
                             <select name="rubric_stability" class="rubric-score" aria-label="Stability score">
                                 <option value="" disabled selected>—</option>
                                 <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
                             </select>
                         </div>
                         <div class="rubric-row">
-                            <div class="rubric-meta"><strong>Performance</strong><span>Lag, scroll jank, battery drain, network use</span></div>
+                            <div class="rubric-meta"><strong>Performance</strong><span>Slowness, choppy scrolling, battery drain, data use</span></div>
                             <select name="rubric_performance" class="rubric-score" aria-label="Performance score">
                                 <option value="" disabled selected>—</option>
                                 <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
@@ -919,7 +920,7 @@
                             </select>
                         </div>
                         <div class="rubric-row">
-                            <div class="rubric-meta"><strong>Accessibility</strong><span>TalkBack, dynamic type, contrast, touch targets</span></div>
+                            <div class="rubric-meta"><strong>Accessibility</strong><span>Works with screen readers and large text? Easy to read and tap?</span></div>
                             <select name="rubric_accessibility" class="rubric-score" aria-label="Accessibility score">
                                 <option value="" disabled selected>—</option>
                                 <option value="1">1 — broken</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5 — excellent</option>
@@ -941,61 +942,61 @@
                         </div>
                     </div>
 
-                    <p class="section-heading">Composite Score</p>
+                    <p class="section-heading">Overall Score</p>
                     <div class="rubric-composite">
                         <div class="composite-readout">
                             <span class="composite-value" data-composite-value>—</span>
                             <span class="composite-label">out of 5.0</span>
                         </div>
                         <div class="composite-meter"><span class="composite-bar" data-composite-bar></span></div>
-                        <p class="rating-help" data-composite-help>Fill in the rubric above to see your weighted score.</p>
+                        <p class="rating-help" data-composite-help>Fill in the report card above to see your overall score.</p>
                     </div>
 
                     <p class="section-heading">Worst Bug Observed</p>
                     <div class="field">
-                        <label for="bug-severity">Severity</label>
+                        <label for="bug-severity">How bad was it?</label>
                         <select id="bug-severity" name="bug_severity">
-                            <option value="" disabled selected>Pick a severity</option>
-                            <option value="P0">P0 — Blocker (crash, data loss, app unusable)</option>
-                            <option value="P1">P1 — Critical (major feature broken)</option>
-                            <option value="P2">P2 — Major (minor feature broken)</option>
-                            <option value="P3">P3 — Minor (rough edge / odd behaviour)</option>
-                            <option value="P4">P4 — Cosmetic (visual nit, copy error)</option>
+                            <option value="" disabled selected>Pick one</option>
+                            <option value="P0">Showstopper — crashes, loses data, or can&rsquo;t be used</option>
+                            <option value="P1">Serious — a main feature doesn&rsquo;t work</option>
+                            <option value="P2">Annoying — a smaller feature doesn&rsquo;t work</option>
+                            <option value="P3">Minor — a rough edge or something odd</option>
+                            <option value="P4">Cosmetic — looks off, or a typo</option>
                             <option value="none">No bug observed</option>
                         </select>
                     </div>
 
                     <div class="field">
-                        <label for="bug-repro">Reproducibility</label>
+                        <label for="bug-repro">How often does it happen?</label>
                         <select id="bug-repro" name="bug_repro">
-                            <option value="" disabled selected>Pick a reproducibility</option>
+                            <option value="" disabled selected>Pick one</option>
                             <option value="always">Always (100%)</option>
                             <option value="often">Often (≥50%)</option>
                             <option value="sometimes">Sometimes (10–50%)</option>
                             <option value="rarely">Rarely (&lt;10%)</option>
-                            <option value="once">Once / unable to reproduce</option>
+                            <option value="once">Only once / couldn&rsquo;t make it happen again</option>
                             <option value="na">N/A — no bug</option>
                         </select>
                     </div>
 
                     <div class="field">
-                        <label for="bug-steps">Steps to reproduce</label>
+                        <label for="bug-steps">What did you do right before it happened?</label>
                         <textarea id="bug-steps" name="bug_steps" maxlength="1000" placeholder="1. Open the app\n2. Tap…\n3. Observe…\n\nExpected: …\nActual: …"></textarea>
                     </div>
 
                     <p class="section-heading">Tester Verdict</p>
                     <div class="field">
-                        <label for="most-loved">Feature you'd defend in a meeting</label>
+                        <label for="most-loved">The feature you&rsquo;d miss most</label>
                         <textarea id="most-loved" name="most_loved" maxlength="400" placeholder="The one thing that, if removed, would make you stop using the app."></textarea>
                     </div>
                     <div class="field">
-                        <label for="most-broken">Feature you'd ship a fix for first</label>
+                        <label for="most-broken">The thing we should fix first</label>
                         <textarea id="most-broken" name="most_broken" maxlength="400" placeholder="The one thing you'd hand to a developer Monday morning."></textarea>
                     </div>
                     <div class="field">
-                        <label for="ship-readiness">Ship readiness call</label>
+                        <label for="ship-readiness">Is it ready for everyone?</label>
                         <select id="ship-readiness" name="ship_readiness">
-                            <option value="" disabled selected>Pick a call</option>
+                            <option value="" disabled selected>Pick one</option>
                             <option value="ship">Ship it now</option>
                             <option value="ship-with-fixes">Ship after these fixes</option>
                             <option value="needs-iteration">Needs another iteration</option>
@@ -1413,13 +1414,13 @@
                 const strong = document.createElement('strong');
                 strong.textContent = 'Unlocked';
                 advancedGate.appendChild(strong);
-                advancedGate.appendChild(document.createTextNode(' — you can leave a Bethesda-style QA review.'));
+                advancedGate.appendChild(document.createTextNode(' — you can fill in the detailed report card.'));
             } else {
                 advancedGate.appendChild(document.createTextNode('Unlocks after '));
                 const strong = document.createElement('strong');
                 strong.textContent = '7+ days';
                 advancedGate.appendChild(strong);
-                advancedGate.appendChild(document.createTextNode(" of installed use. Patterned after Bethesda Game Studios' internal QA scorecard."));
+                advancedGate.appendChild(document.createTextNode(" of installed use. Modeled on the report card professional game testers use."));
             }
         }
         if (!eligible) {
@@ -1467,7 +1468,7 @@
             compositeValue.textContent = '—';
             compositeValue.classList.add('empty');
             if (compositeBar) compositeBar.style.width = '0%';
-            if (compositeHelp) compositeHelp.textContent = 'Fill in the rubric above to see your weighted score.';
+            if (compositeHelp) compositeHelp.textContent = 'Fill in the report card above to see your overall score.';
             return;
         }
         const score = weighted / totalWeight;
