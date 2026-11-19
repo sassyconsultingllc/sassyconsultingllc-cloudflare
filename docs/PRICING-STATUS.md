@@ -18,7 +18,7 @@ Squeezy dashboard for store **Sassy Consulting LLC Apps** (store id `377151`).
 |---|---|---|---|---|
 | `mcp-pro` | $25 one-time | `1753676` via `LS_VARIANT_MCP_PRO` (published; keys ON, 2 seats) | **200** | Live buy button |
 | `sassy-talk` | $3.99 one-time | via `LS_VARIANT_SASSY_TALK` (keys OFF; relay mints) | **200** | Live buy button |
-| `winforensics` | $9.99 one-time | via `LS_VARIANT_WINFORENSICS` (keys OFF; WFP- API mints) | **200** | Live buy button |
+| `winforensics` | $29 Home one-time (`winforensics-tech`: $149 Technician) | via `LS_VARIANT_WINFORENSICS` (keys OFF; WFP- API mints) | **200** | Live buy button |
 | `sector-scope` | $9.99 one-time | `1874036` via `LS_VARIANT_SECTOR_SCOPE` (keys ON, 2 seats, unlimited length) | **200** | Live buy button |
 | `website-creator` | $2 when it ships | n/a | **409** (`available:false`) | "Not on sale yet" |
 | `mcp-forensics`, `mcp-team` | retired | n/a | **409** | Not shown |

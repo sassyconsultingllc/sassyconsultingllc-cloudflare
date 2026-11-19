@@ -127,7 +127,7 @@ actually be bought today.
 
 - **SassyMCP Supporter** (`mcp-pro`): $25 — optional, unlocks nothing
 - **Sassy-Talk**: $3.99 — encrypted walkie-talkie (Android)
-- **WinForensics-Pro**: $9.99 — digital forensics toolkit (Windows)
+- **WinForensics-Pro**: $29 Home / $149 Technician — digital forensics toolkit (Windows)
 - **SectorScope**: $9.99 — disk activity monitor (Windows; LS license activate)
 - **Website Creator**: $2 — AI WordPress builder (not on sale yet)
 

@@ -15,14 +15,14 @@
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://sassyconsultingllc.com/winforensics">
     <meta property="og:title" content="WinForensics-Pro — Windows Forensics Toolkit in Rust">
-    <meta property="og:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $9.99 one-time.">
+    <meta property="og:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $29 home, $149 technician, one-time.">
     <meta property="og:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
     <meta property="og:site_name" content="Sassy Consulting LLC">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="WinForensics-Pro — Windows Forensics Toolkit in Rust">
-    <meta name="twitter:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $9.99 one-time.">
+    <meta name="twitter:description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $29 home, $149 technician, one-time.">
     <meta name="twitter:image" content="https://sassyconsultingllc.com/android-chrome-512x512.png">
-    <meta name="description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $9.99 one-time.">
+    <meta name="description" content="Scan Windows for compromise: integrity and ADS checks, Prefetch, Amcache, registry and SAM, EVTX, beaconing. JSON, HTML and STIX 2.1 reports. $29 home, $149 technician, one-time.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -362,7 +362,7 @@
     <section class="hero">
         <h1>
             Was your PC broken into?<br>
-            <span class="gradient">Find out for $9.99.</span>
+            <span class="gradient">Find out for $29.</span>
         </h1>
         
         <p class="hero-sub">
@@ -377,13 +377,13 @@
                     <polyline points="7 10 12 15 17 10"></polyline>
                     <line x1="12" y1="15" x2="12" y2="3"></line>
                 </svg>
-                Get WinForensics - $9.99
+                Get WinForensics - from $29
             </a>
         </div>
         
         <div class="price-hero">
-            <div class="price">$9.99</div>
-            <div class="price-sub">Pay once, keep it forever. For Windows 10 and 11.</div>
+            <div class="price">$29</div>
+            <div class="price-sub">Home, pay once and keep it forever, on 2 PCs you own. $149 Technician license for paid and client work. For Windows 10 and 11.</div>
         </div>
         
         <div class="hero-stats">
@@ -485,18 +485,22 @@
         <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows</h2>
         <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Buy a license and you&rsquo;ll get a download link and a license key (it starts with WFP-). The key unlocks the installer and future updates.</p>
 
+        <p class="section-desc" style="text-align:center;max-width:620px;margin:0 auto 2rem;">Both licenses are the same app with every scanner. Pick by how you&rsquo;ll use it: your own PCs, or paid work for other people.</p>
+
         <div style="text-align: center;">
-            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Buy license — $9.99</button>
+            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 0.5rem;">Home - $29 &middot; 2 PCs you own</button>
+            <button onclick="buyProduct('winforensics-tech')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Technician - $149 &middot; client work, 5 machines</button>
             <br>
             <span style="color: var(--sc-text-3); font-size: 0.85rem;">Already licensed? Your download link is in your original receipt email, or <a href="/contact">ask us to resend it</a>.</span>
         </div>
     </section>
 
     <section class="cta">
-        <h2>Peace of mind &mdash; $9.99, once</h2>
+        <h2>Peace of mind, paid once</h2>
         <p>No subscription, and your scan results stay on your PC. Just answers.</p>
         <div class="cta-buttons">
-            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Buy license — $9.99</button>
+            <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Home - $29</button>
+            <button onclick="buyProduct('winforensics-tech')" class="btn btn-primary btn-large">Technician - $149</button>
         </div>
     </section>
 
@@ -524,12 +528,10 @@
  "softwareVersion": "0.5.2",
  "description": "Windows incident-response toolkit in Rust: integrity and ADS scanning, Prefetch/Amcache/ShimCache, registry and SAM analysis, EVTX and beaconing detection, quarantine, and JSON/HTML/STIX 2.1 reports.",
  "url": "https://sassyconsultingllc.com/winforensics",
- "offers": {
-  "@type": "Offer",
-  "price": "9.99",
-  "priceCurrency": "USD",
-  "availability": "https://schema.org/LimitedAvailability"
- },
+ "offers": [
+  {"@type": "Offer", "name": "Home", "price": "29.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock"},
+  {"@type": "Offer", "name": "Technician", "price": "149.00", "priceCurrency": "USD", "availability": "https://schema.org/InStock"}
+ ],
  "publisher": {
   "@id": "https://sassyconsultingllc.com/#organization"
  }

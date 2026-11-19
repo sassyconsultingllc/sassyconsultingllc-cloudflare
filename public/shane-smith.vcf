@@ -1,0 +1,9 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Smith;Shane;;;
+FN:Shane Smith
+ORG:Sassy Consulting LLC
+TEL;TYPE=CELL,VOICE:+12623706421
+EMAIL;TYPE=INTERNET,WORK:info@sassyconsultingllc.com
+URL:https://sassyconsultingllc.com
+END:VCARD
