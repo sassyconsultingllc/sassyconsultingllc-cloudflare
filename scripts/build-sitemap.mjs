@@ -47,6 +47,7 @@ const RULES = [
   { match: "sassy-talk",          priority: "0.8", changefreq: "monthly" },
   { match: "winforensics",        priority: "0.8", changefreq: "monthly" },
   { match: "website-creator",     priority: "0.8", changefreq: "monthly" },
+  { match: "company",             priority: "0.8", changefreq: "weekly" },
   { match: "aboutme",             priority: "0.7", changefreq: "monthly" },
   { match: "app-testers",         priority: "0.6", changefreq: "monthly" },
   { match: "guides/",             priority: "0.5", changefreq: "monthly" },
@@ -56,6 +57,10 @@ const RULES = [
 ];
 
 const DEFAULT_RULE = { priority: "0.5", changefreq: "monthly" };
+
+// Files the Worker serves somewhere other than their file path (ROOT_PAGE in
+// src/worker.js): browser.html is the site root, index.html lives at /company.
+const PATH_ALIASES = { "browser": "", "": "company" };
 
 function walk(dir) {
   const out = [];
@@ -69,14 +74,15 @@ function walk(dir) {
 }
 
 function toPath(file) {
-  // e.g. public/privacy/sassytalk/index.html -> privacy/sassytalk
+  // e.g. public/privacy/sassytalk/index.html -> privacy/sassytalk/
   //      public/pricing.html                 -> pricing
   //      public/index.html                   -> ""
   let rel = relative(PUBLIC_DIR, file).split(sep).join(posix.sep);
-  if (rel.endsWith("/index.html")) rel = rel.slice(0, -"/index.html".length);
+  // Directory indexes are served with a trailing slash (assets 307 the bare form).
+  if (rel.endsWith("/index.html")) rel = rel.slice(0, -"index.html".length);
   else if (rel === "index.html") rel = "";
   else if (rel.endsWith(".html")) rel = rel.slice(0, -".html".length);
-  return rel;
+  return Object.hasOwn(PATH_ALIASES, rel) ? PATH_ALIASES[rel] : rel;
 }
 
 function isExcluded(relPath, fileRelPath) {

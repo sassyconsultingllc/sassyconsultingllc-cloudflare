@@ -2,6 +2,7 @@
 // Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 // CodeMark: SCLLC1-sassyconsultingllc_cloudflare-XZBSPDS6DWRR
 import { EmailMessage } from "cloudflare:email";
+import { handleBrowserRelease, rewriteBrowserRelease } from "./browser-release.js";
 
 const DATACENTER_ASNS = new Set([
   13335, 14618, 15169, 8075, 16509, 14061, 20473, 46606, 63949, 54825,
@@ -135,6 +136,9 @@ function isRateLimited(key, limit = 10, windowMs = 60_000) {
 }
 
 // Headers applied to every dynamic response (JSON + redirect) for defense in depth.
+// Asset path served at the site root. null = the company homepage (index.html).
+const ROOT_PAGE = "/browser";
+
 const SECURITY_HEADERS = {
   "X-Content-Type-Options": "nosniff",
   "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -256,6 +260,11 @@ export default {
       }
       // Public, non-sensitive, and cheap: safe to cache briefly at the edge so
       // a store page load doesn't cost a Worker invocation per visitor.
+      // Live Sassy Browser release state: the version of each uploaded build, read
+      // from R2, plus the ACE repo's release/main state and any drift between them.
+      if (path === "/api/browser/release" && (method === "GET" || method === "HEAD")) {
+        return await handleBrowserRelease(request, env, ctx, { ...corsHeaders, ...SECURITY_HEADERS });
+      }
       if (path === "/api/catalog" && (method === "GET" || method === "HEAD")) {
         return new Response(JSON.stringify({ products: buildCatalog(env) }), {
           status: 200,
@@ -314,10 +323,31 @@ export default {
         if (r2Response) return r2Response;
       }
 
+      // Front door. For now the site root IS the Sassy Browser page, so crawlers
+      // and visitors land on one URL with one canonical. The old /browser URLs
+      // 301 to the root, and the company homepage (public/index.html) moves to
+      // /company. To undo: set ROOT_PAGE to null, point the canonical/og:url
+      // tags in browser.html back to /browser and in index.html back to /, and
+      // drop PATH_ALIASES in scripts/build-sitemap.mjs.
+      if (ROOT_PAGE && isRead) {
+        if (path === "/browser" || path === "/browser/" || path === "/browser.html") {
+          return withSecurityHeaders(new Response(null, {
+            status: 301,
+            headers: { "Location": "/" + url.search, "Cache-Control": "public, max-age=3600" },
+          }));
+        }
+        if (path === "/") {
+          return servePage(await env.ASSETS.fetch(new Request(new URL(ROOT_PAGE, url), request)), env, ctx);
+        }
+        if (path === "/company" || path === "/company/") {
+          return servePage(await env.ASSETS.fetch(new Request(new URL("/", url), request)), env, ctx);
+        }
+      }
+
       // Static assets are served automatically by Cloudflare [assets] config
       // If we reach here, no API route matched and no static asset exists
       const assetResponse = await env.ASSETS.fetch(request);
-      return withSecurityHeaders(assetResponse);
+      return servePage(assetResponse, env, ctx);
     } catch (error) {
       return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
@@ -1526,6 +1556,20 @@ function jsonResponse(data, status, corsHeaders) {
 
 // Wrap a static-asset response with security headers. Adds CSP to HTML pages
 // and no-sniff/HSTS/Referrer-Policy/X-Frame-Options to everything.
+// Static asset out the door: HTML pages get the live Sassy Browser version
+// stamped into [data-sb-*] markup (see src/browser-release.js) so crawlers and
+// visitors read the same, current value; everything gets security headers.
+function servePage(response, env, ctx) {
+  const type = response.headers.get("Content-Type") || "";
+  if (response.status !== 200 || !type.includes("text/html")) return withSecurityHeaders(response);
+  const rewritten = rewriteBrowserRelease(response, env, ctx);
+  // The asset ETag describes the file, not the stamped page: a 304 against it
+  // would keep serving a stale version to anyone holding a cached copy.
+  const headers = new Headers(rewritten.headers);
+  headers.delete("ETag");
+  return withSecurityHeaders(new Response(rewritten.body, { status: rewritten.status, statusText: rewritten.statusText, headers }));
+}
+
 function withSecurityHeaders(response) {
   const headers = new Headers(response.headers);
   for (const [k, v] of Object.entries(SECURITY_HEADERS)) {

@@ -12,7 +12,7 @@
 <link rel="stylesheet" href="/theme/tokens.css">
 <title>Sassy Browser Build Status — Done, Partial, Planned</title>
 <link rel="canonical" href="https://sassyconsultingllc.com/coming-soon">
-<meta name="description" content="The honest state of Sassy Browser v0.15.2: feature matrix, real-site smoke scoreboard, and codebase metrics. No polish, no marketing gloss.">
+<meta name="description" content="The honest state of Sassy Browser: feature matrix, real-site smoke scoreboard, and codebase metrics. No polish, no marketing gloss.">
 <meta name="robots" content="index, follow">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://sassyconsultingllc.com/coming-soon">
@@ -158,12 +158,12 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 
 <nav>
     <div class="nav-inner">
-        <a href="/browser" class="logo">
+        <a href="/" class="logo">
             <img src="/sassy-browser-logo.jpg" alt="Sassy Browser" loading="lazy">
             <span class="logo-name">Sassy Browser <span class="logo-tag">ACE</span></span>
         </a>
         <div class="nav-links">
-            <a href="/browser">Overview</a>
+            <a href="/">Overview</a>
             <a href="/store">Store</a>
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="nav-cta">Dev build</a>
         </div>
@@ -182,12 +182,12 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         An <strong>early test version</strong> is available for people who want to try it now.
         The finished, polished release isn&rsquo;t out yet &mdash; and we won&rsquo;t call it finished until it does
         everything we promised on the
-        <a href="/browser">overview page</a>.
+        <a href="/">overview page</a>.
         Below is an honest look at where things stand today, pulled straight from
         our own project files, followed by a
         feature&#8209;by&#8209;feature list of what&rsquo;s done, what&rsquo;s half-done, and what&rsquo;s still planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Version 0.15.2 · 200,424 lines of code · straight from our project files.</div>
+    <div class="lead-meta" id="lead-meta">Version <span data-sb-version="latest">0.16.2</span> · 200,424 lines of code · straight from our project files.</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
@@ -198,7 +198,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         <div class="stats-grid">
             <div class="stat-cell" data-stat="version">
                 <div class="stat-lbl">Version</div>
-                <div class="stat-val gold" id="stat-version">0.15.2</div>
+                <div class="stat-val gold" id="stat-version" data-sb-version="latest">0.16.2</div>
                 <div class="stat-sub">Current release number</div>
             </div>
             <div class="stat-cell" data-stat="lines">
@@ -297,7 +297,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         <div class="cta-row">
             <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green">Download test version for Windows</a>
             <a href="/donate" class="btn btn-outline" target="_blank" rel="noopener">Fund development</a>
-            <a href="/browser" class="btn btn-outline">Back to overview</a>
+            <a href="/" class="btn btn-outline">Back to overview</a>
         </div>
     </div>
 
@@ -334,7 +334,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
     function applyMetrics(status) {
         const m = status.metrics || {};
         const set = (id, text) => { const n = document.getElementById(id); if (n) n.textContent = text; };
-        set('stat-version', status.version || '0.15.2');
+        // stat-version is stamped server-side from the live uploads (data-sb-version); not overwritten here.
         set('stat-lines', fmt(m.loc_rust_src));
         set('stat-files', fmt(m.source_files_rs));
         set('stat-tests', fmt(m.test_attributes));
@@ -357,7 +357,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         }
         const meta = document.getElementById('lead-meta');
         if (meta) {
-            meta.textContent = 'Version ' + (status.version || '0.15.2')
+            meta.textContent = 'Version ' + (((document.getElementById('stat-version') || {}).textContent) || status.version || '')
                 + ' · as of ' + (status.as_of || '—')
                 + ' · ' + fmt(m.loc_rust_src) + ' lines of code · straight from our project files';
         }

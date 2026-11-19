@@ -10,32 +10,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/theme/seasonal.js"></script>
     <link rel="stylesheet" href="/theme/tokens.css">
-    <title>Sassy Browser — Pure-Rust Browser & File Viewer (v0.16.1)</title>
-    <link rel="canonical" href="https://sassyconsultingllc.com/browser">
-    <meta name="description" content="A private web browser with no Google inside that also opens 200+ kinds of files: PDFs, photos, Word docs, spreadsheets, 3D models. Built-in ad blocker. Free early test version for Windows and Linux.">
-    <meta name="keywords" content="PDF editor free, image editor free, DOCX editor free, PDB viewer, molecular viewer, Chrome alternative, Adobe alternative, Microsoft 365 alternative, secure browser, Rust browser, ad blocker built-in, tampermonkey alternative, ublock alternative, web3 browser, RAW photo editor, DICOM viewer, CAD viewer, privacy browser, rust browser engine">
+    <!-- Served at the site root by the Worker (ROOT_PAGE in src/worker.js); /browser 301s here.
+         Version numbers in [data-sb-*] markup and the JSON-LD are stamped server-side from the
+         live R2 uploads (src/browser-release.js); the values below are last-known fallbacks. -->
+    <title>Sassy Browser — Private Browser That Opens 200+ File Types</title>
+    <meta name="description" content="A private browser with no Google inside that opens 200+ file types: PDFs, photos, Word docs, 3D models. Ad blocker built in. Free for Windows and Linux.">
+    <link rel="canonical" href="https://sassyconsultingllc.com/">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="author" content="Sassy Consulting LLC">
+    <meta name="application-name" content="Sassy Browser">
+    <meta name="theme-color" content="#0b1320">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="keywords" content="Sassy Browser, private browser, Rust browser, Chrome alternative, built-in ad blocker, PDF viewer, PDF editor free, DOCX editor free, image editor free, RAW photo viewer, DICOM viewer, PDB molecular viewer, CAD viewer, privacy browser, no Chromium">
+
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://sassyconsultingllc.com/browser">
-    <meta property="og:title" content="Sassy Browser — A Pure-Rust Browser &amp; File Viewer, Built in the Open About Its Gaps">
-    <meta property="og:description" content="Opens 200+ file formats — PDF, image, document and molecular viewers, built-in ad blocker, no subscriptions, no Chromium. Still being built: free early test versions for Windows and Linux, with an honest progress report on /coming-soon.">
-    <meta property="og:image" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
     <meta property="og:site_name" content="Sassy Consulting LLC">
+    <meta property="og:locale" content="en_US">
+    <meta property="og:url" content="https://sassyconsultingllc.com/">
+    <meta property="og:title" content="Sassy Browser — Private Browser That Opens 200+ File Types">
+    <meta property="og:description" content="No Google inside, ads blocked out of the box, and PDFs, photos, Word docs, spreadsheets and 3D models open right in the browser. Free early test builds for Windows and Linux.">
+    <meta property="og:image" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
+    <meta property="og:image:secure_url" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:image:width" content="784">
+    <meta property="og:image:height" content="616">
+    <meta property="og:image:alt" content="Sassy Browser logo">
+
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Sassy Browser — Pure Rust, In Development, Honest About It">
-    <meta name="twitter:description" content="200+ file formats. Built-in ad blocker. No subscriptions. Pure Rust. v0.16.1 dev builds for Windows and Linux — see the real feature matrix before you download.">
-    <script type="application/ld+json">
+    <meta name="twitter:title" content="Sassy Browser — Private Browser That Opens 200+ File Types">
+    <meta name="twitter:description" content="No Google inside, ads blocked out of the box, and 200+ file types open right in the browser. Free early test builds for Windows and Linux.">
+    <meta name="twitter:image" content="https://sassyconsultingllc.com/sassy-browser-logo.jpg">
+    <meta name="twitter:image:alt" content="Sassy Browser logo">
+
+    <script type="application/ld+json" data-sb-jsonld>
     {
-        "@context": "https://schema.org", "@type": "SoftwareApplication",
-        "name": "Sassy Browser", "alternateName": "ACE Browser",
-        "applicationCategory": "BrowserApplication", "operatingSystem": "Windows, Linux",
-        "url": "https://sassyconsultingllc.com/browser",
-        "downloadUrl": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
-        "softwareVersion": "0.16.1",
-        "author": {"@type": "Organization", "name": "Sassy Consulting LLC"},
-        "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD", "availability": "https://schema.org/OnlineOnly"}
+        "@context": "https://schema.org",
+        "@graph": [
+            {
+                "@type": "Organization",
+                "@id": "https://sassyconsultingllc.com/#organization",
+                "name": "Sassy Consulting LLC",
+                "url": "https://sassyconsultingllc.com/company",
+                "logo": {"@type": "ImageObject", "url": "https://sassyconsultingllc.com/android-chrome-512x512.png", "width": 512, "height": 512},
+                "founder": {"@type": "Person", "name": "Shane Smith"},
+                "address": {"@type": "PostalAddress", "addressRegion": "WI", "addressCountry": "US"}
+            },
+            {
+                "@type": "WebSite",
+                "@id": "https://sassyconsultingllc.com/#website",
+                "url": "https://sassyconsultingllc.com/",
+                "name": "Sassy Consulting LLC",
+                "publisher": {"@id": "https://sassyconsultingllc.com/#organization"},
+                "inLanguage": "en-US"
+            },
+            {
+                "@type": "WebPage",
+                "@id": "https://sassyconsultingllc.com/#webpage",
+                "url": "https://sassyconsultingllc.com/",
+                "name": "Sassy Browser — Private Browser That Opens 200+ File Types",
+                "description": "A private browser with no Google inside that opens 200+ file types: PDFs, photos, Word docs, 3D models. Ad blocker built in. Free for Windows and Linux.",
+                "isPartOf": {"@id": "https://sassyconsultingllc.com/#website"},
+                "about": {"@id": "https://sassyconsultingllc.com/#software"},
+                "mainEntity": {"@id": "https://sassyconsultingllc.com/#software"},
+                "primaryImageOfPage": {"@type": "ImageObject", "url": "https://sassyconsultingllc.com/sassy-browser-logo.jpg", "width": 784, "height": 616},
+                "inLanguage": "en-US"
+            },
+            {
+                "@type": "SoftwareApplication",
+                "@id": "https://sassyconsultingllc.com/#software",
+                "name": "Sassy Browser",
+                "alternateName": "ACE Browser",
+                "description": "A privacy-first desktop web browser written from scratch in Rust, with no Chromium and no Google inside. It blocks ads and trackers out of the box and opens 200+ file types natively, including PDF, Office documents, images and camera RAW, 3D models, DICOM scans and molecular structures.",
+                "url": "https://sassyconsultingllc.com/",
+                "image": "https://sassyconsultingllc.com/sassy-browser-logo.jpg",
+                "applicationCategory": "BrowserApplication",
+                "applicationSubCategory": "Web browser and universal file viewer",
+                "operatingSystem": "Windows 10, Windows 11, Linux",
+                "softwareVersion": "0.16.2",
+                "softwareRequirements": "Windows 10 or 11 (64-bit); or Linux x86_64 with glibc 2.35+, fontconfig and ALSA",
+                "downloadUrl": [
+                    "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
+                    "https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz"
+                ],
+                "installUrl": "https://sassyconsultingllc.com/#download",
+                "releaseNotes": "https://sassyconsultingllc.com/#download",
+                "featureList": [
+                    "Built-in ad and tracker blocking",
+                    "Opens 200+ file types natively",
+                    "PDF viewing and editing",
+                    "Word, spreadsheet and presentation documents",
+                    "Image editing and camera RAW viewing",
+                    "3D model, DICOM and molecular structure viewers",
+                    "Network (SMB) storage in the file explorer",
+                    "No Chromium, no Google services"
+                ],
+                "isAccessibleForFree": true,
+                "offers": {
+                    "@type": "Offer",
+                    "price": "0",
+                    "priceCurrency": "USD",
+                    "availability": "https://schema.org/InStock",
+                    "url": "https://sassyconsultingllc.com/#download"
+                },
+                "author": {"@id": "https://sassyconsultingllc.com/#organization"},
+                "publisher": {"@id": "https://sassyconsultingllc.com/#organization"}
+            }
+        ]
     }
     </script>
-    <link rel="icon" type="image/x-icon" href="/sassy-browser-logo.jpg">
+    <link rel="icon" type="image/jpeg" href="/sassy-browser-logo.jpg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" sizes="any">
     <link rel="apple-touch-icon" href="/sassy-browser-logo.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -260,7 +344,7 @@
 <!-- NAV -->
 <nav>
     <div class="nav-inner">
-        <a href="/browser" class="logo">
+        <a href="/" class="logo">
             <img src="/sassy-browser-logo.jpg" alt="Sassy Browser" loading="lazy">
             <span class="logo-name">Sassy Browser <span class="logo-tag">ACE</span></span>
         </a>
@@ -297,19 +381,19 @@
             <strong>Simple enough for your parents. Deep enough for your engineers.</strong>
         </p>
         <div class="hero-actions">
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">
-                Download for Windows — v0.16.1
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" data-sb-href="windows" class="btn btn-green btn-lg">
+                Download for Windows — v<span data-sb-version="windows">0.16.2</span>
             </a>
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" class="btn btn-green btn-lg">
-                Download for Linux — v0.16.1
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" data-sb-href="linux" class="btn btn-green btn-lg">
+                Download for Linux — v<span data-sb-version="linux">0.16.1</span>
             </a>
             <a href="/coming-soon" class="btn btn-outline btn-lg">See the honest build status</a>
         </div>
-        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--sc-text-2);">Heads up: these are <strong>early test versions</strong> (Windows ~86&nbsp;MB, Linux ~42&nbsp;MB). They aren&rsquo;t digitally signed yet, so Windows will show a &ldquo;Windows protected your PC&rdquo; warning &mdash; click <em>More info</em>, then <em>Run anyway</em>. They also won&rsquo;t update themselves yet. Want to be sure your download wasn&rsquo;t tampered with? Compare it against our <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt" style="color:var(--sc-accent);">published fingerprints (SHA-256)</a>. Exactly what works and what doesn&rsquo;t yet is on the <a href="/coming-soon" style="color:var(--sc-accent);">build status page</a>.</p>
+        <p class="hero-sub" style="margin-top:1rem;font-size:0.9rem;color:var(--sc-text-2);">Heads up: these are <strong>early test versions</strong> (Windows ~<span data-sb-size="windows">94</span>&nbsp;MB, Linux ~<span data-sb-size="linux">44</span>&nbsp;MB). They aren&rsquo;t digitally signed yet, so Windows will show a &ldquo;Windows protected your PC&rdquo; warning &mdash; click <em>More info</em>, then <em>Run anyway</em>. They also won&rsquo;t update themselves yet. Want to be sure your download wasn&rsquo;t tampered with? Compare it against our <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt" style="color:var(--sc-accent);">published fingerprints (SHA-256)</a>. Exactly what works and what doesn&rsquo;t yet is on the <a href="/coming-soon" style="color:var(--sc-accent);">build status page</a>.</p>
         <div class="stat-bar">
             <div class="stat-item"><div class="stat-val">322,386</div><div class="stat-lbl">Lines of Rust</div></div>
             <div class="stat-item"><div class="stat-val">291</div><div class="stat-lbl">Code files</div></div>
-            <div class="stat-item"><div class="stat-val">0.16.1</div><div class="stat-lbl">Version</div></div>
+            <div class="stat-item"><div class="stat-val" data-sb-version="latest">0.16.2</div><div class="stat-lbl">Version</div></div>
             <div class="stat-item"><div class="stat-val">Early</div><div class="stat-lbl">Test version</div></div>
         </div>
     </div>
@@ -750,7 +834,7 @@
 <div class="wrap" id="download">
     <div class="section-eyebrow">Get started</div>
     <h2 class="sh">Windows and Linux dev builds available</h2>
-    <p class="sd">Download version 0.16.1 for Windows (~86&nbsp;MB) or Linux (~42&nbsp;MB). These are <strong>early test versions</strong>: they aren&rsquo;t digitally signed yet, so Windows will warn you before running it (click <em>More info</em> &rarr; <em>Run anyway</em>), and they won&rsquo;t update themselves yet. You can check your download against our <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt">published fingerprints (SHA-256)</a>.</p>
+    <p class="sd">Download the latest test builds: Windows v<span data-sb-version="windows">0.16.2</span> (~<span data-sb-size="windows">94</span>&nbsp;MB) or Linux v<span data-sb-version="linux">0.16.1</span> (~<span data-sb-size="linux">44</span>&nbsp;MB). These are <strong>early test versions</strong>: they aren&rsquo;t digitally signed yet, so Windows will warn you before running it (click <em>More info</em> &rarr; <em>Run anyway</em>), and they won&rsquo;t update themselves yet. You can check your download against our <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt">published fingerprints (SHA-256)</a>.</p>
 
     <div class="dl-card" style="margin-bottom:1.5rem;">
         <h4>New in v0.16.1</h4>
@@ -776,14 +860,14 @@
         <div class="dl-card main-dl">
             <div class="dl-os">🪟</div>
             <h4>Windows (dev)</h4>
-            <p>v0.16.1 early test version (~86 MB). Windows 10 or 11, 64-bit.</p>
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe">Download dev build</a>
+            <p>v<span data-sb-version="windows">0.16.2</span> early test version (~<span data-sb-size="windows">94</span>&nbsp;MB). Windows 10 or 11, 64-bit.</p>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" data-sb-href="windows">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🐧</div>
             <h4>Linux (dev)</h4>
-            <p>v0.16.1 early test version (~42 MB) for Ubuntu 22.04+, Debian 12+, Fedora 36+ and similar. Unpack and run <code>./sassy-browser</code>.</p>
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz">Download dev build</a>
+            <p>v<span data-sb-version="linux">0.16.1</span> early test version (~<span data-sb-size="linux">44</span>&nbsp;MB) for Ubuntu 22.04+, Debian 12+, Fedora 36+ and similar. Unpack and run <code>./sassy-browser</code>.</p>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" data-sb-href="linux">Download dev build</a>
         </div>
         <div class="dl-card">
             <div class="dl-os">🍎</div>
@@ -805,8 +889,8 @@
     <h2>A browser built from scratch<br><span style="color:var(--sc-accent);">and honest about how far along it is</span>.</h2>
     <p class="sub">No Google code, no Google tracking. Early test versions for Windows and Linux are out now; the finished release is still to come.</p>
     <div class="cta-row">
-        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green btn-lg">Download for Windows</a>
-        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" class="btn btn-green btn-lg">Download for Linux</a>
+        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" data-sb-href="windows" class="btn btn-green btn-lg">Download for Windows</a>
+        <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz" data-sb-href="linux" class="btn btn-green btn-lg">Download for Linux</a>
         <a href="/coming-soon" class="btn btn-outline btn-lg">Build status</a>
     </div>
     <a href="/donate" class="support-link" target="_blank" rel="noopener">Support development with a donation</a>
@@ -821,7 +905,7 @@
     <div class="footer-links">
         <a href="/coming-soon">Build status</a>
         <a href="/research/sassy-browser-engine-audit-2026">Engine Audit</a>
-        <a href="/research">Research &amp; Devlog</a>
+        <a href="/research/">Research &amp; Devlog</a>
         <a href="/privacy">Privacy Policy</a>
         <a href="/terms">Terms</a>
         <a href="/donate" target="_blank" rel="noopener">Donate</a>
