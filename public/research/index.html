@@ -111,21 +111,21 @@
     <div class="page">
         <span class="kicker">Research &amp; Devlog</span>
         <h1>What we found, how we fixed it</h1>
-        <p class="page-desc">Security audits, vulnerability investigations, and engineering post-mortems from our own products. First-person, failure-driven, no hype.</p>
+        <p class="page-desc">When we find a security problem in our own software, we fix it and then write up what went wrong, in the open. Plain-English summaries below; the full technical write-ups are one click away. No hype.</p>
 
         <div class="articles">
 
             <a class="article-card" href="/research/sassy-browser-engine-audit-2026">
                 <span class="article-tag tag-audit">Security Audit</span>
-                <h2>Sassy Browser engine audit: twelve page- and file-reachable defects, found and fixed</h2>
-                <p>Full audit of our from-scratch browser engine in Rust. 240 findings total, twelve with a security impact: page-controlled crashes, markup injection, viewer DoS, weak key derivation, and an agent policy that failed open. All fixed in v0.11.0.</p>
+                <h2>We audited our own browser: twelve security holes found and fixed</h2>
+                <p>We went through Sassy Browser line by line and logged 240 problems. Twelve could have been used against you: a booby-trapped web page or file could crash the browser, sneak content onto a page, or get past a safety check, and one password lock was weaker than it should have been. All twelve were fixed in version 0.11.0.<br><small style="opacity:0.7">Technical: page-controlled crashes, markup injection, viewer DoS, weak key derivation, fail-open agent policy.</small></p>
                 <span class="article-meta">Audit run 2026-06-10 &middot; Published 2026-11-09</span>
             </a>
 
             <a class="article-card" href="/research/vibecoding-nested-interpreters-2026">
                 <span class="article-tag tag-devlog">Devlog</span>
-                <h2>My security gate&rsquo;s safest verdict was reserved for its worst input</h2>
-                <p>A researcher reported RCE in SassyMCP via SSH ProxyCommand injection. The named filter was never a filter. The real hole was that our command blocklist treated quoted strings as data &mdash; and SSH treats them as commands. Five tools, one shared gate, all vulnerable.</p>
+                <h2>Our safety filter waved through the most dangerous commands</h2>
+                <p>A security researcher showed us how someone could trick SassyMCP into running their own commands on your computer. Our filter treated anything inside quotation marks as harmless text &mdash; but one common program (SSH) treats it as a command to run. Five tools shared that filter, so all five were exposed. Here&rsquo;s how it happened and how we fixed it.<br><small style="opacity:0.7">Technical: remote code execution via SSH ProxyCommand injection past a quote-blind blocklist.</small></p>
                 <span class="article-meta">Patched 2026-09-20 &middot; Published 2026-11-09</span>
             </a>
 

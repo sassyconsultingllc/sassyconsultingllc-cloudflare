@@ -357,13 +357,13 @@
 
     <section class="hero">
         <h1>
-            Digital forensics.<br>
-            <span class="gradient">Memory-safe precision.</span>
+            Was your PC broken into?<br>
+            <span class="gradient">Find out for $9.99.</span>
         </h1>
         
         <p class="hero-sub">
-            Registry analysis, file recovery, timeline generation, evidence preservation. 
-            Built in Rust for Windows incident response.
+            WinForensics-Pro digs through your Windows PC for signs that someone or something got in &mdash;
+            hidden files, programs that start themselves, tampered software, malware &mdash; and tells you what it found in plain English.
         </p>
         
         <div class="hero-cta">
@@ -379,64 +379,64 @@
         
         <div class="price-hero">
             <div class="price">$9.99</div>
-            <div class="price-sub">One-time purchase. Lifetime license. Windows 10/11 x64 &mdash; v0.5.2.</div>
+            <div class="price-sub">Pay once, keep it forever. For Windows 10 and 11.</div>
         </div>
         
         <div class="hero-stats">
             <div class="stat">
-                <div class="stat-value">Rust</div>
-                <div class="stat-label">Memory Safe</div>
+                <div class="stat-value">Pay once</div>
+                <div class="stat-label">No subscription</div>
             </div>
             <div class="stat">
-                <div class="stat-value">GUI + CLI</div>
-                <div class="stat-label">Interface</div>
+                <div class="stat-value">Click to scan</div>
+                <div class="stat-label">No experience needed</div>
             </div>
             <div class="stat">
-                <div class="stat-value">STIX 2.1</div>
-                <div class="stat-label">Report Export</div>
+                <div class="stat-value">Plain English</div>
+                <div class="stat-label">Reports</div>
             </div>
             <div class="stat">
-                <div class="stat-value">Fast</div>
-                <div class="stat-label">Execution</div>
+                <div class="stat-value">Private</div>
+                <div class="stat-label">Results stay on your PC</div>
             </div>
         </div>
     </section>
 
     <section id="features">
         <span class="section-label">Features</span>
-        <h2 class="section-title">Professional forensics tools, no bloat</h2>
-        <p class="section-desc">Everything you need for Windows incident response in a single binary.</p>
+        <h2 class="section-title">What it checks</h2>
+        <p class="section-desc">The same kinds of checks a professional investigator would run after a break-in, in one app you can run yourself.</p>
         
         <div class="features-grid">
             <div class="feature-card">
                 <div class="feature-icon">REG</div>
-                <h3>Registry &amp; SAM Analysis</h3>
-                <p>Parse Windows registry hives and SAM. Extract user activity, installed programs, and persistence mechanisms. Android ADB/APK forensics included.</p>
+                <h3>What&rsquo;s installed, and who&rsquo;s been here</h3>
+                <p>Reads Windows&rsquo; own records to list user accounts, installed programs, and anything set to start itself up behind your back. Can check a plugged-in Android phone too.<br><small style="color: var(--sc-text-3);">For the pros: registry hives, SAM, persistence, ADB/APK.</small></p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">REC</div>
-                <h3>Integrity &amp; ADS Scanning</h3>
-                <p>Authenticode integrity checks plus alternate-data-stream discovery. Surfaces unsigned, tampered, and stream-hidden binaries.</p>
+                <h3>Tampered and hidden files</h3>
+                <p>Spots programs that have been altered, aren&rsquo;t signed by a real publisher, or are tucked away where Windows doesn&rsquo;t normally show them.<br><small style="color: var(--sc-text-3);">For the pros: Authenticode, alternate data streams.</small></p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">TL</div>
-                <h3>Timeline Correlation</h3>
-                <p>Correlate events across registry, execution artifacts and logs into one reviewable timeline. Sentinel mode keeps watching continuously.</p>
+                <h3>One timeline of what happened</h3>
+                <p>Pulls everything it finds into a single, in-order timeline so you can see what happened and when. Watch mode keeps an eye on things after the scan, too.<br><small style="color: var(--sc-text-3);">For the pros: cross-source event correlation, Sentinel mode.</small></p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">EV</div>
-                <h3>Quarantine &amp; WORM Evidence</h3>
-                <p>VirusTotal hash lookups, quarantine with restore, and a removable-media kit mode backed by a write-once evidence store.</p>
+                <h3>Lock away bad files (with undo)</h3>
+                <p>Checks suspicious files against 70+ antivirus scanners at once, moves bad ones somewhere they can&rsquo;t run, and lets you put them back if it guessed wrong. Can also run from a USB stick and save findings so they can&rsquo;t be changed later.<br><small style="color: var(--sc-text-3);">For the pros: VirusTotal hash lookup, quarantine/restore, WORM evidence store.</small></p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">MFT</div>
-                <h3>Execution Artifacts</h3>
-                <p>Prefetch, Amcache and ShimCache parsing for what actually ran on the box, plus memory inspection.</p>
+                <h3>What actually ran</h3>
+                <p>Windows quietly keeps notes on every program that runs. WinForensics reads them, so a program that deleted itself still leaves a trail. Also looks at what&rsquo;s running right now.<br><small style="color: var(--sc-text-3);">For the pros: Prefetch, Amcache, ShimCache, memory inspection.</small></p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">LOG</div>
-                <h3>Event Log &amp; Beaconing</h3>
-                <p>EVTX and PowerShell script-block logs, plus live connection inspection with beaconing detection. Exports JSON, HTML and STIX 2.1.</p>
+                <h3>Is something phoning home?</h3>
+                <p>Reads Windows&rsquo; event logs and watches your internet connections for malware that checks in with its owner on a schedule. Save the results as a web page or hand them to an IT pro.<br><small style="color: var(--sc-text-3);">For the pros: EVTX, PowerShell script-block logs, beaconing detection; JSON, HTML, STIX 2.1 export.</small></p>
             </div>
         </div>
     </section>
@@ -444,8 +444,8 @@
     <section id="usage" style="background: var(--sc-bg-2); padding: 6rem var(--sc-gutter, 2rem);">
         <div style="max-width: 1000px; margin: 0 auto;">
             <span class="section-label">Usage</span>
-            <h2 class="section-title">Point and click, or drive it from a shell</h2>
-            <p class="section-desc">The download is the GUI build. The same engine ships as <code>winforensics-pro.exe</code> for scripted use. Both prompt for UAC elevation, and some scanners need the LocalSystem agent installed by the MSI.</p>
+            <h2 class="section-title">Click a button, or type a command</h2>
+            <p class="section-desc">Most people just open the app and click Scan. Windows will ask for permission when it starts &mdash; that&rsquo;s normal, it needs administrator access to look everywhere. If you&rsquo;d rather type commands or automate it, the installer also includes <code>winforensics-pro.exe</code> for the command line:</p>
 
             <div class="code-demo">
                 <div class="code-header">
@@ -479,7 +479,7 @@
     <section id="download">
         <span class="section-label">Download</span>
         <h2 class="section-title" style="text-align: center;">Get WinForensics for Windows</h2>
-        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">The download is license-gated: your WFP- key unlocks the installer and the updater.</p>
+        <p class="section-desc" style="text-align: center; margin: 0 auto 1rem;">Buy a license and you&rsquo;ll get a download link and a license key (it starts with WFP-). The key unlocks the installer and future updates.</p>
 
         <div style="text-align: center;">
             <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large" style="margin-bottom: 1rem;">Buy license — $9.99</button>
@@ -489,8 +489,8 @@
     </section>
 
     <section class="cta">
-        <h2>Professional forensics &mdash; $9.99 forever</h2>
-        <p>No subscriptions and no cloud dependencies, just the tools you need.</p>
+        <h2>Peace of mind &mdash; $9.99, once</h2>
+        <p>No subscription, and your scan results stay on your PC. Just answers.</p>
         <div class="cta-buttons">
             <button onclick="buyProduct('winforensics')" class="btn btn-primary btn-large">Buy license — $9.99</button>
         </div>

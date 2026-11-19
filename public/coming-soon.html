@@ -152,7 +152,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 }
 </style>
 <link rel="stylesheet" href="/theme/fall.css">
-<link rel="stylesheet" href="/theme/winter.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
 
@@ -173,73 +173,73 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 <div class="wrap">
 
     <div class="head-row">
-        <span class="pill pill-gold"><span class="pill-dot"></span>In Active Development</span>
-        <span class="pill pill-green">Pure Rust &middot; Source-Proprietary</span>
+        <span class="pill pill-gold"><span class="pill-dot"></span>Still being built</span>
+        <span class="pill pill-green">Built from scratch &middot; Private code</span>
     </div>
 
     <h1>Sassy Browser is still being built.</h1>
     <p class="lead">
-        An unsigned Windows <strong>dev</strong> build is available for early testers.
-        The signed stable release channel is not live yet &mdash; we will not claim a polished
-        installer until the experience matches what we promised on the
+        An <strong>early test version</strong> is available for people who want to try it now.
+        The finished, polished release isn&rsquo;t out yet &mdash; and we won&rsquo;t call it finished until it does
+        everything we promised on the
         <a href="/browser">overview page</a>.
-        Below is a live, factual look at where the project stands today &mdash; pulled
-        directly from the <strong>ACE</strong> repository &mdash; followed by a
-        feature&#8209;by&#8209;feature status of what is done, what is in progress, and what is planned.
+        Below is an honest look at where things stand today, pulled straight from
+        our own project files, followed by a
+        feature&#8209;by&#8209;feature list of what&rsquo;s done, what&rsquo;s half-done, and what&rsquo;s still planned.
     </p>
-    <div class="lead-meta" id="lead-meta">Truth layer v0.15.2 · 200,424 LOC · sourced from ACE <code>docs/status/</code> (not GitHub API guesses).</div>
+    <div class="lead-meta" id="lead-meta">Version 0.15.2 · 200,424 lines of code · straight from our project files.</div>
 
     <!-- LIVE STATS -->
     <section class="section" id="stats">
-        <div class="section-eyebrow">Codebase &middot; Product truth</div>
-        <h2>Repository statistics</h2>
-        <p class="sd">Canonical numbers from the ACE repo status JSON (<code>/status/product-status.json</code>), aligned with <code>Cargo.toml</code> and DataROOM. Optional GitHub fields fill in only if the public API responds.</p>
+        <div class="section-eyebrow">By the numbers</div>
+        <h2>How big is it, and how healthy?</h2>
+        <p class="sd">These numbers come straight from the project itself, not estimates. (For the technically curious, the raw data is at <code>/status/product-status.json</code>.)</p>
 
         <div class="stats-grid">
             <div class="stat-cell" data-stat="version">
-                <div class="stat-lbl">Product version</div>
+                <div class="stat-lbl">Version</div>
                 <div class="stat-val gold" id="stat-version">0.15.2</div>
-                <div class="stat-sub">Cargo.toml</div>
+                <div class="stat-sub">Current release number</div>
             </div>
             <div class="stat-cell" data-stat="lines">
-                <div class="stat-lbl">Lines of Rust</div>
+                <div class="stat-lbl">Lines of code</div>
                 <div class="stat-val" id="stat-lines">200,424</div>
-                <div class="stat-sub">src/ · DataROOM metrics</div>
+                <div class="stat-sub">Written in Rust, by hand</div>
             </div>
             <div class="stat-cell" data-stat="files">
-                <div class="stat-lbl">Source files</div>
+                <div class="stat-lbl">Code files</div>
                 <div class="stat-val" id="stat-files">230</div>
-                <div class="stat-sub">.rs files under src/</div>
+                <div class="stat-sub">Separate pieces of the program</div>
             </div>
             <div class="stat-cell" data-stat="tests">
-                <div class="stat-lbl">Test attributes</div>
+                <div class="stat-lbl">Automatic checks</div>
                 <div class="stat-val" id="stat-tests">2,276</div>
-                <div class="stat-sub">#[test] count · not a fresh suite run</div>
+                <div class="stat-sub">Tests that catch mistakes before you do</div>
             </div>
             <div class="stat-cell" data-stat="wpt">
-                <div class="stat-lbl">WPT subset</div>
+                <div class="stat-lbl">Web standards tests passed</div>
                 <div class="stat-val" id="stat-wpt">82/83</div>
-                <div class="stat-sub">cargo test wpt_subset</div>
+                <div class="stat-sub">Official browser tests (WPT) we run</div>
             </div>
             <div class="stat-cell" data-stat="warnings">
-                <div class="stat-lbl">Compiler warnings</div>
+                <div class="stat-lbl">Code warnings</div>
                 <div class="stat-val" id="stat-warnings">0</div>
-                <div class="stat-sub">release check target</div>
+                <div class="stat-sub">Zero is the goal</div>
             </div>
             <div class="stat-cell" data-stat="download">
-                <div class="stat-lbl">Public download</div>
-                <div class="stat-val dim" id="stat-download">Dev</div>
-                <div class="stat-sub">Unsigned Windows exe on R2</div>
+                <div class="stat-lbl">Download</div>
+                <div class="stat-val dim" id="stat-download">Test</div>
+                <div class="stat-sub">Early test version for Windows</div>
             </div>
             <div class="stat-cell">
-                <div class="stat-lbl">Repository</div>
+                <div class="stat-lbl">Source code</div>
                 <div class="stat-val dim">Private</div>
-                <div class="stat-sub">Proprietary source &mdash; no public repo</div>
+                <div class="stat-sub">Not public right now</div>
             </div>
             <div class="stat-cell">
-                <div class="stat-lbl">Signed installer</div>
-                <div class="stat-val dim">None</div>
-                <div class="stat-sub">Update manifest still 404</div>
+                <div class="stat-lbl">Finished installer</div>
+                <div class="stat-val dim">Not yet</div>
+                <div class="stat-sub">Automatic updates not set up yet</div>
             </div>
             <div class="stat-cell">
                 <div class="stat-lbl">Price</div>
@@ -251,13 +251,13 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 
     <!-- SMOKE SCOREBOARD -->
     <section class="section" id="smoke">
-        <div class="section-eyebrow">Web compat &middot; Honest smoke</div>
-        <h2>Public smoke scoreboard</h2>
-        <p class="sd">Ten representative sites with pass / partial / fail. This is an engineering assessment, not a Chromium claim. Source: <code>/status/smoke-scoreboard.json</code>.</p>
+        <div class="section-eyebrow">Real websites &middot; Real results</div>
+        <h2>Does it load the sites you use?</h2>
+        <p class="sd">We tried ten everyday websites and graded each one: works, mostly works, or doesn&rsquo;t work yet. No spin.</p>
         <div class="summary" id="smoke-summary">
-            <div class="sumcard done"><div class="sn">Pass</div><div class="sv" id="smoke-pass">—</div></div>
-            <div class="sumcard wip"><div class="sn">Partial</div><div class="sv" id="smoke-partial">—</div></div>
-            <div class="sumcard plan"><div class="sn">Fail</div><div class="sv" id="smoke-fail">—</div></div>
+            <div class="sumcard done"><div class="sn">Works</div><div class="sv" id="smoke-pass">—</div></div>
+            <div class="sumcard wip"><div class="sn">Mostly works</div><div class="sv" id="smoke-partial">—</div></div>
+            <div class="sumcard plan"><div class="sn">Not yet</div><div class="sv" id="smoke-fail">—</div></div>
             <div class="sumcard total"><div class="sn">Sites scored</div><div class="sv" id="smoke-total">10</div></div>
         </div>
         <div id="smoke-table"></div>
@@ -265,25 +265,25 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 
     <!-- FEATURE STATUS -->
     <section class="section" id="status">
-        <div class="section-eyebrow">Roadmap &middot; What is done, what is not</div>
+        <div class="section-eyebrow">What&rsquo;s done, what isn&rsquo;t</div>
         <h2>Feature status</h2>
-        <p class="sd">No hand-waving. Sourced from README capability honesty + FEATURE-MAP. Office-parity (Photoshop / Excel / PowerPoint / ChemDraw) is <strong>not</strong> claimed — those stay Partial or Planned. Signed stable stays gated; an unsigned Windows <strong>dev</strong> build is linked below.</p>
+        <p class="sd">No hand-waving. It does <strong>not</strong> yet do everything Photoshop, Excel, PowerPoint or ChemDraw do, so those are marked half-done or planned. You can try the early test version from the link at the bottom of the page.</p>
 
         <div class="summary" id="summary">
             <div class="sumcard done"><div class="sn">Done</div><div class="sv" id="sum-done">—</div></div>
             <div class="sumcard wip"><div class="sn">Partial</div><div class="sv" id="sum-wip">—</div></div>
             <div class="sumcard plan"><div class="sn">Planned</div><div class="sv" id="sum-plan">—</div></div>
             <div class="sumcard total">
-                <div class="sn">Weighted progress</div>
+                <div class="sn">Overall progress</div>
                 <div class="sv" id="sum-pct">—</div>
                 <div class="bar"><span class="b-done" id="bar-done"></span><span class="b-wip" id="bar-wip"></span><span class="b-plan" id="bar-plan"></span></div>
             </div>
         </div>
 
         <div class="status-key">
-            <span class="key-item"><span class="key-dot done"></span>Done &mdash; usable depth for the stated scope</span>
-            <span class="key-item"><span class="key-dot wip"></span>Partial &mdash; present but incomplete vs deeper claims</span>
-            <span class="key-item"><span class="key-dot plan"></span>Planned &mdash; roadmap only</span>
+            <span class="key-item"><span class="key-dot done"></span>Done &mdash; works and is ready to use</span>
+            <span class="key-item"><span class="key-dot wip"></span>Partial &mdash; there, but not finished</span>
+            <span class="key-item"><span class="key-dot plan"></span>Planned &mdash; not started yet</span>
         </div>
 
         <!-- Categories rendered by JS -->
@@ -292,10 +292,10 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
 
     <!-- CTA -->
     <div class="cta-block">
-        <h3>Try the Windows dev build</h3>
-        <p>Unsigned v0.15.2 Windows x64 exe (~57&nbsp;MB) on R2 — build <code>70cda9aa-dirty</code>. Expect SmartScreen warnings and rough edges (DuckDuckGo / heavy SPAs still fail smoke). This is not a signed stable installer. The signed update channel is where the real release will land &mdash; it is still 404 today.</p>
+        <h3>Try the early test version</h3>
+        <p>Windows, about 57&nbsp;MB. It isn&rsquo;t digitally signed yet, so Windows will warn you before it runs (click <em>More info</em> &rarr; <em>Run anyway</em>). Expect rough edges &mdash; some big, complicated sites like DuckDuckGo don&rsquo;t load properly yet. It won&rsquo;t update itself; the finished release will. <span style="opacity:0.6">(Build <code>70cda9aa-dirty</code>.)</span></p>
         <div class="cta-row">
-            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green">Download Windows dev build</a>
+            <a href="https://sassycreates.sassyconsultingllc.com/sassy-browser.exe" class="btn btn-green">Download test version for Windows</a>
             <a href="/donate" class="btn btn-outline" target="_blank" rel="noopener">Fund development</a>
             <a href="/browser" class="btn btn-outline">Back to overview</a>
         </div>
@@ -345,21 +345,21 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         if (dl.public_binaries_available) {
             set('stat-download', 'Available');
         } else if (dev.available || dl.cta_policy === 'dev_build') {
-            set('stat-download', 'Dev');
+            set('stat-download', 'Test');
         } else {
             set('stat-download', 'Gated');
         }
         const dlCell = document.querySelector('[data-stat="download"] .stat-sub');
         if (dlCell) {
-            if (dev.available) dlCell.textContent = 'Unsigned Windows exe on R2';
-            else if (dl.signed_manifest_status === '404') dlCell.textContent = 'Signed stable manifest is 404';
+            if (dev.available) dlCell.textContent = 'Early test version for Windows';
+            else if (dl.signed_manifest_status === '404') dlCell.textContent = 'Finished release not out yet';
             else dlCell.textContent = dl.notes || 'See INSTALL.md / update-server';
         }
         const meta = document.getElementById('lead-meta');
         if (meta) {
-            meta.textContent = 'Truth layer v' + (status.version || '0.15.2')
+            meta.textContent = 'Version ' + (status.version || '0.15.2')
                 + ' · as of ' + (status.as_of || '—')
-                + ' · ' + fmt(m.loc_rust_src) + ' LOC · source /status/product-status.json';
+                + ' · ' + fmt(m.loc_rust_src) + ' lines of code · straight from our project files';
         }
     }
 
@@ -553,7 +553,7 @@ footer { border-top: 1px solid var(--sc-border); padding: 2.5rem var(--sc-gutter
         const root = document.getElementById('features');
         if (root) {
             const p = el('p', 'sd');
-            p.textContent = 'Could not load /status/product-status.json. Deploy ACE docs/status/*.json to public/status/ on this site.';
+            p.textContent = 'We couldn\u2019t load the latest status just now. Try refreshing in a minute.';
             root.appendChild(p);
         }
         optionalGithub();

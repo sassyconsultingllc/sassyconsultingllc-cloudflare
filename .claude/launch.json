@@ -11,6 +11,14 @@
       ],
       "port": 8787,
       "autoPort": false
+    },
+    {
+      "//": "Static preview of public/ for copy and layout checks when wrangler can't run (node_modules on this checkout holds the Windows workerd binary). No worker routes, so clean URLs like /browser 404; use the .html paths.",
+      "name": "static",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "8790", "--bind", "127.0.0.1", "--directory", "public"],
+      "port": 8790,
+      "autoPort": false
     }
   ]
 }
