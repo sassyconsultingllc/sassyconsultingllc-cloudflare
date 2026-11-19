@@ -104,16 +104,20 @@ for (const r of regions.filter(r => r.kind === 'js')) {
 if (!isCss) {
   const htmlTag = (src.match(/<html\b[^>]*>/i) || [''])[0];
   if (!/data-page="[\w-]+"/.test(htmlTag)) errors.push('<html> lacks data-page="<key>"');
-  const iScript = src.indexOf('/theme/seasonal.js'), iTokens = src.indexOf('/theme/tokens.css'), iFall = src.indexOf('/theme/fall.css');
+  const iScript = src.indexOf('/theme/seasonal.js'), iTokens = src.indexOf('/theme/tokens.css');
+  // Per-season layout layers; each must load after the page's own styles.
+  const seasons = ['fall', 'winter'].map(n => ({ n, i: src.indexOf(`/theme/${n}.css`) }));
   const headEnd = src.search(/<\/head>/i);
-  if (iScript < 0 || iTokens < 0 || iFall < 0) errors.push('missing one of /theme/seasonal.js, /theme/tokens.css, /theme/fall.css');
+  if (iScript < 0 || iTokens < 0 || seasons.some(s => s.i < 0)) errors.push(`missing one of /theme/seasonal.js, /theme/tokens.css, ${seasons.map(s => `/theme/${s.n}.css`).join(', ')}`);
   else {
     if (!(iScript < iTokens)) errors.push('seasonal.js must come before tokens.css');
-    if (iFall > headEnd) errors.push('fall.css must be inside <head>');
     const styleIdxs = [...src.matchAll(/<style\b/gi)].map(m => m.index).filter(i => i < headEnd);
     const linkIdxs = [...src.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi)].filter(m => !/\/theme\//.test(m[0]) && m.index < headEnd).map(m => m.index);
     if (iTokens > Math.min(...styleIdxs, Infinity)) errors.push('tokens.css must come before the first page <style>');
-    if (iFall < Math.max(...styleIdxs, ...linkIdxs, -1)) errors.push('fall.css must come after the last page <style>/stylesheet in <head>');
+    for (const s of seasons) {
+      if (s.i > headEnd) errors.push(`${s.n}.css must be inside <head>`);
+      if (s.i < Math.max(...styleIdxs, ...linkIdxs, -1)) errors.push(`${s.n}.css must come after the last page <style>/stylesheet in <head>`);
+    }
     if (/<script[^>]*seasonal\.js[^>]*(async|defer)/i.test(src)) errors.push('seasonal.js must be synchronous (no async/defer)');
   }
   if (!/data-theme-toggle/.test(src)) errors.push('no element carries data-theme-toggle');

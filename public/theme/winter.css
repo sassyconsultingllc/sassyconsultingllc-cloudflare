@@ -1,0 +1,261 @@
+/*
+ * Copyright (c) 2026 Shane Smith / Sassy Consulting LLC. All rights reserved.
+ * Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
+ *
+ * Winter layout + ornament layer: Arctic Midnight & Electric Ice Blue.
+ * Every rule is scoped to html[data-theme="winter"]; colours are NOT set here
+ * (they live in tokens.css). Scoped strictly to data-theme="winter".
+ * See docs/THEMING.md.
+ */
+
+/* ===== Shared ornaments =================================================== */
+html[data-theme="winter"] {
+    /* Dendritic ice crystal snowflake mask */
+    --sc-snowflake-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M11 2v3.1a6.9 6.9 0 0 0-2.2.9L6.6 4.4 5.2 5.8l1.6 1.6c-.4.7-.7 1.4-.9 2.2H2.9v2h3c.1.8.4 1.5.9 2.2l-1.6 1.6 1.4 1.4 2.2-1.6c.7.5 1.4.8 2.2.9v3.1h2v-3.1c.8-.1 1.5-.4 2.2-.9l2.2 1.6 1.4-1.4-1.6-1.6c.5-.7.8-1.4.9-2.2h3.1v-2h-3.1c-.1-.8-.4-1.5-.9-2.2l1.6-1.6-1.4-1.4-2.2 1.6a6.9 6.9 0 0 0-2.2-.9V2h-2zm1 7a3 3 0 1 1 0 6 3 3 0 0 1 0-6z'/%3E%3C/svg%3E");
+    /* Snowman ornament mask */
+    --sc-snowman-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 28'%3E%3Cpath d='M8 2h8v5H8zM6 7h12v2H6zM12 9a3.5 3.5 0 0 1 3.4 2.7l-4.4.9-1.3-.2A3.5 3.5 0 0 1 12 9zm-5 4.5c.3-.3.8-.5 1.5-.5h7c1 0 1.8.8 1.8 1.8 0 .4-.2.8-.5 1.1 1.3 1.2 2.2 3 2.2 5.1 0 3.9-3.1 7-7 7s-7-3.1-7-7c0-2.1.9-3.9 2.2-5.1-.1-.1-.2-.2-.2-.4v-2zm9 2H8c-.5 0-1 .5-1 1v4h2v-4h1v5h2v-5h1v4h2v-4c0-.5-.5-1-1-1z'/%3E%3C/svg%3E");
+    /* Stylized line-art crystal watermark for hero */
+    --sc-frost-crystal-art: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200' fill='none' stroke='%23000' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='100' y1='10' x2='100' y2='190'/%3E%3Cline x1='22' y1='55' x2='178' y2='145'/%3E%3Cline x1='22' y1='145' x2='178' y2='55'/%3E%3Cpath d='M100 35l15 15M100 35l-15 15M100 65l22 22M100 65l-22 22M100 165l15-15M100 165l-15-15M100 135l22-22M100 135l-22-22'/%3E%3Cpath d='M44 68l6 21M44 68l21 6M70 83l9 30M70 83l30 9M156 132l-6-21M156 132l-21-6M130 117l-9-30M130 117l-30-9'/%3E%3Cpath d='M44 132l6-21M44 132l21-6M70 117l9-30M70 117l30-9M156 68l-6 21M156 68l-21 6M130 83l-9 30M130 83l-30 9'/%3E%3Ccircle cx='100' cy='100' r='18' stroke-width='2'/%3E%3Ccircle cx='100' cy='100' r='8' fill='%23000'/%3E%3C/svg%3E");
+}
+
+/* ===== Site-wide ========================================================== */
+/* Arctic aurora lighting pooling at the top of the viewport. Painted on html
+   canvas so it scrolls away naturally. */
+html[data-theme="winter"] {
+    background-image:
+        radial-gradient(110% 55% at 50% -12%, color-mix(in srgb, var(--sc-accent) 14%, transparent), transparent 64%),
+        radial-gradient(70% 45% at 95% -4%, color-mix(in srgb, var(--sc-hue-7) 11%, transparent), transparent 70%),
+        radial-gradient(50% 35% at 5% 0%, color-mix(in srgb, var(--sc-hue-5) 8%, transparent), transparent 60%);
+    background-repeat: no-repeat;
+    scrollbar-color: var(--sc-border-2) var(--sc-bg);
+    accent-color: var(--sc-accent);
+}
+html[data-theme="winter"] ::selection {
+    background: color-mix(in srgb, var(--sc-accent) 35%, transparent);
+    color: var(--sc-text);
+}
+html[data-theme="winter"] :focus-visible {
+    outline: 2px solid var(--sc-accent);
+    outline-offset: 3px;
+}
+
+html[data-theme="winter"] :is(h1, h2) { letter-spacing: -0.015em; }
+
+/* Frosted glass hairline under the fixed nav */
+html[data-theme="winter"] body > nav {
+    border-bottom-color: color-mix(in srgb, var(--sc-accent) 26%, var(--sc-border));
+}
+
+/* The (c) toggle gets an ice crystal snowflake in front of it */
+html[data-theme="winter"] [data-theme-toggle]::before {
+    content: "";
+    display: inline-block;
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 0.45em;
+    vertical-align: -0.1em;
+    background: var(--sc-accent);
+    -webkit-mask: var(--sc-snowflake-mask) center / contain no-repeat;
+    mask: var(--sc-snowflake-mask) center / contain no-repeat;
+}
+
+/* Section eyebrows lead with snowflake ornament; section titles close on an ice gradient rule */
+html[data-theme="winter"] .section-label::before {
+    content: "";
+    display: inline-block;
+    width: 0.95em;
+    height: 0.95em;
+    margin-right: 0.45em;
+    vertical-align: -0.12em;
+    background: currentColor;
+    -webkit-mask: var(--sc-snowflake-mask) center / contain no-repeat;
+    mask: var(--sc-snowflake-mask) center / contain no-repeat;
+}
+html[data-theme="winter"] .section-title { line-height: 1.12; }
+html[data-theme="winter"] .section-title::after {
+    content: "";
+    display: block;
+    width: 3.5rem;
+    height: 3px;
+    margin-top: 0.9rem;
+    border-radius: 3px;
+    background: var(--sc-gradient-brand);
+}
+html[data-theme="winter"] [style*="text-align: center"] > .section-title::after,
+html[data-theme="winter"] [style*="text-align:center"] > .section-title::after {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 600px) {
+    html[data-theme="winter"] :not(.table-scroll) > table :is(td, th) { overflow-wrap: anywhere; }
+}
+
+/* Nav CTA buttons draw in high-contrast ink */
+html[data-theme="winter"] nav a.btn-primary,
+html[data-theme="winter"] nav a.btn-primary:hover { color: var(--sc-accent-ink); }
+
+/* ===== Homepage =========================================================== */
+html[data-theme="winter"][data-page="home"] .price span[style*="#34d399"] { color: var(--sc-accent-2) !important; }
+html[data-theme="winter"][data-page="home"] .product-badge.free { color: var(--sc-accent-ink); }
+html[data-theme="winter"][data-page="home"] .btn-secondary:hover { border-color: var(--sc-accent); }
+
+/* Hovered cards shimmer with crystalline aurora borders */
+html[data-theme="winter"][data-page="home"] :is(.product-card, .code-window, .result-card, .status-banner, .app-tile):hover {
+    animation: sc-frost-border 4s ease-in-out infinite;
+}
+@keyframes sc-frost-border {
+    0%, 100% { border-color: color-mix(in srgb, var(--sc-snow-5) 70%, transparent); }
+    25%      { border-color: color-mix(in srgb, var(--sc-snow-3) 70%, transparent); }
+    50%      { border-color: color-mix(in srgb, var(--sc-hue-7) 65%, transparent); }
+    75%      { border-color: color-mix(in srgb, var(--sc-snow-4) 70%, transparent); }
+}
+
+/* Editorial hero */
+html[data-theme="winter"][data-page="home"] .hero {
+    align-items: flex-start;
+    text-align: left;
+}
+html[data-theme="winter"][data-page="home"] .hero h1 {
+    font-size: clamp(2.6rem, 8.5vw, 5.6rem);
+    line-height: 1.02;
+    max-width: 14ch;
+}
+html[data-theme="winter"][data-page="home"] .hero-sub { max-width: 46ch; }
+html[data-theme="winter"][data-page="home"] .hero-cta { justify-content: flex-start; }
+html[data-theme="winter"][data-page="home"] .hero::before { display: none; }
+
+/* Line-art frost crystal watermark drifting behind hero copy */
+html[data-theme="winter"][data-page="home"] .hero::after {
+    content: "";
+    position: absolute;
+    right: 2%;
+    top: 6%;
+    width: min(30vw, 360px);
+    aspect-ratio: 1 / 1;
+    background: var(--sc-gradient-brand);
+    -webkit-mask: var(--sc-frost-crystal-art) center / contain no-repeat;
+    mask: var(--sc-frost-crystal-art) center / contain no-repeat;
+    opacity: 0.28;
+    transform: rotate(15deg);
+    pointer-events: none;
+}
+@media (max-width: 767px) {
+    html[data-theme="winter"][data-page="home"] .hero::after { display: none; }
+}
+html[data-theme="winter"][data-page="home"] #products > .section-title { max-width: 18ch; }
+
+/* Product tiles carry individual frost & aurora top-accent lines */
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card { border-top-width: 3px; }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+1) { border-top-color: var(--sc-hue-6); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+2) { border-top-color: var(--sc-hue-5); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+3) { border-top-color: var(--sc-hue-7); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+4) { border-top-color: var(--sc-hue-4); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+5) { border-top-color: var(--sc-hue-3); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+6) { border-top-color: var(--sc-hue-8); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+7) { border-top-color: var(--sc-hue-2); }
+html[data-theme="winter"][data-page="home"] .products-grid > .product-card:nth-child(8n+8) { border-top-color: var(--sc-hue-1); }
+
+/* ===== Glittery snowfall =================================================== */
+html[data-theme="winter"] { background-color: var(--sc-bg); }
+html[data-theme="winter"] body { background-color: transparent; }
+
+html[data-theme="winter"] .sc-snowflakes {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+}
+html[data-theme="winter"] .sc-snowflake {
+    position: absolute;
+    top: -36px;
+    left: var(--x);
+    opacity: var(--o);
+    animation: sc-snowfall var(--dur) linear var(--delay) infinite;
+    will-change: transform;
+}
+html[data-theme="winter"] .sc-snow-sway {
+    display: block;
+    animation: sc-snow-sway var(--sway) ease-in-out infinite alternate;
+    will-change: transform;
+}
+html[data-theme="winter"] .sc-snow-glitter {
+    display: block;
+    animation: sc-glitter var(--twinkle) ease-in-out infinite alternate;
+}
+html[data-theme="winter"] .sc-snowflake svg { display: block; }
+html[data-theme="winter"] .sc-snowflakes.sc-paused .sc-snowflake,
+html[data-theme="winter"] .sc-snowflakes.sc-paused .sc-snow-sway,
+html[data-theme="winter"] .sc-snowflakes.sc-paused .sc-snow-glitter {
+    animation-play-state: paused;
+}
+
+@keyframes sc-snowfall {
+    from { transform: translate3d(0, -4vh, 0); }
+    to   { transform: translate3d(var(--drift), 108vh, 0); }
+}
+@keyframes sc-snow-sway {
+    from { transform: translateX(-18px) rotate(-18deg); }
+    to   { transform: translateX(18px) rotate(18deg); }
+}
+@keyframes sc-glitter {
+    0%   { opacity: 0.45; filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.4)); }
+    100% { opacity: 1.0;  filter: drop-shadow(0 0 6px var(--sc-accent-2)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html[data-theme="winter"] .sc-snowflakes { display: none; }
+}
+
+/* ===== Reindeer Caravan Banner (Post-Turnstile) =========================== */
+html[data-theme="winter"] .hamster-sign,
+html[data-theme="winter"] .reindeer-sign {
+    background: linear-gradient(180deg, #1e2c44 0%, #131e32 100%);
+    border: 2px solid #3d5e8c;
+    color: #f0f6fc;
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -8px 14px rgba(11, 19, 32, 0.5);
+}
+html[data-theme="winter"] .hamster-sign strong,
+html[data-theme="winter"] .reindeer-sign strong {
+    color: var(--sc-accent-2);
+}
+html[data-theme="winter"] .hamster-sign-tagline,
+html[data-theme="winter"] .reindeer-sign-tagline {
+    color: #c8d9ed;
+}
+html[data-theme="winter"] .hamster-rope,
+html[data-theme="winter"] .reindeer-harness {
+    background: linear-gradient(90deg, #38bdf8, #818cf8 50%, #38bdf8);
+    box-shadow: 0 0 4px rgba(56, 189, 248, 0.5);
+}
+
+/* Snowcap layer sitting along the top edge of the wooden sled banner */
+html[data-theme="winter"] .hamster-sign::before,
+html[data-theme="winter"] .reindeer-sign::before {
+    content: "";
+    position: absolute;
+    top: -5px;
+    left: -2px;
+    right: -2px;
+    height: 6px;
+    background: #ffffff;
+    border-radius: 6px 6px 0 0;
+    box-shadow: 0 1px 3px rgba(255, 255, 255, 0.7);
+}
+html[data-theme="winter"] .hamster-sign::after,
+html[data-theme="winter"] .reindeer-sign::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    right: 18px;
+    width: 6px;
+    height: 7px;
+    background: #ffffff;
+    border-radius: 0 0 3px 3px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15);
+}

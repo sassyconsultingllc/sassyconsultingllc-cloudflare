@@ -1051,9 +1051,30 @@
                 animation: none;
                 transform: translate(calc(50vw - 50%), 0);
             }
-            .hamster, .hamster .leg-back-1, .hamster .leg-back-2 {
+            .hamster, .hamster .leg-back-1, .hamster .leg-back-2,
+            .reindeer, .reindeer-leg-front-1, .reindeer-leg-front-2, .reindeer-leg-back-1, .reindeer-leg-back-2 {
                 animation: none !important;
             }
+        }
+
+        .reindeer {
+            width: 84px;
+            height: 65px;
+            flex-shrink: 0;
+            animation: reindeer-prance 0.52s ease-in-out infinite;
+            transform-origin: center bottom;
+        }
+        @keyframes reindeer-prance {
+            0%, 100% { transform: translateY(0) rotate(-1deg); }
+            50%      { transform: translateY(-4px) rotate(1.5deg); }
+        }
+        .reindeer-leg-front-1 { animation: reindeer-step 0.44s ease-in-out infinite; transform-origin: 46px 60px; }
+        .reindeer-leg-front-2 { animation: reindeer-step 0.44s ease-in-out 0.22s infinite; transform-origin: 52px 59px; }
+        .reindeer-leg-back-1  { animation: reindeer-step 0.44s ease-in-out 0.11s infinite; transform-origin: 78px 57px; }
+        .reindeer-leg-back-2  { animation: reindeer-step 0.44s ease-in-out 0.33s infinite; transform-origin: 84px 56px; }
+        @keyframes reindeer-step {
+            0%, 100% { transform: rotate(-8deg) translateY(0); }
+            50%      { transform: rotate(12deg) translateY(-3px); }
         }
 
         .mobile-menu-btn { display: none; background: transparent; border: 1px solid var(--sc-border-2); color: var(--sc-text); padding: 8px 16px; border-radius: var(--sc-radius-btn, 6px); cursor: pointer; font-size: 1.1rem; }
@@ -1067,6 +1088,7 @@
         .skip-link:focus { left: 0; }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
+    <link rel="stylesheet" href="/theme/winter.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Skip to content</a>
@@ -1164,45 +1186,48 @@ Sassy Consulting LLC
         </div>
     </section>
 
-    <!-- Post-verification hamster banner: SVG hamster pulls a wooden sign with the 14-day install ask -->
+    <!-- Post-verification winter caravan banner: SVG reindeer pulls a frosted sled sign with the install ask -->
     <div class="hamster-stage" id="hamster-stage" hidden aria-hidden="true">
-        <div class="hamster-caravan">
-            <svg class="hamster" viewBox="0 0 100 75" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <!-- Tail -->
-                <ellipse cx="86" cy="44" rx="3" ry="5" fill="#c08a55" transform="rotate(20 86 44)"/>
-                <!-- Back legs -->
-                <ellipse class="leg-back-1" cx="58" cy="62" rx="5" ry="7" fill="#c08a55"/>
-                <ellipse class="leg-back-2" cx="72" cy="62" rx="5" ry="7" fill="#c08a55"/>
-                <!-- Body -->
-                <ellipse cx="55" cy="44" rx="32" ry="22" fill="#e8b478"/>
-                <!-- Belly highlight -->
-                <ellipse cx="55" cy="52" rx="22" ry="13" fill="#f5d4a8"/>
-                <!-- Head -->
-                <ellipse cx="22" cy="36" rx="17" ry="15" fill="#e8b478"/>
+        <div class="hamster-caravan reindeer-caravan">
+            <svg class="reindeer" viewBox="0 0 110 85" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <!-- Antlers -->
+                <path d="M28 22 C26 12 18 6 12 4 M24 16 C18 14 12 15 8 18 M27 10 C24 8 20 8 16 9 M34 20 C36 10 44 4 52 2 M38 14 C44 12 50 13 54 16 M37 8 C40 6 45 6 49 7" stroke="#8c6239" stroke-width="2.2" stroke-linecap="round" fill="none"/>
                 <!-- Ears -->
-                <circle cx="14" cy="22" r="5.5" fill="#e8b478"/>
-                <circle cx="14" cy="22" r="2.8" fill="#f7c8d0"/>
-                <circle cx="27" cy="21" r="5.5" fill="#e8b478"/>
-                <circle cx="27" cy="21" r="2.8" fill="#f7c8d0"/>
-                <!-- Cheek puff -->
-                <circle cx="24" cy="42" r="5" fill="#f7c8d0" opacity="0.55"/>
-                <!-- Eye -->
-                <circle cx="15" cy="34" r="2.2" fill="#1a1a1a"/>
-                <circle cx="14.3" cy="33.3" r="0.7" fill="#ffffff"/>
-                <!-- Eyebrow whisker -->
-                <path d="M 8 36 Q 4 36 2 35" stroke="#1a1a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
-                <path d="M 8 38 Q 4 39 2 40" stroke="#1a1a1a" stroke-width="0.6" fill="none" stroke-linecap="round"/>
+                <ellipse cx="23" cy="24" rx="3.5" ry="7" fill="#a07246" transform="rotate(-30 23 24)"/>
+                <ellipse cx="38" cy="23" rx="3" ry="6" fill="#8c6239" transform="rotate(25 38 23)"/>
+                <!-- Head -->
+                <path d="M20 32 C18 24 26 18 36 20 C42 22 44 28 42 34 C40 38 34 44 26 42 Z" fill="#b88656"/>
+                <!-- Muzzle / Snout -->
+                <path d="M16 35 C12 37 10 42 14 45 C18 47 24 45 26 40 Z" fill="#ecd9c6"/>
                 <!-- Nose -->
-                <ellipse cx="7" cy="36" rx="1.6" ry="1.2" fill="#1a1a1a"/>
-                <!-- Mouth line -->
-                <path d="M 7 38 Q 8 40 10 39" stroke="#1a1a1a" stroke-width="0.5" fill="none" stroke-linecap="round"/>
-                <!-- Front paw (holding rope) -->
-                <ellipse cx="18" cy="54" rx="3.2" ry="5" fill="#d49a5f"/>
+                <ellipse cx="12" cy="40" rx="2.5" ry="2" fill="#221814"/>
+                <circle cx="11.2" cy="39.2" r="0.7" fill="#ffffff"/>
+                <!-- Gentle dark eye with glint -->
+                <ellipse cx="26" cy="29" rx="2.2" ry="2.6" fill="#1e140f"/>
+                <circle cx="25.2" cy="28.2" r="0.8" fill="#ffffff"/>
+                <!-- Neck & Chest -->
+                <path d="M28 40 C32 48 38 56 46 60 C52 56 50 44 40 32 Z" fill="#b88656"/>
+                <path d="M35 48 C37 54 42 58 46 60 C48 56 45 48 39 44 Z" fill="#ecd9c6"/>
+                <!-- Body -->
+                <ellipse cx="64" cy="52" rx="26" ry="17" fill="#b88656"/>
+                <!-- Flank highlight -->
+                <ellipse cx="64" cy="49" rx="22" ry="13" fill="#c99767"/>
+                <!-- Tufted tail -->
+                <path d="M88 47 C94 45 98 48 97 54 C94 54 90 52 88 49 Z" fill="#ecd9c6"/>
+                <!-- Festive frost harness collar & gold bell -->
+                <path d="M32 46 C36 53 42 58 48 61" stroke="#38bdf8" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+                <circle cx="41" cy="56" r="2.8" fill="#facc15" stroke="#b45309" stroke-width="0.6"/>
+                <!-- Front legs -->
+                <g class="reindeer-leg-front-1"><path d="M46 60 L44 74 L42 82" stroke="#b88656" stroke-width="4.5" stroke-linecap="round"/><path d="M42 80 L42 84" stroke="#221814" stroke-width="4.8" stroke-linecap="round"/></g>
+                <g class="reindeer-leg-front-2"><path d="M52 59 L54 72 L58 80" stroke="#9e6f42" stroke-width="4" stroke-linecap="round"/><path d="M58 78 L58 82" stroke="#221814" stroke-width="4.2" stroke-linecap="round"/></g>
+                <!-- Back legs -->
+                <g class="reindeer-leg-back-1"><path d="M78 57 C82 66 80 74 76 82" stroke="#b88656" stroke-width="4.5" stroke-linecap="round"/><path d="M76 80 L76 84" stroke="#221814" stroke-width="4.8" stroke-linecap="round"/></g>
+                <g class="reindeer-leg-back-2"><path d="M84 56 C88 64 88 72 86 80" stroke="#9e6f42" stroke-width="4" stroke-linecap="round"/><path d="M86 78 L86 82" stroke="#221814" stroke-width="4.2" stroke-linecap="round"/></g>
             </svg>
-            <div class="hamster-rope" aria-hidden="true"></div>
-            <div class="hamster-sign">
-                Installed one? A <strong>rating on Google Play</strong> goes further than you'd think.
-                <span class="hamster-sign-tagline">Blunt feedback welcome — tell us what breaks.</span>
+            <div class="hamster-rope reindeer-harness" aria-hidden="true"></div>
+            <div class="hamster-sign reindeer-sign">
+                Installed one? A <strong>rating on Google Play</strong> warms our winter.
+                <span class="hamster-sign-tagline reindeer-sign-tagline">Blunt feedback welcome — tell us what breaks in the cold.</span>
             </div>
         </div>
     </div>

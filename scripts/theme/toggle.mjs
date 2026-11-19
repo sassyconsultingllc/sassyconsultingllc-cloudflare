@@ -2,12 +2,14 @@
 // Proprietary source. This notice is Copyright Management Information (17 U.S.C. 1202); removal or alteration prohibited.
 // node scripts/theme/toggle.mjs [--pages /,/store.html,...] [--base http://localhost:8787]
 // Behavioural tests for seasonal.js on real pages. Prints PASS/FAIL per check.
+// Theme cycle under test: winter (default) -> fall -> original -> winter.
+import fs from 'node:fs';
 import puppeteer from 'puppeteer-core';
 
 const arg = (k, d) => { const i = process.argv.indexOf('--' + k); return i > -1 ? process.argv[i + 1] : d; };
 const BASE = arg('base', 'http://localhost:8787');
 const PAGES = arg('pages', '/').split(',');
-const CHROME = process.env.CHROME_PATH || 'C:/Program Files/Google/Chrome/Application/chrome.exe';
+const CHROME = process.env.CHROME_PATH || ['C:/Program Files/Google/Chrome/Application/chrome.exe', '/usr/bin/chromium', '/usr/bin/google-chrome'].find(p => fs.existsSync(p));
 const BLOCK = [/challenges\.cloudflare\.com/, /lemonsqueezy\.com/];
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 let pass = 0, fail = 0;
@@ -29,6 +31,8 @@ async function open(url, { width = 1280, mobile = false, reduced = false, fresh 
 }
 const theme = (p) => p.evaluate(() => document.documentElement.dataset.theme);
 const stored = (p) => p.evaluate(() => localStorage.getItem('sc-theme'));
+const count = (p, sel) => p.evaluate((s) => document.querySelectorAll(s).length, sel);
+const SNOW = '.sc-snowflakes .sc-snowflake', LEAF = '.sc-leaves .sc-leaf';
 async function hold(p, ms, { moveBy = 0 } = {}) {
   const box = await p.evaluate(() => { const el = document.querySelector('[data-theme-toggle]'); el.scrollIntoView({ block: 'center' }); const r = el.getBoundingClientRect(); return { x: r.left + Math.min(20, r.width / 2), y: r.top + r.height / 2 }; });
   await p.mouse.move(box.x, box.y); await p.mouse.down();
@@ -40,25 +44,34 @@ for (const url of PAGES) {
   console.log(`\n=== ${url} ===`);
   const ctx = await browser.createBrowserContext();
   const p = await open(url, { ctx });
-  check('default theme is fall', (await theme(p)) === 'fall');
+  check('default theme is winter', (await theme(p)) === 'winter');
   const t = await p.evaluate(() => { const el = document.querySelector('[data-theme-toggle]'); if (!el) return null; return { role: el.getAttribute('role'), tab: el.getAttribute('tabindex'), title: el.getAttribute('title'), text: el.textContent.trim().slice(0, 60), visible: el.getBoundingClientRect().width > 0 }; });
   check('toggle element exists, visible, contains (c)', !!t && t.visible && /\u00a9/.test(t.text), t ? `"${t.text}"` : 'missing');
   check('toggle enhanced: role=button tabindex=0 title', !!t && t.role === 'button' && t.tab === '0' && /hold/i.test(t.title || ''));
-  const leaves = await p.evaluate(() => document.querySelectorAll('.sc-leaves .sc-leaf').length);
-  check('desktop leaves rendered (14)', leaves === 14, `got ${leaves}`);
-  const leafBehind = await p.evaluate(() => { const l = document.querySelector('.sc-leaves'); return l ? getComputedStyle(l).zIndex : null; });
-  check('leaf layer is behind content (z -1)', leafBehind === '-1', `z=${leafBehind}`);
+  check('toggle title names the next theme (Fall)', /Fall/.test(t?.title || ''), t?.title);
+  const snow = await count(p, SNOW);
+  check('desktop snowflakes rendered (24)', snow === 24, `got ${snow}`);
+  const snowBehind = await p.evaluate(() => { const l = document.querySelector('.sc-snowflakes'); return l ? getComputedStyle(l).zIndex : null; });
+  check('snow layer is behind content (z -1)', snowBehind === '-1', `z=${snowBehind}`);
+  check('winter.css loaded once', (await count(p, 'link[href*="/theme/winter.css"]')) === 1);
 
   await hold(p, 200);
-  check('short press does not switch', (await theme(p)) === 'fall');
+  check('short press does not switch', (await theme(p)) === 'winter');
   await hold(p, 900, { moveBy: 30 });
-  check('drag during hold cancels', (await theme(p)) === 'fall');
+  check('drag during hold cancels', (await theme(p)) === 'winter');
+
   await hold(p, 900);
-  check('long press switches to original', (await theme(p)) === 'original');
+  check('long press switches to fall', (await theme(p)) === 'fall');
+  const leaves = await count(p, LEAF);
+  check('fall: desktop leaves rendered (14)', leaves === 14, `got ${leaves}`);
+  check('fall: snow removed', (await count(p, '.sc-snowflakes')) === 0);
+
+  await hold(p, 900);
+  check('second long press switches to original', (await theme(p)) === 'original');
   check('choice persisted', (await stored(p)) === 'original');
   const toast = await p.evaluate(() => { const el = document.querySelector('.sc-toast'); return el ? { on: el.classList.contains('sc-toast-on'), text: el.textContent } : null; });
-  check('toast shown with next-step hint', !!toast && toast.on && /Original theme/.test(toast.text) && /Fall/.test(toast.text), toast ? `"${toast.text}"` : 'none');
-  check('leaves removed in original', (await p.evaluate(() => !document.querySelector('.sc-leaves'))));
+  check('toast shown with next-step hint', !!toast && toast.on && /Original theme/.test(toast.text) && /Winter/.test(toast.text), toast ? `"${toast.text}"` : 'none');
+  check('no particles in original', (await count(p, '.sc-leaves, .sc-snowflakes')) === 0);
   const metaColor = await p.evaluate(() => document.querySelector('meta[name="theme-color"]')?.content);
   check('theme-color meta present', !!metaColor, metaColor);
 
@@ -68,22 +81,22 @@ for (const url of PAGES) {
   await p.bringToFront();
   await p.evaluate(() => { const el = document.querySelector('[data-theme-toggle]'); el.focus(); });
   await p.keyboard.down('Enter'); await sleep(900); await p.keyboard.up('Enter'); await sleep(200);
-  check('keyboard hold (Enter) switches back to fall', (await theme(p)) === 'fall');
+  check('keyboard hold (Enter) wraps back to winter', (await theme(p)) === 'winter');
   await sleep(300);
-  check('other tab synced to fall via storage event', (await theme(p2)) === 'fall');
+  check('other tab synced to winter via storage event', (await theme(p2)) === 'winter');
 
   await p.reload({ waitUntil: 'networkidle2' });
-  check('reload keeps fall', (await theme(p)) === 'fall');
-  await p.goto(BASE + url + (url.includes('?') ? '&' : '?') + 'theme=original', { waitUntil: 'networkidle2' });
-  check('?theme=original applies', (await theme(p)) === 'original');
+  check('reload keeps winter', (await theme(p)) === 'winter');
+  await p.goto(BASE + url + (url.includes('?') ? '&' : '?') + 'theme=fall', { waitUntil: 'networkidle2' });
+  check('?theme=fall applies', (await theme(p)) === 'fall');
   check('?theme= is stripped from the URL', !(await p.evaluate(() => location.search.includes('theme='))));
   check('no page errors', p.__errors.length === 0 && p2.__errors.length === 0, [...p.__errors, ...p2.__errors].join(' | '));
   await ctx.close();
 
   const ctxM = await browser.createBrowserContext();
   const m = await open(url, { ctx: ctxM, width: 390, mobile: true });
-  const ml = await m.evaluate(() => document.querySelectorAll('.sc-leaves .sc-leaf').length);
-  check('mobile leaves rendered (7)', ml === 7, `got ${ml}`);
+  const ms = await count(m, SNOW);
+  check('mobile snowflakes rendered (12)', ms === 12, `got ${ms}`);
   const tapHold = await m.evaluate(async () => {
     const el = document.querySelector('[data-theme-toggle]'); el.scrollIntoView({ block: 'center' });
     const r = el.getBoundingClientRect(); const x = r.left + 5, y = r.top + r.height / 2;
@@ -94,14 +107,16 @@ for (const url of PAGES) {
     await new Promise(r => setTimeout(r, 400)); el.dispatchEvent(new PointerEvent('pointerup', o));
     return { theme: document.documentElement.dataset.theme, ctxMenuBlocked: cm.defaultPrevented };
   });
-  check('touch long-press switches on mobile', tapHold.theme === 'original');
+  check('touch long-press switches on mobile', tapHold.theme === 'fall');
   check('Android context menu suppressed during hold', tapHold.ctxMenuBlocked);
+  const ml = await count(m, LEAF);
+  check('mobile leaves rendered (7)', ml === 7, `got ${ml}`);
   await ctxM.close();
 
   const ctxR = await browser.createBrowserContext();
   const r = await open(url, { ctx: ctxR, reduced: true });
-  check('reduced motion: no leaves', await r.evaluate(() => !document.querySelector('.sc-leaves')));
-  check('reduced motion: still fall theme', (await theme(r)) === 'fall');
+  check('reduced motion: no particles', (await count(r, '.sc-leaves, .sc-snowflakes')) === 0);
+  check('reduced motion: still winter theme', (await theme(r)) === 'winter');
   await ctxR.close();
 }
 await browser.close();

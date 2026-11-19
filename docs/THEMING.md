@@ -8,12 +8,15 @@ reference a role (`var(--sc-accent)`), and a theme decides what that role is.
 public/theme/
   tokens.css    every value, for every theme. The single source of truth.
   seasonal.js   picks the theme before first paint, persists it, the (c) long-press
-                toggle, falling leaves. Loaded synchronously in <head>.
+                toggle, snowfall (winter) and falling leaves (fall). Loaded
+                synchronously in <head>.
+  winter.css    winter-only layout and ornament rules, all scoped to
+                html[data-theme="winter"].
   fall.css      fall-only layout and ornament rules, all scoped to
-                html[data-theme="fall"]. Delete the <link> and fall is gone.
+                html[data-theme="fall"].
 ```
 
-Themes are selected by `html[data-theme]`: `fall` (current default) or `original`
+Themes are selected by `html[data-theme]`: `winter` (current default), `fall`, or `original`
 (the site as it looked before this system existed — preserved exactly, verified by
 computed-style diff). Each page declares itself with `html[data-page="<key>"]` so a
 theme can give each product its own accent.
@@ -21,8 +24,13 @@ theme can give each product its own accent.
 ## Changing the look later
 
 - **Recolour the site:** edit the theme's block in `tokens.css`. Nothing else.
-- **Add a season:** copy the `fall` block in `tokens.css` to `html[data-theme="winter"]`,
-  add `winter` to `THEMES` in `seasonal.js`, optionally add `winter.css` for layout.
+- **Change the default season:** set `DEFAULT_THEME` in `seasonal.js` (the order of
+  `THEMES` is the order the (c) toggle cycles through), and update the expectations in
+  `scripts/theme/toggle.mjs`.
+- **Add a season:** copy an existing season's block in `tokens.css` to
+  `html[data-theme="<name>"]`, add it to `THEMES`/`LABEL` in `seasonal.js`, add a
+  `<name>.css` for layout, link it on every page, and add it to the `seasons` list in
+  `scripts/theme/check.mjs`.
 - **Add a page:** use only `--sc-*` roles; add `data-page`; include the three theme
   files (see "Page head" below). If its original look differs from the defaults,
   give it an `html[data-page="..."]` block in the original section of `tokens.css`.
@@ -122,7 +130,8 @@ box-shadow: var(--sc-shadow-card, none);        /* cards */
 | `--sc-shadow-card` | box-shadow of cards at rest |
 
 ### Seasonal
-`--sc-leaf-1` … `--sc-leaf-6` are the falling-leaf colours (read by `seasonal.js`).
+`--sc-snow-1` … `--sc-snow-6` are the snowflake colours (winter) and `--sc-leaf-1` …
+`--sc-leaf-6` the falling-leaf colours (fall); both are read by `seasonal.js`.
 
 ## What stays literal
 
@@ -134,8 +143,10 @@ box-shadow: var(--sc-shadow-card, none);        /* cards */
 
 ## Page head
 
-Order matters: the script must run before the first paint, and `fall.css` must come
-after the page's own `<style>` so equal-specificity rules resolve in its favour.
+Order matters: the script must run before the first paint, and the season files
+(`fall.css`, `winter.css`) must come after the page's own `<style>` so
+equal-specificity rules resolve in their favour. `seasonal.js` would inject a missing
+season file at runtime, but only after first paint, so link both statically.
 
 ```html
 <html lang="en" data-page="store">
@@ -146,10 +157,35 @@ after the page's own `<style>` so equal-specificity rules resolve in its favour.
   <link rel="stylesheet" href="/theme/tokens.css">
   ...page <style>...
   <link rel="stylesheet" href="/theme/fall.css">
+  <link rel="stylesheet" href="/theme/winter.css">
 </head>
 ```
 
-## The fall theme (default)
+## The winter theme (default)
+
+Arctic Midnight & Electric Ice Blue: midnight canvas `#0b1320`, frost-white type
+`#f0f6fc`, DM Serif Display headings, DM Sans body. Per-page accents:
+
+| name | accent | pages |
+|---|---|---|
+| Electric Ice (brand) | `#38bdf8` | home, store, contact, success, privacy, refund, eula, app-testers, guides |
+| Polar Cyan | `#0ea5e9` | winforensics |
+| Aurora Mint | `#2dd4bf` | sassy-talk, sassytalk-privacy |
+| Frost Twilight | `#a78bfa` | website-creator |
+| Hearth Gold | `#facc15` | about |
+| Glacial Diamond | `#38bdf8` | browser, coming-soon |
+| Glacier Blue | `#60a5fa` | nda |
+| Hearth Amber | `#fbbf24` | terms |
+| Glacial Orange | `#fb923c` | cfadmin-* |
+| Winter Berry | `#fb7185` | foodie-* |
+
+Layout in winter (`winter.css`, CSS only): aurora light pooled at the top of the
+canvas; a snowflake before section eyebrows and the (c) line; an ice-gradient rule
+under section titles; frosted card borders; glittering snowfall behind content (24
+flakes on desktop, 12 on phones, none under reduced motion). The same contrast
+guarantees as fall apply.
+
+## The fall theme
 
 Ember & Bark with golden-hour light: espresso canvas `#17100b`, cream type
 `#f8eddd`, Fraunces display headings (SOFT/WONK axes), DM Sans body. One palette for
@@ -182,7 +218,7 @@ lightness for colour-blind readers.
 ## Verifying a change
 
 ```bash
-npm run theme:contrast                      # palette maths for the fall theme
+npm run theme:contrast                      # palette maths for winter and fall
 npm run theme:check -- public/store.html    # literals, unknown roles, knob fallbacks, head order, JS syntax
 npm run dev                                 # then, in another shell:
 npm run theme:snap -- --out .snap/before --theme original      # snapshot every page (390 + 1280)
@@ -211,7 +247,7 @@ diff to exactly zero, so any difference it reports is real.
 ## The (c) toggle
 
 The copyright line in each footer carries `data-theme-toggle`. Pressing and holding
-it (or holding Enter/Space while it is focused) for 0.7s swaps between `fall` and
-`original`. The choice persists in `localStorage` (`sc-theme`) and syncs across open
-tabs. `?theme=original` / `?theme=fall` on any URL sets it too, which is handy for
-screenshots and support.
+it (or holding Enter/Space while it is focused) for 0.7s moves to the next theme:
+`winter` → `fall` → `original` → `winter`. The choice persists in `localStorage`
+(`sc-theme`) and syncs across open tabs. `?theme=winter` / `?theme=fall` /
+`?theme=original` on any URL sets it too, which is handy for screenshots and support.

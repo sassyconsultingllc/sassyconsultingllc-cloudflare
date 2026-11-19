@@ -8,8 +8,10 @@
  *   - Theme: ?theme= -> localStorage(sc-theme) -> DEFAULT. Syncs across tabs.
  *   - Toggle: press-and-hold the footer element carrying [data-theme-toggle]
  *     (the copyright line), or hold Enter/Space on it, for HOLD_MS.
- *   - Leaves: fall only; colours come from --sc-leaf-1..6 in tokens.css; skipped
- *     entirely under prefers-reduced-motion; paused while the tab is hidden.
+ *   - Particles:
+ *       - Winter: glittery snowfall (colours --sc-snow-1..6);
+ *       - Fall: falling autumn leaves (colours --sc-leaf-1..6);
+ *       - Skipped entirely under prefers-reduced-motion; paused while tab is hidden.
  *
  * Everything this file injects carries [data-seasonal] so tooling can ignore it.
  * Nothing here may throw into the page: every entry point is guarded.
@@ -18,14 +20,13 @@
 (function () {
   'use strict';
 
-  var THEMES = ['fall', 'original'];
-  var DEFAULT_THEME = 'fall';
+  var THEMES = ['winter', 'fall', 'original'];
+  var DEFAULT_THEME = 'winter';
   var KEY = 'sc-theme';
   var HOLD_MS = 700;
-  var LABEL = { fall: 'Fall', original: 'Original' };
-  // Webfonts the fall theme uses (Fraunces display with its SOFT/WONK axes, plus
-  // DM Sans and JetBrains Mono so every page shares one type system in fall).
-  // Loaded only while fall is active, so the original theme pays nothing for it.
+  var LABEL = { winter: 'Winter', fall: 'Fall', original: 'Original' };
+
+  var WINTER_FONTS = 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&display=swap';
   var FALL_FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT,WONK@9..144,400..700,0..100,0..1&family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap';
 
   var root = document.documentElement;
@@ -34,7 +35,7 @@
     try {
       if (get) return window.localStorage.getItem(KEY);
       window.localStorage.setItem(KEY, value);
-    } catch (e) { /* private mode / blocked storage: theme just won't persist */ }
+    } catch (e) { /* private mode / blocked storage: theme won't persist */ }
     return null;
   }
   function valid(t) { return THEMES.indexOf(t) !== -1; }
@@ -50,16 +51,32 @@
   // ---- 1. Pre-paint ------------------------------------------------------
   var current = resolve();
   root.setAttribute('data-theme', current);
-  if (current === 'fall') loadFonts();
+  loadAssets(current);
 
-  function loadFonts() {
-    if (!FALL_FONTS || document.querySelector('link[data-seasonal-font]')) return;
-    var l = document.createElement('link');
-    l.rel = 'stylesheet';
-    l.href = FALL_FONTS;
-    l.setAttribute('data-seasonal', '');
-    l.setAttribute('data-seasonal-font', '');
-    (document.head || root).appendChild(l);
+  function loadAssets(theme) {
+    try {
+      var fontUrl = theme === 'winter' ? WINTER_FONTS : (theme === 'fall' ? FALL_FONTS : null);
+      if (fontUrl && !document.querySelector('link[data-seasonal-font="' + theme + '"]')) {
+        var lf = document.createElement('link');
+        lf.rel = 'stylesheet';
+        lf.href = fontUrl;
+        lf.setAttribute('data-seasonal', '');
+        lf.setAttribute('data-seasonal-font', theme);
+        (document.head || root).appendChild(lf);
+      }
+      // Safety net for a page missing its static season <link>. Wait until the
+      // DOM is parsed: pre-paint, the page's own <link> further down <head> does
+      // not exist yet, and injecting here would load every season file twice.
+      var cssFile = theme === 'winter' ? '/theme/winter.css' : (theme === 'fall' ? '/theme/fall.css' : null);
+      if (cssFile && document.readyState !== 'loading' && !document.querySelector('link[href*="' + cssFile + '"]')) {
+        var lc = document.createElement('link');
+        lc.rel = 'stylesheet';
+        lc.href = cssFile;
+        lc.setAttribute('data-seasonal', '');
+        lc.setAttribute('data-seasonal-css', theme);
+        (document.head || root).appendChild(lc);
+      }
+    } catch (e) {}
   }
 
   // ---- 2. Applying a theme -----------------------------------------------
@@ -68,9 +85,9 @@
     current = theme;
     root.setAttribute('data-theme', theme);
     if (persist) store(false, theme);
-    if (theme === 'fall') loadFonts();
+    loadAssets(theme);
     syncThemeColor();
-    syncLeaves();
+    syncParticles();
     try { window.dispatchEvent(new CustomEvent('sc-themechange', { detail: { theme: theme } })); } catch (e) {}
   }
 
@@ -86,7 +103,7 @@
       }
       if (originalThemeColor === null) originalThemeColor = meta.getAttribute('content') || '';
       var bg = getComputedStyle(root).getPropertyValue('--sc-bg').trim();
-      meta.setAttribute('content', current === 'original' && originalThemeColor ? originalThemeColor : (bg || originalThemeColor || '#0a0a0a'));
+      meta.setAttribute('content', current === 'original' && originalThemeColor ? originalThemeColor : (bg || originalThemeColor || '#0b1320'));
     } catch (e) {}
   }
 
@@ -105,7 +122,10 @@
     return [];
   }
 
-  function next() { return current === 'fall' ? 'original' : 'fall'; }
+  function next() {
+    var idx = THEMES.indexOf(current);
+    return THEMES[(idx + 1) % THEMES.length];
+  }
 
   function wire(el) {
     if (el.__scWired) return;
@@ -191,32 +211,79 @@
     s.setAttribute('data-seasonal-ui', '');
     s.textContent = [
       '.sc-toggle{cursor:pointer;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:manipulation;-webkit-tap-highlight-color:transparent;position:relative}',
-      '.sc-toggle:focus-visible{outline:2px solid var(--sc-accent,#22c55e);outline-offset:3px;border-radius:4px}',
-      '.sc-toggle.sc-holding::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:100%;background:var(--sc-accent,#22c55e);transform-origin:left;transform:scaleX(0);animation:sc-hold ' + HOLD_MS + 'ms linear forwards;border-radius:2px;pointer-events:none}',
+      '.sc-toggle:focus-visible{outline:2px solid var(--sc-accent,#38bdf8);outline-offset:3px;border-radius:4px}',
+      '.sc-toggle.sc-holding::after{content:"";position:absolute;left:0;bottom:-4px;height:2px;width:100%;background:var(--sc-accent,#38bdf8);transform-origin:left;transform:scaleX(0);animation:sc-hold ' + HOLD_MS + 'ms linear forwards;border-radius:2px;pointer-events:none}',
       '@keyframes sc-hold{to{transform:scaleX(1)}}',
       '.sc-vh{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}',
       '.sc-toast{position:fixed;left:50%;bottom:max(1.25rem,env(safe-area-inset-bottom));transform:translate(-50%,1rem);opacity:0;pointer-events:none;z-index:2147483000;',
       'max-width:calc(100vw - 2rem);padding:.7rem 1.1rem;border-radius:999px;font:600 .85rem/1.3 var(--sc-font-sans,system-ui,sans-serif);',
-      'background:var(--sc-surface-2,#1a1a1a);color:var(--sc-text,#fff);border:1px solid var(--sc-border-2,#333);box-shadow:0 12px 32px -12px rgba(0,0,0,.6);transition:opacity .25s,transform .25s;text-align:center}',
+      'background:var(--sc-surface-2,#1c304d);color:var(--sc-text,#f0f6fc);border:1px solid var(--sc-border-2,#3d5e8c);box-shadow:0 12px 32px -12px rgba(0,0,0,.75);transition:opacity .25s,transform .25s;text-align:center}',
       '.sc-toast.sc-toast-on{opacity:1;transform:translate(-50%,0)}',
       '@media (prefers-reduced-motion:reduce){.sc-toggle.sc-holding::after{animation-duration:1ms}.sc-toast{transition:none}}'
     ].join('');
     document.head.appendChild(s);
   }
 
-  // ---- 4. Falling leaves (fall only) -------------------------------------
-  // Silhouettes on a 24x24 grid: sugar maple, red oak, birch, elm.
+  // ---- 4. Seasonal Particles (Snow for Winter, Leaves for Fall) -----------
+  // Leaf silhouettes on a 24x24 grid: sugar maple, red oak, birch, elm.
+  // Both builders use a deterministic golden-ratio spread rather than
+  // Math.random(): the field looks scattered but never clumps, and a reload
+  // looks the same.
   var LEAF_PATHS = [
     'M12 1.6l1.5 3.4 3-1.3-.7 3.7 3.4.4-2.2 2.7 3.1 1.5-3.4 1.1.9 3.4-3.4-1.5-1.3 3.2-.4 3.8h-1l-.4-3.8-1.3-3.2-3.4 1.5.9-3.4-3.4-1.1 3.1-1.5-2.2-2.7 3.4-.4-.7-3.7 3 1.3z',
     'M12 2c1.4 1.3 1 2.9 2.4 3.4s2.4-1 3 .5-1.4 2.4-.5 3.4 2.4-.4 2.9 1-1.9 2.4-1 3.4 1.9 0 1.9 1.4-2.4 1.9-3.8 2.4c-1 .3-1.9 1.4-3.4 1.9V22h-1v-2.6c-1.5-.5-2.4-1.6-3.4-1.9-1.4-.5-3.8-1-3.8-2.4s1-1.4 1.9-1.4-1.4-1.9-1-3.4 1.9 0 2.9-1-1.4-1.9-1-3.4 1.9.5 2.9-1S10.6 3.3 12 2z',
     'M12 2.2C8.2 5.3 5.8 8.9 5.8 12.6c0 3.4 2.6 6 5.7 6.3V22h1v-3.1c3.1-.3 5.7-2.9 5.7-6.3 0-3.7-2.4-7.3-6.2-10.4z',
     'M12 2.5c-3 2.2-5.6 5.2-5.9 8.6-.2 1.9.5 3.6 1.8 4.9l-.9.6 1.5.5c1 .7 2.2 1.1 3 1.2V22h1v-3.7c.8-.1 2-.5 3-1.2l1.5-.5-.9-.6c1.3-1.3 2-3 1.8-4.9-.3-3.4-2.9-6.4-5.9-8.6z'
   ];
-  var leavesEl = null;
+
+  var SNOW_PATHS = [
+    // 6-arm dendritic star crystal
+    'M11 1v3.2a7 7 0 0 0-2.3 1L6.4 3.4 4.9 4.9l1.8 1.8a7 7 0 0 0-1 2.3H2.5v2.2h3.2c.1.8.5 1.6 1 2.3L4.9 15.3l1.5 1.5 2.3-1.8a7 7 0 0 0 2.3 1V19.2h2.2v-3.2a7 7 0 0 0 2.3-1l2.3 1.8 1.5-1.5-1.8-1.8a7 7 0 0 0 1-2.3h3.2V9H18.3a7 7 0 0 0-1-2.3l1.8-1.8-1.5-1.5-2.3 1.8a7 7 0 0 0-2.3-1V1H11zm1.1 7.2a2.8 2.8 0 1 1 0 5.6 2.8 2.8 0 0 1 0-5.6z',
+    // 6-point stellar crystal
+    'M12 1l2.5 5 5.5.8-4 3.9 1 5.4L12 13.5l-5 2.6 1-5.4-4-3.9 5.5-.8z',
+    // Hexagonal crystal plate
+    'M12 2.5l7 4v11l-7 4-7-4v-11z',
+    // Soft round snow puff
+    'M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zm0 2.5a6.5 6.5 0 1 1 0 13 6.5 6.5 0 0 1 0-13z'
+  ];
+
+  var particlesEl = null;
   var reduceMotion = null;
 
-  function wantsLeaves() {
-    return current === 'fall' && !(reduceMotion && reduceMotion.matches);
+  function wantsParticles() {
+    return (current === 'winter' || current === 'fall') && !(reduceMotion && reduceMotion.matches);
+  }
+
+  function buildSnow() {
+    var mobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
+    var count = mobile ? 12 : 24;
+    var box = document.createElement('div');
+    box.className = 'sc-snowflakes';
+    box.setAttribute('aria-hidden', 'true');
+    box.setAttribute('data-seasonal', '');
+    var phi = 0.6180339887;
+    for (var i = 0; i < count; i++) {
+      var f = (i * phi) % 1, g = (i * phi * phi + 0.37) % 1;
+      var flake = document.createElement('span');
+      flake.className = 'sc-snowflake';
+      var size = 6 + Math.round(g * 14);
+      var dur = 8 + f * 9;
+      var twinkle = (1.4 + g * 1.6).toFixed(2);
+      flake.style.cssText =
+        '--x:' + (f * 100).toFixed(2) + 'vw;' +
+        '--size:' + size + 'px;' +
+        '--dur:' + dur.toFixed(2) + 's;' +
+        '--delay:' + (-(g * dur)).toFixed(2) + 's;' +
+        '--sway:' + (2.6 + g * 2.8).toFixed(2) + 's;' +
+        '--drift:' + Math.round((g - 0.5) * 110) + 'px;' +
+        '--twinkle:' + twinkle + 's;' +
+        '--o:' + (0.55 + g * 0.42).toFixed(2) + ';' +
+        'color:var(--sc-snow-' + ((i % 6) + 1) + ')';
+      flake.innerHTML = '<span class="sc-snow-sway"><span class="sc-snow-glitter"><svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" focusable="false">' +
+        '<path fill="currentColor" d="' + SNOW_PATHS[i % SNOW_PATHS.length] + '"/></svg></span></span>';
+      box.appendChild(flake);
+    }
+    return box;
   }
 
   function buildLeaves() {
@@ -226,8 +293,6 @@
     box.className = 'sc-leaves';
     box.setAttribute('aria-hidden', 'true');
     box.setAttribute('data-seasonal', '');
-    // Deterministic spread (golden-ratio stepping) rather than Math.random(): the
-    // field looks scattered but never clumps, and a reload looks the same.
     var phi = 0.6180339887;
     for (var i = 0; i < count; i++) {
       var f = (i * phi) % 1, g = (i * phi * phi + 0.37) % 1;
@@ -253,20 +318,22 @@
     return box;
   }
 
-  function syncLeaves() {
+  function syncParticles() {
     try {
       if (!document.body) return;
-      if (wantsLeaves()) {
-        if (!leavesEl) { leavesEl = buildLeaves(); document.body.insertBefore(leavesEl, document.body.firstChild); }
-      } else if (leavesEl) {
-        leavesEl.parentNode.removeChild(leavesEl);
-        leavesEl = null;
+      if (particlesEl) {
+        particlesEl.parentNode.removeChild(particlesEl);
+        particlesEl = null;
+      }
+      if (wantsParticles()) {
+        particlesEl = current === 'winter' ? buildSnow() : (current === 'fall' ? buildLeaves() : null);
+        if (particlesEl) document.body.insertBefore(particlesEl, document.body.firstChild);
       }
     } catch (e) {}
   }
 
   document.addEventListener('visibilitychange', function () {
-    if (leavesEl) leavesEl.classList.toggle('sc-paused', document.hidden);
+    if (particlesEl) particlesEl.classList.toggle('sc-paused', document.hidden);
   });
 
   // ---- 5. Boot ------------------------------------------------------------
@@ -277,16 +344,17 @@
 
   function ready() {
     try {
+      loadAssets(current);
       injectStyles();
       findToggles().forEach(wire);
       try {
         reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-        var onChange = function () { syncLeaves(); };
+        var onChange = function () { syncParticles(); };
         if (reduceMotion.addEventListener) reduceMotion.addEventListener('change', onChange);
         else if (reduceMotion.addListener) reduceMotion.addListener(onChange);
       } catch (e) {}
       syncThemeColor();
-      syncLeaves();
+      syncParticles();
       // Drop ?theme= once honoured so shared links stay clean.
       try {
         var u = new URL(window.location.href);

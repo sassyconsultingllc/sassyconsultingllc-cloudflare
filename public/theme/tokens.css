@@ -608,3 +608,146 @@ html[data-theme="fall"][data-page="foodie-terms"] {
     --sc-accent-3: #f2c14e;
     --sc-accent-ink: #1e0a10;
 }
+
+/* ===== WINTER ==============================================================
+   Arctic Midnight & Electric Ice Blue: midnight polar canvas, crisp white and
+   frost-blue type, crystalline card elevation, and glittering snowfall.
+   Verified (scripts/theme/contrast.mjs): every text role >= 4.5:1 on every
+   surface role; ink on every accent fill >= 7:1; status colours >= 4.5:1 on
+   every surface; ok/bad differ in luminance by >= 0.12 (colorblind safe). */
+
+html[data-theme="winter"] {
+    --sc-bg: #0b1320;
+    --sc-bg-2: #101c30;
+    --sc-bg-3: #162742;
+    --sc-surface: #132238;
+    --sc-surface-2: #1c304d;
+    --sc-nav-bg: rgba(11, 19, 32, 0.88);
+    --sc-overlay: rgba(5, 10, 18, 0.82);
+    --sc-border: #223859;
+    --sc-border-2: #3d5e8c;
+    --sc-text: #f0f6fc;
+    --sc-text-2: #c8d9ed;
+    --sc-text-3: #8ca8cb;
+    --sc-text-4: #7e9fc6;
+    /* default accent: Electric Ice Blue */
+    --sc-accent: #38bdf8;
+    --sc-accent-2: #7dd3fc;
+    --sc-accent-3: #0284c7;
+    --sc-accent-ink: #041528;
+    --sc-ok: #34d399;
+    --sc-warn: #fbbf24;
+    --sc-bad: #f87171;
+    --sc-info: #60a5fa;
+    --sc-neutral: #64748b;
+    /* spectrum, frost-lit: aurora red, hearth amber, northern gold, glacier mint, electric cyan, polar sky, twilight indigo, winter berry */
+    --sc-hue-1: #fb7185;
+    --sc-hue-2: #fb923c;
+    --sc-hue-3: #facc15;
+    --sc-hue-4: #34d399;
+    --sc-hue-5: #22d3ee;
+    --sc-hue-6: #38bdf8;
+    --sc-hue-7: #818cf8;
+    --sc-hue-8: #c084fc;
+    /* aurora shimmer gradient: ice cyan to crisp sky blue to periwinkle */
+    --sc-gradient-brand: linear-gradient(90deg, #38bdf8, #818cf8 52%, #c084fc);
+    --sc-gradient-glow: radial-gradient(circle, color-mix(in srgb, var(--sc-accent) 18%, transparent) 0%, transparent 70%);
+    --sc-font-sans: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    --sc-font-display: 'DM Serif Display', Georgia, 'Times New Roman', serif;
+    --sc-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Consolas, monospace;
+    --sc-snow-1: #ffffff;
+    --sc-snow-2: #e0f2fe;
+    --sc-snow-3: #bae6fd;
+    --sc-snow-4: #7dd3fc;
+    --sc-snow-5: #38bdf8;
+    --sc-snow-6: #93c5fd;
+    /* layout knobs */
+    --sc-gutter: clamp(1.5rem, 5vw, 2.5rem);
+    --sc-radius-card: 16px;
+    --sc-radius-btn: 10px;
+    --sc-shadow-card: inset 0 1px 0 rgba(255, 255, 255, 0.12), 0 16px 36px -20px rgba(0, 0, 0, 0.75);
+    color-scheme: dark;
+}
+
+/* Polar Cyan — WinForensics-Pro */
+html[data-theme="winter"][data-page="winforensics"] {
+    --sc-accent: #0ea5e9;
+    --sc-accent-2: #38bdf8;
+    --sc-accent-3: #67e8f9;
+    --sc-accent-ink: #000b14;
+    --sc-gradient-brand: linear-gradient(90deg, #0ea5e9, #67e8f9);
+}
+
+/* Aurora Mint — Sassy-Talk */
+html[data-theme="winter"][data-page="sassy-talk"],
+html[data-theme="winter"][data-page="sassytalk-privacy"] {
+    --sc-accent: #2dd4bf;
+    --sc-accent-2: #5eead4;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #021a16;
+    --sc-gradient-brand: linear-gradient(90deg, #2dd4bf, #38bdf8);
+}
+
+/* Frost Twilight — Website Creator */
+html[data-theme="winter"][data-page="website-creator"] {
+    --sc-accent: #a78bfa;
+    --sc-accent-2: #c4b5fd;
+    --sc-accent-3: #f472b6;
+    --sc-accent-ink: #0a0418;
+    --sc-gradient-brand: linear-gradient(90deg, #a78bfa, #f472b6);
+}
+
+/* Winter Hearth Gold — About (Founder) */
+html[data-theme="winter"][data-page="about"] {
+    --sc-accent: #facc15;
+    --sc-accent-2: #fde047;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #1f1600;
+    --sc-gradient-brand: linear-gradient(90deg, #facc15, #38bdf8);
+}
+
+/* Glacial Diamond — Sassy Browser */
+html[data-theme="winter"][data-page="browser"],
+html[data-theme="winter"][data-page="coming-soon"] {
+    --sc-accent: #38bdf8;
+    --sc-accent-2: #7dd3fc;
+    --sc-accent-3: #a5f3fc;
+    --sc-accent-ink: #041528;
+    --sc-gradient-brand: linear-gradient(90deg, #38bdf8, #a5f3fc);
+}
+
+/* Glacier Blue — NDA */
+html[data-theme="winter"][data-page="nda"] {
+    --sc-accent: #60a5fa;
+    --sc-accent-2: #93c5fd;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #0b1528;
+    --sc-gradient-brand: linear-gradient(135deg, #60a5fa, #38bdf8);
+}
+
+/* Hearth Amber — Terms */
+html[data-theme="winter"][data-page="terms"] {
+    --sc-accent: #fbbf24;
+    --sc-accent-2: #fde68a;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #261600;
+}
+
+/* Glacial Orange — Cloudflare Admin */
+html[data-theme="winter"][data-page="cfadmin-eula"],
+html[data-theme="winter"][data-page="cfadmin-privacy"],
+html[data-theme="winter"][data-page="cfadmin-terms"] {
+    --sc-accent: #fb923c;
+    --sc-accent-2: #fdba74;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #270e02;
+}
+
+/* Winter Berry — Foodie Finder */
+html[data-theme="winter"][data-page="foodie-privacy"],
+html[data-theme="winter"][data-page="foodie-terms"] {
+    --sc-accent: #fb7185;
+    --sc-accent-2: #fda4af;
+    --sc-accent-3: #38bdf8;
+    --sc-accent-ink: #20040b;
+}
