@@ -89,7 +89,7 @@
                 "softwareVersion": "0.16.2",
                 "fileSize": "94MB (Windows), 44MB (Linux)",
                 "dateModified": "2026-11-17",
-                "softwareRequirements": "Windows 10 or 11 (64-bit); or Linux x86_64 with glibc 2.35+, fontconfig and ALSA",
+                "softwareRequirements": "Windows 10 or 11 (64-bit); or Linux x86_64 with glibc 2.43+, fontconfig, ALSA and libxkbcommon-x11",
                 "downloadUrl": [
                     "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
                     "https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz"
@@ -829,7 +829,7 @@
             <li><strong>Network (SMB) storage in the file explorer.</strong> Add a share as <code>\\server\share</code> or <code>smb://server/share</code>, connect with a username and password or as guest, and browse it like any local folder. <em>Browse…</em> lists a server's shares, and typing an SMB address in the explorer's path bar connects too. Shares the system already mounted show up automatically.</li>
             <li><strong>Passwords stay off disk in plain text.</strong> They are never passed on a command line, and "Remember password" keeps them encrypted at rest &mdash; never in the settings file.</li>
             <li><strong>Native on each OS.</strong> Windows uses its own SMB client (the same session <code>net use</code> creates); Linux uses GVfs, so no root and no <code>mount.cifs</code> setup is needed.</li>
-            <li><strong>Linux dev build.</strong> A prebuilt x86_64 tarball for glibc 2.35+ distros (Ubuntu 22.04+, Debian 12+, Fedora 36+). Needs fontconfig and ALSA, which desktop installs already have; SMB needs <code>gvfs-backends</code>.</li>
+            <li><strong>Linux dev build.</strong> A prebuilt x86_64 tarball for glibc 2.43+ distros (Ubuntu 26.04+). Needs fontconfig, ALSA and libxkbcommon-x11, which desktop installs already have; SMB needs <code>gvfs-backends</code>.</li>
         </ul>
     </div>
 
@@ -890,6 +890,7 @@
         <span data-theme-toggle>&copy; 2025&ndash;2026 Sassy Consulting LLC. All rights reserved.</span>
     </div>
     <div class="footer-links">
+        <a href="/company">Sassy Consulting</a>
         <a href="/coming-soon">Build status</a>
         <a href="/research/sassy-browser-engine-audit-2026">Engine Audit</a>
         <a href="/research/">Research &amp; Devlog</a>
