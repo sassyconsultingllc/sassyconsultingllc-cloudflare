@@ -3,7 +3,7 @@
   "product": "Sassy Browser",
   "repo": "https://github.com/sassyconsultingllc/ACE",
   "version": "0.16.1",
-  "as_of": "2026-11-16",
+  "as_of": "2026-11-22",
   "cargo_toml_version": "0.16.1",
   "download": {
     "public_binaries_available": false,
@@ -17,30 +17,30 @@
       "label": "Windows x64 dev build (unsigned)",
       "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser.exe",
       "filename": "sassy-browser.exe",
-      "approx_size_mb": 85.98,
-      "version": "0.16.0",
-      "build_sha": "02b7c290",
-      "dirty": false,
+      "approx_size_mb": 94.01,
+      "version": "0.16.2",
+      "build_sha": "11aa0bd5",
+      "dirty": true,
       "channel": "dev",
       "signed": false,
-      "sha256": "3B577B97DB9153D9874F05218B388416BA40AF89536FBC23309B9176A4B79875",
-      "uploaded_at": "2026-11-06T00:05:06Z",
-      "notes": "Unsigned Windows exe on public R2, cross-built from Linux (x86_64-pc-windows-gnu, static libstdc++; imports only Windows system DLLs). Source: GitHub main ef9d22b + feat/smb-storage. Not Authenticode-signed; signed update-channel manifest still 404."
+      "sha256": "C08C26995EB1257BA52D0666C176CD12244153DBA86753730A4D18C711130F0C",
+      "uploaded_at": "2026-11-17T20:23:01Z",
+      "notes": "Unsigned Windows exe on public R2 (dev build 11aa0bd5-dirty, from main). Imports only Windows system DLLs. Not Authenticode-signed; signed update-channel manifest still 404."
     },
     "linux_dev_build": {
       "available": true,
       "label": "Linux x86_64 dev build (unsigned tarball)",
       "href": "https://sassycreates.sassyconsultingllc.com/sassy-browser-linux-x86_64.tar.gz",
       "filename": "sassy-browser-linux-x86_64.tar.gz",
-      "approx_size_mb": 42.22,
+      "approx_size_mb": 44.27,
       "version": "0.16.1",
       "build_sha": "00eef70",
-      "glibc_min": "2.35",
+      "glibc_min": "2.43",
       "channel": "dev",
       "signed": false,
       "sha256": "D15B8EF103493ABE3549BA9D31872F6DBE9AA0BFF42326383C4E4EFE10A368F1",
-      "uploaded_at": "2026-11-16T01:30:00Z",
-      "notes": "Built on Linux 7.2.15+kali-amd64 with LTO and stripped symbols. Zero warnings clean gate. Needs fontconfig + ALSA."
+      "uploaded_at": "2026-11-17T04:25:23Z",
+      "notes": "Built on Linux 7.2.15+kali-amd64 with LTO and stripped symbols. Zero warnings clean gate. Needs fontconfig, ALSA and libxkbcommon-x11."
     },
     "checksums_href": "https://sassycreates.sassyconsultingllc.com/sassy-browser-SHA256SUMS.txt",
     "notes": "Signed stable channel still 404. Public CTAs may link the unsigned Windows and Linux dev builds on R2; do not claim signed stable."
@@ -53,7 +53,7 @@
     "wpt_subset_passing_recorded": 117,
     "compiler_warnings_release": 0,
     "direct_crate_deps": 123,
-    "release_binary_linux_x64_mb": 42.22,
+    "release_binary_linux_x64_mb": 44.27,
     "loc_source": "DataROOM/03-CODEBASE-METRICS.md (2026-11-16 refresh)",
     "notes": "LOC is src/ Rust only (322,386 physical, 299,419 non-blank). Test count is 3,099 #[test] attributes across 280+ test modules. Clean gate: 0 compiler warnings, 0 errors."
   },
@@ -133,8 +133,8 @@
     {
       "cat": "Platforms & distribution",
       "items": [
-        { "name": "Windows x64 release build", "status": "done", "detail": "v0.16.0 dev build 02b7c290 (~86 MB) on public R2. Signed stable channel still 404.", "meta": "windows" },
-        { "name": "Linux x86_64 release build", "status": "done", "detail": "v0.16.0 dev tarball (~42 MB, glibc 2.35+) on public R2. Distro packages (.deb/.rpm/Flatpak) not published.", "meta": "linux" },
+        { "name": "Windows x64 release build", "status": "done", "detail": "v0.16.2 dev build 11aa0bd5-dirty (~94 MB) on public R2. Signed stable channel still 404.", "meta": "windows" },
+        { "name": "Linux x86_64 release build", "status": "done", "detail": "v0.16.1 dev tarball (~44 MB, glibc 2.43+) on public R2. Distro packages (.deb/.rpm/Flatpak) not published.", "meta": "linux" },
         { "name": "macOS", "status": "planned", "detail": "After Linux packaging stabilises.", "meta": "macos" },
         { "name": "Public signed update channel", "status": "planned", "detail": "Client + Worker code exist; stable manifest currently 404. Do not claim downloads.", "meta": "update" },
         { "name": "Authenticode-signed public installer", "status": "planned", "detail": "SignPath path documented; public installer gated on manifest publish.", "meta": "sign" }
