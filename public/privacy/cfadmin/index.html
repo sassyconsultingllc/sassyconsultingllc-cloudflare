@@ -10,9 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="/theme/seasonal.js"></script>
     <link rel="stylesheet" href="/theme/tokens.css">
-    <title>Privacy Policy - Cloudflare Admin | Sassy Consulting LLC</title>
+    <title>Privacy Policy - CloudHUD | Sassy Consulting LLC</title>
     <link rel="canonical" href="https://sassyconsultingllc.com/privacy/cfadmin/">
-    <meta name="description" content="Privacy policy for the Cloudflare Admin mobile app by Sassy Consulting LLC. What the app stores, what it never collects, and how your API tokens are handled.">
+    <meta name="description" content="Privacy Policy for CloudHUD: DNS &amp; Edge Admin by Sassy Consulting LLC.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: var(--sc-font-sans); background: var(--sc-bg); color: var(--sc-text-4); line-height: 1.7; padding: 2rem var(--sc-gutter, 1rem); }
@@ -30,6 +30,18 @@
         .nav-links { margin-bottom: 1.5rem; font-size: 0.9rem; }
         .nav-links a { margin-right: 1rem; }
         footer { text-align: center; margin-top: 2rem; color: var(--sc-text-2); font-size: 0.85rem; }
+        .table-wrap { overflow-x: auto; margin: 0.75rem 0; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+        th, td { border: 1px solid var(--sc-border); padding: 0.5rem 0.65rem; text-align: left; vertical-align: top; color: var(--sc-text-2); }
+        th { color: var(--sc-text); }
+        td, li, p { overflow-wrap: anywhere; }
+        @media (max-width: 600px) {
+            thead { display: none; }
+            tr, td { display: block; }
+            tr { border: 1px solid var(--sc-border); margin-bottom: 0.6rem; padding: 0.3rem 0; }
+            td { border: 0; padding: 0.25rem 0.65rem; }
+            td:first-child { color: var(--sc-text); font-weight: 700; }
+        }
     </style>
     <link rel="stylesheet" href="/theme/fall.css">
     <link rel="stylesheet" href="/theme/winter.css">
@@ -43,157 +55,114 @@
         </div>
 
         <h1>Privacy Policy</h1>
-        <strong>Cloudflare Admin</strong> — infrastructure management app for Cloudflare accounts
-        <p><strong>Package:</strong> com.cloudflare.sassyconsults.app (Android) / com.cfadmin.mobile (iOS)</p>
-        <p><strong>Effective Date:</strong> July 1, 2026 &nbsp; <strong>Last Updated:</strong> July 1, 2026</p>
+        <strong>CloudHUD: DNS &amp; Edge Admin</strong> &mdash; an independent app for managing Cloudflare accounts
+        <p><strong>Android package:</strong> com.sassyconsultingllc.cloudhud</p>
+        <p><strong>Effective Date:</strong> November 25, 2026 &nbsp; <strong>Last Updated:</strong> November 25, 2026</p>
 
+        <h2>Summary</h2>
+        <ul>
+        <li>We run no server for CloudHUD. We do not receive your Cloudflare API token, your AI key, your Cloudflare account data or your AI chats.</li>
+        <li>The app sends requests straight from your device to Cloudflare, to Google if you choose Gemini, and to Google Play for purchases.</li>
+        <li>No advertising, and no analytics or crash-reporting kit of ours.</li>
+        <li>We do receive what you email to us, and the order records and app statistics that Google Play gives developers.</li>
+        </ul>
+
+        <h2>Who We Are</h2>
+        <p>Sassy Consulting, LLC (&ldquo;we&rdquo;, &ldquo;us&rdquo;) publishes CloudHUD (the &ldquo;App&rdquo;). We are the controller of the limited personal data described under &ldquo;Information We Receive&rdquo;. Our address and contact details are at the end of this policy.</p>
+
+        <h2>Information Kept on Your Device</h2>
+        <ul>
+        <li><strong>Cloudflare accounts:</strong> each account&rsquo;s name, API token and, if provided, email address, held in encrypted secure storage backed by the Android Keystore.</li>
+        <li><strong>AI settings:</strong> your chosen AI provider and, if you add one, your Google Gemini API key, held in the same secure storage.</li>
+        <li><strong>App settings and Pro status:</strong> theme, notification preferences, whether you have seen the upgrade screen, and a record of your Pro status (plan, product ID, date, and whether it came from a promo code), held in app storage.</li>
+        <li><strong>Held in memory only:</strong> your AI chat history, and the list of changes you made during the session, which you can review and export. Both are discarded when the App closes.</li>
+        </ul>
+
+        <h2>What Leaves Your Device</h2>
+        <div class="table-wrap"><table>
+        <thead><tr><th>Recipient</th><th>What is sent</th><th>When</th></tr></thead>
+        <tbody>
+        <tr><td>Cloudflare (api.cloudflare.com)</td><td>Your API token, requests to read and change your resources, and the content of those changes</td><td>Whenever you use the App with a connected account</td></tr>
+        <tr><td>Cloudflare Workers AI (default AI provider), in your own Cloudflare account</td><td>Your question and earlier messages in that chat. For Worker editing, the whole script and your instruction</td><td>Only when you use an AI feature</td></tr>
+        <tr><td>Google Gemini API (generativelanguage.googleapis.com)</td><td>The same AI content, with your Gemini API key</td><td>Only if you add a key and select Gemini</td></tr>
+        <tr><td>Google Play Billing</td><td>Purchase and subscription requests linked to your Google account</td><td>When the App starts (to check Pro status), and when you view plans, buy or restore</td></tr>
+        </tbody>
+        </table></div>
+
+        <p>The Android app does not take or send screenshots. Links to the Cloudflare dashboard, documentation and status page, and to Google AI Studio, open in your browser and are covered by those sites&rsquo; policies.</p>
+
+        <h3>AI Content</h3>
+        <p>Do not put passwords, secrets or personal information in AI questions, or in scripts you send for AI editing. Cloudflare handles Workers AI requests under <a href="https://www.cloudflare.com/privacypolicy/">Cloudflare&rsquo;s Privacy Policy</a>. Google handles Gemini requests under <a href="https://policies.google.com/privacy">Google&rsquo;s Privacy Policy</a> and the <a href="https://ai.google.dev/gemini-api/terms">Gemini API Additional Terms of Service</a>. If your key uses Google&rsquo;s unpaid service, Google may use what you send, and the responses, to improve its products, and human reviewers may read them. Google applies its paid-service data terms to users in the European Economic Area (EEA), Switzerland and the United Kingdom.</p>
+
+        <h2>Location, Clipboard, Screenshots and Notifications</h2>
+        <ul>
+        <li><strong>Location (optional):</strong> when you create a storage resource, you can ask the App to suggest a Cloudflare region from your location. Android asks you to allow approximate location. The App turns the coordinates into a region code on your device. Coordinates are not stored or sent anywhere. Only the region you use is sent to Cloudflare with your request.</li>
+        <li><strong>Clipboard:</strong> if you choose to paste a map link or coordinates, the App reads the clipboard at that moment and processes it on your device. Copy buttons place the value you pick on your clipboard.</li>
+        <li><strong>Screenshot detection:</strong> on supported Android versions, the App is told that you took a screenshot so it can mask secrets. It does not receive the image.</li>
+        <li><strong>Notifications (optional):</strong> alerts are created on your device. We send no push messages, and the App does not request a push token.</li>
+        </ul>
+
+        <h2>Android Permissions</h2>
+        <div class="table-wrap"><table>
+        <thead><tr><th>Permission</th><th>Why it is declared</th></tr></thead>
+        <tbody>
+        <tr><td>Internet and network state</td><td>To reach Cloudflare, Google and Google Play</td></tr>
+        <tr><td>Approximate location (optional)</td><td>Region suggestion described above</td></tr>
+        <tr><td>Notifications (optional)</td><td>On-device alerts</td></tr>
+        <tr><td>Google Play billing</td><td>Pro purchases</td></tr>
+        <tr><td>Vibration</td><td>Touch feedback</td></tr>
+        <tr><td>Screenshot detection</td><td>Masking secrets</td></tr>
+        <tr><td>Wake lock and run at startup</td><td>Used by the notification library for scheduled alerts</td></tr>
+        <tr><td>Display over other apps, biometrics, activity recognition, push receipt, install referrer, Google services settings and launcher badges</td><td>Declared by bundled software libraries. CloudHUD&rsquo;s features do not use them to collect information</td></tr>
+        </tbody>
+        </table></div>
+
+
+        <h2>Information We Receive</h2>
+        <ul>
+        <li><strong>Messages to us:</strong> your email address or phone number and what you tell us, used to answer you.</li>
+        <li><strong>Google Play order records:</strong> order number, product, price, date, subscription status, and buyer location such as country, region and postal code, used to manage purchases and refunds and to keep accounts. We do not receive your card details.</li>
+        <li><strong>Google Play statistics:</strong> install, performance and crash reporting that Google collects and makes available to developers, according to your Google settings.</li>
+        </ul>
+        <p>If you are in the EEA or UK, our legal bases are performance of a contract (purchases and support), legal obligations (tax and accounting) and legitimate interests (support, fixing problems and preventing fraud). We keep messages for as long as needed to resolve them and keep a business record, and order records for as long as tax and accounting law requires.</p>
+
+        <h2>Sharing and International Transfers</h2>
+        <p>We do not sell personal information, and we do not share it for cross-context behavioral advertising. We disclose it only to providers that run our email and business records for us, when the law requires it, or as part of a merger or sale of our business. We are based in the United States, so information you send us is processed there. Cloudflare and Google process data in many countries under their own policies and transfer safeguards.</p>
+
+        <h2>Deleting Your Data and Android Backup</h2>
+        <ul>
+        <li>Remove an account in Settings to delete its token from the App. You can also revoke the token in the Cloudflare dashboard.</li>
+        <li>Clear your Gemini key in the AI assistant&rsquo;s settings.</li>
+        <li>Clearing the App&rsquo;s storage, or uninstalling it, deletes its data from your device.</li>
+        <li>If Android backup is turned on, Google may include the App&rsquo;s data in your device backup. The keys that decrypt stored credentials stay in your device&rsquo;s Keystore. You can manage backups in your Google account.</li>
+        <li>To have us delete information you sent us, email <a href="mailto:info@sassyconsultingllc.com">info@sassyconsultingllc.com</a>.</li>
+        </ul>
+
+        <h2>Security</h2>
+        <p>The App connects over HTTPS and keeps credentials in encrypted secure storage. No method of storage or transmission is completely secure. Use a screen lock, give your API token only the permissions you need, and revoke it if your device is lost. If a breach affects personal data we hold, we will notify you and regulators as the law requires.</p>
+
+        <h2>Your Privacy Rights</h2>
+        <p>Depending on where you live, you may ask to access, correct, delete or receive a copy of personal data we hold about you, to restrict or object to its use, and to withdraw consent. Email <a href="mailto:info@sassyconsultingllc.com">info@sassyconsultingllc.com</a>. We will answer within the time the law requires.</p>
+        <ul>
+        <li><strong>EEA and UK:</strong> you may complain to your local supervisory authority; in the UK, the <a href="https://ico.org.uk">Information Commissioner&rsquo;s Office</a>.</li>
+        <li><strong>California and other US states:</strong> rights to know, access, correct and delete, and to opt out of sale, sharing, targeted advertising and profiling. We do none of those four. We will not discriminate against you for using a right, and you may use an authorized agent.</li>
+        <li><strong>Elsewhere, including Canada, Brazil, Australia, South Africa, Singapore and India:</strong> you have the rights your local law gives you and may complain to your regulator, such as the <a href="https://www.oaic.gov.au">Office of the Australian Information Commissioner</a>. Grievances may be sent to the email above.</li>
+        </ul>
+
+        <h2>Children</h2>
+        <p>The App is for adults aged 18 or over. It is not directed at children, and we do not knowingly collect their personal information. Contact us if you believe a child has sent us information, and we will delete it.</p>
+
+        <h2>Desktop and Web Builds</h2>
+        <p>This policy mainly describes the Android app. Where we provide a desktop or web build, it differs in two ways: Cloudflare account tokens are kept in local browser storage without operating-system encryption, and each AI assistant question is sent to your chosen AI provider together with an image of the app screen behind the assistant.</p>
+
+        <h2>Changes to This Policy</h2>
+        <p>We will post changes on this page and update the date above. If a change is significant, we will also give notice in the App or its store listing where practical.</p>
+
+        <h2>Contact</h2>
+        <p><strong>Sassy Consulting, LLC</strong><br>798 Water Street<br>Prairie du Sac, WI 53578, USA</p>
+        <p>Email: <a href="mailto:info@sassyconsultingllc.com">info@sassyconsultingllc.com</a><br>Phone: <a href="tel:+12623706421">+1 (262) 370-6421</a><br>Website: <a href="https://www.sassyconsultingllc.com">www.sassyconsultingllc.com</a></p>
         <hr>
-
-        <h2>Introduction</h2>
-        <p>This Privacy Policy explains how Sassy Consulting, LLC ("Company," "we," "us," "our") handles information in connection with the Cloudflare Admin mobile and desktop application ("the App"), available on Android, iOS, desktop, and web. We are a Cloudflare infrastructure management tool built with privacy as a design constraint, not an afterthought: the App holds no accounts with us, and virtually everything it touches stays on your device.</p>
-        <p>This policy is written to comply with data protection laws worldwide, including the EU/EEA General Data Protection Regulation (GDPR), UK GDPR, the California Consumer Privacy Act as amended by the CPRA, other U.S. state privacy laws, Canada's PIPEDA, Brazil's LGPD, Australia's Privacy Act 1988, South Africa's POPIA, Singapore's PDPA, and India's DPDPA.</p>
-
-        <h2>Information We Collect</h2>
-
-        <h3>Information You Provide Directly</h3>
-        <ul>
-            <li><strong>Cloudflare API Token.</strong> You generate this yourself in the Cloudflare dashboard and enter it into the App to authenticate API calls. This is the only credential required to use the App.</li>
-            <li><strong>Optional Google Gemini API Key.</strong> If you choose Google Gemini as your AI provider instead of the default (Cloudflare Workers AI), you supply your own free API key from Google AI Studio.</li>
-            <li><strong>Notification Preferences &amp; Theme Settings.</strong> Local toggles you set in the App (e.g., which alert channels are enabled).</li>
-        </ul>
-
-        <h3>Information Generated by Your Use of the App</h3>
-        <ul>
-            <li><strong>AI Prompts and, Optionally, On-Screen Screenshots.</strong> If you invoke the AI assistant sidebar and choose to include a screenshot of the current screen, that prompt text and image are sent directly from your device to whichever AI provider you have selected (see "AI Features" below). This is opt-in per message — it is not automatic, and it is not available on all platforms.</li>
-            <li><strong>Local Session Change Log.</strong> The App keeps a running, on-device summary of actions you take (e.g., "purged cache for zone X") so you can review or export it. This log never leaves your device unless you manually export it.</li>
-        </ul>
-
-        <h3>Information We Do NOT Collect</h3>
-        <ul>
-            <li>We do not collect your name, email address, phone number, physical address, or government ID.</li>
-            <li>We do not operate a login/account system. There is no "Sassy Consulting account" tied to your use of the App.</li>
-            <li>We do not use analytics, crash-reporting, or telemetry SDKs of any kind (no Firebase, Google Analytics, Sentry, Amplitude, Mixpanel, or similar). We do not know how often you open the App, what screens you view, or how you use it.</li>
-            <li>We do not use advertising and do not share data with ad networks.</li>
-            <li>We do not access your device's camera, microphone, contacts, precise location, or files.</li>
-        </ul>
-
-        <h2>How Your Cloudflare API Token Is Used</h2>
-        <p>Your Cloudflare API token authenticates requests the App makes <em>directly from your device</em> to Cloudflare's official API (<code>api.cloudflare.com</code>) to read and manage the zones, DNS records, Workers, R2 buckets, KV namespaces, D1 databases, Hyperdrive configs, and security/analytics data your token is scoped to access. The token is stored only on your device (see "Data Storage" below) and is never transmitted to any server operated by us.</p>
-
-        <h2>Optional AI Features</h2>
-        <p>The App includes an optional AI assistant ("AI sidebar" / "AI Edit") that can answer questions, review Worker code, and suggest edits. You choose which AI provider powers it:</p>
-        <ul>
-            <li><strong>Cloudflare Workers AI (default).</strong> Runs the <code>llama-3.2-11b-vision-instruct</code> model via your own Cloudflare account and API token. Requests go to <code>api.cloudflare.com</code>. Governed by <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's Privacy Policy</a>.</li>
-            <li><strong>Google Gemini (optional).</strong> Runs Gemini 2.0 Flash using your own Google AI Studio API key. Requests go to <code>generativelanguage.googleapis.com</code>. Governed by <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a> and the <a href="https://ai.google.dev/gemini-api/terms" target="_blank" rel="noopener noreferrer">Gemini API Additional Terms of Service</a>.</li>
-        </ul>
-        <p><strong>Screenshots.</strong> On desktop and web builds, you may optionally attach a screenshot of the app UI to your message to the AI assistant (the assistant's own sidebar and floating button are excluded from the capture). If you do, that image — which may show Cloudflare account data visible on screen at that moment — is sent to whichever provider above you have selected, together with your text prompt. This never happens automatically; it only happens when you actively choose to include a screenshot. This feature is not available on native mobile (Android/iOS) builds.</p>
-        <p>We do not operate our own AI models and do not receive a copy of your prompts, screenshots, or AI responses. They travel directly from your device to Cloudflare's or Google's servers, using your own credentials.</p>
-
-        <h2>Legal Basis for Processing (GDPR)</h2>
-        <p>To the extent any processing of personal data occurs, our legal bases are:</p>
-        <ul>
-            <li><strong>Consent:</strong> You choose to enter your API token, choose an AI provider, and choose whether to attach a screenshot.</li>
-            <li><strong>Contractual necessity:</strong> Processing needed to provide the App's core functionality you requested.</li>
-            <li><strong>Legitimate interest:</strong> Keeping the App secure and functioning as described.</li>
-        </ul>
-
-        <h2>Data Storage &amp; Retention</h2>
-        <p>All App data lives on your device:</p>
-        <ul>
-            <li><strong>Encrypted secure storage.</strong> Your Cloudflare API token, any Gemini API key, and session preferences are stored using the platform's native secure storage (Android Keystore via Expo SecureStore; iOS Keychain).</li>
-            <li><strong>Local app storage.</strong> Notification preferences, theme, and cached UI state are stored in local app storage (e.g., AsyncStorage), not on any server.</li>
-            <li><strong>No server-side storage.</strong> We do not operate a backend that stores your API token, your Cloudflare account data, your AI chat history, or your session change log. What you see in the App is fetched live from Cloudflare's API each time; nothing is cached on our infrastructure.</li>
-            <li><strong>Retention.</strong> Data is retained locally until you remove an account, clear app data, or uninstall the App — at which point it is deleted from your device.</li>
-        </ul>
-
-        <h2>International Data Transfers</h2>
-        <p>Because we do not receive or store your data on our own servers, we do not ourselves transfer your personal data internationally. When you use the App's AI features, your prompt (and optional screenshot) is transferred directly from your device to Cloudflare's or Google's global infrastructure, subject to their own cross-border transfer safeguards (including Standard Contractual Clauses where applicable). Review <a href="https://www.cloudflare.com/privacypolicy/" target="_blank" rel="noopener noreferrer">Cloudflare's</a> and <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's</a> policies for details on their international transfer mechanisms.</p>
-
-        <h2>Third-Party Services</h2>
-        <p>The App communicates with the following third-party services, and only these:</p>
-        <ul>
-            <li><strong>Cloudflare API</strong> (<code>api.cloudflare.com</code>) — required, for all zone/account management features.</li>
-            <li><strong>Cloudflare Workers AI</strong> — used only if you invoke the AI assistant with the default provider.</li>
-            <li><strong>Google Gemini API</strong> (<code>generativelanguage.googleapis.com</code>) — used only if you select Gemini as your AI provider and supply your own key.</li>
-        </ul>
-        <p>No other third party, SDK, or analytics vendor receives data from the App.</p>
-
-        <h2>Permissions</h2>
-        <p>The App requests the following device permissions:</p>
-        <ul>
-            <li><strong>Internet access.</strong> Required to reach Cloudflare's and, if selected, Google's APIs over HTTPS.</li>
-            <li><strong>Notifications (Android <code>POST_NOTIFICATIONS</code>; iOS notification permission).</strong> Optional. Used only to show local, on-device alerts (see below). You may deny or revoke this at any time in your device settings.</li>
-        </ul>
-        <p>The App does not request camera, microphone, contacts, precise location, storage/files, or Bluetooth permissions.</p>
-
-        <h2>Notifications</h2>
-        <p>The App can generate local, on-device notifications for security events, deployment updates, zone status changes, and SSL certificate expirations — all derived from data already fetched from your Cloudflare account. These notifications are scheduled and shown entirely on-device and, as currently configured, are not routed through any push-notification server operated by us.</p>
-
-        <h2>Data Security</h2>
-        <ul>
-            <li>API tokens and keys are stored using platform-native encrypted secure storage, never in plaintext.</li>
-            <li>All network traffic uses HTTPS/TLS.</li>
-            <li>The App does not log your API token or AI provider key to disk or to any diagnostic service.</li>
-        </ul>
-        <p>No method of electronic storage or transmission is perfectly secure. You are responsible for keeping your device secure (e.g., using a device passcode/biometric lock) and for safeguarding the scopes granted to your Cloudflare API token.</p>
-
-        <h2>Data Breach Notification</h2>
-        <p>Because the App does not operate servers that store your Cloudflare credentials or account data, the practical risk surface for a Company-side breach affecting your data is minimal. In the unlikely event a breach of any Company system did affect personal data we hold (e.g., correspondence you send to our support address), we will notify affected individuals without undue delay, and applicable regulators as required by law.</p>
-
-        <h2>Your Rights and Choices</h2>
-
-        <h3>GDPR &amp; UK GDPR (EEA / UK Residents)</h3>
-        <p>You have the right to access, rectify, erase, restrict, or port your personal data, and to object to processing based on legitimate interests. Because we hold no server-side copy of your Cloudflare data or AI chat content, most of these rights are already satisfied by the App's local-only design — you can access, correct, or erase this information yourself at any time via the App's settings, or by uninstalling it. For anything else (e.g., support correspondence), contact us at the email below; we will respond within one month.</p>
-        <p><strong>UK Supervisory Authority:</strong> UK residents may lodge a complaint with the <a href="https://ico.org.uk" target="_blank" rel="noopener noreferrer">Information Commissioner's Office (ICO)</a>.</p>
-
-        <h3>CCPA / CPRA (California Residents)</h3>
-        <p>California consumers have the right to know what personal information is collected, to request deletion, to correct inaccurate information, and to opt out of the sale or sharing of personal information. <strong>We do not sell or share personal information</strong> and have not done so in the preceding 12 months. We will not discriminate against you for exercising any CCPA/CPRA right. You may designate an authorized agent to submit requests on your behalf; we will verify the agent's authority before acting.</p>
-
-        <h3>Other U.S. State Privacy Laws</h3>
-        <p>Residents of Virginia, Colorado, Connecticut, Utah, and other states with comprehensive privacy statutes have analogous rights to access, correct, delete, and port personal data, and to opt out of targeted advertising, sale, or profiling. We do not engage in targeted advertising, sale, or profiling of App users, so these opt-outs are, in practice, already the default.</p>
-
-        <h3>PIPEDA (Canada)</h3>
-        <p>Canadian residents may request an accounting of why we hold any personal information, request access, and challenge its accuracy, and may withdraw consent at any time by contacting us.</p>
-
-        <h3>LGPD (Brazil)</h3>
-        <p>Brazilian data subjects (titulares) have the right to confirmation of processing, access, correction, anonymization, portability, deletion, and information about entities with which data has been shared. Contact us to exercise these rights; we will respond within the statutory timeframe.</p>
-
-        <h3>Australia Privacy Act 1988</h3>
-        <p>Australian users may request access to and correction of personal information we hold, and may lodge a complaint with the <a href="https://www.oaic.gov.au" target="_blank" rel="noopener noreferrer">Office of the Australian Information Commissioner (OAIC)</a> if unsatisfied with our response.</p>
-
-        <h3>POPIA (South Africa)</h3>
-        <p>South African data subjects have the right to access, correct, and request deletion of personal information, and to object to its processing, subject to the conditions of the Protection of Personal Information Act.</p>
-
-        <h3>PDPA (Singapore)</h3>
-        <p>Singapore users may withdraw consent to any processing of personal data, and may request access to and correction of personal data we hold, subject to the Personal Data Protection Act.</p>
-
-        <h3>India DPDPA</h3>
-        <p>Indian Data Principals may request a summary of processing activities, correction and erasure of personal data, and may nominate another individual to exercise these rights on their behalf in the event of death or incapacity. Contact our Grievance Officer at the email below; we will acknowledge within 48 hours and resolve within 30 days.</p>
-
-        <h2>Children's Privacy</h2>
-        <p>The App is a professional infrastructure-management tool intended for use by adults administering their own (or their employer's) Cloudflare accounts. It is not directed at children, and we do not knowingly collect personal information from anyone under 13 (or the applicable minimum age in your jurisdiction, e.g., 16 under GDPR unless a member state sets a lower age). If you believe a child has provided us with personal information, contact us and we will delete it.</p>
-
-        <h2>Data Deletion</h2>
-        <ul>
-            <li><strong>Remove a single account:</strong> Use "Remove Account" in Settings to delete that account's stored API token from your device.</li>
-            <li><strong>Remove all data:</strong> Uninstall the App, or clear its app data/storage via your device's OS settings.</li>
-            <li><strong>Support correspondence:</strong> Contact us to request deletion of any information you've sent us directly (e.g., support emails).</li>
-        </ul>
-
-        <h2>Changes to This Privacy Policy</h2>
-        <p>We may update this Privacy Policy from time to time to reflect changes in the App or in applicable law. Material changes will be reflected by updating the "Last Updated" date above. Continued use of the App after changes are posted constitutes acceptance of the revised policy.</p>
-
-        <h2>Complaint Procedures</h2>
-        <p>If you have concerns about our privacy practices, contact us directly first. You may also file a complaint with your local data protection authority (e.g., your EU/EEA supervisory authority, the UK ICO, the relevant U.S. state Attorney General, the Privacy Commissioner of Canada, Brazil's ANPD, the Australian OAIC, South Africa's Information Regulator, Singapore's PDPC, or India's Data Protection Board).</p>
-
-        <h2>Contact Us</h2>
-        <p><strong>Sassy Consulting, LLC</strong></p>
-        <p>Email: <a href="mailto:info@sassyconsultingllc.com">info@sassyconsultingllc.com</a></p>
-        <p>Website: <a href="https://www.sassyconsultingllc.com">www.sassyconsultingllc.com</a></p>
-
-        <hr>
-        <p>Cloudflare Admin is an independent application and is not affiliated with, endorsed by, or sponsored by Cloudflare, Inc. or Google LLC. "Cloudflare" and "Gemini" are trademarks of their respective owners.</p>
-
+        <p>CloudHUD is an independent application. It is not affiliated with, endorsed by, or sponsored by Cloudflare, Inc. or Google LLC. &ldquo;Cloudflare&rdquo;, &ldquo;Google Play&rdquo; and &ldquo;Gemini&rdquo; are trademarks of their respective owners and are used only to describe the services CloudHUD works with.</p>
         <strong>&copy; 2026 Sassy Consulting, LLC - A Veteran Owned Company</strong>
     </div>
     <footer>
