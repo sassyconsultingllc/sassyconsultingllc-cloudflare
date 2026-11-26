@@ -226,9 +226,12 @@
 
   // ---- 4. Seasonal Particles (Snow for Winter, Leaves for Fall) -----------
   // Leaf silhouettes on a 24x24 grid: sugar maple, red oak, birch, elm.
-  // Both builders use a deterministic golden-ratio spread rather than
-  // Math.random(): the field looks scattered but never clumps, and a reload
-  // looks the same.
+  // Placement is random per particle and per attribute: x is stratified (one
+  // random spot inside each of `count` equal lanes, lanes shuffled) so the
+  // field never clumps, while size, speed, delay, drift and colour are drawn
+  // independently so nothing lines up. Each time a particle wraps back to the
+  // top it is re-seeded at a new x and drift (see reseed()), so over time the
+  // whole width is covered instead of fixed columns.
   var LEAF_PATHS = [
     'M12 1.6l1.5 3.4 3-1.3-.7 3.7 3.4.4-2.2 2.7 3.1 1.5-3.4 1.1.9 3.4-3.4-1.5-1.3 3.2-.4 3.8h-1l-.4-3.8-1.3-3.2-3.4 1.5.9-3.4-3.4-1.1 3.1-1.5-2.2-2.7 3.4-.4-.7-3.7 3 1.3z',
     'M12 2c1.4 1.3 1 2.9 2.4 3.4s2.4-1 3 .5-1.4 2.4-.5 3.4 2.4-.4 2.9 1-1.9 2.4-1 3.4 1.9 0 1.9 1.4-2.4 1.9-3.8 2.4c-1 .3-1.9 1.4-3.4 1.9V22h-1v-2.6c-1.5-.5-2.4-1.6-3.4-1.9-1.4-.5-3.8-1-3.8-2.4s1-1.4 1.9-1.4-1.4-1.9-1-3.4 1.9 0 2.9-1-1.4-1.9-1-3.4 1.9.5 2.9-1S10.6 3.3 12 2z',
@@ -254,6 +257,24 @@
     return (current === 'winter' || current === 'fall') && !(reduceMotion && reduceMotion.matches);
   }
 
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  // One random x per equal lane, in shuffled order: scattered but even.
+  function lanes(n) {
+    var xs = [];
+    for (var i = 0; i < n; i++) xs.push((i + Math.random()) / n * 100);
+    for (var j = n - 1; j > 0; j--) { var k = Math.floor(Math.random() * (j + 1)), t = xs[j]; xs[j] = xs[k]; xs[k] = t; }
+    return xs;
+  }
+  // Re-seed a particle's lane each time its fall animation loops, while it is
+  // above the viewport, so it never retraces the same column.
+  function reseed(box, fallName, driftMax) {
+    box.addEventListener('animationiteration', function (e) {
+      if (e.animationName !== fallName || !e.target || !e.target.style) return;
+      e.target.style.setProperty('--x', rnd(0, 100).toFixed(2) + 'vw');
+      e.target.style.setProperty('--drift', Math.round(rnd(-driftMax, driftMax)) + 'px');
+    });
+  }
+
   function buildSnow() {
     var mobile = window.matchMedia && window.matchMedia('(max-width: 767px)').matches;
     var count = mobile ? 12 : 24;
@@ -261,28 +282,27 @@
     box.className = 'sc-snowflakes';
     box.setAttribute('aria-hidden', 'true');
     box.setAttribute('data-seasonal', '');
-    var phi = 0.6180339887;
+    var xs = lanes(count);
     for (var i = 0; i < count; i++) {
-      var f = (i * phi) % 1, g = (i * phi * phi + 0.37) % 1;
       var flake = document.createElement('span');
       flake.className = 'sc-snowflake';
-      var size = 6 + Math.round(g * 14);
-      var dur = 8 + f * 9;
-      var twinkle = (1.4 + g * 1.6).toFixed(2);
+      var size = Math.round(rnd(6, 20));
+      var dur = rnd(8, 17);
       flake.style.cssText =
-        '--x:' + (f * 100).toFixed(2) + 'vw;' +
+        '--x:' + xs[i].toFixed(2) + 'vw;' +
         '--size:' + size + 'px;' +
         '--dur:' + dur.toFixed(2) + 's;' +
-        '--delay:' + (-(g * dur)).toFixed(2) + 's;' +
-        '--sway:' + (2.6 + g * 2.8).toFixed(2) + 's;' +
-        '--drift:' + Math.round((g - 0.5) * 110) + 'px;' +
-        '--twinkle:' + twinkle + 's;' +
-        '--o:' + (0.55 + g * 0.42).toFixed(2) + ';' +
-        'color:var(--sc-snow-' + ((i % 6) + 1) + ')';
+        '--delay:' + (-rnd(0, dur)).toFixed(2) + 's;' +
+        '--sway:' + rnd(2.6, 5.4).toFixed(2) + 's;' +
+        '--drift:' + Math.round(rnd(-55, 55)) + 'px;' +
+        '--twinkle:' + rnd(1.4, 3).toFixed(2) + 's;' +
+        '--o:' + rnd(0.55, 0.97).toFixed(2) + ';' +
+        'color:var(--sc-snow-' + (1 + Math.floor(Math.random() * 6)) + ')';
       flake.innerHTML = '<span class="sc-snow-sway"><span class="sc-snow-glitter"><svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" focusable="false">' +
-        '<path fill="currentColor" d="' + SNOW_PATHS[i % SNOW_PATHS.length] + '"/></svg></span></span>';
+        '<path fill="currentColor" d="' + SNOW_PATHS[Math.floor(Math.random() * SNOW_PATHS.length)] + '"/></svg></span></span>';
       box.appendChild(flake);
     }
+    reseed(box, 'sc-snowfall', 55);
     return box;
   }
 
@@ -293,28 +313,28 @@
     box.className = 'sc-leaves';
     box.setAttribute('aria-hidden', 'true');
     box.setAttribute('data-seasonal', '');
-    var phi = 0.6180339887;
+    var xs = lanes(count);
     for (var i = 0; i < count; i++) {
-      var f = (i * phi) % 1, g = (i * phi * phi + 0.37) % 1;
       var leaf = document.createElement('span');
       leaf.className = 'sc-leaf';
-      var size = 14 + Math.round(g * 16);
-      var dur = 13 + f * 11;
+      var size = Math.round(rnd(14, 30));
+      var dur = rnd(13, 24);
       leaf.style.cssText =
-        '--x:' + (f * 100).toFixed(2) + 'vw;' +
+        '--x:' + xs[i].toFixed(2) + 'vw;' +
         '--size:' + size + 'px;' +
         '--dur:' + dur.toFixed(2) + 's;' +
-        '--delay:' + (-(g * dur)).toFixed(2) + 's;' +
-        '--sway:' + (3 + g * 3).toFixed(2) + 's;' +
-        '--drift:' + Math.round((g - 0.5) * 140) + 'px;' +
-        '--spin:' + Math.round(180 + f * 360) * (i % 2 ? 1 : -1) + 'deg;' +
-        '--o:' + (0.55 + g * 0.35).toFixed(2) + ';' +
-        'color:var(--sc-leaf-' + ((i % 6) + 1) + ')';
+        '--delay:' + (-rnd(0, dur)).toFixed(2) + 's;' +
+        '--sway:' + rnd(3, 6).toFixed(2) + 's;' +
+        '--drift:' + Math.round(rnd(-70, 70)) + 'px;' +
+        '--spin:' + Math.round(rnd(180, 540)) * (Math.random() < 0.5 ? 1 : -1) + 'deg;' +
+        '--o:' + rnd(0.55, 0.9).toFixed(2) + ';' +
+        'color:var(--sc-leaf-' + (1 + Math.floor(Math.random() * 6)) + ')';
       leaf.innerHTML = '<span class="sc-leaf-sway"><svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" focusable="false">' +
-        '<path fill="currentColor" d="' + LEAF_PATHS[i % LEAF_PATHS.length] + '"/>' +
+        '<path fill="currentColor" d="' + LEAF_PATHS[Math.floor(Math.random() * LEAF_PATHS.length)] + '"/>' +
         '<path d="M12 6v14" stroke="currentColor" stroke-opacity=".45" stroke-width=".8" fill="none" style="filter:brightness(.55)"/></svg></span>';
       box.appendChild(leaf);
     }
+    reseed(box, 'sc-fall', 70);
     return box;
   }
 
